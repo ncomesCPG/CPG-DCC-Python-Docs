@@ -1,0 +1,38 @@
+cpg.maya.startup package
+========================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   cpg.maya.startup.configs
+   cpg.maya.startup.dependencies
+
+Submodules
+----------
+
+cpg.maya.startup.start\_menus module
+------------------------------------
+
+.. automodule:: cpg.maya.startup.start_menus
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.startup.startup module
+-------------------------------
+
+.. automodule:: cpg.maya.startup.startup
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.startup
+   :members:
+   :undoc-members:
+   :show-inheritance:

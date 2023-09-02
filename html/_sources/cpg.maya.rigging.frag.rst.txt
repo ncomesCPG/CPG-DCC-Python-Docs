@@ -1,0 +1,317 @@
+cpg.maya.rigging.frag package
+=============================
+
+Submodules
+----------
+
+cpg.maya.rigging.frag.aim\_component module
+-------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.aim_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.animated\_curves module
+---------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.animated_curves
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.animation\_control\_component module
+----------------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.animation_control_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.attachment\_component module
+--------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.attachment_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.channel\_float\_component module
+------------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.channel_float_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.cog\_component module
+-------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.cog_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.display\_layers module
+--------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.display_layers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.eye\_center\_component module
+---------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.eye_center_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.eye\_component module
+-------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.eye_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.face\_edit\_component module
+--------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.face_edit_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.face\_fk\_component module
+------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.face_fk_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.face\_mesh\_component module
+--------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.face_mesh_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.face\_parameters module
+---------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.face_parameters
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.fk\_component module
+------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.fk_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.frag\_base module
+---------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.frag_base
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.frag\_rig module
+--------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.frag_rig
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.frag\_root module
+---------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.frag_root
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.frag\_sequencer module
+--------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.frag_sequencer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.ik\_component module
+------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.ik_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.ikfk\_component module
+--------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.ikfk_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.keyable\_component module
+-----------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.keyable_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.leaper\_tongue\_component module
+------------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.leaper_tongue_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.mesh\_component module
+--------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.mesh_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.multi\_constraint module
+----------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.multi_constraint
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.pelvis\_component module
+----------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.pelvis_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.pin\_component module
+-------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.pin_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.reverse\_foot\_component module
+-----------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.reverse_foot_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.rfk\_component module
+-------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.rfk_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.ribbon\_component module
+----------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.ribbon_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.rig\_component module
+-------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.rig_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.rig\_component\_interface module
+------------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.rig_component_interface
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.s\_sdk\_component module
+----------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.s_sdk_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.skeletal\_mesh module
+-------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.skeletal_mesh
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.space\_switch\_component module
+-----------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.space_switch_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.spline\_ik\_component module
+--------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.spline_ik_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.twist\_fixup\_component module
+----------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.twist_fixup_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.world\_component module
+---------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.world_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.frag.z\_leg\_component module
+----------------------------------------------
+
+.. automodule:: cpg.maya.rigging.frag.z_leg_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.rigging.frag
+   :members:
+   :undoc-members:
+   :show-inheritance:

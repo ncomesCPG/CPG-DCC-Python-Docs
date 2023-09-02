@@ -1,0 +1,21 @@
+cpg.maya.plugins.undocommand package
+====================================
+
+Submodules
+----------
+
+cpg.maya.plugins.undocommand.undocommand module
+-----------------------------------------------
+
+.. automodule:: cpg.maya.plugins.undocommand.undocommand
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.plugins.undocommand
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,37 @@
+cpg.maya.deformations package
+=============================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   cpg.maya.deformations.skinner
+
+Submodules
+----------
+
+cpg.maya.deformations.cluster module
+------------------------------------
+
+.. automodule:: cpg.maya.deformations.cluster
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.deformations.skin\_utils module
+----------------------------------------
+
+.. automodule:: cpg.maya.deformations.skin_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.deformations
+   :members:
+   :undoc-members:
+   :show-inheritance:

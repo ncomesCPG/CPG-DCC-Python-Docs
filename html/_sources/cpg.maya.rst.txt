@@ -1,0 +1,31 @@
+cpg.maya package
+================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   cpg.maya.animation
+   cpg.maya.cinematics
+   cpg.maya.deformations
+   cpg.maya.face
+   cpg.maya.modeling
+   cpg.maya.modifiers
+   cpg.maya.plugins
+   cpg.maya.pyqt
+   cpg.maya.rigging
+   cpg.maya.startup
+   cpg.maya.thirdpartytools
+   cpg.maya.tools
+   cpg.maya.users
+   cpg.maya.utils
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya
+   :members:
+   :undoc-members:
+   :show-inheritance:

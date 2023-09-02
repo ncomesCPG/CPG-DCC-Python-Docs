@@ -1,0 +1,18 @@
+cpg.maya.plugins.rbfRetargeter package
+======================================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   cpg.maya.plugins.rbfRetargeter.python
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.plugins.rbfRetargeter
+   :members:
+   :undoc-members:
+   :show-inheritance:

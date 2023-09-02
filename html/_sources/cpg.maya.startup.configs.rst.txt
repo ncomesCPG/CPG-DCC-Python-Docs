@@ -1,0 +1,37 @@
+cpg.maya.startup.configs package
+================================
+
+Submodules
+----------
+
+cpg.maya.startup.configs.ma\_configs module
+-------------------------------------------
+
+.. automodule:: cpg.maya.startup.configs.ma_configs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.startup.configs.ma\_consts module
+------------------------------------------
+
+.. automodule:: cpg.maya.startup.configs.ma_consts
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.startup.configs.ma\_envs module
+----------------------------------------
+
+.. automodule:: cpg.maya.startup.configs.ma_envs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.startup.configs
+   :members:
+   :undoc-members:
+   :show-inheritance:

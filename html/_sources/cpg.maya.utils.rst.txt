@@ -1,0 +1,165 @@
+cpg.maya.utils package
+======================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   cpg.maya.utils.om
+
+Submodules
+----------
+
+cpg.maya.utils.attr\_utils module
+---------------------------------
+
+.. automodule:: cpg.maya.utils.attr_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.utils.constraint module
+--------------------------------
+
+.. automodule:: cpg.maya.utils.constraint
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.utils.dag module
+-------------------------
+
+.. automodule:: cpg.maya.utils.dag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.utils.display\_layers module
+-------------------------------------
+
+.. automodule:: cpg.maya.utils.display_layers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.utils.events module
+----------------------------
+
+.. automodule:: cpg.maya.utils.events
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.utils.fbx\_utils module
+--------------------------------
+
+.. automodule:: cpg.maya.utils.fbx_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.utils.groups module
+----------------------------
+
+.. automodule:: cpg.maya.utils.groups
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.utils.ma\_fileio module
+--------------------------------
+
+.. automodule:: cpg.maya.utils.ma_fileio
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.utils.ma\_maths module
+-------------------------------
+
+.. automodule:: cpg.maya.utils.ma_maths
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.utils.material\_utils module
+-------------------------------------
+
+.. automodule:: cpg.maya.utils.material_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.utils.maya\_utils module
+---------------------------------
+
+.. automodule:: cpg.maya.utils.maya_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.utils.namespace module
+-------------------------------
+
+.. automodule:: cpg.maya.utils.namespace
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.utils.naming module
+----------------------------
+
+.. automodule:: cpg.maya.utils.naming
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.utils.node\_util module
+--------------------------------
+
+.. automodule:: cpg.maya.utils.node_util
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.utils.optionvars module
+--------------------------------
+
+.. automodule:: cpg.maya.utils.optionvars
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.utils.plugins module
+-----------------------------
+
+.. automodule:: cpg.maya.utils.plugins
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.utils.scene\_utils module
+----------------------------------
+
+.. automodule:: cpg.maya.utils.scene_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.utils.textures module
+------------------------------
+
+.. automodule:: cpg.maya.utils.textures
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

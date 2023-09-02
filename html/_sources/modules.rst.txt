@@ -1,0 +1,7 @@
+cpg-maya
+========
+
+.. toctree::
+   :maxdepth: 6
+
+   cpg

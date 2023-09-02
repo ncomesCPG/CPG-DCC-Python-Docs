@@ -1,0 +1,29 @@
+cpg.maya.tools.animationexporter package
+========================================
+
+Submodules
+----------
+
+cpg.maya.tools.animationexporter.animationexporter\_ui module
+-------------------------------------------------------------
+
+.. automodule:: cpg.maya.tools.animationexporter.animationexporter_ui
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.tools.animationexporter.animationexporter\_utils module
+----------------------------------------------------------------
+
+.. automodule:: cpg.maya.tools.animationexporter.animationexporter_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.tools.animationexporter
+   :members:
+   :undoc-members:
+   :show-inheritance:

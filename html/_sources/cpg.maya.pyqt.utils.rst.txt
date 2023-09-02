@@ -1,0 +1,21 @@
+cpg.maya.pyqt.utils package
+===========================
+
+Submodules
+----------
+
+cpg.maya.pyqt.utils.ma\_main\_window module
+-------------------------------------------
+
+.. automodule:: cpg.maya.pyqt.utils.ma_main_window
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.pyqt.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

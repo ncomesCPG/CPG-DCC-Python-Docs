@@ -1,0 +1,277 @@
+cpg.maya.cinematics package
+===========================
+
+Submodules
+----------
+
+cpg.maya.cinematics.AddLocator module
+-------------------------------------
+
+.. automodule:: cpg.maya.cinematics.AddLocator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.BakeLocator module
+--------------------------------------
+
+.. automodule:: cpg.maya.cinematics.BakeLocator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.BreakoutProcess module
+------------------------------------------
+
+.. automodule:: cpg.maya.cinematics.BreakoutProcess
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.BreakoutSelectedShot module
+-----------------------------------------------
+
+.. automodule:: cpg.maya.cinematics.BreakoutSelectedShot
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.BreakoutStandalone module
+---------------------------------------------
+
+.. automodule:: cpg.maya.cinematics.BreakoutStandalone
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.CameraController module
+-------------------------------------------
+
+.. automodule:: cpg.maya.cinematics.CameraController
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.CineClasses module
+--------------------------------------
+
+.. automodule:: cpg.maya.cinematics.CineClasses
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.CineControlCurve module
+-------------------------------------------
+
+.. automodule:: cpg.maya.cinematics.CineControlCurve
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.CineSequenceNodes module
+--------------------------------------------
+
+.. automodule:: cpg.maya.cinematics.CineSequenceNodes
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.CineShelfStartButton module
+-----------------------------------------------
+
+.. automodule:: cpg.maya.cinematics.CineShelfStartButton
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.CinematicShelf module
+-----------------------------------------
+
+.. automodule:: cpg.maya.cinematics.CinematicShelf
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.CinematicXML module
+---------------------------------------
+
+.. automodule:: cpg.maya.cinematics.CinematicXML
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.CopyCamera module
+-------------------------------------
+
+.. automodule:: cpg.maya.cinematics.CopyCamera
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.CreateShot module
+-------------------------------------
+
+.. automodule:: cpg.maya.cinematics.CreateShot
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.DuplicateShot module
+----------------------------------------
+
+.. automodule:: cpg.maya.cinematics.DuplicateShot
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.ExecuteBatchBreakout module
+-----------------------------------------------
+
+.. automodule:: cpg.maya.cinematics.ExecuteBatchBreakout
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.GrandParent module
+--------------------------------------
+
+.. automodule:: cpg.maya.cinematics.GrandParent
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.MatchObjs module
+------------------------------------
+
+.. automodule:: cpg.maya.cinematics.MatchObjs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.MayaExecuteBatchExport module
+-------------------------------------------------
+
+.. automodule:: cpg.maya.cinematics.MayaExecuteBatchExport
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.MayaExportProcess module
+--------------------------------------------
+
+.. automodule:: cpg.maya.cinematics.MayaExportProcess
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.MayaExportStandalone module
+-----------------------------------------------
+
+.. automodule:: cpg.maya.cinematics.MayaExportStandalone
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.MayaSaveVersion module
+------------------------------------------
+
+.. automodule:: cpg.maya.cinematics.MayaSaveVersion
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.OpenCineFile module
+---------------------------------------
+
+.. automodule:: cpg.maya.cinematics.OpenCineFile
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.Playblast module
+------------------------------------
+
+.. automodule:: cpg.maya.cinematics.Playblast
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.PlayblastDoubleClick module
+-----------------------------------------------
+
+.. automodule:: cpg.maya.cinematics.PlayblastDoubleClick
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.PlayblastSingleClick module
+-----------------------------------------------
+
+.. automodule:: cpg.maya.cinematics.PlayblastSingleClick
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.RenameShot module
+-------------------------------------
+
+.. automodule:: cpg.maya.cinematics.RenameShot
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.RigObject module
+------------------------------------
+
+.. automodule:: cpg.maya.cinematics.RigObject
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.RigObjectDouble module
+------------------------------------------
+
+.. automodule:: cpg.maya.cinematics.RigObjectDouble
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.SaveButton module
+-------------------------------------
+
+.. automodule:: cpg.maya.cinematics.SaveButton
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.SceneMover module
+-------------------------------------
+
+.. automodule:: cpg.maya.cinematics.SceneMover
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.SendLayoutToAnim module
+-------------------------------------------
+
+.. automodule:: cpg.maya.cinematics.SendLayoutToAnim
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.cinematics.ShelfButtonCommands module
+----------------------------------------------
+
+.. automodule:: cpg.maya.cinematics.ShelfButtonCommands
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.cinematics
+   :members:
+   :undoc-members:
+   :show-inheritance:

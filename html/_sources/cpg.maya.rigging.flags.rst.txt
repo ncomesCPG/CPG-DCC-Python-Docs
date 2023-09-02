@@ -1,0 +1,37 @@
+cpg.maya.rigging.flags package
+==============================
+
+Submodules
+----------
+
+cpg.maya.rigging.flags.flag\_utils module
+-----------------------------------------
+
+.. automodule:: cpg.maya.rigging.flags.flag_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.flags.frag\_flag module
+----------------------------------------
+
+.. automodule:: cpg.maya.rigging.flags.frag_flag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.flags.serialize\_flag module
+---------------------------------------------
+
+.. automodule:: cpg.maya.rigging.flags.serialize_flag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.rigging.flags
+   :members:
+   :undoc-members:
+   :show-inheritance:

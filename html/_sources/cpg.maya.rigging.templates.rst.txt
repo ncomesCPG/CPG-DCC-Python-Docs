@@ -1,0 +1,141 @@
+cpg.maya.rigging.templates package
+==================================
+
+Submodules
+----------
+
+cpg.maya.rigging.templates.enemy\_bonewhistler\_template module
+---------------------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.templates.enemy_bonewhistler_template
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.templates.enemy\_drone\_template module
+--------------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.templates.enemy_drone_template
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.templates.enemy\_gargoyle\_template module
+-----------------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.templates.enemy_gargoyle_template
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.templates.enemy\_leaper\_template module
+---------------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.templates.enemy_leaper_template
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.templates.enemy\_lumpy\_template module
+--------------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.templates.enemy_lumpy_template
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.templates.enemy\_sapperleech\_template module
+--------------------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.templates.enemy_sapperleech_template
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.templates.enemy\_summoner\_template module
+-----------------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.templates.enemy_summoner_template
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.templates.grapple\_hook\_template module
+---------------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.templates.grapple_hook_template
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.templates.player\_head\_template module
+--------------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.templates.player_head_template
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.templates.player\_male\_template module
+--------------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.templates.player_male_template
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.templates.player\_mecharm\_template module
+-----------------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.templates.player_mecharm_template
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.templates.props\_template module
+-------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.templates.props_template
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.templates.rig\_templates module
+------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.templates.rig_templates
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.templates.ruby\_concept\_template module
+---------------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.templates.ruby_concept_template
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.templates.weapon\_melee\_template module
+---------------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.templates.weapon_melee_template
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.rigging.templates.weapon\_range\_template module
+---------------------------------------------------------
+
+.. automodule:: cpg.maya.rigging.templates.weapon_range_template
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.rigging.templates
+   :members:
+   :undoc-members:
+   :show-inheritance:

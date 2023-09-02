@@ -1,0 +1,29 @@
+cpg.maya.tools.skeletonbuilder package
+======================================
+
+Submodules
+----------
+
+cpg.maya.tools.skeletonbuilder.skeletonbuilder\_registry module
+---------------------------------------------------------------
+
+.. automodule:: cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.tools.skeletonbuilder.skeletonbuilder\_ui module
+---------------------------------------------------------
+
+.. automodule:: cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.tools.skeletonbuilder
+   :members:
+   :undoc-members:
+   :show-inheritance:

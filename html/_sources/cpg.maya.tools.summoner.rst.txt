@@ -1,0 +1,21 @@
+cpg.maya.tools.summoner package
+===============================
+
+Submodules
+----------
+
+cpg.maya.tools.summoner.summoner module
+---------------------------------------
+
+.. automodule:: cpg.maya.tools.summoner.summoner
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.tools.summoner
+   :members:
+   :undoc-members:
+   :show-inheritance:

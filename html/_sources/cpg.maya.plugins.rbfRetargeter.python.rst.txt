@@ -1,0 +1,21 @@
+cpg.maya.plugins.rbfRetargeter.python package
+=============================================
+
+Submodules
+----------
+
+cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter module
+----------------------------------------------------------
+
+.. automodule:: cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.plugins.rbfRetargeter.python
+   :members:
+   :undoc-members:
+   :show-inheritance:

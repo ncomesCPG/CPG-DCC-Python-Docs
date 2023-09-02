@@ -1,0 +1,21 @@
+cpg.maya.tools.faceskinning package
+===================================
+
+Submodules
+----------
+
+cpg.maya.tools.faceskinning.face\_skinning\_tool module
+-------------------------------------------------------
+
+.. automodule:: cpg.maya.tools.faceskinning.face_skinning_tool
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.tools.faceskinning
+   :members:
+   :undoc-members:
+   :show-inheritance:

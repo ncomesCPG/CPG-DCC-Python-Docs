@@ -1,0 +1,45 @@
+cpg.maya.face.face\_utils package
+=================================
+
+Submodules
+----------
+
+cpg.maya.face.face\_utils.eyelash\_snapping module
+--------------------------------------------------
+
+.. automodule:: cpg.maya.face.face_utils.eyelash_snapping
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.face.face\_utils.face\_import\_export module
+-----------------------------------------------------
+
+.. automodule:: cpg.maya.face.face_utils.face_import_export
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.face.face\_utils.face\_skinning module
+-----------------------------------------------
+
+.. automodule:: cpg.maya.face.face_utils.face_skinning
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.face.face\_utils.face\_util module
+-------------------------------------------
+
+.. automodule:: cpg.maya.face.face_utils.face_util
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.face.face_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

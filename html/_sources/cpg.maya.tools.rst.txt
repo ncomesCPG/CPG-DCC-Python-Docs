@@ -1,0 +1,30 @@
+cpg.maya.tools package
+======================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   cpg.maya.tools.animationexporter
+   cpg.maya.tools.assetregister
+   cpg.maya.tools.face_staging
+   cpg.maya.tools.faceskinning
+   cpg.maya.tools.flags_exporter
+   cpg.maya.tools.helios
+   cpg.maya.tools.multiconstraintswitch
+   cpg.maya.tools.reanimator
+   cpg.maya.tools.saveskinning
+   cpg.maya.tools.skeletonbuilder
+   cpg.maya.tools.summoner
+   cpg.maya.tools.timewarp
+   cpg.maya.tools.toolbox
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.tools
+   :members:
+   :undoc-members:
+   :show-inheritance:

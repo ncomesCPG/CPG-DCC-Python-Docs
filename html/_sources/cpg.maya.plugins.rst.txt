@@ -1,0 +1,32 @@
+cpg.maya.plugins package
+========================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   cpg.maya.plugins.livelink
+   cpg.maya.plugins.rbfRetargeter
+   cpg.maya.plugins.skinningConverter
+   cpg.maya.plugins.undocommand
+
+Submodules
+----------
+
+cpg.maya.plugins.loader module
+------------------------------
+
+.. automodule:: cpg.maya.plugins.loader
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.plugins
+   :members:
+   :undoc-members:
+   :show-inheritance:

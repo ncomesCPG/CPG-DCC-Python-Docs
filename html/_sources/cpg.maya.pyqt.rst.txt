@@ -1,0 +1,37 @@
+cpg.maya.pyqt package
+=====================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   cpg.maya.pyqt.utils
+
+Submodules
+----------
+
+cpg.maya.pyqt.dialogs module
+----------------------------
+
+.. automodule:: cpg.maya.pyqt.dialogs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.pyqt.mayawindows module
+--------------------------------
+
+.. automodule:: cpg.maya.pyqt.mayawindows
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.pyqt
+   :members:
+   :undoc-members:
+   :show-inheritance:
