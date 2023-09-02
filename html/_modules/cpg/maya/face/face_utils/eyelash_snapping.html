@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.face.face_utils.eyelash_snapping &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.face.face_utils.eyelash_snapping</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.face.face_utils.eyelash_snapping</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Modules that do eyelash snapping to the face model.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="c1"># python imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.modeling</span> <span class="kn">import</span> <span class="n">rivets</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.deformations.skinner</span> <span class="kn">import</span> <span class="n">core</span> <span class="k">as</span> <span class="n">skin_core</span>
+<span class="kn">from</span> <span class="nn">cpg.common.paths</span> <span class="kn">import</span> <span class="n">paths</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.face</span> <span class="kn">import</span> <span class="n">source_data</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">mesh_markup_rig</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.deformations</span> <span class="kn">import</span> <span class="n">skin_utils</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="setup_jnts"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_utils.html#cpg.maya.face.face_utils.eyelash_snapping.setup_jnts">[docs]</a><span class="k">def</span> <span class="nf">setup_jnts</span><span class="p">(</span><span class="n">main_mesh</span><span class="p">,</span>
+               <span class="n">snap_mesh</span><span class="p">,</span>
+               <span class="n">eyelash_coords</span><span class="p">,</span>
+               <span class="n">side</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set up joints and locators based on UV coords.</span>
+
+<span class="sd">    :param nt.Transform main_mesh: Head mesh</span>
+<span class="sd">    :param nt.Transform snap_mesh: Mesh to snap</span>
+<span class="sd">    :param dict eyelash_coords: A dictionary containing UV information</span>
+<span class="sd">    :param int side: Side to identify correct coords to use, 1 is left and 2 is right</span>
+<span class="sd">    :return: Returns a dictionary of created joints and locators</span>
+<span class="sd">    :rtype: dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">created_locs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">created_jnts</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">eyelash_coords</span><span class="p">):</span>
+        <span class="c1"># Get coords for mesh that will snap and coords for where on head mesh it should connect</span>
+        <span class="n">coord</span> <span class="o">=</span> <span class="n">eyelash_coords</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;coord&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">connect</span> <span class="o">=</span> <span class="n">eyelash_coords</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;connection_point&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Create UV pin on snap mesh to pull position data from it</span>
+        <span class="n">pin</span> <span class="o">=</span> <span class="n">rivets</span><span class="o">.</span><span class="n">connect_uv_pin</span><span class="p">(</span><span class="n">snap_mesh</span><span class="p">,</span> <span class="n">coord</span><span class="p">)</span>
+        <span class="n">loc</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">pin</span><span class="p">)</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">pointPosition</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">pin</span><span class="p">)</span>
+
+        <span class="c1"># Create joint and move to where locator was</span>
+        <span class="n">jnt</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">joint</span><span class="p">(</span><span class="n">rad</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">item</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">jnt</span><span class="p">,</span> <span class="n">world</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">jnt</span><span class="si">}</span><span class="s1">.translateX&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">jnt</span><span class="si">}</span><span class="s1">.translateY&#39;</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">jnt</span><span class="si">}</span><span class="s1">.translateZ&#39;</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+
+        <span class="c1"># Mark UV and side info on joint so it can be connected with correct counterpart later</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="n">jnt</span><span class="p">,</span> <span class="n">ln</span><span class="o">=</span><span class="s1">&#39;uv1&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="n">jnt</span><span class="p">,</span> <span class="n">ln</span><span class="o">=</span><span class="s1">&#39;uv2&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="n">jnt</span><span class="p">,</span> <span class="n">ln</span><span class="o">=</span><span class="s1">&#39;uvCon1&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="n">jnt</span><span class="p">,</span> <span class="n">ln</span><span class="o">=</span><span class="s1">&#39;uvCon2&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
+
+        <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">jnt</span><span class="si">}</span><span class="s1">.uv1&#39;</span><span class="p">,</span> <span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">jnt</span><span class="si">}</span><span class="s1">.uv2&#39;</span><span class="p">,</span> <span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">jnt</span><span class="si">}</span><span class="s1">.uvCon1&#39;</span><span class="p">,</span> <span class="n">connect</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">jnt</span><span class="si">}</span><span class="s1">.uvCon2&#39;</span><span class="p">,</span> <span class="n">connect</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">jnt</span><span class="si">}</span><span class="s1">.side&#39;</span><span class="p">,</span> <span class="n">side</span><span class="p">)</span>
+        <span class="n">created_jnts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">jnt</span><span class="p">)</span>
+
+        <span class="c1"># Create locator on main mesh and add attrs with UV and side info</span>
+        <span class="n">pin2</span> <span class="o">=</span> <span class="n">rivets</span><span class="o">.</span><span class="n">connect_uv_pin</span><span class="p">(</span><span class="n">main_mesh</span><span class="p">,</span> <span class="n">connect</span><span class="p">)</span>
+        <span class="n">loc2</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">pin2</span><span class="p">)</span>
+
+        <span class="n">pm</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="n">loc2</span><span class="p">,</span> <span class="n">ln</span><span class="o">=</span><span class="s1">&#39;uv1&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="n">loc2</span><span class="p">,</span> <span class="n">ln</span><span class="o">=</span><span class="s1">&#39;uv2&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="n">loc2</span><span class="p">,</span> <span class="n">ln</span><span class="o">=</span><span class="s1">&#39;side&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;double&#39;</span><span class="p">)</span>
+
+        <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">loc2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">.uv1&#39;</span><span class="p">,</span> <span class="n">connect</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">loc2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">.uv2&#39;</span><span class="p">,</span> <span class="n">connect</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">loc2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">.side&#39;</span><span class="p">,</span> <span class="n">side</span><span class="p">)</span>
+
+        <span class="n">created_locs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loc2</span><span class="p">)</span>
+
+    <span class="n">return_dictionary</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">return_dictionary</span><span class="p">[</span><span class="s1">&#39;jnts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">created_jnts</span>
+    <span class="n">return_dictionary</span><span class="p">[</span><span class="s1">&#39;locs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">created_locs</span>
+
+    <span class="k">return</span> <span class="n">return_dictionary</span></div>
+
+
+<div class="viewcode-block" id="snap_eyelash_mesh"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_utils.html#cpg.maya.face.face_utils.eyelash_snapping.snap_eyelash_mesh">[docs]</a><span class="k">def</span> <span class="nf">snap_eyelash_mesh</span><span class="p">(</span><span class="n">main_mesh</span><span class="p">,</span>
+                      <span class="n">snap_mesh</span><span class="p">,</span>
+                      <span class="n">snap_region</span><span class="p">,</span>
+                      <span class="n">eyelash_coords</span><span class="p">,</span>
+                      <span class="n">skin_data_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Snaps eyelash/shadow/tear mesh onto eyelids based on UV coords.</span>
+
+<span class="sd">    :param nt.Transform main_mesh: Head mesh</span>
+<span class="sd">    :param nt.Transform snap_mesh: Mesh to snap</span>
+<span class="sd">    :param str snap_region: The name of the region to identify which coords to use</span>
+<span class="sd">    :param dict eyelash_coords: A dictionary containing UV information</span>
+<span class="sd">    :param str skin_data_path: Path to common skin data to use for snapping meshes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Duplicate mesh to separate mirrored mesh without messing up vert order</span>
+    <span class="n">dup_mesh</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">duplicate</span><span class="p">(</span><span class="n">snap_mesh</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">sep</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">polySeparate</span><span class="p">(</span><span class="n">dup_mesh</span><span class="p">)</span>
+    <span class="n">created_jnts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">created_locs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">xform_group</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">sep</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">p</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># Lash is separated from AO/tear as it splits into four meshes with upper/lower rather than just two (left/right)</span>
+    <span class="k">if</span> <span class="n">snap_region</span> <span class="o">==</span> <span class="s1">&#39;eye_lash&#39;</span><span class="p">:</span>
+        <span class="n">mesh_sides</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;right_upper&#39;</span><span class="p">,</span> <span class="s1">&#39;right_lower&#39;</span><span class="p">,</span> <span class="s1">&#39;left_upper&#39;</span><span class="p">,</span> <span class="s1">&#39;left_lower&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mesh_sides</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">mesh_side</span><span class="p">,</span> <span class="n">separated_mesh</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">mesh_sides</span><span class="p">,</span> <span class="n">sep</span><span class="p">)):</span>
+        <span class="n">mesh_side_info</span> <span class="o">=</span> <span class="n">eyelash_coords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">mesh_side</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">snap_region</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mesh_side</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;r&#39;</span><span class="p">:</span>
+            <span class="n">jnts_side</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">jnts_side</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c1"># Create joints on snap mesh, locators on main mesh</span>
+        <span class="n">mesh_side_setup</span> <span class="o">=</span> <span class="n">setup_jnts</span><span class="p">(</span><span class="n">main_mesh</span><span class="p">,</span>
+                                    <span class="n">separated_mesh</span><span class="p">,</span>
+                                    <span class="n">mesh_side_info</span><span class="p">,</span>
+                                    <span class="n">jnts_side</span><span class="p">)</span>
+
+        <span class="n">mesh_side_jnts</span> <span class="o">=</span> <span class="n">mesh_side_setup</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;jnts&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">jnt</span> <span class="ow">in</span> <span class="n">mesh_side_jnts</span><span class="p">:</span>
+            <span class="n">created_jnts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">jnt</span><span class="p">)</span>
+        <span class="n">mesh_side_locs</span> <span class="o">=</span> <span class="n">mesh_side_setup</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;locs&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">loc</span> <span class="ow">in</span> <span class="n">mesh_side_locs</span><span class="p">:</span>
+            <span class="n">created_locs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>
+
+    <span class="n">skin_utils</span><span class="o">.</span><span class="n">apply_skinning_to_mesh</span><span class="p">([</span><span class="n">snap_mesh</span><span class="p">],</span> <span class="n">skin_data_path</span><span class="p">,</span> <span class="n">name_override</span><span class="o">=</span><span class="n">snap_region</span><span class="p">)</span>
+
+    <span class="c1"># Match up UV connect attr on joints with UV attr on loc</span>
+    <span class="k">for</span> <span class="n">jnt</span> <span class="ow">in</span> <span class="n">created_jnts</span><span class="p">:</span>
+        <span class="n">jnt_side</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">jnt</span><span class="si">}</span><span class="s1">.side&#39;</span><span class="p">)</span>
+        <span class="n">val1</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">jnt</span><span class="si">}</span><span class="s1">.uvCon1&#39;</span><span class="p">)</span>
+        <span class="n">val2</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">jnt</span><span class="si">}</span><span class="s1">.uvCon2&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">created_locs</span><span class="p">:</span>
+            <span class="n">val3</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">each</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">.uv1&#39;</span><span class="p">)</span>
+            <span class="n">val4</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">each</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">.uv2&#39;</span><span class="p">)</span>
+            <span class="n">loc_side</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">each</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">.side&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">val1</span> <span class="o">!=</span> <span class="n">val3</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">elif</span> <span class="n">val2</span> <span class="o">!=</span> <span class="n">val4</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">elif</span> <span class="n">jnt_side</span> <span class="o">!=</span> <span class="n">loc_side</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">pointConstraint</span><span class="p">(</span><span class="n">each</span><span class="p">,</span> <span class="n">jnt</span><span class="p">,</span> <span class="n">mo</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Delete construction history so mesh stays, plus delete any objects just created</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">snap_mesh</span><span class="p">,</span> <span class="n">ch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">makeIdentity</span><span class="p">(</span><span class="n">snap_mesh</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">sep</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">xform_group</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">created_jnts</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">created_locs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="eyelash_snap_action"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_utils.html#cpg.maya.face.face_utils.eyelash_snapping.eyelash_snap_action">[docs]</a><span class="k">def</span> <span class="nf">eyelash_snap_action</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Snaps mesh onto eyelids using mesh markup and coordinate data in face_source_data file.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+    <span class="n">mesh_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;shadow&#39;</span><span class="p">,</span> <span class="s1">&#39;lash&#39;</span><span class="p">,</span> <span class="s1">&#39;tear&#39;</span><span class="p">]</span>
+
+    <span class="n">source_data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">paths</span><span class="o">.</span><span class="n">get_common_face</span><span class="p">(),</span> <span class="s1">&#39;rig_source_data.json&#39;</span><span class="p">)</span>
+    <span class="n">skin_data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">paths</span><span class="o">.</span><span class="n">get_common_face</span><span class="p">(),</span> <span class="s1">&#39;BaseSkinning&#39;</span><span class="p">)</span>
+    <span class="n">rig_markup</span> <span class="o">=</span> <span class="n">mesh_markup_rig</span><span class="o">.</span><span class="n">RigMeshMarkup</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+
+    <span class="n">head_mesh</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">selected</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">head_mesh</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Please first select a head mesh&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="n">head_mesh</span> <span class="o">=</span> <span class="n">head_mesh</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">meshes_dict</span> <span class="o">=</span> <span class="n">rig_markup</span><span class="o">.</span><span class="n">get_dict</span><span class="p">()</span>
+    <span class="n">skin_meshes</span> <span class="o">=</span> <span class="n">meshes_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;skin_mesh&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">skin_meshes</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">mesh_type</span> <span class="ow">in</span> <span class="n">mesh_types</span><span class="p">:</span>
+            <span class="n">mesh_type_data</span> <span class="o">=</span> <span class="n">source_data</span><span class="o">.</span><span class="n">FaceMeshRegionData</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">source_data_path</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;eye_</span><span class="si">{</span><span class="n">mesh_type</span><span class="si">}</span><span class="s1">_mesh&#39;</span><span class="p">)</span>
+            <span class="n">mesh_type_coords</span> <span class="o">=</span> <span class="n">mesh_type_data</span><span class="o">.</span><span class="n">eye_card_uv_data</span>
+            <span class="n">mesh_type_mesh</span> <span class="o">=</span> <span class="n">skin_meshes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;eye_</span><span class="si">{</span><span class="n">mesh_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">mesh_type_mesh</span> <span class="ow">and</span> <span class="n">head_mesh</span> <span class="o">!=</span> <span class="n">mesh_type_mesh</span><span class="p">:</span>
+                <span class="n">snap_eyelash_mesh</span><span class="p">(</span><span class="n">head_mesh</span><span class="p">,</span>
+                                  <span class="n">mesh_type_mesh</span><span class="p">,</span>
+                                  <span class="sa">f</span><span class="s1">&#39;eye_</span><span class="si">{</span><span class="n">mesh_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                                  <span class="n">mesh_type_coords</span><span class="p">,</span>
+                                  <span class="n">skin_data_path</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

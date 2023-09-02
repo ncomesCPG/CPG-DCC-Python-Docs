@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.modeling.vert_utils &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.modeling.vert_utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.modeling.vert_utils</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Mesh vertices</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="kn">import</span> <span class="nn">maya.cmds</span> <span class="k">as</span> <span class="nn">cmds</span>
+<span class="kn">import</span> <span class="nn">maya.mel</span> <span class="k">as</span> <span class="nn">mel</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">lists</span><span class="p">,</span> <span class="n">strings</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">maya_utils</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="get_vertices_as_numbers"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.vert_utils.get_vertices_as_numbers">[docs]</a><span class="k">def</span> <span class="nf">get_vertices_as_numbers</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">as_string</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Strips off everything except the vertex number.</span>
+<span class="sd">	:param string list vertices: either a list of vertices or a single vertex.</span>
+<span class="sd">	:param bool as_string: True returns as a string.  False returns as an int.</span>
+<span class="sd">	:return: Returns a list of vertex numbers.</span>
+<span class="sd">	:rtype: list[int] or list[str]</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">verts</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+		<span class="n">vertices</span> <span class="o">=</span> <span class="p">[</span><span class="n">vertices</span><span class="p">]</span>
+	<span class="k">for</span> <span class="n">vert</span> <span class="ow">in</span> <span class="n">vertices</span><span class="p">:</span>
+		<span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">vert</span><span class="p">:</span>
+			<span class="n">vert</span> <span class="o">=</span> <span class="n">vert</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+		<span class="n">vert_string</span> <span class="o">=</span> <span class="n">strings</span><span class="o">.</span><span class="n">get_numbers_from_string</span><span class="p">(</span><span class="n">vert</span><span class="p">,</span> <span class="n">as_string</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">vert_num</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">vert_string</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">as_string</span><span class="p">:</span>
+			<span class="n">vert_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">vert_num</span><span class="p">)</span>
+		<span class="n">verts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vert_num</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">verts</span></div>
+
+
+<div class="viewcode-block" id="get_closest_vertex_to_object"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.vert_utils.get_closest_vertex_to_object">[docs]</a><span class="k">def</span> <span class="nf">get_closest_vertex_to_object</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Returns the closest vertex to an object.</span>
+
+<span class="sd">	:param PyNode mesh: mesh object name</span>
+<span class="sd">	:param PyNode obj: object near a mesh</span>
+<span class="sd">	:return: vertex closest to an object</span>
+<span class="sd">	:return: str</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">mesh_shape</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">getShape</span><span class="p">()</span>
+	<span class="n">closest_node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="s1">&#39;closestPointOnMesh&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_closest_point_node&#39;</span><span class="p">)</span>
+	<span class="n">mesh_shape</span><span class="o">.</span><span class="n">outMesh</span> <span class="o">&gt;&gt;</span> <span class="n">closest_node</span><span class="o">.</span><span class="n">inMesh</span>
+	<span class="n">mesh_shape</span><span class="o">.</span><span class="n">worldMatrix</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="n">closest_node</span><span class="o">.</span><span class="n">inputMatrix</span>
+	<span class="n">obj</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	
+	<span class="n">closest_node</span><span class="o">.</span><span class="n">inPositionX</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+	<span class="n">closest_node</span><span class="o">.</span><span class="n">inPositionY</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+	<span class="n">closest_node</span><span class="o">.</span><span class="n">inPositionZ</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+	
+	<span class="n">closest_point_vertex</span> <span class="o">=</span> <span class="n">closest_node</span><span class="o">.</span><span class="n">closestVertexIndex</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+	<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">closest_node</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">closest_point_vertex</span></div>
+
+
+<div class="viewcode-block" id="get_opposite_vertices"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.vert_utils.get_opposite_vertices">[docs]</a><span class="k">def</span> <span class="nf">get_opposite_vertices</span><span class="p">(</span><span class="n">vertex_list</span><span class="p">):</span>
+	<span class="n">opposite_list</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">vertex_list</span><span class="p">:</span>
+		<span class="k">return</span>
+	
+	<span class="n">temp_locator</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">spaceLocator</span><span class="p">()</span>
+	<span class="k">for</span> <span class="n">vert</span> <span class="ow">in</span> <span class="n">vertex_list</span><span class="p">:</span>
+		<span class="n">vert_position</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">vert</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">temp_locator</span><span class="o">.</span><span class="n">translate</span><span class="o">.</span><span class="n">set</span><span class="p">((</span><span class="n">vert_position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">vert_position</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">vert_position</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+		<span class="n">mesh</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">vert</span><span class="p">,</span> <span class="n">o</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">getParent</span><span class="p">()</span>
+		<span class="n">mirrored_vert</span> <span class="o">=</span> <span class="n">get_closest_vertex_to_object</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">temp_locator</span><span class="p">)</span>
+		<span class="n">opposite_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mirrored_vert</span><span class="p">)</span>
+	<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">temp_locator</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">opposite_list</span></div>
+
+
+<div class="viewcode-block" id="mirror_vertices"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.vert_utils.mirror_vertices">[docs]</a><span class="k">def</span> <span class="nf">mirror_vertices</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">vertex_mapping</span><span class="p">,</span> <span class="n">vertices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">world</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Import a json file that has a dictionary of selected vertices on an object and it&#39;s mirror.</span>
+<span class="sd">	The key is the +x and the value is the -x.</span>
+<span class="sd">	In the future it would be great to not have to specify vertices and just mirror left to right or opposite.</span>
+
+<span class="sd">	&gt;&gt;&gt; Example Dictionary {[left Vert Number : Right Vert Number], [Right Vert Number, left Vert Number], etc...}</span>
+
+<span class="sd">	:param string mesh: mesh name</span>
+<span class="sd">	:param dict vertex_mapping: dict of vertices</span>
+<span class="sd">	:param list vertices: List of string vertices</span>
+<span class="sd">	:param str axis: Which axis to mirror on. x, y, or z.</span>
+<span class="sd">	:param bool world: If True, the coordinates will be world space.  If False the coordinates will be local space.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">vertex_mapping</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vertex_mapping</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Must provide a dictionary mapping value.&#39;</span><span class="p">)</span>
+		<span class="k">return</span>
+	
+	<span class="n">mesh_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">vertices</span><span class="p">:</span>
+		<span class="n">vertices</span> <span class="o">=</span> <span class="n">vertex_mapping</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+	<span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="s1">&#39;.vtx&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="k">for</span> <span class="n">string</span> <span class="ow">in</span> <span class="n">vertices</span><span class="p">):</span>
+		<span class="n">vertices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">vertices</span><span class="p">))</span>
+		<span class="n">vertices</span> <span class="o">=</span> <span class="n">get_vertices_as_numbers</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">as_string</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">vertices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">vertices</span><span class="p">))</span>
+	
+	<span class="k">for</span> <span class="n">vert</span> <span class="ow">in</span> <span class="n">vertices</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">vert</span> <span class="ow">in</span> <span class="n">vertex_mapping</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+			<span class="n">vertex</span> <span class="o">=</span> <span class="n">mesh_name</span> <span class="o">+</span> <span class="s1">&#39;.vtx[&#39;</span> <span class="o">+</span> <span class="n">vert</span> <span class="o">+</span> <span class="s1">&#39;]&#39;</span>
+			<span class="n">inverse_index</span> <span class="o">=</span> <span class="n">vertex_mapping</span><span class="p">[</span><span class="n">vert</span><span class="p">]</span>
+			<span class="n">inverse_vert</span> <span class="o">=</span> <span class="n">mesh_name</span> <span class="o">+</span> <span class="s1">&#39;.vtx[&#39;</span> <span class="o">+</span> <span class="n">inverse_index</span> <span class="o">+</span> <span class="s1">&#39;]&#39;</span>
+			<span class="n">mirror_vertex</span><span class="p">(</span><span class="n">vertex</span><span class="o">=</span><span class="n">vertex</span><span class="p">,</span> <span class="n">opposite_vertex</span><span class="o">=</span><span class="n">inverse_vert</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">world</span><span class="o">=</span><span class="n">world</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="mirror_mesh"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.vert_utils.mirror_mesh">[docs]</a><span class="k">def</span> <span class="nf">mirror_mesh</span><span class="p">(</span><span class="n">left_vertices</span><span class="p">,</span> <span class="n">right_vertices</span><span class="p">,</span> <span class="n">middle_vertices</span><span class="p">,</span> <span class="n">mesh_name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">world</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Mirrors a a fully mapped mesh.</span>
+<span class="sd">	The key is the +x and the value is the -x.</span>
+<span class="sd">	In the future it would be great to not have to specify vertices and just mirror left to right or opposite.</span>
+<span class="sd">	&gt;&gt;&gt; Example Dictionary {[left Vert Number : Right Vert Number], [Right Vert Number, left Vert Number], etc...}</span>
+<span class="sd">	:param list(str) left_vertices: List of left vertices.</span>
+<span class="sd">	:param list(str) right_vertices: List of right vertices.</span>
+<span class="sd">	:param list(str) middle_vertices: List of middle vertices.</span>
+<span class="sd">	:param string mesh_name: mesh name</span>
+<span class="sd">	:param str axis: Which axis to mirror on. x, y, or z.</span>
+<span class="sd">	:param bool world: If True, the coordinates will be world space.  If False the coordinates will be local space.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">mesh_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mesh_name</span><span class="p">)</span>
+	<span class="c1"># Mirror the left and right vertices</span>
+	<span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="s1">&#39;.vtx&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">left_vertices</span><span class="p">):</span>
+		<span class="n">vertices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">left_vertices</span><span class="p">))</span>
+		<span class="n">left_vertices</span> <span class="o">=</span> <span class="n">get_vertices_as_numbers</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">as_string</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	
+	<span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="s1">&#39;.vtx&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">right_vertices</span><span class="p">):</span>
+		<span class="n">vertices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">right_vertices</span><span class="p">))</span>
+		<span class="n">right_vertices</span> <span class="o">=</span> <span class="n">get_vertices_as_numbers</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">as_string</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	
+	<span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">vert</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">left_vertices</span><span class="p">):</span>
+		<span class="n">vertex</span> <span class="o">=</span> <span class="n">mesh_name</span> <span class="o">+</span> <span class="s1">&#39;.vtx[&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">vert</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;]&#39;</span>
+		<span class="n">inverse_vert</span> <span class="o">=</span> <span class="n">mesh_name</span> <span class="o">+</span> <span class="s1">&#39;.vtx[&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">right_vertices</span><span class="p">[</span><span class="n">x</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;]&#39;</span>
+		
+		<span class="n">pos</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">vertex</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="n">world</span><span class="p">)</span>
+		<span class="n">inv_pos</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">inverse_vert</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="n">world</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">vertex</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="p">(</span><span class="n">inv_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">axis</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">inv_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">axis</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">inv_pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">axis</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">ws</span><span class="o">=</span><span class="n">world</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">inverse_vert</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">axis</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">axis</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">axis</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">ws</span><span class="o">=</span><span class="n">world</span><span class="p">)</span>
+	
+	<span class="c1"># Mirror the middle vertices</span>
+	<span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="s1">&#39;.vtx&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">middle_vertices</span><span class="p">):</span>
+		<span class="n">mid_vertices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">middle_vertices</span><span class="p">))</span>
+		<span class="n">middle_vertices</span> <span class="o">=</span> <span class="n">get_vertices_as_numbers</span><span class="p">(</span><span class="n">mid_vertices</span><span class="p">,</span> <span class="n">as_string</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	
+	<span class="k">for</span> <span class="n">vert</span> <span class="ow">in</span> <span class="n">middle_vertices</span><span class="p">:</span>
+		<span class="n">vertex</span> <span class="o">=</span> <span class="n">mesh_name</span> <span class="o">+</span> <span class="s1">&#39;.vtx[&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">vert</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;]&#39;</span>
+		<span class="n">pos</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">vertex</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="n">world</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">vertex</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">axis</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">axis</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">axis</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span></div>
+
+
+<div class="viewcode-block" id="mirror_vertex"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.vert_utils.mirror_vertex">[docs]</a><span class="k">def</span> <span class="nf">mirror_vertex</span><span class="p">(</span><span class="n">vertex</span><span class="p">,</span> <span class="n">opposite_vertex</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">world</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Mirrors a vertex from one side of an object to the other.  Assumes mirroring on X axis.</span>
+
+<span class="sd">	:param str vertex: source vertex full name.  The vertex that the position will be used to mirror.</span>
+<span class="sd">	:param str opposite_vertex: target vertex full name.  The vertex that will be moved to a mirroring position with</span>
+<span class="sd">		the source vertex.</span>
+<span class="sd">	:param str axis: Which axis to mirror on. x, y, or z.</span>
+<span class="sd">	:param bool world: If True, the coordinates will be world space.  If False the coordinates will be local space.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">pos</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">vertex</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="n">world</span><span class="p">)</span>
+	<span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">opposite_vertex</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">axis</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">axis</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">axis</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span></div>
+
+
+<div class="viewcode-block" id="get_inverse_vertex_selection"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.vert_utils.get_inverse_vertex_selection">[docs]</a><span class="k">def</span> <span class="nf">get_inverse_vertex_selection</span><span class="p">(</span><span class="n">vertices</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	Returns a list of vertices of the inverse selection.</span>
+<span class="sd">	:param list(str) vertices: list of vertices</span>
+<span class="sd">	:return: vertex closest to an object</span>
+<span class="sd">	:rtype: list(str)</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	
+	<span class="n">soft_select_mode</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">softSelect</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="n">pm</span><span class="o">.</span><span class="n">softSelect</span><span class="p">(</span><span class="n">sse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+	
+	<span class="n">mesh</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">cmds</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">o</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">p</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="n">all_verts</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">polyEvaluate</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">vertex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="n">cmds</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">mesh</span> <span class="o">+</span> <span class="s1">&#39;.vtx [0:&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">all_verts</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;]&#39;</span><span class="p">)</span>
+	<span class="n">cmds</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">tgl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	
+	<span class="n">pm</span><span class="o">.</span><span class="n">softSelect</span><span class="p">(</span><span class="n">sse</span><span class="o">=</span><span class="n">soft_select_mode</span><span class="p">)</span>
+	<span class="n">inverse_vertices</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">sl</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">inverse_vertices</span></div>
+
+
+<div class="viewcode-block" id="get_uv_coordinates"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.vert_utils.get_uv_coordinates">[docs]</a><span class="k">def</span> <span class="nf">get_uv_coordinates</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">mesh</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Returns uv coordinates from a mesh using an objects position.</span>
+<span class="sd">	:param nt.Transform obj: The object is used to get the uv coordinates using is position near a mesh.</span>
+<span class="sd">	:param nt.Transform mesh: Mesh Transform that that has uv setup.</span>
+<span class="sd">	:return: Returns uv coordinates from a mesh using an objects position.</span>
+<span class="sd">	:rtype: list(float)</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">closest_node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="s1">&#39;closestPointOnMesh&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="s1">&#39;cpm_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
+	<span class="n">mesh</span><span class="o">.</span><span class="n">getShape</span><span class="p">()</span><span class="o">.</span><span class="n">outMesh</span> <span class="o">&gt;&gt;</span> <span class="n">closest_node</span><span class="o">.</span><span class="n">inMesh</span>
+	<span class="n">mesh</span><span class="o">.</span><span class="n">getShape</span><span class="p">()</span><span class="o">.</span><span class="n">worldMatrix</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="n">closest_node</span><span class="o">.</span><span class="n">inputMatrix</span>
+	
+	<span class="n">obj_position</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="n">closest_node</span><span class="o">.</span><span class="n">inPositionX</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">obj_position</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+	<span class="n">closest_node</span><span class="o">.</span><span class="n">inPositionY</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">obj_position</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+	<span class="n">closest_node</span><span class="o">.</span><span class="n">inPositionZ</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">obj_position</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+	<span class="n">uv</span> <span class="o">=</span> <span class="p">[</span><span class="n">closest_node</span><span class="o">.</span><span class="n">parameterU</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">closest_node</span><span class="o">.</span><span class="n">parameterV</span><span class="o">.</span><span class="n">get</span><span class="p">()]</span>
+	<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">closest_node</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">uv</span></div>
+
+
+<div class="viewcode-block" id="convert_to_vertices"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.vert_utils.convert_to_vertices">[docs]</a><span class="k">def</span> <span class="nf">convert_to_vertices</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Converts every poly selection to vertices</span>
+<span class="sd">	:param obj: variant, can be the mesh transform, the mesh shape or component based selection</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">check_object</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">lists</span><span class="o">.</span><span class="n">force_list</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
+	
+	<span class="n">obj_type</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">objectType</span><span class="p">(</span><span class="n">check_object</span><span class="p">)</span>
+	<span class="n">check_type</span> <span class="o">=</span> <span class="n">check_object</span>
+	<span class="k">if</span> <span class="n">obj_type</span> <span class="o">==</span> <span class="s1">&#39;transform&#39;</span><span class="p">:</span>
+		<span class="n">shapes</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">force_list</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">getShapes</span><span class="p">())</span>
+		<span class="n">check_type</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">shapes</span><span class="p">)</span> <span class="k">if</span> <span class="n">shapes</span> <span class="k">else</span> <span class="n">obj</span>
+	
+	<span class="n">obj_type</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">objectType</span><span class="p">(</span><span class="n">check_type</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">obj_type</span> <span class="o">==</span> <span class="s1">&#39;mesh&#39;</span><span class="p">:</span>
+		<span class="n">converted_vertices</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">polyListComponentConversion</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">toVertex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">filterExpand</span><span class="p">(</span><span class="n">converted_vertices</span><span class="p">,</span> <span class="n">selectionMask</span><span class="o">=</span><span class="n">maya_utils</span><span class="o">.</span><span class="n">SelectionMasks</span><span class="o">.</span><span class="n">PolygonVertices</span><span class="p">)</span>
+	
+	<span class="k">if</span> <span class="n">obj_type</span> <span class="o">==</span> <span class="s1">&#39;nurbsCurve&#39;</span> <span class="ow">or</span> <span class="n">obj_type</span> <span class="o">==</span> <span class="s1">&#39;nurbsSurface&#39;</span><span class="p">:</span>
+		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;.cv&#39;</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+			<span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">filterExpand</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">selectionMask</span><span class="o">=</span><span class="n">maya_utils</span><span class="o">.</span><span class="n">SelectionMasks</span><span class="o">.</span><span class="n">CVs</span><span class="p">)</span>
+		<span class="k">elif</span> <span class="s1">&#39;.cv&#39;</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">filterExpand</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">selectionMask</span><span class="o">=</span><span class="n">maya_utils</span><span class="o">.</span><span class="n">SelectionMasks</span><span class="o">.</span><span class="n">CVs</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">filterExpand</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">cv[*]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">selectionMask</span><span class="o">=</span><span class="n">maya_utils</span><span class="o">.</span><span class="n">SelectionMasks</span><span class="o">.</span><span class="n">CVs</span><span class="p">))</span>
+	
+	<span class="k">if</span> <span class="n">obj_type</span> <span class="o">==</span> <span class="s1">&#39;lattice&#39;</span><span class="p">:</span>
+		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;.pt&#39;</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+			<span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">filterExpand</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">selectionMask</span><span class="o">=</span><span class="n">maya_utils</span><span class="o">.</span><span class="n">SelectionMasks</span><span class="o">.</span><span class="n">LatticePoints</span><span class="p">)</span>
+		<span class="k">elif</span> <span class="s1">&#39;.pt&#39;</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">filterExpand</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">selectionMask</span><span class="o">=</span><span class="n">maya_utils</span><span class="o">.</span><span class="n">SelectionMasks</span><span class="o">.</span><span class="n">LatticePoints</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">filterExpand</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">selectionMask</span><span class="o">=</span><span class="n">maya_utils</span><span class="o">.</span><span class="n">SelectionMasks</span><span class="o">.</span><span class="n">LatticePoints</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="fix_mesh_components_selection_visualization"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.vert_utils.fix_mesh_components_selection_visualization">[docs]</a><span class="k">def</span> <span class="nf">fix_mesh_components_selection_visualization</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Cleanup selection details in Maya so given mesh selection components visualization is correct.</span>
+
+<span class="sd">	:param pm.Transform or pm.Shapes mesh: mesh (shape or transform) components we want to visualize.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="n">object_type</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">objectType</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;transform&#39;</span><span class="p">:</span>
+		<span class="n">shape</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">children</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">shapes</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+		<span class="n">object_type</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">objectType</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+
+	<span class="n">mel</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;if( !`exists doMenuComponentSelection` ) eval( &quot;source dagMenuProc&quot; );&#39;</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s2">&quot;nurbsSurface&quot;</span> <span class="ow">or</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s2">&quot;nurbsCurve&quot;</span><span class="p">:</span>
+		<span class="n">mel</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;doMenuNURBComponentSelection(&quot;</span><span class="si">%s</span><span class="s1">&quot;, &quot;controlVertex&quot;);&#39;</span> <span class="o">%</span> <span class="n">mesh</span><span class="p">)</span>
+	<span class="k">elif</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s2">&quot;lattice&quot;</span><span class="p">:</span>
+		<span class="n">mel</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;doMenuLatticeComponentSelection(&quot;</span><span class="si">%s</span><span class="s1">&quot;, &quot;latticePoint&quot;);&#39;</span> <span class="o">%</span> <span class="n">mesh</span><span class="p">)</span>
+	<span class="k">elif</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s2">&quot;mesh&quot;</span><span class="p">:</span>
+		<span class="n">mel</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;doMenuComponentSelection(&quot;</span><span class="si">%s</span><span class="s1">&quot;, &quot;vertex&quot;);&#39;</span> <span class="o">%</span> <span class="n">mesh</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set_vertex_symmetry"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.vert_utils.set_vertex_symmetry">[docs]</a><span class="k">def</span> <span class="nf">set_vertex_symmetry</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">symmetry</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Set Maya&#39;s Vertex Symmetry</span>
+<span class="sd">	:param string side: the side the pose is on.</span>
+<span class="sd">	:param bool symmetry: Turn on/off vertex symmetry.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">if</span> <span class="n">symmetry</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">side</span> <span class="o">==</span> <span class="s1">&#39;center&#39;</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">symmetricModelling</span><span class="p">(</span><span class="n">symmetry</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">symmetricModelling</span><span class="p">(</span><span class="n">symmetry</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">symmetricModelling</span><span class="p">(</span><span class="n">symmetry</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

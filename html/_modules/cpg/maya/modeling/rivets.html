@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.modeling.rivets &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.modeling.rivets</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.modeling.rivets</h1><div class="highlight"><pre>
+<span></span><span class="c1"># !/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">purpose: Creating and Manipulating Matrix Rivets</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+
+<span class="c1"># System global imports</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+
+<span class="c1"># software specific imports</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.modeling</span> <span class="kn">import</span> <span class="n">vert_utils</span><span class="p">,</span> <span class="n">surface</span>
+
+
+<div class="viewcode-block" id="MatrixRivet"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.rivets.MatrixRivet">[docs]</a><span class="k">class</span> <span class="nc">MatrixRivet</span><span class="p">:</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Example on how to use:</span>
+<span class="sd">	mesh = pm.PyNode(&#39;head_mesh&#39;)</span>
+<span class="sd">	obj = pm.PyNode(&#39;locator30&#39;)</span>
+<span class="sd">	usable_edges = model.get_two_edges_from_close_object(mesh=mesh, obj=obj)</span>
+<span class="sd">	rivet = MatrixRivet(edges=usable_edges, rivet_name=&#39;test_rivet&#39;)</span>
+<span class="sd">	test_rivet = rivet.create(obj=obj)</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">rivet_name</span><span class="o">=</span><span class="s1">&#39;rivet&#39;</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">rivet_name</span> <span class="o">=</span> <span class="n">rivet_name</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">edges</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pm</span><span class="o">.</span><span class="n">MeshEdge</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pm</span><span class="o">.</span><span class="n">MeshEdge</span><span class="p">)):</span>
+			
+			<span class="bp">self</span><span class="o">.</span><span class="n">main</span> <span class="o">=</span> <span class="p">{</span>
+				<span class="s1">&#39;meshObject&#39;</span><span class="p">:</span> <span class="n">edges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">node</span><span class="p">()</span><span class="o">.</span><span class="n">getParent</span><span class="p">(),</span>
+				<span class="s1">&#39;edgeIndex1&#39;</span><span class="p">:</span> <span class="n">edges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">indices</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span>
+				<span class="s1">&#39;edgeIndex2&#39;</span><span class="p">:</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">indices</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+			<span class="p">}</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Please make sure input a total of two edges.&#39;</span><span class="p">)</span>
+	
+<div class="viewcode-block" id="MatrixRivet.create"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.rivets.MatrixRivet.create">[docs]</a>	<span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uv</span><span class="o">=</span><span class="p">()):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Creates all the nodes and connects them</span>
+<span class="sd">		:param nt.Transform obj: An object that is used to get its world coordinates.</span>
+<span class="sd">		:param list(float) uv: 2 float values that represent the uv values</span>
+<span class="sd">		:return:  The final result that is displayed connected to the mesh.</span>
+<span class="sd">		:rtype: nt.Transform</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">create_nodes</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">create_connections</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">set_attributes</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">set_uv</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">uv</span><span class="p">)</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;locator&#39;</span><span class="p">]</span></div>
+	
+<div class="viewcode-block" id="MatrixRivet.create_nodes"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.rivets.MatrixRivet.create_nodes">[docs]</a>	<span class="k">def</span> <span class="nf">create_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Creates the nodes needed for the rivet system.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span> <span class="o">=</span> <span class="p">{</span>
+			<span class="s1">&#39;meshEdgeNode1&#39;</span><span class="p">:</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="s1">&#39;curveFromMeshEdge&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rivet_name</span> <span class="o">+</span> <span class="s1">&#39;_curveFromMeshEdge_01&#39;</span><span class="p">),</span>
+			<span class="s1">&#39;meshEdgeNode2&#39;</span><span class="p">:</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="s1">&#39;curveFromMeshEdge&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rivet_name</span> <span class="o">+</span> <span class="s1">&#39;_curveFromMeshEdge_02&#39;</span><span class="p">),</span>
+			<span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">:</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="s1">&#39;pointOnSurfaceInfo&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rivet_name</span> <span class="o">+</span> <span class="s1">&#39;_pointOnSurfaceInfo&#39;</span><span class="p">),</span>
+			<span class="s1">&#39;matrixNode&#39;</span><span class="p">:</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="s1">&#39;fourByFourMatrix&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rivet_name</span> <span class="o">+</span> <span class="s1">&#39;_fourByFourMatrix&#39;</span><span class="p">),</span>
+			<span class="s1">&#39;decomposeMatrix&#39;</span><span class="p">:</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="s1">&#39;decomposeMatrix&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rivet_name</span> <span class="o">+</span> <span class="s1">&#39;_decomposeMatrix&#39;</span><span class="p">),</span>
+			<span class="s1">&#39;loftNode&#39;</span><span class="p">:</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="s1">&#39;loft&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rivet_name</span> <span class="o">+</span> <span class="s1">&#39;_loft&#39;</span><span class="p">),</span>
+			<span class="s1">&#39;locator&#39;</span><span class="p">:</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="s1">&#39;locator&#39;</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;locator&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;locator&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">getParent</span><span class="p">()</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;locator&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">rivet_name</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="MatrixRivet.set_attributes"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.rivets.MatrixRivet.set_attributes">[docs]</a>	<span class="k">def</span> <span class="nf">set_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets the attributes needed for the rivet system.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="c1"># Set attributes on MeshEdgeNodes</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;meshEdgeNode1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isHistoricallyInteresting</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;meshEdgeNode2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isHistoricallyInteresting</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;meshEdgeNode1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">edgeIndex</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">main</span><span class="p">[</span><span class="s1">&#39;edgeIndex1&#39;</span><span class="p">])</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;meshEdgeNode2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">edgeIndex</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">main</span><span class="p">[</span><span class="s1">&#39;edgeIndex2&#39;</span><span class="p">])</span>
+		
+		<span class="c1"># Setup loft node</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;loftNode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">reverseSurfaceNormals</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;loftNode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">inputCurve</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;loftNode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">uniform</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;loftNode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sectionSpans</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;loftNode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">caching</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+		
+		<span class="c1"># position the surfaceInfoNode in the absolute center position.</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">turnOnPercentage</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">caching</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;locator&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;parameterU&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;double&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;locator&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;parameterV&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;double&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="MatrixRivet.set_uv"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.rivets.MatrixRivet.set_uv">[docs]</a>	<span class="k">def</span> <span class="nf">set_uv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uv</span><span class="o">=</span><span class="p">()):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets the uv position of the locator on the loft node.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="n">obj</span><span class="p">:</span>
+			<span class="n">obj_pos</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="n">closest_node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="s1">&#39;closestPointOnSurface&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rivet_name</span><span class="p">)</span>
+			<span class="n">closest_node</span><span class="o">.</span><span class="n">inPositionX</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">obj_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+			<span class="n">closest_node</span><span class="o">.</span><span class="n">inPositionY</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">obj_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+			<span class="n">closest_node</span><span class="o">.</span><span class="n">inPositionZ</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">obj_pos</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+			
+			<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;loftNode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">outputSurface</span> <span class="o">&gt;&gt;</span> <span class="n">closest_node</span><span class="o">.</span><span class="n">inputSurface</span>
+			<span class="n">u</span> <span class="o">=</span> <span class="n">closest_node</span><span class="o">.</span><span class="n">parameterU</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+			<span class="k">if</span> <span class="n">u</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+				<span class="n">u</span> <span class="o">=</span> <span class="n">u</span> <span class="o">-</span> <span class="mi">1</span>
+			<span class="n">v</span> <span class="o">=</span> <span class="n">closest_node</span><span class="o">.</span><span class="n">parameterV</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+			
+			<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">parameterU</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">parameterV</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">parameterU</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;locator&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">parameterU</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">parameterV</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;locator&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">parameterV</span>
+			
+			<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">closest_node</span><span class="p">)</span>
+		
+		<span class="k">elif</span> <span class="ow">not</span> <span class="n">obj</span> <span class="ow">and</span> <span class="n">uv</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">parameterU</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">uv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">parameterV</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">uv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">parameterU</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;locator&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">parameterU</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">parameterV</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;locator&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">parameterV</span>
+		
+		<span class="k">else</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">parameterU</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">parameterV</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">parameterU</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;locator&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">parameterU</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">parameterV</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;locator&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">parameterV</span></div>
+	
+<div class="viewcode-block" id="MatrixRivet.create_connections"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.rivets.MatrixRivet.create_connections">[docs]</a>	<span class="k">def</span> <span class="nf">create_connections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Connects all the nodes.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="c1"># Connect main object&#39;s world mesh information</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">main</span><span class="p">[</span><span class="s1">&#39;meshObject&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">worldMesh</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;meshEdgeNode1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">inputMesh</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">main</span><span class="p">[</span><span class="s1">&#39;meshObject&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">worldMesh</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;meshEdgeNode2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">inputMesh</span>
+		<span class="c1"># Connect both meshEdgeNodes to the loftNode</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;meshEdgeNode1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">outputCurve</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;loftNode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">inputCurve</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;meshEdgeNode2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">outputCurve</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;loftNode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">inputCurve</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+		<span class="c1"># Connect the loftNode Output Surface information to our ptOnSurface nodes input</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;loftNode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">outputSurface</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">inputSurface</span>
+		<span class="c1"># Connect the Normalized Normals (X,Y,Z) to the first row of the 4x4 Matrix Node</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">normalizedNormalX</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;matrixNode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">in00</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">normalizedNormalY</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;matrixNode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">in01</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">normalizedNormalZ</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;matrixNode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">in02</span>
+		<span class="c1"># Connect the Normalized TangentU (X,Y,Z) to the second row of the 4x4 Matrix Node</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">normalizedTangentUX</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;matrixNode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">in10</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">normalizedTangentUY</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;matrixNode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">in11</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">normalizedTangentUZ</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;matrixNode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">in12</span>
+		<span class="c1"># Connect the Normalized TangentV (X,Y,Z) to the third row of the 4x4 Matrix Node</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">normalizedTangentVX</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;matrixNode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">in20</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">normalizedTangentVY</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;matrixNode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">in21</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">normalizedTangentVZ</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;matrixNode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">in22</span>
+		<span class="c1"># Connect the surface positions (X,Y,Z) to the fourth row of the 4x4 Matrix Node</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">positionX</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;matrixNode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">in30</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">positionY</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;matrixNode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">in31</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ptOnSurfaceInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">positionZ</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;matrixNode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">in32</span>
+		<span class="c1"># All of the above will be processed by the decomposed matrix node to output what we need.</span>
+		<span class="c1"># Connect the 4x4 Matrix output to the decompose matrix Input</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;matrixNode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">output</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;decomposeMatrix&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">inputMatrix</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;decomposeMatrix&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">outputTranslate</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;locator&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">translate</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;decomposeMatrix&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">outputRotate</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;locator&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">rotate</span></div></div>
+
+
+<div class="viewcode-block" id="create_uv_pin"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.rivets.create_uv_pin">[docs]</a><span class="k">def</span> <span class="nf">create_uv_pin</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">uv</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Creates a UvPin to pin geometry onto a mesh.</span>
+<span class="sd">	:param nt.Transform mesh: Mesh with a UV map.</span>
+<span class="sd">	:param nt.Transform obj: Object that will be pinned to the geometry.</span>
+<span class="sd">	:param list(float) uv: UV coordinates.</span>
+<span class="sd">	:param str name: Name of the UvPin.</span>
+<span class="sd">	:return: Returns a UvPin to pin geometry onto a mesh.</span>
+<span class="sd">	:rtype: nt.UvPin</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">mesh</span><span class="o">.</span><span class="n">getShape</span><span class="p">():</span>
+		<span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Must be a transform with a mesh shape.&#39;</span><span class="p">)</span>
+		<span class="k">return</span>
+	
+	<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">):</span>
+		<span class="n">obj</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+	
+	<span class="n">uv_pin</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">UvPin</span><span class="p">)</span>
+	<span class="n">uv_pin</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;isUvPin&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">uv_pin</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">_uvpin&#39;</span><span class="p">)</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">uv</span><span class="p">:</span>
+		<span class="n">uv</span> <span class="o">=</span> <span class="n">vert_utils</span><span class="o">.</span><span class="n">get_uv_coordinates</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">mesh</span><span class="p">)</span>
+	<span class="n">obj</span><span class="o">.</span><span class="n">inheritsTransform</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+	
+	<span class="n">mesh</span><span class="o">.</span><span class="n">getShape</span><span class="p">()</span><span class="o">.</span><span class="n">worldMesh</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="n">uv_pin</span><span class="o">.</span><span class="n">deformedGeometry</span>
+	<span class="n">uv_pin</span><span class="o">.</span><span class="n">outputMatrix</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="n">obj</span><span class="o">.</span><span class="n">offsetParentMatrix</span>
+	
+	<span class="c1"># Set the UV position</span>
+	<span class="n">uv_pin</span><span class="o">.</span><span class="n">coordinate</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">coordinateU</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">uv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+	<span class="n">uv_pin</span><span class="o">.</span><span class="n">coordinate</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">coordinateV</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">uv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+	
+	<span class="c1"># Need to set the transforms back to zero.  The offset matrix will have the coordinates.</span>
+	<span class="n">obj</span><span class="o">.</span><span class="n">translate</span><span class="o">.</span><span class="n">set</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+	<span class="n">obj</span><span class="o">.</span><span class="n">rotate</span><span class="o">.</span><span class="n">set</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+	<span class="n">obj</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">set</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+	
+	<span class="k">return</span> <span class="n">uv_pin</span></div>
+
+
+<div class="viewcode-block" id="connect_uv_pin"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.rivets.connect_uv_pin">[docs]</a><span class="k">def</span> <span class="nf">connect_uv_pin</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">uv</span><span class="p">,</span> <span class="n">uv_pin_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">locator_scale</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Creates a nt.UvPin and connects a rivet/locator to a mesh.</span>
+
+<span class="sd">	:param nt.Transform mesh: The mesh that will have the rivet connected to.</span>
+<span class="sd">	:param list(float) uv: UV Coordinates.</span>
+<span class="sd">	:param str uv_pin_name: Name of the UvPin.</span>
+<span class="sd">	:param float locator_scale: Local scale of the locator that gets connected to the UV pin.</span>
+<span class="sd">	:return: Returns the name of the locator and the UvPin.</span>
+<span class="sd">	:rtype: Dictionary</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">uv_pin_name</span><span class="p">:</span>
+		<span class="n">uv_pin_name</span> <span class="o">=</span> <span class="s1">&#39;loc_rivet&#39;</span>
+	<span class="n">loc</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">spaceLocator</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">uv_pin_name</span><span class="p">)</span>
+	<span class="c1"># Scale down the locator.</span>
+	<span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.localScaleX&#39;</span><span class="p">,</span> <span class="n">locator_scale</span><span class="p">)</span>
+	<span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.localScaleY&#39;</span><span class="p">,</span> <span class="n">locator_scale</span><span class="p">)</span>
+	<span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.localScaleZ&#39;</span><span class="p">,</span> <span class="n">locator_scale</span><span class="p">)</span>
+	
+	<span class="c1"># Create the name for the UvPin.</span>
+	<span class="n">name_list</span> <span class="o">=</span> <span class="n">loc</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">uv_pin_name</span> <span class="o">==</span> <span class="s1">&#39;loc_rivet&#39;</span><span class="p">:</span>
+		<span class="n">name_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;uvpin&#39;</span>
+		<span class="n">uv_pin_name</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">name_list</span><span class="p">)</span>
+	<span class="n">uv_pin</span> <span class="o">=</span> <span class="n">create_uv_pin</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span>
+						   <span class="n">obj</span><span class="o">=</span><span class="n">loc</span><span class="p">,</span>
+						   <span class="n">uv</span><span class="o">=</span><span class="n">uv</span><span class="p">,</span>
+						   <span class="n">name</span><span class="o">=</span><span class="n">uv_pin_name</span><span class="p">)</span>
+	<span class="c1"># Add a tag for later use.</span>
+	<span class="k">return</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">loc</span><span class="p">):</span> <span class="nb">str</span><span class="p">(</span><span class="n">uv_pin</span><span class="p">)}</span></div>
+
+
+<div class="viewcode-block" id="BasicRivet"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.rivets.BasicRivet">[docs]</a><span class="k">class</span> <span class="nc">BasicRivet</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Helpers class that allows to create Rivets using vanilla Maya functionality.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transform</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_surface</span> <span class="o">=</span> <span class="kc">None</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_edges</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_rivet</span> <span class="o">=</span> <span class="n">transform</span> <span class="ow">or</span> <span class="kc">None</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_aim_constraint</span> <span class="o">=</span> <span class="kc">None</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_uv</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_create_joint</span> <span class="o">=</span> <span class="kc">False</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_surface_created</span> <span class="o">=</span> <span class="kc">False</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_percent_on</span> <span class="o">=</span> <span class="kc">True</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_local</span> <span class="o">=</span> <span class="kc">False</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_point_on_surface</span> <span class="o">=</span> <span class="kc">None</span>
+	
+<div class="viewcode-block" id="BasicRivet.attach_to_surface"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.rivets.BasicRivet.attach_to_surface">[docs]</a>	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">attach_to_surface</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">transform</span><span class="p">,</span> <span class="n">surface_to_attach</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">constraint</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Attach the transform to the surface using a rivet.</span>
+
+<span class="sd">		:param pm.PyNode transform: transform node to attach to surface.</span>
+<span class="sd">		:param pm.PyNode surface_to_attach: surface to attach transform to.</span>
+<span class="sd">		:param float u: float, U value to attach to.</span>
+<span class="sd">		:param float v: float, V value to attach to.</span>
+<span class="sd">		:param bool constraint: whether to create a new locator constrained to given transform.</span>
+<span class="sd">		:return: Rivet object instance.</span>
+<span class="sd">		:rtype: pm.PyNode</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">position</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">transform</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">uv</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">]</span>
+		<span class="k">if</span> <span class="n">u</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">uv</span> <span class="o">=</span> <span class="n">surface</span><span class="o">.</span><span class="n">get_closest_parameter_on_surface</span><span class="p">(</span><span class="n">surface_to_attach</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+		
+		<span class="n">rivet</span> <span class="o">=</span> <span class="n">BasicRivet</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
+		<span class="n">rivet</span><span class="o">.</span><span class="n">set_surface</span><span class="p">(</span><span class="n">surface_to_attach</span><span class="p">,</span> <span class="n">uv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">uv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+		<span class="n">rivet</span><span class="o">.</span><span class="n">set_create_joint</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+		<span class="n">rivet</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+		
+		<span class="k">if</span> <span class="n">constraint</span><span class="p">:</span>
+			<span class="n">loc</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">spaceLocator</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="s1">&#39;locator_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rivet</span><span class="o">.</span><span class="n">rivet</span><span class="p">))</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">rivet</span><span class="o">.</span><span class="n">rivet</span><span class="p">)</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">matchTransform</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">transform</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">parentConstraint</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">transform</span><span class="p">,</span> <span class="n">mo</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">transform</span> <span class="o">!=</span> <span class="n">rivet</span><span class="o">.</span><span class="n">rivet</span><span class="p">:</span>
+				<span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">transform</span><span class="p">,</span> <span class="n">rivet</span><span class="o">.</span><span class="n">rivet</span><span class="p">)</span>
+		
+		<span class="k">return</span> <span class="n">rivet</span></div>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">rivet</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rivet</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">aim_constraint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aim_constraint</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">point_on_surface</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point_on_surface</span>
+	
+<div class="viewcode-block" id="BasicRivet.set_surface"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.rivets.BasicRivet.set_surface">[docs]</a>	<span class="k">def</span> <span class="nf">set_surface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">surface_to_attach</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_surface</span> <span class="o">=</span> <span class="n">surface_to_attach</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_uv</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">]</span></div>
+	
+<div class="viewcode-block" id="BasicRivet.set_create_joint"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.rivets.BasicRivet.set_create_joint">[docs]</a>	<span class="k">def</span> <span class="nf">set_create_joint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_create_joint</span> <span class="o">=</span> <span class="n">flag</span></div>
+	
+<div class="viewcode-block" id="BasicRivet.set_edges"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.rivets.BasicRivet.set_edges">[docs]</a>	<span class="k">def</span> <span class="nf">set_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edges</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_edges</span> <span class="o">=</span> <span class="n">edges</span></div>
+	
+<div class="viewcode-block" id="BasicRivet.set_percent_on"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.rivets.BasicRivet.set_percent_on">[docs]</a>	<span class="k">def</span> <span class="nf">set_percent_on</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_percent_on</span> <span class="o">=</span> <span class="n">flag</span></div>
+	
+<div class="viewcode-block" id="BasicRivet.set_local"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.rivets.BasicRivet.set_local">[docs]</a>	<span class="k">def</span> <span class="nf">set_local</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_local</span> <span class="o">=</span> <span class="n">flag</span></div>
+	
+<div class="viewcode-block" id="BasicRivet.create"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.rivets.BasicRivet.create">[docs]</a>	<span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_create_rivet</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_create_point_on_surface</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_create_aim_constraint</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_connect</span><span class="p">()</span>
+		
+		<span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_aim_constraint</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rivet</span><span class="p">)</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rivet</span></div>
+	
+	<span class="k">def</span> <span class="nf">_create_rivet</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rivet</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rivet</span><span class="p">):</span>
+			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_joint</span><span class="p">:</span>
+				<span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">clear</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_rivet</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">joint</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;rivetJoint&#39;</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_rivet</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">spaceLocator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;rivet&#39;</span><span class="p">)</span>
+	
+	<span class="k">def</span> <span class="nf">_create_point_on_surface</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">surface_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_surface</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="n">stripNamespace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_point_on_surface</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="s1">&#39;pointOnSurfaceInfo&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="s1">&#39;pointOnSurface_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">surface_name</span><span class="p">))</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_point_on_surface</span><span class="o">.</span><span class="n">turnOnPercentage</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_percent_on</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_point_on_surface</span><span class="o">.</span><span class="n">parameterU</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_uv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_point_on_surface</span><span class="o">.</span><span class="n">parameterV</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_uv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+	
+	<span class="k">def</span> <span class="nf">_create_aim_constraint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">surface_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_surface</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="n">stripNamespace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_aim_constraint</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="s1">&#39;aimConstraint&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="s1">&#39;aimConstraint_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">surface_name</span><span class="p">))</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_aim_constraint</span><span class="o">.</span><span class="n">aimVector</span><span class="o">.</span><span class="n">set</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_aim_constraint</span><span class="o">.</span><span class="n">upVector</span><span class="o">.</span><span class="n">set</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+	
+	<span class="k">def</span> <span class="nf">_connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.worldSpace&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_surface</span><span class="p">)):</span>
+			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_local</span><span class="p">:</span>
+				<span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span>
+					<span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.local&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_surface</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.inputSurface&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_point_on_surface</span><span class="p">))</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span>
+					<span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.worldSpace&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_surface</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.inputSurface&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_point_on_surface</span><span class="p">))</span>
+		
+		<span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.outputSurface&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_surface</span><span class="p">)):</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span>
+				<span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.outputSurface&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_surface</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.inputSurface&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_point_on_surface</span><span class="p">))</span>
+		
+		<span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.position&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_point_on_surface</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.translate&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rivet</span><span class="p">))</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span>
+			<span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.normal&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_point_on_surface</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.target[0].targetTranslate&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_aim_constraint</span><span class="p">))</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span>
+			<span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.tangentV&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_point_on_surface</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.worldUpVector&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_aim_constraint</span><span class="p">))</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.constraintRotateX&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_aim_constraint</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.rotateX&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rivet</span><span class="p">))</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.constraintRotateY&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_aim_constraint</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.rotateY&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rivet</span><span class="p">))</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.constraintRotateZ&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_aim_constraint</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.rotateZ&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rivet</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

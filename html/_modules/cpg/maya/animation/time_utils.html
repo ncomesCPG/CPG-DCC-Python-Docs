@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.animation.time_utils &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.animation.time_utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.animation.time_utils</h1><div class="highlight"><pre>
+<span></span><span class="c1"># !/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module that contains utilities for getting the time ranges of a scene and its animation.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">maya.cmds</span> <span class="k">as</span> <span class="nn">cmds</span>
+<span class="kn">import</span> <span class="nn">maya.mel</span> <span class="k">as</span> <span class="nn">mel</span>
+<span class="kn">from</span> <span class="nn">maya.plugin.timeSliderBookmark.timeSliderBookmark</span> <span class="kn">import</span> <span class="n">createBookmark</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">pymaths</span>
+
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">plugins</span>
+
+<span class="n">plugins</span><span class="o">.</span><span class="n">load_plugin</span><span class="p">(</span><span class="s1">&#39;timeSliderBookmark&#39;</span><span class="p">)</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="get_visible_start_time"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.time_utils.get_visible_start_time">[docs]</a><span class="k">def</span> <span class="nf">get_visible_start_time</span><span class="p">():</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Get the first visible frame of the timeline.</span>
+
+<span class="sd">	:return: The first frame of the visible timeline.</span>
+<span class="sd">	:rtype int:</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">playbackOptions</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_visible_end_time"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.time_utils.get_visible_end_time">[docs]</a><span class="k">def</span> <span class="nf">get_visible_end_time</span><span class="p">():</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Get the last visible frame of the timeline.</span>
+
+<span class="sd">	:return: The last frame of the visible timeline.</span>
+<span class="sd">	:rtype int:</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">playbackOptions</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_visible_range"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.time_utils.get_visible_range">[docs]</a><span class="k">def</span> <span class="nf">get_visible_range</span><span class="p">():</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Get the start and end frame of the visible timeline.</span>
+
+<span class="sd">	:return: The start and end frame of the visible timeline.</span>
+<span class="sd">	:rtype int, int:</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">return</span> <span class="n">get_visible_start_time</span><span class="p">(),</span> <span class="n">get_visible_end_time</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_scene_start_time"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.time_utils.get_scene_start_time">[docs]</a><span class="k">def</span> <span class="nf">get_scene_start_time</span><span class="p">():</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Get the first frame of the scene timeline.</span>
+
+<span class="sd">	:return: The first frame of the scene timeline.</span>
+<span class="sd">	:rtype int:</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">playbackOptions</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ast</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_scene_end_time"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.time_utils.get_scene_end_time">[docs]</a><span class="k">def</span> <span class="nf">get_scene_end_time</span><span class="p">():</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Get the last frame of the scene timeline.</span>
+
+<span class="sd">	:return: The last frame of the scene timeline.</span>
+<span class="sd">	:rtype int:</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">playbackOptions</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">aet</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_scene_range"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.time_utils.get_scene_range">[docs]</a><span class="k">def</span> <span class="nf">get_scene_range</span><span class="p">():</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Get the start and end frame of the scene timeline.</span>
+
+<span class="sd">	:return:  The start and end frame of the scene timeline.</span>
+<span class="sd">	:rtype int, int:</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">return</span> <span class="n">get_scene_start_time</span><span class="p">(),</span> <span class="n">get_scene_end_time</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_scene_first_keyframe"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.time_utils.get_scene_first_keyframe">[docs]</a><span class="k">def</span> <span class="nf">get_scene_first_keyframe</span><span class="p">():</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	returns time of first keyframe in the entire scene. Does not rely on animation time range.</span>
+
+<span class="sd">	:return: frame of first keyframe</span>
+<span class="sd">	:rtype int:</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">curves</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;animCurve&#39;</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">curves</span><span class="p">:</span>
+		<span class="n">keys</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">curves</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">keys</span><span class="p">:</span>
+			<span class="s1">&#39;No keys found in scene&#39;</span>
+			<span class="k">return</span> <span class="kc">None</span>
+		<span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+	<span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="get_scene_last_keyframe"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.time_utils.get_scene_last_keyframe">[docs]</a><span class="k">def</span> <span class="nf">get_scene_last_keyframe</span><span class="p">():</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	returns time of last keyframe in the entire scene. Does not rely on animation time range.</span>
+
+<span class="sd">	:return: frame of last keyframe</span>
+<span class="sd">	:rtype int:</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">curves</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;animCurve&#39;</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">curves</span><span class="p">:</span>
+		<span class="n">keys</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">curves</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">keys</span><span class="p">:</span>
+			<span class="s1">&#39;No keys found in scene&#39;</span>
+			<span class="k">return</span> <span class="kc">None</span>
+		<span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+	<span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="get_keyframe_range_from_scene"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.time_utils.get_keyframe_range_from_scene">[docs]</a><span class="k">def</span> <span class="nf">get_keyframe_range_from_scene</span><span class="p">():</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	From all scene animation curves get the first and last keyframe.</span>
+
+<span class="sd">	:return: The start and end frame of all animation in the scene.</span>
+<span class="sd">	:rtype int, int:</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">return</span> <span class="n">get_scene_first_keyframe</span><span class="p">(),</span> <span class="n">get_scene_last_keyframe</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_keyframe_range_from_nodes"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.time_utils.get_keyframe_range_from_nodes">[docs]</a><span class="k">def</span> <span class="nf">get_keyframe_range_from_nodes</span><span class="p">(</span><span class="n">node_list</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Returns the keyframe range from a group of nodes. This will return None if there are no valid keyframes on the nodes.</span>
+
+<span class="sd">	:param list node_list: List of maya nodes with keyframes.</span>
+<span class="sd">	:return: The start and end frame of the keyframes of the passed list.</span>
+<span class="sd">	:rtype int, int:</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">if</span> <span class="n">node_list</span><span class="p">:</span>
+		<span class="n">key_list</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">node_list</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node_list</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+		<span class="k">if</span> <span class="n">key_list</span><span class="p">:</span>
+			<span class="n">min_frame</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">key_list</span><span class="p">)</span>
+			<span class="n">max_frame</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">key_list</span><span class="p">)</span>
+			<span class="k">return</span> <span class="n">min_frame</span><span class="p">,</span> <span class="n">max_frame</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="get_selected_range_from_timeline"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.time_utils.get_selected_range_from_timeline">[docs]</a><span class="k">def</span> <span class="nf">get_selected_range_from_timeline</span><span class="p">():</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Returns a selection on the timeline else None if there is no selection.</span>
+
+<span class="sd">	:return: The start and end frame of the timeline selection.</span>
+<span class="sd">	:rtype int, int:</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">try</span><span class="p">:</span>
+		<span class="n">gPlayBackSlider</span> <span class="o">=</span> <span class="n">mel</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;$tmpVar=$gPlayBackSlider&#39;</span><span class="p">)</span>  <span class="c1"># vollects timeslider</span>
+		<span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">timeControl</span><span class="p">(</span><span class="n">gPlayBackSlider</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rv</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>  <span class="c1"># is a selection visible</span>
+			<span class="n">min_frame</span><span class="p">,</span> <span class="n">max_frame</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">timeControl</span><span class="p">(</span><span class="n">gPlayBackSlider</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ra</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># collect frame array.</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+	<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+		<span class="c1"># failed to find the playback slider.</span>
+		<span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+	
+	<span class="k">return</span> <span class="n">min_frame</span><span class="p">,</span> <span class="n">max_frame</span></div>
+
+
+<div class="viewcode-block" id="get_range_from_attribute_curves"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.time_utils.get_range_from_attribute_curves">[docs]</a><span class="k">def</span> <span class="nf">get_range_from_attribute_curves</span><span class="p">(</span><span class="n">attr_curve_list</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	From a list of attribute curves find the first and last keyframes.</span>
+
+<span class="sd">	:param list[AttrCurve] attr_curve_list:</span>
+<span class="sd">	:return: The start and end frame of the passed curves.</span>
+<span class="sd">	:rtype int, int:</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">selected_keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">attr_curve_list</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sl</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+	<span class="k">if</span> <span class="n">selected_keys</span><span class="p">:</span>
+		<span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">selected_keys</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">selected_keys</span><span class="p">)</span>
+	<span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="get_current_time"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.time_utils.get_current_time">[docs]</a><span class="k">def</span> <span class="nf">get_current_time</span><span class="p">():</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Get the current keyframe of the timeline.</span>
+
+<span class="sd">	:return: Current keyframe of the timeline.</span>
+<span class="sd">	:rtype int:</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">currentTime</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set_timeline_range"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.time_utils.set_timeline_range">[docs]</a><span class="k">def</span> <span class="nf">set_timeline_range</span><span class="p">(</span><span class="n">visible_start_time</span><span class="p">,</span> <span class="n">visible_end_time</span><span class="p">,</span> <span class="n">scene_start_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scene_end_time</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Set the visible, and scene ranges for the timeline.</span>
+
+<span class="sd">	:param int visible_start_time: The first frame on the visible timeline.</span>
+<span class="sd">	:param int visible_end_time: The last frame on the visible timeline.</span>
+<span class="sd">	:param int scene_start_time: The first frame of the scene timeline</span>
+<span class="sd">	:param int scene_end_time: The last frame of the scene timeline</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">scene_start_time</span><span class="p">:</span>
+		<span class="n">scene_start_time</span> <span class="o">=</span> <span class="n">visible_start_time</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">scene_end_time</span><span class="p">:</span>
+		<span class="n">scene_end_time</span> <span class="o">=</span> <span class="n">visible_end_time</span>
+	<span class="n">pm</span><span class="o">.</span><span class="n">playbackOptions</span><span class="p">(</span><span class="n">edit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">animationStartTime</span><span class="o">=</span><span class="n">scene_start_time</span><span class="p">,</span> <span class="n">minTime</span><span class="o">=</span><span class="n">visible_start_time</span><span class="p">,</span>
+					   <span class="n">maxTime</span><span class="o">=</span><span class="n">visible_end_time</span><span class="p">,</span> <span class="n">animationEndTime</span><span class="o">=</span><span class="n">scene_end_time</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_times"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.time_utils.get_times">[docs]</a><span class="k">def</span> <span class="nf">get_times</span><span class="p">(</span><span class="n">node_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_selected_frames</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ignore_selection</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Returns the frame range in cascading order of importance.</span>
+
+<span class="sd">	#1 Selected Timeline</span>
+<span class="sd">	#2 (Optional) Curve Editor Selection</span>
+<span class="sd">	#3 (Optional) Node list</span>
+<span class="sd">	#4 Animation curves in scene</span>
+<span class="sd">	#5 Greatest of zoomed timeline or scene timeline</span>
+
+<span class="sd">	:param list[PyNode] node_list: List of objects we should use to derive time range.</span>
+<span class="sd">	:param int min_selected_frames: Minimum number of required selected frames.</span>
+<span class="sd">	:param bool ignore_selection: This ignores the logic for deriving keyframe range from a selection of attribute curves.</span>
+<span class="sd">	:return: The best choice of first and last frame values.</span>
+<span class="sd">	:rtype int, int:</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">frame_range</span> <span class="o">=</span> <span class="n">get_selected_range_from_timeline</span><span class="p">()</span>  <span class="c1"># 1 selected timeline</span>
+	<span class="n">log_str</span> <span class="o">=</span> <span class="s1">&#39;#1 Using user selected timeline.&#39;</span>
+	
+	<span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">frame_range</span><span class="p">):</span>
+		<span class="n">selected_frames</span> <span class="o">=</span> <span class="n">frame_range</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">frame_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">selected_frames</span> <span class="o">=</span> <span class="mi">0</span>
+	
+	<span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">frame_range</span><span class="p">)</span> <span class="ow">or</span> <span class="n">selected_frames</span> <span class="o">&lt;</span> <span class="n">min_selected_frames</span><span class="p">:</span>
+		<span class="c1"># check returned frame range, if the range is less than the expected min. Cascade.</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">ignore_selection</span><span class="p">:</span>
+			<span class="c1"># 2 curve editor</span>
+			<span class="n">attr_curves</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">selected</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">attr_curves</span><span class="p">:</span>
+				<span class="n">frame_range</span> <span class="o">=</span> <span class="n">get_range_from_attribute_curves</span><span class="p">(</span><span class="n">attr_curves</span><span class="p">)</span>
+				<span class="n">log_str</span> <span class="o">=</span> <span class="s1">&#39;#2.1 Using user selected attr curves.&#39;</span>
+		
+		<span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">frame_range</span><span class="p">)</span> <span class="ow">and</span> <span class="n">node_list</span><span class="p">:</span>
+			<span class="c1"># 3 passed objects with keys</span>
+			<span class="n">frame_range</span> <span class="o">=</span> <span class="n">get_keyframe_range_from_nodes</span><span class="p">(</span><span class="n">node_list</span><span class="p">)</span>
+			<span class="n">log_str</span> <span class="o">=</span> <span class="s1">&#39;#2.2 Using passed objects.&#39;</span>
+		
+		<span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">frame_range</span><span class="p">):</span>
+			<span class="c1"># 4 if we didn&#39;t get anything from our passed objects, see if we have any animation in the scene.</span>
+			<span class="n">frame_range</span> <span class="o">=</span> <span class="n">get_keyframe_range_from_scene</span><span class="p">()</span>
+			<span class="n">log_str</span> <span class="o">=</span> <span class="s1">&#39;#3 Using scene animation curves&#39;</span>
+		
+		<span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">frame_range</span><span class="p">):</span>
+			<span class="c1"># 5 if we didn&#39;t get a valid selection use the greatest of scene or visible timeline.</span>
+			<span class="n">frame_range</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">get_scene_start_time</span><span class="p">(),</span> <span class="n">get_visible_start_time</span><span class="p">()),</span> <span class="nb">max</span><span class="p">(</span><span class="n">get_scene_end_time</span><span class="p">(),</span>
+																					 <span class="n">get_visible_end_time</span><span class="p">())</span>
+			<span class="n">log_str</span> <span class="o">=</span> <span class="s1">&#39;#3 Using scene zoomed timeline.&#39;</span>
+	
+	<span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">log_str</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">frame_range</span></div>
+
+
+<div class="viewcode-block" id="reframe_visible_range"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.time_utils.reframe_visible_range">[docs]</a><span class="k">def</span> <span class="nf">reframe_visible_range</span><span class="p">():</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Reframe the scene visible range, from keyframes or the default of 0-100</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="c1"># reframe our scene to the length of the new animation.</span>
+	<span class="n">min_frame</span> <span class="o">=</span> <span class="n">get_scene_first_keyframe</span><span class="p">()</span>
+	<span class="n">min_frame</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">min_frame</span><span class="p">)</span> <span class="k">if</span> <span class="n">min_frame</span> <span class="k">else</span> <span class="mi">0</span>
+	<span class="n">max_frame</span> <span class="o">=</span> <span class="n">get_scene_last_keyframe</span><span class="p">()</span>
+	<span class="n">max_frame</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">max_frame</span><span class="p">)</span> <span class="k">if</span> <span class="n">max_frame</span> <span class="k">else</span> <span class="mi">100</span>
+	<span class="n">set_timeline_range</span><span class="p">(</span><span class="n">min_frame</span><span class="p">,</span> <span class="n">max_frame</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set_padded_keys"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.time_utils.set_padded_keys">[docs]</a><span class="k">def</span> <span class="nf">set_padded_keys</span><span class="p">(</span><span class="n">obj_attr</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Sets the keys on the object&#39;s attribute, but pads it, so it is zero before and after.</span>
+
+<span class="sd">	:param pm.nt.attribute obj_attr: attribute name</span>
+<span class="sd">	:param float frame: frame number</span>
+<span class="sd">	:param float value: value the flag attribute is set to.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">obj_attr</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+	<span class="n">pm</span><span class="o">.</span><span class="n">setKeyframe</span><span class="p">(</span><span class="n">obj_attr</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="n">frame</span><span class="p">])</span>
+	<span class="n">keyed_frames</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">obj_attr</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">frame</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">keyed_frames</span><span class="p">:</span>
+		<span class="n">obj_attr</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">setKeyframe</span><span class="p">(</span><span class="n">obj_attr</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="n">frame</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">frame</span> <span class="o">+</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">keyed_frames</span><span class="p">:</span>
+		<span class="n">obj_attr</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">setKeyframe</span><span class="p">(</span><span class="n">obj_attr</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="n">frame</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="create_bookmark"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.time_utils.create_bookmark">[docs]</a><span class="k">def</span> <span class="nf">create_bookmark</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;timeSliderBookmark&#39;</span><span class="p">,</span> <span class="n">frame_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Creates a colored timeSliderBookmark</span>
+
+<span class="sd">	:param str name: The name of the new bookmark.</span>
+<span class="sd">	:param list[int, int] frame_range: Start and end frame range to represent. The max value is not inclusive.</span>
+<span class="sd">	:param list[float, float, float] color: Float 3 of values between 0-1</span>
+<span class="sd">	:return: The newly created timeslider bookmark</span>
+<span class="sd">	:rtype: TimeSliderBookmark</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">frame_range</span> <span class="o">=</span> <span class="n">frame_range</span> <span class="ow">or</span> <span class="n">get_times</span><span class="p">()</span>
+	<span class="n">color</span> <span class="o">=</span> <span class="n">color</span> <span class="ow">or</span> <span class="n">pymaths</span><span class="o">.</span><span class="n">create_random_list</span><span class="p">()</span>
+	<span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">createBookmark</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">frame_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">stop</span><span class="o">=</span><span class="n">frame_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">))</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

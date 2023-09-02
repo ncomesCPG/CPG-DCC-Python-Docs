@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.modeling.follicle &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.modeling.follicle</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.modeling.follicle</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module that contains functions related with Maya follicles</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># System global imports</span>
+<span class="c1"># python imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">naming</span>
+
+
+<div class="viewcode-block" id="create_empty_follicle"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.follicle.create_empty_follicle">[docs]</a><span class="k">def</span> <span class="nf">create_empty_follicle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uv</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hide_follicle</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a new empty follicle.</span>
+
+<span class="sd">    :param str name: name of the follicle.</span>
+<span class="sd">    :param list(int, int) uv: uv where follicle will be created.</span>
+<span class="sd">    :param bool hide_follicle: whether follicle should be hided by default.</span>
+<span class="sd">    :return: name of the created follicle.</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">uv</span> <span class="o">=</span> <span class="n">uv</span> <span class="k">if</span> <span class="n">uv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">follicle_shape</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="s1">&#39;follicle&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">hide_follicle</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">hide</span><span class="p">(</span><span class="n">follicle_shape</span><span class="p">)</span>
+    <span class="n">follicle</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">follicle_shape</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.inheritsTransform&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">follicle</span><span class="p">),</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">follicle</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">name</span> <span class="ow">or</span> <span class="s1">&#39;follicle&#39;</span><span class="p">)</span>
+
+    <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.parameterU&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">follicle</span><span class="p">),</span> <span class="n">uv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.parameterV&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">follicle</span><span class="p">),</span> <span class="n">uv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">follicle</span></div>
+
+
+<div class="viewcode-block" id="create_mesh_follicle"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.follicle.create_mesh_follicle">[docs]</a><span class="k">def</span> <span class="nf">create_mesh_follicle</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uv</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hide_follicle</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Crates follicle on given mesh.</span>
+
+<span class="sd">    :param mesh: str, name of the mesh to attach follicle to.</span>
+<span class="sd">    :param str description: description of the follicle.</span>
+<span class="sd">    :param list(int, int) uv: corresponds to the UVs of the mesh in which the follicle will be attached.</span>
+<span class="sd">    :param bool hide_follicle: whether follicle should be hide by default.</span>
+<span class="sd">    :return: tuple with the created follicle transform and the follicle shape</span>
+<span class="sd">    :rtype: tuple(str, str)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">uv</span> <span class="o">=</span> <span class="n">uv</span> <span class="k">if</span> <span class="n">uv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">follicle</span> <span class="o">=</span> <span class="n">create_empty_follicle</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">uv</span><span class="p">,</span> <span class="n">hide_follicle</span><span class="o">=</span><span class="n">hide_follicle</span><span class="p">)</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">follicle</span><span class="p">,</span> <span class="n">shapes</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.outMesh&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mesh</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.inputMesh&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">follicle</span><span class="p">))</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.worldMatrix&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mesh</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.inputWorldMatrix&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">follicle</span><span class="p">))</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.outTranslate&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shape</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.translate&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">follicle</span><span class="p">))</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.outRotate&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shape</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.rotate&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">follicle</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">follicle</span><span class="p">,</span> <span class="n">shape</span></div>
+
+
+<div class="viewcode-block" id="create_surface_follicle"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.follicle.create_surface_follicle">[docs]</a><span class="k">def</span> <span class="nf">create_surface_follicle</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uv</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hide_follicle</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Crates follicle on a surface.</span>
+
+<span class="sd">    :param str surface: name of the surface to attach follicle to.</span>
+<span class="sd">    :param str name: description of the follicle.</span>
+<span class="sd">    :param list(int, int) uv: corresponds to the UVs of the mesh in which the follicle will be attached.</span>
+<span class="sd">    :param bool hide_follicle: whether follicle should be hide by default.</span>
+<span class="sd">    :return: tuple with the created follicle transform and the follicle shape.</span>
+<span class="sd">    :rtype: tuple(str, str)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">uv</span> <span class="o">=</span> <span class="n">uv</span> <span class="k">if</span> <span class="n">uv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">follicle</span> <span class="o">=</span> <span class="n">create_empty_follicle</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">uv</span><span class="p">,</span> <span class="n">hide_follicle</span><span class="o">=</span><span class="n">hide_follicle</span><span class="p">)</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">follicle</span><span class="p">,</span> <span class="n">shapes</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.local&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">surface</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.inputSurface&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">follicle</span><span class="p">))</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.worldMatrix&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">surface</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.inputWorldMatrix&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">follicle</span><span class="p">))</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.outTranslate&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shape</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.translate&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">follicle</span><span class="p">))</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.outRotate&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shape</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.rotate&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">follicle</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">follicle</span><span class="p">,</span> <span class="n">shape</span></div>
+
+
+<div class="viewcode-block" id="create_follicle_constraint"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.follicle.create_follicle_constraint">[docs]</a><span class="k">def</span> <span class="nf">create_follicle_constraint</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">maintain_offset</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a follicle and on the mesh and constrain the node.</span>
+
+<span class="sd">    :param node: the object that will be constrained.</span>
+<span class="sd">    :param mesh:  the mesh that the object will be constrained too.</span>
+<span class="sd">    :param maintain_offset: sets maintain offset on the parent constraint.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">closest</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">shapes</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">shapes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">shapes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">pm</span><span class="o">.</span><span class="n">attributeQuery</span><span class="p">(</span><span class="s1">&#39;inMesh&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">shapes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> is not a valid mesh&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mesh</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> is not a valid mesh&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mesh</span><span class="p">))</span>
+
+        <span class="n">closest</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="s1">&#39;closestPointOnMesh&#39;</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.outMesh&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mesh</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.inMesh&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">closest</span><span class="p">))</span>
+        <span class="n">trans</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.inPositionX&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">closest</span><span class="p">),</span> <span class="n">trans</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.inPositionY&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">closest</span><span class="p">),</span> <span class="n">trans</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.inPositionZ&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">closest</span><span class="p">),</span> <span class="n">trans</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="n">follicle_transform</span><span class="p">,</span> <span class="n">follicle</span> <span class="o">=</span> <span class="n">create_mesh_follicle</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;follicle&#39;</span><span class="p">,</span> <span class="n">hide_follicle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.simulationMethod&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">follicle</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">u</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.result.parameterU&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">closest</span><span class="p">))</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.result.parameterV&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">closest</span><span class="p">))</span>
+
+        <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.parameterU&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">follicle</span><span class="p">),</span> <span class="n">u</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.parameterV&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">follicle</span><span class="p">),</span> <span class="n">v</span><span class="p">)</span>
+
+        <span class="n">pm</span><span class="o">.</span><span class="n">parentConstraint</span><span class="p">(</span><span class="n">follicle_transform</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">node</span><span class="p">,</span> <span class="n">mo</span><span class="o">=</span><span class="n">maintain_offset</span><span class="p">)</span>
+
+        <span class="c1"># rename the follicle</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">follicle_transform</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_FOL&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">raise</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">closest</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">closest</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="create_follicle_constraint_from_selection"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.follicle.create_follicle_constraint_from_selection">[docs]</a><span class="k">def</span> <span class="nf">create_follicle_constraint_from_selection</span><span class="p">(</span><span class="n">maintain_offset</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a follicle constraint based on the selection whereas the last selected node is the mesh.</span>
+
+<span class="sd">    :param maintain_offset: Sets up the constraint&#39;s maintain offset.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">sel_nodes</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">sl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">sel_nodes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">nodes</span> <span class="o">=</span> <span class="n">sel_nodes</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+        <span class="n">create_follicle_constraint</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">maintain_offset</span><span class="o">=</span><span class="n">maintain_offset</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

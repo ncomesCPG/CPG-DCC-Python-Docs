@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.face.source_meshes &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.face.source_meshes</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.face.source_meshes</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Source head functions.  Where we get our blend shapes from.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># python imports</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="kn">import</span> <span class="nn">maya.cmds</span> <span class="k">as</span> <span class="nn">cmds</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common.paths</span> <span class="kn">import</span> <span class="n">paths</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">attr_utils</span><span class="p">,</span> <span class="n">display_layers</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.modeling</span> <span class="kn">import</span> <span class="n">blendshape_model</span><span class="p">,</span> <span class="n">blendshape_node</span><span class="p">,</span> <span class="n">face_model</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.face</span> <span class="kn">import</span> <span class="n">source_data</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.face.face_utils</span> <span class="kn">import</span> <span class="n">face_util</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">mesh_markup_rig</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">frag</span>
+<span class="kn">from</span> <span class="nn">cpg.common.assetlist</span> <span class="kn">import</span> <span class="n">assetlist</span>
+
+<span class="n">SOURCE_FILE</span> <span class="o">=</span> <span class="s1">&#39;source_head&#39;</span>
+
+
+<div class="viewcode-block" id="convert_to_source_mesh"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_meshes.convert_to_source_mesh">[docs]</a><span class="k">def</span> <span class="nf">convert_to_source_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">asset_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the an instance of face_model.FaceModel.  This is a duplicate mesh that we will export and use for</span>
+<span class="sd">    generating blend shapes.</span>
+
+<span class="sd">    :param pm.nt.Transform mesh: A blend shape mesh.</span>
+<span class="sd">    :param str asset_id: Asset Identifier.</span>
+<span class="sd">    :return: Returns the an instance of face_model.FaceModel</span>
+<span class="sd">    :rtype: face_model.FaceModel</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">mesh</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="n">mesh_markup_rig</span><span class="o">.</span><span class="n">CPG_MESH_MARKUP</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">mesh</span><span class="si">}</span><span class="s1"> does not have </span><span class="si">{</span><span class="n">mesh_markup_rig</span><span class="o">.</span><span class="n">CPG_MESH_MARKUP</span><span class="si">}</span><span class="s1"> attribute.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">face_model</span><span class="o">.</span><span class="n">FaceModel</span><span class="p">):</span>
+        <span class="n">mesh</span> <span class="o">=</span> <span class="n">face_model</span><span class="o">.</span><span class="n">FaceModel</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+    <span class="c1"># Duplicate the mesh, remove from layers, and unparent.</span>
+    <span class="n">source_mesh</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">duplicate</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;source_</span><span class="si">{</span><span class="n">mesh</span><span class="o">.</span><span class="n">type_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">source_mesh</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">display_layers</span><span class="o">.</span><span class="n">remove_objects_from_layers</span><span class="p">(</span><span class="n">source_mesh</span><span class="p">)</span>
+    <span class="n">source_mesh</span> <span class="o">=</span> <span class="n">face_model</span><span class="o">.</span><span class="n">FaceModel</span><span class="p">(</span><span class="n">source_mesh</span><span class="p">)</span>
+
+    <span class="c1"># Change the category so we can identify it as a source mesh</span>
+    <span class="n">source_mesh</span><span class="o">.</span><span class="n">category</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">FACE_SOURCE_CATEGORY</span>
+
+    <span class="c1"># check to make sure all the blendshapes are in the scene.</span>
+    <span class="n">source_mesh</span><span class="o">.</span><span class="n">import_blendshapes</span><span class="p">(</span><span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">,</span> <span class="n">exist_check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">parameters_inst</span> <span class="o">=</span> <span class="n">source_mesh</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">(</span><span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">)</span>
+    <span class="n">shapes</span> <span class="o">=</span> <span class="n">parameters_inst</span><span class="o">.</span><span class="n">get_pose_list</span><span class="p">()</span>
+    <span class="n">shapes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">shapes</span> <span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+
+    <span class="n">blendshape_node</span><span class="o">.</span><span class="n">BlendShapeNode</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">shapes</span><span class="o">=</span><span class="n">shapes</span><span class="p">,</span>
+                                            <span class="n">mesh</span><span class="o">=</span><span class="n">source_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span>
+                                            <span class="n">label</span><span class="o">=</span><span class="n">source_mesh</span><span class="o">.</span><span class="n">part_type_name</span><span class="p">)</span>
+    <span class="n">attr_utils</span><span class="o">.</span><span class="n">unlock_all_attrs</span><span class="p">(</span><span class="n">source_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">source_mesh</span></div>
+
+
+<div class="viewcode-block" id="convert_all_to_source_mesh"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_meshes.convert_all_to_source_mesh">[docs]</a><span class="k">def</span> <span class="nf">convert_all_to_source_mesh</span><span class="p">(</span><span class="n">mesh_list</span><span class="p">,</span> <span class="n">asset_id</span><span class="p">,</span> <span class="n">mesh_component</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Take the source mesh and updates the information to the source data.</span>
+
+<span class="sd">    :param list(pm.nt.Transform) mesh_list: A blend shape mesh.</span>
+<span class="sd">    :param str asset_id: Asset Identifier.</span>
+<span class="sd">    :param mesh_component:</span>
+<span class="sd">    :return: Returns a list of all the source meshes</span>
+<span class="sd">    :rtype: list(face_model.FaceModel)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">source_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">convert_to_source_mesh</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">asset_id</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">mesh_list</span><span class="p">]</span>
+    <span class="n">mesh_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">mesh_inst</span> <span class="ow">in</span> <span class="n">source_list</span><span class="p">:</span>
+        <span class="n">mesh_dict</span><span class="p">[</span><span class="n">mesh_inst</span><span class="o">.</span><span class="n">type_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">mesh_inst</span><span class="o">.</span><span class="n">mesh</span>
+    <span class="n">attr_utils</span><span class="o">.</span><span class="n">set_compound_attribute_groups</span><span class="p">(</span><span class="n">mesh_component</span><span class="p">,</span> <span class="n">frag</span><span class="o">.</span><span class="n">FACE_SOURCE_CATEGORY</span><span class="p">,</span> <span class="n">mesh_dict</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">source_list</span></div>
+
+
+<div class="viewcode-block" id="export_source_shapes"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_meshes.export_source_shapes">[docs]</a><span class="k">def</span> <span class="nf">export_source_shapes</span><span class="p">(</span><span class="n">source_list</span><span class="p">,</span> <span class="n">asset_id</span><span class="p">,</span> <span class="n">save_source_data</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exports the source meshes into a file in the common directory.</span>
+
+<span class="sd">    :param list(pm.nt.Transform) source_list:</span>
+<span class="sd">    :param str asset_id: Asset Identifier.</span>
+<span class="sd">    :param bool save_source_data: Transfers the source data to the source location.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cpg_asset</span> <span class="o">=</span> <span class="n">assetlist</span><span class="o">.</span><span class="n">get_asset_by_id</span><span class="p">(</span><span class="n">asset_id</span><span class="p">)</span>
+    <span class="n">asset_name</span> <span class="o">=</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_name</span>
+    <span class="n">face_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">paths</span><span class="o">.</span><span class="n">get_common_face</span><span class="p">(),</span> <span class="s1">&#39;SourceHeads&#39;</span><span class="p">,</span> <span class="n">asset_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">face_path</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">face_path</span><span class="p">)</span>
+
+    <span class="n">source_meshes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">source_instances</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># Create a new list with using the FaceModel instance</span>
+    <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">source_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">face_model</span><span class="o">.</span><span class="n">FaceModel</span><span class="p">):</span>
+            <span class="n">source_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">face_model</span><span class="o">.</span><span class="n">FaceModel</span><span class="p">(</span><span class="n">source</span><span class="p">))</span>
+            <span class="n">source_meshes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">source_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+            <span class="n">source_meshes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+    <span class="c1"># Disconnect the meshes before exporting so it doesn&#39;t export the whole rig.</span>
+    <span class="k">for</span> <span class="n">mesh</span> <span class="ow">in</span> <span class="n">source_meshes</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">mesh_inst</span> <span class="ow">in</span> <span class="n">source_instances</span><span class="p">:</span>
+        <span class="n">parameters_inst</span> <span class="o">=</span> <span class="n">mesh_inst</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">(</span><span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">)</span>
+        <span class="n">shapes</span> <span class="o">=</span> <span class="n">parameters_inst</span><span class="o">.</span><span class="n">get_pose_list</span><span class="p">()</span>
+        <span class="n">shapes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">shapes</span> <span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">shapes</span><span class="p">)</span>
+
+    <span class="n">scene_name</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sceneName</span><span class="p">()</span>
+
+    <span class="n">full_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">face_path</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">SOURCE_FILE</span><span class="si">}</span><span class="s1">.ma&#39;</span><span class="p">)</span>
+
+    <span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">source_meshes</span><span class="p">)</span>
+    <span class="n">cmds</span><span class="o">.</span><span class="n">file</span><span class="p">(</span><span class="n">rename</span><span class="o">=</span><span class="n">full_path</span><span class="p">)</span>
+    <span class="n">cmds</span><span class="o">.</span><span class="n">file</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exportSelected</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;mayaAscii&quot;</span><span class="p">)</span>
+
+    <span class="n">cmds</span><span class="o">.</span><span class="n">file</span><span class="p">(</span><span class="n">rename</span><span class="o">=</span><span class="n">scene_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">save_source_data</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">face_data_path</span> <span class="o">=</span> <span class="n">face_util</span><span class="o">.</span><span class="n">get_source_face_data_path</span><span class="p">(</span><span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">)</span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">face_data_path</span><span class="p">,</span> <span class="n">face_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="import_source_head"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_meshes.import_source_head">[docs]</a><span class="k">def</span> <span class="nf">import_source_head</span><span class="p">(</span><span class="n">source_head_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Imports a source head with the given source asset name.</span>
+
+<span class="sd">    :param str source_head_name: the asset name for the source head.</span>
+<span class="sd">    :return: Returns a list of meshes that have been imported into the scene</span>
+<span class="sd">    :rtype: list(pm.nt.Mesh)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">face_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">paths</span><span class="o">.</span><span class="n">get_common_face</span><span class="p">(),</span> <span class="s1">&#39;SourceHeads&#39;</span><span class="p">,</span> <span class="n">source_head_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">face_path</span><span class="p">):</span>
+        <span class="k">return</span>
+    <span class="n">file_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">face_path</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">SOURCE_FILE</span><span class="si">}</span><span class="s1">.ma&#39;</span><span class="p">)</span>
+    <span class="n">new_nodes</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">importFile</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">defaultNamespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">returnNewNodes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">new_nodes</span></div>
+
+
+<div class="viewcode-block" id="generate_blendshapes"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_meshes.generate_blendshapes">[docs]</a><span class="k">def</span> <span class="nf">generate_blendshapes</span><span class="p">(</span><span class="n">source_mesh</span><span class="p">,</span> <span class="n">target_mesh</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates blend shapes from a source mesh.</span>
+
+<span class="sd">    :param str source_mesh: a mesh with blend shapes attached.</span>
+<span class="sd">    :param str target_mesh: the mesh transfering the blend shape to.</span>
+<span class="sd">    :return: Returns a list of blend shapes created.</span>
+<span class="sd">    :rtype: list(str)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target_mesh</span><span class="p">,</span> <span class="n">face_model</span><span class="o">.</span><span class="n">FaceModel</span><span class="p">):</span>
+        <span class="n">target_mesh</span> <span class="o">=</span> <span class="n">target_mesh</span><span class="o">.</span><span class="n">mesh</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source_mesh</span><span class="p">,</span> <span class="n">face_model</span><span class="o">.</span><span class="n">FaceModel</span><span class="p">):</span>
+        <span class="n">source_mesh</span> <span class="o">=</span> <span class="n">face_model</span><span class="o">.</span><span class="n">FaceModel</span><span class="p">(</span><span class="n">source_mesh</span><span class="p">)</span>
+
+    <span class="n">blendnode</span> <span class="o">=</span> <span class="n">source_mesh</span><span class="o">.</span><span class="n">get_main_blendnode</span><span class="p">()</span>
+
+    <span class="n">transfer_mesh</span> <span class="o">=</span> <span class="n">source_mesh</span><span class="o">.</span><span class="n">duplicate</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">source_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="si">}</span><span class="s1">_edit&#39;</span><span class="p">)</span>
+    <span class="n">transfer_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;generateMesh&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">transfer_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">transfer_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">tx</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span>
+    <span class="n">transfer_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">parallel_blendnode</span> <span class="o">=</span> <span class="n">blendshape_model</span><span class="o">.</span><span class="n">create_parallel_blendnode</span><span class="p">(</span><span class="n">diff_mesh</span><span class="o">=</span><span class="n">source_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span>
+                                                                    <span class="n">pose_mesh</span><span class="o">=</span><span class="n">target_mesh</span><span class="p">,</span>
+                                                                    <span class="n">last_mesh</span><span class="o">=</span><span class="n">transfer_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span>
+                                                                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;gen_edit_parallel_blendnode&#39;</span><span class="p">)</span>
+    <span class="n">shapes</span> <span class="o">=</span> <span class="n">blendnode</span><span class="o">.</span><span class="n">generate_face_shapes</span><span class="p">(</span><span class="n">transfer_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">parallel_blendnode</span><span class="p">,</span> <span class="n">transfer_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+
+    <span class="n">pose_grp</span> <span class="o">=</span> <span class="n">face_util</span><span class="o">.</span><span class="n">create_pose_grp</span><span class="p">(</span><span class="n">shapes</span><span class="o">=</span><span class="n">shapes</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">shapes</span><span class="p">,</span> <span class="n">pose_grp</span><span class="p">)</span>
+
+    <span class="c1"># Temporary hot mess</span>
+    <span class="n">face_util</span><span class="o">.</span><span class="n">sort_shapes</span><span class="p">(</span><span class="n">shapes</span><span class="p">)</span>
+    <span class="n">pose_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">pose_dict</span><span class="p">[</span><span class="s1">&#39;shapes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shapes</span>
+    <span class="n">pose_dict</span><span class="p">[</span><span class="s1">&#39;pose_grp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pose_grp</span>
+    <span class="k">return</span> <span class="n">pose_dict</span></div>
+
+
+<div class="viewcode-block" id="get_source_head_data"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_meshes.get_source_head_data">[docs]</a><span class="k">def</span> <span class="nf">get_source_head_data</span><span class="p">(</span><span class="n">source_mesh_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns an instance of SourceFaceData for a specific mesh.</span>
+
+<span class="sd">    :param str source_mesh_name: The str name for the source_head.</span>
+<span class="sd">    :return: Returns an instance of FaceMeshRegionData for a specific mesh.</span>
+<span class="sd">    :rtype: SourceFaceData</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">paths</span><span class="o">.</span><span class="n">get_common_face</span><span class="p">(),</span> <span class="s1">&#39;SourceHeads&#39;</span><span class="p">,</span> <span class="n">source_mesh_name</span><span class="p">,</span> <span class="n">source_data</span><span class="o">.</span><span class="n">FACE_FILE_NAME</span><span class="p">)</span>
+    <span class="n">src_data</span> <span class="o">=</span> <span class="n">source_data</span><span class="o">.</span><span class="n">SourceFaceData</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data_path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">src_data</span></div>
+
+
+<div class="viewcode-block" id="get_source_head_region_data"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_meshes.get_source_head_region_data">[docs]</a><span class="k">def</span> <span class="nf">get_source_head_region_data</span><span class="p">(</span><span class="n">source_mesh_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns an instance of SourceFaceData for a specific mesh.</span>
+
+<span class="sd">    :param str source_mesh_name: The str name for the source_head.</span>
+<span class="sd">    :return: Returns an instance of FaceMeshRegionData for a specific mesh.</span>
+<span class="sd">    :rtype: SourceFaceData</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">paths</span><span class="o">.</span><span class="n">get_common_face</span><span class="p">(),</span> <span class="s1">&#39;SourceHeads&#39;</span><span class="p">,</span> <span class="n">source_mesh_name</span><span class="p">,</span> <span class="n">source_data</span><span class="o">.</span><span class="n">FACE_FILE_NAME</span><span class="p">)</span>
+    <span class="n">src_data</span> <span class="o">=</span> <span class="n">source_data</span><span class="o">.</span><span class="n">SourceFaceData</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data_path</span><span class="p">)</span>
+
+    <span class="n">region_list</span> <span class="o">=</span> <span class="n">src_data</span><span class="o">.</span><span class="n">blendshape_regions_list</span>
+    <span class="n">region_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">region_list</span><span class="p">:</span>
+        <span class="n">region_dict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">source_data</span><span class="o">.</span><span class="n">FaceMeshRegionData</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">region</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">region_dict</span></div>
+
+
+<div class="viewcode-block" id="connect_source_meshes_to_rig"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_meshes.connect_source_meshes_to_rig">[docs]</a><span class="k">def</span> <span class="nf">connect_source_meshes_to_rig</span><span class="p">(</span><span class="n">source_mesh_name</span><span class="p">,</span> <span class="n">parameter_node</span><span class="p">,</span> <span class="n">offset</span><span class="o">=-</span><span class="mf">25.0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Imports and connects the source head blend node to a rig.</span>
+
+<span class="sd">    :param str source_mesh_name: Name of the source head that will be imported and used.</span>
+<span class="sd">    :param FragFaceParameter parameter_node: The parameter node that is connected to all the blend shapes.</span>
+<span class="sd">    :param float offset: Offset the mesh so they do not sit directly on the rig.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Get a dictionary of all the blend shapes in the source head and the data.</span>
+    <span class="n">region_dict</span> <span class="o">=</span> <span class="n">get_source_head_region_data</span><span class="p">(</span><span class="n">source_mesh_name</span><span class="p">)</span>
+
+    <span class="c1"># import the source head</span>
+    <span class="n">source_list</span> <span class="o">=</span> <span class="n">import_source_head</span><span class="p">(</span><span class="n">source_mesh_name</span><span class="p">)</span>
+    <span class="n">source_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">face_model</span><span class="o">.</span><span class="n">FaceModel</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">source_list</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">)]</span>
+    <span class="c1"># Go through the meshes and get the parameter data to connect to the rig.</span>
+    <span class="k">for</span> <span class="n">mesh</span> <span class="ow">in</span> <span class="n">source_list</span><span class="p">:</span>
+        <span class="n">mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">tx</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+        <span class="n">blendnode</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_main_blendnode</span><span class="p">()</span>
+        <span class="n">region_data</span> <span class="o">=</span> <span class="n">region_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">region_data</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="n">region_data</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">()</span>
+        <span class="n">parameters_list</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get_parameters_list</span><span class="p">()</span>
+        <span class="c1"># connect the blend node to the rig</span>
+        <span class="n">blendnode</span><span class="o">.</span><span class="n">reconnect_to_rig</span><span class="p">(</span><span class="n">parameters</span><span class="o">=</span><span class="n">parameters_list</span><span class="p">,</span> <span class="n">parameter_node</span><span class="o">=</span><span class="n">parameter_node</span><span class="p">)</span>
+
+    <span class="n">face_mesh_component</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_face_mesh_component</span><span class="p">(</span><span class="n">parameter_node</span><span class="p">)</span>
+
+    <span class="n">mesh_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">mesh</span> <span class="ow">in</span> <span class="n">source_list</span><span class="p">:</span>
+        <span class="n">mesh_dict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">category</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">mesh_dict</span><span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">category</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">mesh</span><span class="o">.</span><span class="n">type_name</span><span class="p">:</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">)})</span>
+
+    <span class="k">for</span> <span class="n">category</span> <span class="ow">in</span> <span class="n">mesh_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">attr_utils</span><span class="o">.</span><span class="n">set_compound_attribute_groups</span><span class="p">(</span><span class="n">face_mesh_component</span><span class="o">.</span><span class="n">pynode</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">mesh_dict</span><span class="p">[</span><span class="n">category</span><span class="p">])</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

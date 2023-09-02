@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.animation.baking &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.animation.baking</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.animation.baking</h1><div class="highlight"><pre>
+<span></span><span class="c1"># !/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module that contains a wrapper for the bakeResults command and other baking related utils.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">attr_utils</span><span class="p">,</span> <span class="n">optionvars</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.animation</span> <span class="kn">import</span> <span class="n">time_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.modifiers</span> <span class="kn">import</span> <span class="n">ma_decorators</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.animation</span> <span class="kn">import</span> <span class="n">keyframes</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="CPGBakeOptionVars"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.baking.CPGBakeOptionVars">[docs]</a><span class="k">class</span> <span class="nc">CPGBakeOptionVars</span><span class="p">(</span><span class="n">optionvars</span><span class="o">.</span><span class="n">CPGOptionVars</span><span class="p">):</span>
+    <span class="c1"># Helios Misc</span>
+    <span class="n">CPGFrameOverride</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;If baking overrides should be used.&#39;</span><span class="p">}</span>
+    <span class="n">CPGStartFrame</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;The current start frame for baking.&#39;</span><span class="p">}</span>
+    <span class="n">CPGEndFrame</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;The current end frame for baking.&#39;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="bake_objects"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.baking.bake_objects">[docs]</a><span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">make_display_layers_visible_decorator</span>
+<span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">disable_cycle_check_decorator</span>
+<span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">freeze_renderer_decorator</span>
+<span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">undo_decorator</span>
+<span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_selection_decorator</span>
+<span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">unlock_animation_layers</span>
+<span class="k">def</span> <span class="nf">bake_objects</span><span class="p">(</span><span class="n">node_list</span><span class="p">,</span> <span class="n">translate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rotate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">custom_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bake_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper around pm.bakeResults cleans up some common errors before baking.</span>
+<span class="sd">    A key is set at -1337 to handle rotation filtering and removed after.</span>
+
+<span class="sd">    :param list[PyNode] node_list: A list of objects to bake.</span>
+<span class="sd">    :param bool translate: Whether translation attrs should be baked.</span>
+<span class="sd">    :param bool rotate: Whether rotation attrs should be baked.</span>
+<span class="sd">    :param bool scale: Whether scale attrs should be baked.</span>
+<span class="sd">    :param list[str] custom_attrs: A list of attribute string names if they should be baked.</span>
+<span class="sd">    :param list[int, int] bake_range: Range of frames to bake across.</span>
+<span class="sd">    :param dict{} kwargs: Dict of additional args used in the bakeResults command.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">node_list</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No bakable objects were passed, aborting bake.&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">attr_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">translate</span><span class="p">:</span>
+        <span class="n">attr_list</span> <span class="o">+=</span> <span class="n">attr_utils</span><span class="o">.</span><span class="n">TRANSLATION_ATTRS</span>
+    <span class="k">if</span> <span class="n">rotate</span><span class="p">:</span>
+        <span class="n">attr_list</span> <span class="o">+=</span> <span class="n">attr_utils</span><span class="o">.</span><span class="n">ROTATION_ATTRS</span>
+    <span class="k">if</span> <span class="n">scale</span><span class="p">:</span>
+        <span class="n">attr_list</span> <span class="o">+=</span> <span class="n">attr_utils</span><span class="o">.</span><span class="n">SCALE_ATTRS</span>
+    <span class="k">if</span> <span class="n">custom_attrs</span><span class="p">:</span>
+        <span class="n">attr_list</span> <span class="o">+=</span> <span class="n">custom_attrs</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">attr_list</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No bakable attrs were passed, aborting bake.&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">keyframes</span><span class="o">.</span><span class="n">fix_single_keyframe_layers</span><span class="p">()</span>
+
+    <span class="n">time_range</span> <span class="o">=</span> <span class="n">bake_range</span> <span class="k">if</span> <span class="n">bake_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">time_utils</span><span class="o">.</span><span class="n">get_times</span><span class="p">(</span><span class="n">node_list</span><span class="p">,</span> <span class="n">ignore_selection</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># enable simulation or Maya will hang.</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">bakeResults</span><span class="p">(</span><span class="n">node_list</span><span class="p">,</span> <span class="n">simulation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="n">attr_list</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">time_range</span><span class="p">,</span> <span class="n">preserveOutsideKeys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="n">pm</span><span class="o">.</span><span class="n">setKeyframe</span><span class="p">(</span><span class="n">node_list</span><span class="p">,</span> <span class="n">t</span><span class="o">=-</span><span class="mi">1337</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;rotate&#39;</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">filterCurve</span><span class="p">(</span><span class="n">node_list</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">cutKey</span><span class="p">(</span><span class="n">node_list</span><span class="p">,</span> <span class="n">t</span><span class="o">=-</span><span class="mi">1337</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="merge_all_animation_layers"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.baking.merge_all_animation_layers">[docs]</a><span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">make_display_layers_visible_decorator</span>
+<span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">disable_cycle_check_decorator</span>
+<span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">freeze_renderer_decorator</span>
+<span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">undo_decorator</span>
+<span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_selection_decorator</span>
+<span class="k">def</span> <span class="nf">merge_all_animation_layers</span><span class="p">():</span>
+    <span class="n">base_animation</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">animLayer</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">base_animation</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">base_animation</span><span class="p">):</span> <span class="k">return</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">animLayer</span><span class="p">(</span><span class="n">base_animation</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">children</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">layers</span><span class="p">:</span>
+        <span class="n">attr_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+            <span class="n">layer_attributes</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">animLayer</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">layer_attributes</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">layer_attributes</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">attr</span> <span class="ow">and</span> <span class="n">attr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attr_list</span><span class="p">:</span>
+                        <span class="n">attr_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+
+        <span class="n">frame_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">playbackOptions</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ast</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">pm</span><span class="o">.</span><span class="n">playbackOptions</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">aet</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">attr_list</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">bakeResults</span><span class="p">(</span><span class="n">attr_list</span><span class="p">,</span> <span class="n">simulation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">removeBakedAttributeFromLayer</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sampleBy</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                           <span class="n">time</span><span class="o">=</span><span class="n">frame_range</span><span class="p">,</span> <span class="n">resolveWithoutLayer</span><span class="o">=</span><span class="n">layers</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
+
+    <span class="n">layers</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">animLayer</span><span class="p">(</span><span class="n">base_animation</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">children</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">layers</span><span class="p">:</span>
+        <span class="n">layer</span> <span class="o">=</span> <span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">pm</span><span class="o">.</span><span class="n">animLayer</span><span class="p">(</span><span class="n">base_animation</span><span class="p">,</span> <span class="n">edit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">extractAnimation</span><span class="o">=</span><span class="n">layer</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">base_animation</span><span class="p">):</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">base_animation</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.modeling.blendshape_node &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.modeling.blendshape_node</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.modeling.blendshape_node</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot; Face: Utility Functions. &quot;&quot;&quot;</span>
+
+<span class="c1"># system global imports</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+
+<span class="c1"># cpg python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">attr_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.modeling</span> <span class="kn">import</span> <span class="n">blendshape_model</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.animation</span> <span class="kn">import</span> <span class="n">time_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging.flags</span> <span class="kn">import</span> <span class="n">flag_utils</span>
+
+
+<div class="viewcode-block" id="BlendShapeNode"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_node.BlendShapeNode">[docs]</a><span class="k">class</span> <span class="nc">BlendShapeNode</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blendnode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">blendnode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_blendnode</span><span class="p">(</span><span class="n">blendnode</span><span class="p">)</span>
+	
+<div class="viewcode-block" id="BlendShapeNode.create"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_node.BlendShapeNode.create">[docs]</a>	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">shapes</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;blendnode&#39;</span><span class="p">,</span> <span class="n">blendnode_type</span><span class="o">=</span><span class="s1">&#39;main&#39;</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns an instance of the class BlendShapeNode</span>
+
+<span class="sd">		:param list(str) shapes: list of meshes that are used to create blend shapes.</span>
+<span class="sd">		:param pm.nt.Transform mesh: The mesh to connect the blend shapes to.</span>
+<span class="sd">		:param str label: name of the blend node.</span>
+<span class="sd">		:param str suffix: name of the blend node.</span>
+<span class="sd">		:return: Returns an instance of the class BlendShapeNode</span>
+<span class="sd">		:rtype: BlendShapeNode</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">label</span><span class="p">:</span>
+			<span class="n">label</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+		<span class="n">blendnode</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">blendShape</span><span class="p">(</span><span class="n">shapes</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">blendnode</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;blendNodeType&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+		<span class="n">blendnode</span><span class="o">.</span><span class="n">blendNodeType</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">blendnode_type</span><span class="p">)</span>
+		
+		<span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">blendnode</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="BlendShapeNode.disconnect_from_rig"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_node.BlendShapeNode.disconnect_from_rig">[docs]</a>	<span class="k">def</span> <span class="nf">disconnect_from_rig</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Disconnects all of the blend shapes from a rig.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">shapes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shapes</span>
+		<span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="n">shapes</span><span class="p">:</span>
+			<span class="n">blendnode_attr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">blendnode</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="n">blendnode_attr</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="BlendShapeNode.reconnect_to_rig"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_node.BlendShapeNode.reconnect_to_rig">[docs]</a>	<span class="k">def</span> <span class="nf">reconnect_to_rig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">parameter_node</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Reconnects the blendnode to the FragFaceParameters rig node.</span>
+
+<span class="sd">		:param list parameters: list of parameters with pose names and information.</span>
+<span class="sd">		:param face_parameters.FragFaceParameters parameter_node: FragFaceParameters rig node.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="c1"># zero controllers</span>
+		<span class="n">flag_utils</span><span class="o">.</span><span class="n">zero_flags</span><span class="p">([</span><span class="n">parameter_node</span><span class="p">])</span>
+		
+		<span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+			<span class="n">param_name</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">parameter_name</span>
+			<span class="n">param_connection</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">connection</span>
+			<span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">param_name</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">blendnode</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="n">param_name</span><span class="p">)</span> <span class="ow">and</span> <span class="n">parameter</span><span class="o">.</span><span class="n">connection</span><span class="p">:</span>
+				<span class="n">face_param</span> <span class="o">=</span> <span class="n">parameter_node</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">param_connection</span><span class="p">)</span>
+				<span class="n">blendshape_parameter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">blendnode</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">param_name</span><span class="p">)</span>
+				<span class="n">face_param</span><span class="o">.</span><span class="n">value</span> <span class="o">&gt;&gt;</span> <span class="n">blendshape_parameter</span></div>
+	
+<div class="viewcode-block" id="BlendShapeNode.set_parameterized_keyframes"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_node.BlendShapeNode.set_parameterized_keyframes">[docs]</a>	<span class="k">def</span> <span class="nf">set_parameterized_keyframes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">set_time_range</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets keyframes for each blend shape on the blend node.</span>
+
+<span class="sd">		:param list(ParameterData) parameters: a list of parameter data for each pose.</span>
+<span class="sd">		:param bool set_time_range: If true, it will set the time range.</span>
+<span class="sd">		:return: Returns the timeline</span>
+<span class="sd">		:rtype: list(float)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">blendnode</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">parameter_name</span><span class="p">):</span>
+				<span class="n">pm</span><span class="o">.</span><span class="n">setKeyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blendnode</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">parameter_name</span><span class="p">),</span> <span class="n">t</span><span class="o">=</span><span class="n">parameter</span><span class="o">.</span><span class="n">pose_frame</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+				<span class="n">pm</span><span class="o">.</span><span class="n">setKeyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blendnode</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">parameter_name</span><span class="p">),</span> <span class="n">t</span><span class="o">=</span><span class="n">parameter</span><span class="o">.</span><span class="n">pose_frame</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+				<span class="n">pm</span><span class="o">.</span><span class="n">setKeyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blendnode</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">parameter_name</span><span class="p">),</span> <span class="n">t</span><span class="o">=</span><span class="n">parameter</span><span class="o">.</span><span class="n">pose_frame</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+		<span class="n">time_range</span> <span class="o">=</span> <span class="p">[</span><span class="n">time_utils</span><span class="o">.</span><span class="n">get_scene_first_keyframe</span><span class="p">(),</span> <span class="n">time_utils</span><span class="o">.</span><span class="n">get_scene_last_keyframe</span><span class="p">()]</span>
+		<span class="k">if</span> <span class="n">set_time_range</span> <span class="ow">and</span> <span class="n">time_range</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">playbackOptions</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">time_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">max</span><span class="o">=</span><span class="n">time_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+		<span class="k">return</span> <span class="n">time_range</span></div>
+	
+<div class="viewcode-block" id="BlendShapeNode.get_blendnode_mesh_name"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_node.BlendShapeNode.get_blendnode_mesh_name">[docs]</a>	<span class="k">def</span> <span class="nf">get_blendnode_mesh_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the name of the mesh the blend node is attached to.</span>
+
+<span class="sd">		:return: Returns the name of the mesh the blend node is attached to.</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">object_set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">blendnode</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">ObjectSet</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">object_set</span><span class="p">:</span>
+			<span class="k">return</span>
+		<span class="n">object_set</span> <span class="o">=</span> <span class="n">object_set</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">all_connections</span> <span class="o">=</span> <span class="n">object_set</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">all_connections</span><span class="p">:</span>
+			<span class="k">return</span>
+		<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">all_connections</span><span class="p">:</span>
+			<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pm</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+				<span class="k">return</span> <span class="n">node</span>
+		<span class="k">return</span></div>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">shapes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Gets a list of all the shapes connected to the blend node.</span>
+
+<span class="sd">		:return: Gets a list of all the shapes connected to the blend node.</span>
+<span class="sd">		:rtype: list[str]</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="n">blendshape_model</span><span class="o">.</span><span class="n">get_blendnode_shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blendnode</span><span class="p">)</span>
+	
+<div class="viewcode-block" id="BlendShapeNode.get_all_blendnodes"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_node.BlendShapeNode.get_all_blendnodes">[docs]</a>	<span class="k">def</span> <span class="nf">get_all_blendnodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns all the blendnodes associated with a mesh.</span>
+
+<span class="sd">		:param pm.nt.transform mesh: Mesh that has blendnodes associated with a it.</span>
+<span class="sd">		:return: List of all the blendnodes associated with a mesh.</span>
+<span class="sd">		:rtype: list[pm.nt.Blendnode]</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="n">blendshape_model</span><span class="o">.</span><span class="n">get_all_blendnodes</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="BlendShapeNode.delete_blendshapes"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_node.BlendShapeNode.delete_blendshapes">[docs]</a>	<span class="k">def</span> <span class="nf">delete_blendshapes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Deletes all blend shape in a scene that are attached to the blendnode.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">blendshape_model</span><span class="o">.</span><span class="n">delete_blendshapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blendnode</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="BlendShapeNode.set_blendshape_weights"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_node.BlendShapeNode.set_blendshape_weights">[docs]</a>	<span class="k">def</span> <span class="nf">set_blendshape_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets the vertex weight of the blend shape.  Think of painting weights.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">blendshape_model</span><span class="o">.</span><span class="n">set_blendshape_weights</span><span class="p">(</span><span class="n">blendnode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">blendnode</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="BlendShapeNode.get_blendnode"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_node.BlendShapeNode.get_blendnode">[docs]</a>	<span class="k">def</span> <span class="nf">get_blendnode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blendnode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns a blend node.  If you pass in a mesh it will grab the 1st blend node.</span>
+
+<span class="sd">		:param pm.nt blend blendnode: This can be a blend shape node or a mesh that has a blend shape connected to it.</span>
+<span class="sd">		:return pm.nt.Blendnode: Returns a blend node.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">blendnode</span><span class="p">:</span>
+			<span class="n">blendnode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">blendnode</span>
+		
+		<span class="n">first_blendnode</span> <span class="o">=</span> <span class="n">blendshape_model</span><span class="o">.</span><span class="n">get_first_blendnode</span><span class="p">(</span><span class="n">blendnode</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">first_blendnode</span><span class="p">:</span>
+			<span class="c1"># raising error, it can get confusing if this returns none.</span>
+			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;The object is not a blend shape or an object with a blend shape attached.&#39;</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">first_blendnode</span></div>
+	
+<div class="viewcode-block" id="BlendShapeNode.get_blendnode_index_as_dict"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_node.BlendShapeNode.get_blendnode_index_as_dict">[docs]</a>	<span class="k">def</span> <span class="nf">get_blendnode_index_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the name of the shape as the key and the index as the value.</span>
+
+<span class="sd">		:return: Returns the name of the shape as the key and the index as the value.</span>
+<span class="sd">		:rtype: dictionary{string:int}</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="n">blendshape_model</span><span class="o">.</span><span class="n">get_blendnode_index_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blendnode</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="BlendShapeNode.get_mesh"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_node.BlendShapeNode.get_mesh">[docs]</a>	<span class="k">def</span> <span class="nf">get_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the original connected mesh.</span>
+
+<span class="sd">		:return: Returns the original connected mesh.</span>
+<span class="sd">		:rtype: pm.nt.Transform</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">blendnode</span><span class="o">.</span><span class="n">originalGeometry</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">mesh</span><span class="p">:</span>
+			<span class="k">return</span>
+		<span class="k">return</span> <span class="n">mesh</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+	
+<div class="viewcode-block" id="BlendShapeNode.generate_face_shapes"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_node.BlendShapeNode.generate_face_shapes">[docs]</a>	<span class="k">def</span> <span class="nf">generate_face_shapes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns a list of generated face shapes.</span>
+
+<span class="sd">		:return: Returns a list of generated face shapes.</span>
+<span class="sd">		:rtype: list(pm.nt.Transform)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">blendnode_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_blendnode_index_as_dict</span><span class="p">()</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">mesh</span><span class="p">:</span>
+			<span class="n">mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_mesh</span><span class="p">()</span>
+		<span class="n">shapes</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">pose</span><span class="p">,</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">blendnode_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">blendnode</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">pose</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+			<span class="n">new_mesh</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">duplicate</span><span class="p">(</span><span class="n">mesh</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">new_mesh</span><span class="p">,</span> <span class="n">pose</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">blendnode</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">pose</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+			<span class="n">shapes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_mesh</span><span class="p">)</span>
+		<span class="n">shapes</span> <span class="o">=</span> <span class="p">[</span><span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">shapes</span><span class="p">]</span>
+		<span class="n">attr_utils</span><span class="o">.</span><span class="n">purge_user_defined_attrs</span><span class="p">(</span><span class="n">shapes</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">shapes</span></div></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

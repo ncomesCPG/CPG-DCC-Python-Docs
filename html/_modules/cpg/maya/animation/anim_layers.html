@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.animation.anim_layers &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.animation.anim_layers</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.animation.anim_layers</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">purpose: Animation Layers</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+<span class="c1"># Software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="kn">import</span> <span class="nn">maya.cmds</span> <span class="k">as</span> <span class="nn">cmds</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">lists</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">attr_utils</span><span class="p">,</span> <span class="n">naming</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.animation</span> <span class="kn">import</span> <span class="n">anim_curves</span><span class="p">,</span> <span class="n">baking</span>
+
+<span class="c1"># Internal module imports</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="check_obj_for_anim_layer"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.check_obj_for_anim_layer">[docs]</a><span class="k">def</span> <span class="nf">check_obj_for_anim_layer</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Checks to see if there is an animation layers connected to the object.</span>
+
+<span class="sd">	:param pm.nt.transform obj: The object that animation curves will be transferred to.</span>
+<span class="sd">	:return: If True, The object has an animation layer.</span>
+<span class="sd">	:rtype: bool</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">anim_layer</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimBlendNodeBase</span><span class="p">,</span> <span class="n">scn</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">anim_layer</span><span class="p">:</span>
+		<span class="k">return</span> <span class="kc">True</span>
+	<span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="get_objects_in_anim_layer"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.get_objects_in_anim_layer">[docs]</a><span class="k">def</span> <span class="nf">get_objects_in_anim_layer</span><span class="p">(</span><span class="n">anim_layer</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Returns all the animated objects connected to a specific layer.</span>
+
+<span class="sd">	:param pm.nt.AnimLayer anim_layer: Animation Layer</span>
+<span class="sd">	:return: Returns all the animated objects connected to a specific layer.</span>
+<span class="sd">	:rtype: list[pm.nt.DagNode]</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">anim_layer</span><span class="o">.</span><span class="n">dagSetMembers</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()))</span></div>
+
+
+<div class="viewcode-block" id="connect_layer_dagSetMembers"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.connect_layer_dagSetMembers">[docs]</a><span class="k">def</span> <span class="nf">connect_layer_dagSetMembers</span><span class="p">(</span><span class="n">obj_attr</span><span class="p">,</span> <span class="n">anim_layer</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Connects an animation layer to the dagSetMember of an object attribute.</span>
+
+<span class="sd">	:param pm.nt.Attribute obj_attr:  The attribute on an object that you are attaching animation.</span>
+<span class="sd">	:param pm.nt.AnimLayer anim_layer: Animation Layer</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">loop</span> <span class="o">=</span> <span class="kc">True</span>
+	<span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="k">while</span> <span class="n">loop</span><span class="p">:</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">anim_layer</span><span class="o">.</span><span class="n">dagSetMembers</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">listConnections</span><span class="p">():</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="n">obj_attr</span><span class="p">,</span> <span class="n">anim_layer</span><span class="o">.</span><span class="n">dagSetMembers</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">f</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="n">loop</span> <span class="o">=</span> <span class="kc">False</span>
+		<span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="get_all_anim_layers_in_network"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.get_all_anim_layers_in_network">[docs]</a><span class="k">def</span> <span class="nf">get_all_anim_layers_in_network</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Returns all the animation layers in an animation layer network.  This is per object attribute.</span>
+
+<span class="sd">	:param pm.nt.AnimBlendNodeBase anim_blend: The animation blend node that ties the curves and layers together.</span>
+<span class="sd">	:return: Returns all the animation layers in an animation layer network.</span>
+<span class="sd">	:rtype: list[pm.nt.AnimLayer]</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">mapped_network</span> <span class="o">=</span> <span class="n">map_anim_layers</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">)</span>
+	<span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="k">for</span> <span class="n">blend</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">mapped_network</span><span class="p">:</span>
+		<span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">layers</span></div>
+
+
+<div class="viewcode-block" id="get_all_anim_blends_in_network"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.get_all_anim_blends_in_network">[docs]</a><span class="k">def</span> <span class="nf">get_all_anim_blends_in_network</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Returns all the animation blend nodes in an animation layer network.  This is per object attribute.</span>
+
+<span class="sd">	:param pm.nt.AnimBlendNodeBase anim_blend: The animation blend node that ties the curves and layers together.</span>
+<span class="sd">	:return: Returns all the animation blend nodes in an animation layer network.</span>
+<span class="sd">	:rtype: list[pm.nt.AnimBlendNodeBase]</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">mapped_network</span> <span class="o">=</span> <span class="n">map_anim_layers</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">)</span>
+	<span class="n">blends</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="k">for</span> <span class="n">blend</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">mapped_network</span><span class="p">:</span>
+		<span class="n">blends</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blend</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">blends</span></div>
+
+
+<div class="viewcode-block" id="delete_anim_blends_and_curves"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.delete_anim_blends_and_curves">[docs]</a><span class="k">def</span> <span class="nf">delete_anim_blends_and_curves</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Deletes the animation layer network.</span>
+
+<span class="sd">	:param pm.nt.AnimBlendNodeBase anim_blend: The animation blend node that ties the curves and layers together.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">blend_nodes</span> <span class="o">=</span> <span class="n">get_all_anim_blends_in_network</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">)</span>
+	<span class="n">curves</span> <span class="o">=</span> <span class="n">get_all_curves_in_layer_network</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">)</span>
+	<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">blend_nodes</span><span class="p">,</span> <span class="n">curves</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_all_curves_in_layer_network"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.get_all_curves_in_layer_network">[docs]</a><span class="k">def</span> <span class="nf">get_all_curves_in_layer_network</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Returns all of the pm.nt.AnimCurve s in a animation layer network.</span>
+
+<span class="sd">	:param pm.nt.AnimBlendNodeBase anim_blend: The animation blend node that ties the curves and layers together.</span>
+<span class="sd">	:return: Returns all of the AnimCurves in a animation layer network.</span>
+<span class="sd">	:rtype: list[pm.nt.AnimCurve]</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">mapping</span> <span class="o">=</span> <span class="n">map_anim_layers</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">)</span>
+	<span class="n">curves</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="k">for</span> <span class="n">blend</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">mapping</span><span class="p">:</span>
+		<span class="n">connected_curves</span> <span class="o">=</span> <span class="n">blend</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimCurve</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">connected_curves</span><span class="p">:</span>
+			<span class="n">curves</span> <span class="o">+=</span> <span class="n">connected_curves</span>
+	<span class="k">return</span> <span class="n">curves</span></div>
+
+
+<div class="viewcode-block" id="get_base_anim_curves"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.get_base_anim_curves">[docs]</a><span class="k">def</span> <span class="nf">get_base_anim_curves</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Returns the base pm.nt.AnimCurve.  This would be the animation in the base animation layer.</span>
+
+<span class="sd">	:param pm.nt.AnimBlendNodeBase anim_blend: The animation blend node that ties the curves and layers together.</span>
+<span class="sd">	:return list[pm.nt.AnimCurve]: Returns the base pm.nt.AnimCurve.</span>
+<span class="sd">	:rtype: list[pm.nt.AnimCurve]</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">blends</span> <span class="o">=</span> <span class="n">get_all_anim_blends_in_network</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">blends</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">inputA</span><span class="o">.</span><span class="n">isCompound</span><span class="p">():</span>
+		<span class="n">base_curve</span> <span class="o">=</span> <span class="n">attr_utils</span><span class="o">.</span><span class="n">get_compound_attr_connections</span><span class="p">(</span><span class="n">blends</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;inputA&#39;</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">base_curve</span> <span class="o">=</span> <span class="n">blends</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">inputA</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimCurve</span><span class="p">)</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">base_curve</span><span class="p">:</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No Base Animation Curve was connected to the Animation Layer Network.&#39;</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">base_curve</span></div>
+
+
+<div class="viewcode-block" id="map_anim_layers"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.map_anim_layers">[docs]</a><span class="k">def</span> <span class="nf">map_anim_layers</span><span class="p">(</span><span class="n">anim_blend_layer</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Returns a list of animation blend nodes and it&#39;s corresponding animation layer.</span>
+<span class="sd">	It will work backwards using inputs.</span>
+<span class="sd">	[[BLEND NODE, ANIMATION LAYER]]</span>
+
+<span class="sd">	:param pm.nt.AnimBlendNodeBase anim_blend_layer: Animation blend node</span>
+<span class="sd">	:return: Returns a list of animation blend nodes and it&#39;s corresponding animation layer.</span>
+<span class="sd">	:rtype: list[pm.nt.AnimBlendNodeBase, pm.nt.AnimLayer]</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">anim_blend_layer</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimBlendNodeBase</span><span class="p">):</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Mapping must start with the Animation Blend node.&#39;</span><span class="p">)</span>
+		<span class="k">return</span>
+	<span class="n">mapping</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="n">nested_layers</span> <span class="o">=</span> <span class="kc">True</span>
+	<span class="c1"># Get the Animation Layer</span>
+	<span class="k">while</span> <span class="n">nested_layers</span><span class="p">:</span>
+		<span class="n">anim_layer</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">anim_blend_layer</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimLayer</span><span class="p">)))</span>
+		<span class="n">anim_layer</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">anim_layer</span><span class="p">)</span>
+		<span class="n">mapping</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">anim_blend_layer</span><span class="p">,</span> <span class="n">anim_layer</span><span class="p">])</span>
+		
+		<span class="k">if</span> <span class="n">anim_blend_layer</span><span class="o">.</span><span class="n">inputA</span><span class="o">.</span><span class="n">isCompound</span><span class="p">():</span>
+			<span class="n">input_a</span> <span class="o">=</span> <span class="n">attr_utils</span><span class="o">.</span><span class="n">get_compound_attr_connections</span><span class="p">(</span><span class="n">anim_blend_layer</span><span class="p">,</span> <span class="s1">&#39;inputA&#39;</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">input_a</span> <span class="o">=</span> <span class="n">anim_blend_layer</span><span class="o">.</span><span class="n">inputA</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()</span>
+		
+		<span class="n">next_anim_layer</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">input_a</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimBlendNodeBase</span><span class="p">)]</span>
+		
+		<span class="k">if</span> <span class="n">next_anim_layer</span><span class="p">:</span>
+			<span class="n">anim_blend_layer</span> <span class="o">=</span> <span class="n">next_anim_layer</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">nested_layers</span> <span class="o">=</span> <span class="kc">False</span>
+	
+	<span class="k">return</span> <span class="n">mapping</span></div>
+
+
+<div class="viewcode-block" id="get_node_connections"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.get_node_connections">[docs]</a><span class="k">def</span> <span class="nf">get_node_connections</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Returns a dictionary with input and output connections.</span>
+
+<span class="sd">	:param pm.nt.transform node: An object with connections.</span>
+<span class="sd">	:return: Returns a dictionary with input and output connections.</span>
+<span class="sd">	:rtype: dictionary{pm.nt.attribute:pm.nt.attribute}</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">_dict</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="c1"># Get all the animation blend node&#39;s connections.</span>
+	<span class="n">input_connections</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="n">plugs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+	<span class="n">output_connections</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="n">plugs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+	
+	<span class="n">input_connections</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])],</span> <span class="n">input_connections</span><span class="p">)</span>
+	<span class="n">output_connections</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])],</span> <span class="n">output_connections</span><span class="p">)</span>
+	
+	<span class="n">_dict</span><span class="p">[</span><span class="s1">&#39;input&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="n">_dict</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">input_connections</span><span class="p">:</span>
+		<span class="n">_dict</span><span class="p">[</span><span class="s1">&#39;input&#39;</span><span class="p">][</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">output_connections</span><span class="p">:</span>
+		<span class="n">_dict</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">][</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+	
+	<span class="k">return</span> <span class="n">_dict</span></div>
+
+
+<div class="viewcode-block" id="update_connections_dict"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.update_connections_dict">[docs]</a><span class="k">def</span> <span class="nf">update_connections_dict</span><span class="p">(</span><span class="n">blend_connections</span><span class="p">,</span> <span class="n">new_name</span><span class="p">,</span> <span class="n">node_type</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Updates the node connections with a different node.  Used for switching connections to a duplicated node.</span>
+<span class="sd">	Use this to after duplicating the node.  This will switch the original node name to the duplicated name.</span>
+
+<span class="sd">	:param dictionary blend_connections: A dictionary with input and output connections.</span>
+<span class="sd">	:param string new_name: Name of an animation blend node for animation layers.</span>
+<span class="sd">	:param type() node_type: checks for the type of node.</span>
+<span class="sd">	:return:  Returns an updated dictionary.</span>
+<span class="sd">	:rtype: dictionary{pm.nt.attribute:pm.nt.attribute}</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">new_blend_connections</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="n">new_blend_connections</span><span class="p">[</span><span class="s1">&#39;input&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="n">new_blend_connections</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+		<span class="n">new_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">new_name</span><span class="p">)</span>
+	<span class="k">for</span> <span class="n">output_node_attr</span><span class="p">,</span> <span class="n">input_node_attr</span> <span class="ow">in</span> <span class="n">blend_connections</span><span class="p">[</span><span class="s1">&#39;input&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+		<span class="k">if</span> <span class="n">cmds</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">output_node_attr</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">output_node_attr</span><span class="p">)</span><span class="o">.</span><span class="n">node</span><span class="p">(),</span> <span class="n">node_type</span><span class="p">):</span>
+			<span class="n">output_node_attr</span> <span class="o">=</span> <span class="n">output_node_attr</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">output_node_attr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">new_name</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">cmds</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">input_node_attr</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">input_node_attr</span><span class="p">)</span><span class="o">.</span><span class="n">node</span><span class="p">(),</span> <span class="n">node_type</span><span class="p">):</span>
+			<span class="n">input_node_attr</span> <span class="o">=</span> <span class="n">input_node_attr</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">input_node_attr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">new_name</span><span class="p">)</span>
+		<span class="n">new_blend_connections</span><span class="p">[</span><span class="s1">&#39;input&#39;</span><span class="p">][</span><span class="n">output_node_attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">input_node_attr</span>
+	
+	<span class="k">for</span> <span class="n">output_node_attr</span><span class="p">,</span> <span class="n">input_node_attr</span> <span class="ow">in</span> <span class="n">blend_connections</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+		<span class="k">if</span> <span class="n">cmds</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">output_node_attr</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">output_node_attr</span><span class="p">)</span><span class="o">.</span><span class="n">node</span><span class="p">(),</span> <span class="n">node_type</span><span class="p">):</span>
+			<span class="n">output_node_attr</span> <span class="o">=</span> <span class="n">output_node_attr</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">output_node_attr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">new_name</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">cmds</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">input_node_attr</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">input_node_attr</span><span class="p">)</span><span class="o">.</span><span class="n">node</span><span class="p">(),</span> <span class="n">node_type</span><span class="p">):</span>
+			<span class="n">input_node_attr</span> <span class="o">=</span> <span class="n">input_node_attr</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">input_node_attr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">new_name</span><span class="p">)</span>
+		<span class="n">new_blend_connections</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">][</span><span class="n">output_node_attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">input_node_attr</span>
+	<span class="k">return</span> <span class="n">new_blend_connections</span></div>
+
+
+<div class="viewcode-block" id="update_anim_blend_in_dict"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.update_anim_blend_in_dict">[docs]</a><span class="k">def</span> <span class="nf">update_anim_blend_in_dict</span><span class="p">(</span><span class="n">blend_connections</span><span class="p">,</span> <span class="n">new_anim_blend</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Swapping out the animation blend node in the &quot;get_node_connection&quot; dictionary for a new animation blend node.</span>
+
+<span class="sd">	:param dict blend_connections: input and output connections from an animation blend node.</span>
+<span class="sd">	:param string new_anim_blend: Name of an animation blend node for animation layers.</span>
+<span class="sd">	:return : Returns input and output connections from an animation blend node.</span>
+<span class="sd">	:rtype: dictionary{pm.nt.attribute:pm.nt.attribute}</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">return</span> <span class="n">update_connections_dict</span><span class="p">(</span><span class="n">blend_connections</span><span class="p">,</span> <span class="n">new_anim_blend</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimBlendNodeBase</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="update_anim_layer_in_dict"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.update_anim_layer_in_dict">[docs]</a><span class="k">def</span> <span class="nf">update_anim_layer_in_dict</span><span class="p">(</span><span class="n">blend_connections</span><span class="p">,</span> <span class="n">new_anim_layer</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Swapping out the animation layer node in the &quot;get_node_connection&quot; dictionary for a new animation layer node.</span>
+
+<span class="sd">	:param dict blend_connections: input and output connections from an animation layer node.</span>
+<span class="sd">	:param string new_anim_layer: Name of an animation layer node for animation layers.</span>
+<span class="sd">	:return: Returns input and output connections from an animation layer node.</span>
+<span class="sd">	:rtype: dictionary{pm.nt.attribute:pm.nt.attribute}</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">return</span> <span class="n">update_connections_dict</span><span class="p">(</span><span class="n">blend_connections</span><span class="p">,</span> <span class="n">new_anim_layer</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimLayer</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="duplicate_anim_layer"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.duplicate_anim_layer">[docs]</a><span class="k">def</span> <span class="nf">duplicate_anim_layer</span><span class="p">(</span><span class="n">anim_layer</span><span class="p">,</span> <span class="n">new_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Duplicates the animation layer and adds an attribute to track the original anim layer.</span>
+
+<span class="sd">	:param pm.nt.AnimLayer anim_layer: Animation Layer.</span>
+<span class="sd">	:param string new_name: Name of the duplicated animation Library.</span>
+<span class="sd">	:return:  Returns a duplicate animation layer.</span>
+<span class="sd">	:rtype: pm.nt.AnimLayer</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">anim_layer</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimLayer</span><span class="p">):</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Node must be an animation layer node: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimLayer</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+	<span class="k">if</span> <span class="n">new_name</span><span class="p">:</span>
+		<span class="n">dup_anim_layer</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">duplicate</span><span class="p">(</span><span class="n">anim_layer</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">new_name</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">dup_anim_layer</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">duplicate</span><span class="p">(</span><span class="n">anim_layer</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">new_name</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="c1"># Add an attribute that holds the original animation layer name.</span>
+	<span class="n">dup_anim_layer</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;original_anim_layer&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+	<span class="n">dup_anim_layer</span><span class="o">.</span><span class="n">original_anim_layer</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">anim_layer</span><span class="p">))</span>
+	<span class="k">return</span> <span class="n">dup_anim_layer</span></div>
+
+
+<div class="viewcode-block" id="check_layer_original"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.check_layer_original">[docs]</a><span class="k">def</span> <span class="nf">check_layer_original</span><span class="p">(</span><span class="n">anim_layer</span><span class="p">,</span> <span class="n">anim_layer_list</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Check a list of animation laters to see if it is a duplicated layer and if it matches the original node.</span>
+
+<span class="sd">	:param pm.nt.AnimLayer anim_layer:  Animation Layer.</span>
+<span class="sd">	:param list anim_layer_list: list of duplicated animation layers.</span>
+<span class="sd">	:return: If True, it will return a duplicated animation layer that matches the anim_layer.</span>
+<span class="sd">	:rtype: pm.nt.AnimLayer</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">anim_layer_list</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;original_anim_layer&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">x</span><span class="o">.</span><span class="n">original_anim_layer</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">anim_layer</span><span class="p">):</span>
+			<span class="k">return</span> <span class="n">x</span>
+	<span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="duplicate_anim_layer_network"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.duplicate_anim_layer_network">[docs]</a><span class="k">def</span> <span class="nf">duplicate_anim_layer_network</span><span class="p">(</span><span class="n">anim_layers_map</span><span class="p">,</span> <span class="n">anim_layer_list</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Duplicates the animation layer network.</span>
+
+<span class="sd">	:param list anim_layers_map: Map of existing animation blend nodes and the animation layers they are connected to.</span>
+<span class="sd">	:param list anim_layer_list: List of animations layers that already exist.  Use these animation layers to</span>
+<span class="sd">	connect the duplicated blend nodes.</span>
+<span class="sd">	:return: Returns an updated anim_layers_map with the duplicated nodes.</span>
+<span class="sd">	:rtype: list[pm.nt.AnimBlendNodeBase, pm.nt.AnimLayer]</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">new_mapping</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="k">for</span> <span class="n">anim_blend</span><span class="p">,</span> <span class="n">anim_layer</span> <span class="ow">in</span> <span class="n">anim_layers_map</span><span class="p">:</span>
+		<span class="c1"># Get the connections from the anim blend node and then duplicate the node.</span>
+		<span class="n">blend_connections</span> <span class="o">=</span> <span class="n">get_node_connections</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">)</span>
+		<span class="n">dup_blend</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">duplicate</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="c1"># Update the connections dictionary with the duplicated node.</span>
+		<span class="n">blend_connections</span> <span class="o">=</span> <span class="n">update_anim_blend_in_dict</span><span class="p">(</span><span class="n">blend_connections</span><span class="p">,</span> <span class="n">dup_blend</span><span class="p">)</span>
+		
+		<span class="c1"># Check to see what animation layer will be connected to the anim blend.</span>
+		<span class="c1"># The attempt here is to check to see if the animation has already been duplicated.  If already duplicated,</span>
+		<span class="c1"># we want to connect to that animation layer.  If not, then duplicate the animation layer.</span>
+		<span class="n">anim_layer_list</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimLayer</span><span class="p">)</span>
+		<span class="n">original_layer</span> <span class="o">=</span> <span class="n">check_layer_original</span><span class="p">(</span><span class="n">anim_layer</span><span class="p">,</span> <span class="n">anim_layer_list</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">original_layer</span><span class="p">:</span>
+			<span class="n">duped_anim_layer</span> <span class="o">=</span> <span class="n">duplicate_anim_layer</span><span class="p">(</span><span class="n">anim_layer</span><span class="p">)</span>
+			<span class="n">anim_layer_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">duped_anim_layer</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">duped_anim_layer</span> <span class="o">=</span> <span class="n">original_layer</span>
+			<span class="n">anim_layer_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">duped_anim_layer</span><span class="p">)</span>
+		
+		<span class="n">blend_connections</span> <span class="o">=</span> <span class="n">update_anim_layer_in_dict</span><span class="p">(</span><span class="n">blend_connections</span><span class="p">,</span> <span class="n">duped_anim_layer</span><span class="p">)</span>
+		
+		<span class="c1"># Connect new input nodes just like the old nodes.</span>
+		<span class="k">for</span> <span class="n">output_node_attr</span><span class="p">,</span> <span class="n">input_node_attr</span> <span class="ow">in</span> <span class="n">blend_connections</span><span class="p">[</span><span class="s1">&#39;input&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+			<span class="n">output_node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">output_node_attr</span><span class="p">)</span><span class="o">.</span><span class="n">node</span><span class="p">()</span>
+			<span class="n">output_attr</span> <span class="o">=</span> <span class="n">output_node_attr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+			<span class="c1"># Connect the duplicated blend node and animation layer.</span>
+			<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimLayer</span><span class="p">):</span>
+				<span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="n">output_node_attr</span><span class="p">,</span> <span class="n">input_node_attr</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="c1"># Duplicate the animation curve and connect.</span>
+			<span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimCurve</span><span class="p">):</span>
+				<span class="n">curve</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">duplicate</span><span class="p">(</span><span class="n">output_node</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+				<span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="n">curve</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">output_attr</span><span class="p">),</span> <span class="n">input_node_attr</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		
+		<span class="c1"># Connect new output nodes just like the old nodes.</span>
+		<span class="k">for</span> <span class="n">output_node_attr</span><span class="p">,</span> <span class="n">input_node_attr</span> <span class="ow">in</span> <span class="n">blend_connections</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+			<span class="n">input_node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">input_node_attr</span><span class="p">)</span><span class="o">.</span><span class="n">node</span><span class="p">()</span>
+			<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimLayer</span><span class="p">):</span>
+				<span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="n">output_node_attr</span><span class="p">,</span> <span class="n">input_node_attr</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">new_mapping</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">dup_blend</span><span class="p">,</span> <span class="n">duped_anim_layer</span><span class="p">])</span>
+	
+	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_mapping</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+		<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">new_mapping</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+			<span class="n">blend_node</span> <span class="o">=</span> <span class="n">new_mapping</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+			<span class="n">next_blend_node</span> <span class="o">=</span> <span class="n">new_mapping</span><span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+			<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">blend_node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimBlendNodeBase</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">next_blend_node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimBlendNodeBase</span><span class="p">):</span>
+				<span class="n">next_blend_node</span><span class="o">.</span><span class="n">output</span> <span class="o">&gt;&gt;</span> <span class="n">blend_node</span><span class="o">.</span><span class="n">inputA</span>
+	
+	<span class="k">return</span> <span class="p">[</span><span class="n">new_mapping</span><span class="p">,</span> <span class="n">anim_layer_list</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="merge_anim_layer_network"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.merge_anim_layer_network">[docs]</a><span class="k">def</span> <span class="nf">merge_anim_layer_network</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">,</span> <span class="n">new_anim_blend</span><span class="p">,</span> <span class="n">delete_curve</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Merges 2 base animation curves from two different animation layer networks.</span>
+
+<span class="sd">	:param pm.nt.AnimBlendNodeBase anim_blend: The animation blend node that ties the curves and layers together.</span>
+<span class="sd">	:param pm.nt.AnimBlendNodeBase new_anim_blend: The animation blend node that ties the curves and layers together.</span>
+<span class="sd">	:param bool delete_curve: If true, deletes the unused animation curve.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="c1"># map the two networks and get the base animation curves</span>
+	<span class="n">anim_map</span> <span class="o">=</span> <span class="n">get_all_anim_blends_in_network</span><span class="p">(</span><span class="n">new_anim_blend</span><span class="p">)</span>
+	<span class="n">original_base_curves</span> <span class="o">=</span> <span class="n">get_base_anim_curves</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">)</span>
+	<span class="n">new_base_curves</span> <span class="o">=</span> <span class="n">get_base_anim_curves</span><span class="p">(</span><span class="n">new_anim_blend</span><span class="p">)</span>
+	<span class="c1"># merge the anim curves and connect the blends together.</span>
+	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_base_curves</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">original_base_curves</span><span class="p">):</span>
+		<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">new_base_curves</span><span class="p">)):</span>
+			<span class="n">anim_curves</span><span class="o">.</span><span class="n">replace_into_curve</span><span class="p">(</span><span class="n">new_base_curves</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">original_base_curves</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">delete_curve</span><span class="o">=</span><span class="n">delete_curve</span><span class="p">)</span>
+	
+	<span class="c1"># connect the networks together</span>
+	<span class="n">last_anim_blend</span> <span class="o">=</span> <span class="n">anim_map</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+	<span class="k">if</span> <span class="n">last_anim_blend</span><span class="o">.</span><span class="n">inputA</span><span class="o">.</span><span class="n">isCompound</span><span class="p">():</span>
+		<span class="n">input_attrs</span> <span class="o">=</span> <span class="n">last_anim_blend</span><span class="o">.</span><span class="n">inputA</span><span class="o">.</span><span class="n">getChildren</span><span class="p">()</span>
+		<span class="n">output_attrs</span> <span class="o">=</span> <span class="n">anim_blend</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">getChildren</span><span class="p">()</span>
+		<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">input_attrs</span><span class="p">)):</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="n">output_attrs</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="n">output_attrs</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">input_attrs</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">f</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="n">anim_blend</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="n">last_anim_blend</span><span class="o">.</span><span class="n">inputA</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="connect_layer_to_base_layer"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.connect_layer_to_base_layer">[docs]</a><span class="k">def</span> <span class="nf">connect_layer_to_base_layer</span><span class="p">(</span><span class="n">anim_layer</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Connects an animation layer to the base animation layer.</span>
+
+<span class="sd">	:param pm.nt.AnimLayer anim_layer: Animation layer node.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">root_layer</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">animLayer</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">root_layer</span><span class="p">:</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">animLayer</span><span class="p">())</span>
+		<span class="n">root_layer</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">animLayer</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;There is not Base Layer in the scene.  Creating </span><span class="si">{0}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">root_layer</span><span class="p">))</span>
+	
+	<span class="n">parent_layer</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">animLayer</span><span class="p">(</span><span class="n">anim_layer</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	
+	<span class="k">if</span> <span class="n">parent_layer</span> <span class="o">==</span> <span class="n">root_layer</span><span class="p">:</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> is already connected to the base layer </span><span class="si">{1}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">anim_layer</span><span class="p">,</span> <span class="n">root_layer</span><span class="p">))</span>
+		<span class="k">return</span>
+	
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">anim_layer</span> <span class="ow">in</span> <span class="n">root_layer</span><span class="o">.</span><span class="n">childrenSolo</span><span class="o">.</span><span class="n">listConnections</span><span class="p">():</span>
+		<span class="n">c_solo</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="n">root_layer</span><span class="o">.</span><span class="n">childrenSolo</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="n">anim_layer</span><span class="o">.</span><span class="n">solo</span><span class="p">,</span> <span class="n">root_layer</span><span class="o">.</span><span class="n">childrenSolo</span><span class="p">[</span><span class="n">c_solo</span><span class="p">],</span> <span class="n">f</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">anim_layer</span> <span class="ow">in</span> <span class="n">root_layer</span><span class="o">.</span><span class="n">childrenLayers</span><span class="o">.</span><span class="n">listConnections</span><span class="p">():</span>
+		<span class="n">c_layers</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="n">root_layer</span><span class="o">.</span><span class="n">childrenLayers</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="n">anim_layer</span><span class="o">.</span><span class="n">parentLayer</span><span class="p">,</span> <span class="n">root_layer</span><span class="o">.</span><span class="n">childrenLayers</span><span class="p">[</span><span class="n">c_layers</span><span class="p">],</span> <span class="n">f</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	
+	<span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="n">root_layer</span><span class="o">.</span><span class="n">childsoloed</span><span class="p">,</span> <span class="n">anim_layer</span><span class="o">.</span><span class="n">siblingSolo</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="n">root_layer</span><span class="o">.</span><span class="n">outMute</span><span class="p">,</span> <span class="n">anim_layer</span><span class="o">.</span><span class="n">parentMute</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="n">root_layer</span><span class="o">.</span><span class="n">foregroundWeight</span><span class="p">,</span> <span class="n">anim_layer</span><span class="o">.</span><span class="n">parentWeight</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="store_object_animation"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.store_object_animation">[docs]</a><span class="k">def</span> <span class="nf">store_object_animation</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span>
+						   <span class="n">keep_animation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+						   <span class="n">min_time_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+						   <span class="n">max_time_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+						   <span class="n">merge_layers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+						   <span class="n">start_time</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Creates compound attributes associated with the objects and animation curves.</span>
+<span class="sd">	This will disconnect the animation curve and connect them to the associated compound attribute.</span>
+
+<span class="sd">	:param pm.nt.transform obj: An object that has animation curves.</span>
+<span class="sd">	:param bool keep_animation: If True, the animation curves are duplicated before adding to the node.</span>
+<span class="sd">	:param int min_time_range: Any key before this number will be deleted.</span>
+<span class="sd">	:param int max_time_range: Any key after this number will be deleted.</span>
+<span class="sd">	:return obj: The object that animation curves were transferred to.</span>
+<span class="sd">	:rtype: pm.nt.transform</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">attr_curves</span> <span class="o">=</span> <span class="p">{}</span>
+	
+	<span class="c1"># check for animation layer.  If there is one, merge layers.</span>
+	<span class="k">if</span> <span class="n">merge_layers</span> <span class="ow">and</span> <span class="n">check_obj_for_anim_layer</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">obj</span><span class="p">):</span>
+		<span class="n">baking</span><span class="o">.</span><span class="n">merge_all_animation_layers</span><span class="p">()</span>
+	
+	<span class="c1"># get all the animation curves and the plugs.  This will disconnect the animation curves</span>
+	<span class="c1"># and connect them to the associated compound attribute.</span>
+	<span class="n">curves</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimCurve</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimBlendNodeBase</span><span class="p">),</span> <span class="n">scn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">curves</span><span class="p">:</span>
+		<span class="k">return</span>
+	
+	<span class="n">curves</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">curves</span><span class="p">))</span>
+	<span class="k">for</span> <span class="n">curve</span> <span class="ow">in</span> <span class="n">curves</span><span class="p">:</span>
+		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">curve</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimCurve</span><span class="p">):</span>
+			<span class="n">plug</span><span class="p">,</span> <span class="n">curve</span> <span class="o">=</span> <span class="n">create_dict_curve_connections</span><span class="p">(</span><span class="n">curve</span><span class="p">,</span> <span class="n">keep_animation</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">min_time_range</span> <span class="ow">or</span> <span class="n">max_time_range</span><span class="p">:</span>
+				<span class="n">anim_curves</span><span class="o">.</span><span class="n">crop_time_range</span><span class="p">(</span><span class="n">anim_curve</span><span class="o">=</span><span class="n">curve</span><span class="p">,</span> <span class="n">min_time</span><span class="o">=</span><span class="n">min_time_range</span><span class="p">,</span> <span class="n">max_time</span><span class="o">=</span><span class="n">max_time_range</span><span class="p">)</span>
+			<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+				<span class="n">key_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">curve</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+				<span class="n">start_diff</span> <span class="o">=</span> <span class="n">start_time</span> <span class="o">-</span> <span class="n">key_time</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+				<span class="n">anim_curves</span><span class="o">.</span><span class="n">change_curve_start_time</span><span class="p">(</span><span class="n">animation_curve</span><span class="o">=</span><span class="n">curve</span><span class="p">,</span> <span class="n">start_difference</span><span class="o">=</span><span class="n">start_diff</span><span class="p">)</span>
+			<span class="n">attr_curves</span><span class="p">[</span><span class="n">plug</span><span class="p">]</span> <span class="o">=</span> <span class="n">curve</span><span class="o">.</span><span class="n">output</span>
+		<span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">curve</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimBlendNodeBase</span><span class="p">):</span>
+			<span class="n">attr_curves</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">create_anim_layer_network</span><span class="p">(</span><span class="n">curve</span><span class="p">,</span> <span class="n">keep_animation</span><span class="p">,</span> <span class="n">min_time_range</span><span class="p">,</span> <span class="n">max_time_range</span><span class="p">))</span>
+	
+	<span class="k">return</span> <span class="n">attr_curves</span></div>
+
+
+<div class="viewcode-block" id="create_anim_layer_network"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.create_anim_layer_network">[docs]</a><span class="k">def</span> <span class="nf">create_anim_layer_network</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">,</span> <span class="n">keep_animation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_time_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_time_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Duplicates the animation layer network.</span>
+
+<span class="sd">	:param pm.nt.AnimBlendNodeBase anim_blend: Animation blend node.</span>
+<span class="sd">	:return: Returns a list of the animation blend nodes and animation layers.</span>
+<span class="sd">	:rtype: list[pm.nt.AnimBlendNodeBase, pm.nt.AnimLayer]</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">attr_curves</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">anim_blend</span><span class="p">:</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;There is no connected animation blend node.&#39;</span><span class="p">)</span>
+		<span class="k">return</span>
+	<span class="k">if</span> <span class="n">anim_blend</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">isCompound</span><span class="p">():</span>
+		<span class="n">obj_attrs</span> <span class="o">=</span> <span class="n">attr_utils</span><span class="o">.</span><span class="n">get_compound_attr_connections</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">,</span> <span class="n">as_plugs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">obj_attrs</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">anim_blend</span> <span class="o">+</span> <span class="s1">&#39;.output&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="n">plugs</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+	
+	<span class="c1"># Duplicate the whole animation layer network and connect new layers to this node.</span>
+	<span class="n">mapped_layers</span> <span class="o">=</span> <span class="n">map_anim_layers</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">)</span>
+	<span class="n">new_mapping</span><span class="p">,</span> <span class="n">animation_layers</span> <span class="o">=</span> <span class="n">duplicate_anim_layer_network</span><span class="p">(</span><span class="n">mapped_layers</span><span class="p">)</span>
+	<span class="n">new_anim_blend</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">new_mapping</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+	
+	<span class="c1"># Remove existing animation blend nodes.  Delete Animation.</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">keep_animation</span><span class="p">:</span>
+		<span class="n">delete_anim_blends_and_curves</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">)</span>
+	
+	<span class="n">curves</span> <span class="o">=</span> <span class="n">get_all_curves_in_layer_network</span><span class="p">(</span><span class="n">new_anim_blend</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">min_time_range</span> <span class="ow">or</span> <span class="n">max_time_range</span> <span class="ow">and</span> <span class="n">curves</span><span class="p">:</span>
+		<span class="k">for</span> <span class="n">curve</span> <span class="ow">in</span> <span class="n">curves</span><span class="p">:</span>
+			<span class="n">anim_curves</span><span class="o">.</span><span class="n">crop_time_range</span><span class="p">(</span><span class="n">anim_curve</span><span class="o">=</span><span class="n">curve</span><span class="p">,</span> <span class="n">min_time</span><span class="o">=</span><span class="n">min_time_range</span><span class="p">,</span> <span class="n">max_time</span><span class="o">=</span><span class="n">max_time_range</span><span class="p">)</span>
+	
+	<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj_attrs</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+		<span class="n">new_anim_blend_attrs</span> <span class="o">=</span> <span class="n">new_anim_blend</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">getChildren</span><span class="p">()</span>
+		<span class="n">plug</span> <span class="o">=</span> <span class="n">naming</span><span class="o">.</span><span class="n">get_basename</span><span class="p">(</span><span class="n">obj_attrs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">node</span><span class="p">())</span>
+		<span class="n">attr_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj_attrs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+		<span class="n">plug</span> <span class="o">=</span> <span class="n">plug</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">attr_name</span>
+		<span class="n">attr_curves</span><span class="p">[</span><span class="n">plug</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_anim_blend_attrs</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">plug</span> <span class="o">=</span> <span class="n">naming</span><span class="o">.</span><span class="n">get_basename</span><span class="p">(</span><span class="n">obj_attrs</span><span class="p">)</span>
+		<span class="n">attr_curves</span><span class="p">[</span><span class="n">plug</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_anim_blend</span><span class="o">.</span><span class="n">output</span>
+	<span class="k">return</span> <span class="n">attr_curves</span></div>
+
+
+<div class="viewcode-block" id="create_dict_curve_connections"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.create_dict_curve_connections">[docs]</a><span class="k">def</span> <span class="nf">create_dict_curve_connections</span><span class="p">(</span><span class="n">curve</span><span class="p">,</span> <span class="n">keep_animation</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Creates a dictionary of the how the animation curve was connected.</span>
+
+<span class="sd">	:param object curve: an object that is connected.</span>
+<span class="sd">	:param bool keep_animation: if connected the object curve will be duplicated.</span>
+<span class="sd">	:return: Returns a dictionary of the how the animation curve was connected.</span>
+<span class="sd">	:rtype: dictionary{pm.nt.attribute:pm.nt.attribute}</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">curves_dict</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="c1"># Get the object the plug is connected to.</span>
+	<span class="n">plug</span> <span class="o">=</span> <span class="n">curve</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="n">plugs</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+	
+	<span class="k">if</span> <span class="n">keep_animation</span><span class="p">:</span>
+		<span class="n">curve</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">duplicate</span><span class="p">(</span><span class="n">curve</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+	
+	<span class="c1"># remove name spaces and create the connection dictionary.</span>
+	<span class="n">plug</span> <span class="o">=</span> <span class="n">naming</span><span class="o">.</span><span class="n">get_basename</span><span class="p">(</span><span class="n">plug</span><span class="p">)</span>
+	<span class="n">curve_name</span> <span class="o">=</span> <span class="n">naming</span><span class="o">.</span><span class="n">get_basename</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
+	<span class="n">curve</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">curve</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">curve_name</span><span class="p">))</span>
+	<span class="c1"># curves_dict[plug] = curve.output</span>
+	<span class="k">return</span> <span class="p">[</span><span class="n">plug</span><span class="p">,</span> <span class="n">curve</span><span class="p">]</span></div>
+
+
+<span class="c1">###############################</span>
+<span class="c1"># Restore Layers</span>
+<span class="c1">###############################</span>
+<div class="viewcode-block" id="restore_for_anim_layers"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.restore_for_anim_layers">[docs]</a><span class="k">def</span> <span class="nf">restore_for_anim_layers</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">,</span>
+							<span class="n">object_attribute</span><span class="p">,</span>
+							<span class="n">keep_curves</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+							<span class="n">delete_old_curves</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+							<span class="n">start_time</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	The main command to restore animation curves onto an object.</span>
+
+<span class="sd">	:param pm.nt.AnimBlendNodeBase anim_blend: The animation blend node that ties the curves and layers together.</span>
+<span class="sd">	:param pm.nt.general.Attribute object_attribute: The object attribute that connects to an animation.</span>
+<span class="sd">	:param bool keep_curves: If True, will duplicate the animation curves or anim layer network before re-connecting.</span>
+<span class="sd">	:param bool delete_old_curves: deletes the curves that are already connected to the new object.</span>
+<span class="sd">	:param int start_time: The start frame if the animation needs to change in the timeline.</span>
+<span class="sd">	:return: returns the last frame if the start time changes.</span>
+<span class="sd">	:rtype: int</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">end_time</span> <span class="o">=</span> <span class="kc">None</span>
+	<span class="k">if</span> <span class="n">keep_curves</span><span class="p">:</span>
+		<span class="c1"># Duplicates the animation layer network and connects the new animation layers.</span>
+		<span class="n">keep_anim_layer_curves</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="c1"># Disconnect all the animation layers and connect them to the BaseAnimation layer.</span>
+		<span class="n">swap_anim_layer_curves</span><span class="p">(</span><span class="n">anim_blend</span><span class="o">=</span><span class="n">anim_blend</span><span class="p">,</span> <span class="n">object_attribute</span><span class="o">=</span><span class="n">object_attribute</span><span class="p">)</span>
+	
+	<span class="c1"># adjust time range to match the selected timeline.</span>
+	<span class="k">if</span> <span class="n">start_time</span><span class="p">:</span>
+		<span class="n">end_time</span> <span class="o">=</span> <span class="n">adjust_layers_timeline</span><span class="p">(</span><span class="n">anim_blend</span><span class="o">=</span><span class="n">anim_blend</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">)</span>
+	
+	<span class="c1"># get the connections of the flag/object</span>
+	<span class="k">if</span> <span class="n">object_attribute</span><span class="o">.</span><span class="n">isCompound</span><span class="p">():</span>
+		<span class="n">obj_curves</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">attr_utils</span><span class="o">.</span><span class="n">get_compound_attr_connections</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">object_attribute</span><span class="p">,</span>
+																	<span class="n">destination</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+																	<span class="n">source</span><span class="o">=</span><span class="kc">True</span><span class="p">)))</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">obj_curves</span> <span class="o">=</span> <span class="n">object_attribute</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">obj_curves</span><span class="p">:</span>
+		<span class="c1"># Swap the animation curve from the node to the object.</span>
+		<span class="n">connect_anim_layer_curves</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">,</span> <span class="n">object_attribute</span><span class="p">)</span>
+	<span class="c1"># Connect Animation Layers</span>
+	
+	<span class="k">elif</span> <span class="n">obj_curves</span> <span class="ow">and</span> <span class="n">delete_old_curves</span><span class="p">:</span>
+		<span class="c1"># Delete the old curves 1st, then swap the animation curve from the node to the object.</span>
+		<span class="p">[</span><span class="n">delete_all_old_curves</span><span class="p">(</span><span class="n">obj_curve</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj_curve</span> <span class="ow">in</span> <span class="n">obj_curves</span><span class="p">]</span>
+		<span class="n">connect_anim_layer_curves</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">,</span> <span class="n">object_attribute</span><span class="p">)</span>
+	
+	<span class="k">elif</span> <span class="n">obj_curves</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">delete_old_curves</span><span class="p">:</span>
+		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj_curves</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimCurve</span><span class="p">):</span>
+			<span class="n">base_curves</span> <span class="o">=</span> <span class="n">get_base_anim_curves</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">base_curves</span><span class="p">:</span>
+				<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">base_curves</span><span class="p">)):</span>
+					<span class="n">anim_curves</span><span class="o">.</span><span class="n">replace_into_curve</span><span class="p">(</span><span class="n">obj_curves</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">base_curves</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
+				<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">obj_curves</span><span class="p">)</span>
+				<span class="n">connect_anim_layer_curves</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">,</span> <span class="n">object_attribute</span><span class="p">)</span>
+		<span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj_curves</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimBlendNodeBase</span><span class="p">):</span>
+			<span class="n">merge_anim_layer_network</span><span class="p">(</span><span class="n">obj_curves</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">anim_blend</span><span class="p">)</span>
+			<span class="n">connect_anim_layer_curves</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">,</span> <span class="n">object_attribute</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">end_time</span></div>
+
+
+<div class="viewcode-block" id="connect_anim_layer_curves"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.connect_anim_layer_curves">[docs]</a><span class="k">def</span> <span class="nf">connect_anim_layer_curves</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">,</span> <span class="n">object_attribute</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	# Swap the animation curve from the node to the object.</span>
+
+<span class="sd">	:param pm.nt.AnimBlendNodeBase anim_blend: The animation blend node that ties the curves and layers together.</span>
+<span class="sd">	:param pm.nt.general.Attribute object_attribute: The object attribute that connects to an animation.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">anim_blend</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">isCompound</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">object_attribute</span><span class="o">.</span><span class="n">isCompound</span><span class="p">():</span>
+		<span class="n">anim_blend</span><span class="o">.</span><span class="n">output</span> <span class="o">&gt;&gt;</span> <span class="n">object_attribute</span>
+	<span class="k">elif</span> <span class="n">anim_blend</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">isCompound</span><span class="p">()</span> <span class="ow">and</span> <span class="n">object_attribute</span><span class="o">.</span><span class="n">isCompound</span><span class="p">():</span>
+		<span class="n">anim_blend_attrs</span> <span class="o">=</span> <span class="n">attr_utils</span><span class="o">.</span><span class="n">get_all_attributes_from_compound_attr</span><span class="p">(</span><span class="n">anim_blend</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+		<span class="n">object_attrs</span> <span class="o">=</span> <span class="n">attr_utils</span><span class="o">.</span><span class="n">get_all_attributes_from_compound_attr</span><span class="p">(</span><span class="n">object_attribute</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">anim_blend_attrs</span><span class="p">)):</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="n">anim_blend_attrs</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">object_attrs</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">f</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="c1"># connect rotate orders</span>
+		<span class="n">blends</span> <span class="o">=</span> <span class="n">get_all_anim_blends_in_network</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">blend</span> <span class="ow">in</span> <span class="n">blends</span><span class="p">:</span>  <span class="c1"># Todo ncomes make RotateOrder not a unique condition.</span>
+			<span class="k">if</span> <span class="n">blend</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;rotateOrder&#39;</span><span class="p">):</span>
+				<span class="n">object_attribute</span><span class="o">.</span><span class="n">node</span><span class="p">()</span><span class="o">.</span><span class="n">rotateOrder</span> <span class="o">&gt;&gt;</span> <span class="n">blend</span><span class="o">.</span><span class="n">rotateOrder</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;There is a mismatch between object attributes and animation blend. &#39;</span>
+					   <span class="s1">&#39;Both objects need to be either a multi attr or a single attr: &#39;</span>
+					   <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">, </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">anim_blend</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="n">object_attribute</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="keep_anim_layer_curves"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.keep_anim_layer_curves">[docs]</a><span class="k">def</span> <span class="nf">keep_anim_layer_curves</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	On restoring animations, duplicates the animation layer network and connects the new animation layers.</span>
+
+<span class="sd">	:param pm.nt.AnimBlendNodeBase anim_blend: The animation blend node that ties the curves and layers together.</span>
+<span class="sd">	:return: The animation blend node that ties the curves and layers together.</span>
+<span class="sd">	:rtype: pm.nt.AnimBlendNodeBase</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="c1"># Return a list of all anim_blend nodes and animation_layer_nodes</span>
+	<span class="c1"># [[anim_blend, anim_layers], [anim_blend, anim_layers]]</span>
+	<span class="n">mapped_layers</span> <span class="o">=</span> <span class="n">map_anim_layers</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">)</span>
+	<span class="c1"># Get a list of all animation layers connected to the base layer.</span>
+	<span class="n">root_layer</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">animLayer</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="n">anim_layer_list</span> <span class="o">=</span> <span class="n">root_layer</span><span class="o">.</span><span class="n">childrenLayers</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()</span>
+	<span class="n">new_mapping</span> <span class="o">=</span> <span class="n">duplicate_anim_layer_network</span><span class="p">(</span><span class="n">mapped_layers</span><span class="p">,</span> <span class="n">anim_layer_list</span><span class="p">)</span>
+	
+	<span class="c1"># Connect the animation layer to the base animation layer if it was just created/duplicated.</span>
+	<span class="k">for</span> <span class="n">blend_node</span><span class="p">,</span> <span class="n">anim_layer</span> <span class="ow">in</span> <span class="n">new_mapping</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">anim_layer</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">anim_layer_list</span><span class="p">:</span>
+			<span class="n">connect_layer_to_base_layer</span><span class="p">(</span><span class="n">anim_layer</span><span class="p">)</span>
+	<span class="n">anim_blend</span> <span class="o">=</span> <span class="n">new_mapping</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+	<span class="k">return</span> <span class="n">anim_blend</span></div>
+
+
+<div class="viewcode-block" id="swap_anim_layer_curves"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.swap_anim_layer_curves">[docs]</a><span class="k">def</span> <span class="nf">swap_anim_layer_curves</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">,</span> <span class="n">object_attribute</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Connects the animation layer to the base layer and the object.</span>
+
+<span class="sd">	:param pm.nt.AnimBlendNodeBase anim_blend: The animation blend node that ties the curves and layers together.</span>
+<span class="sd">	:param pm.nt.general.Attribute object_attribute: The object attribute that connects to an animation.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="c1"># Disconnect all the animation layers and connect them to the BaseAnimation layer.</span>
+	<span class="n">root_layer</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">animLayer</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="n">layers</span> <span class="o">=</span> <span class="n">get_all_anim_layers_in_network</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">)</span>
+	<span class="c1"># Attempt to connect all Layers to the base layer</span>
+	<span class="k">for</span> <span class="n">anim_layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">anim_layer</span> <span class="ow">in</span> <span class="n">root_layer</span><span class="o">.</span><span class="n">listConnections</span><span class="p">():</span>
+			<span class="n">connect_layer_to_base_layer</span><span class="p">(</span><span class="n">anim_layer</span><span class="p">)</span>
+	<span class="c1"># Connect layers to the flag/object attribute</span>
+	<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+		<span class="n">connect_layer_dagSetMembers</span><span class="p">(</span><span class="n">object_attribute</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="adjust_layers_timeline"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.adjust_layers_timeline">[docs]</a><span class="k">def</span> <span class="nf">adjust_layers_timeline</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">,</span> <span class="n">start_time</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Adjusts all the animation curves in an animation layer network.</span>
+
+<span class="sd">	:param pm.nt.AnimBlendNodeBase anim_blend: The animation blend node that ties the curves and layers together.</span>
+<span class="sd">	:param int start_time: The start frame if the animation needs to change in the timeline.</span>
+<span class="sd">	:return int: returns the last frame if the start time changes.</span>
+<span class="sd">	:rtype: int</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="c1"># adjust time range to match the selected timeline.</span>
+	<span class="n">end_frame</span> <span class="o">=</span> <span class="kc">None</span>
+	<span class="k">if</span> <span class="n">start_time</span><span class="p">:</span>
+		<span class="n">curves</span> <span class="o">=</span> <span class="n">get_all_curves_in_layer_network</span><span class="p">(</span><span class="n">anim_blend</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">curve</span> <span class="ow">in</span> <span class="n">curves</span><span class="p">:</span>
+			<span class="n">anim_curves</span><span class="o">.</span><span class="n">change_curve_start_time</span><span class="p">(</span><span class="n">animation_curve</span><span class="o">=</span><span class="n">curve</span><span class="p">,</span> <span class="n">start_difference</span><span class="o">=</span><span class="n">start_time</span><span class="p">)</span>
+			<span class="n">end_frame</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">curve</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+	<span class="k">return</span> <span class="n">end_frame</span></div>
+
+
+<div class="viewcode-block" id="delete_all_old_curves"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_layers.delete_all_old_curves">[docs]</a><span class="k">def</span> <span class="nf">delete_all_old_curves</span><span class="p">(</span><span class="n">anim_obj</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Deletes an animation curve or an animation layer network.</span>
+
+<span class="sd">	:param pm.nt.transform anim_obj: An animation object.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">anim_obj</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimCurve</span><span class="p">):</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">anim_obj</span><span class="p">)</span>
+	<span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">anim_obj</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimBlendNodeBase</span><span class="p">):</span>
+		<span class="n">delete_anim_blends_and_curves</span><span class="p">(</span><span class="n">anim_obj</span><span class="p">)</span></div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.face.joints_data &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.face.joints_data</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.face.joints_data</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Purpose: Tracks Joint data for face meshes.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># python imports</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="kn">import</span> <span class="nn">maya.cmds</span> <span class="k">as</span> <span class="nn">cmds</span>
+
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">pyutils</span>
+<span class="kn">from</span> <span class="nn">cpg.common.textio</span> <span class="kn">import</span> <span class="n">yamlio</span><span class="p">,</span> <span class="n">jsonio</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.modeling</span> <span class="kn">import</span> <span class="n">rivets</span><span class="p">,</span> <span class="n">vert_utils</span>
+
+
+<span class="n">UV_DATA</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;joints&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;rivet&#39;</span><span class="p">:</span> <span class="p">{},</span>
+					<span class="s1">&#39;uv&#39;</span><span class="p">:</span> <span class="p">{},</span>
+					<span class="s1">&#39;ws_position&#39;</span><span class="p">:</span> <span class="p">{},</span>
+					<span class="s1">&#39;rotation&#39;</span><span class="p">:</span> <span class="p">{},</span>
+					<span class="s1">&#39;orientation&#39;</span><span class="p">:</span> <span class="p">{},</span>
+					<span class="s1">&#39;allow_translate&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+					<span class="s1">&#39;allow_rotate&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+					<span class="s1">&#39;allow_scale&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+					<span class="s1">&#39;curve_name&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+					<span class="s1">&#39;uuid&#39;</span><span class="p">:</span> <span class="p">{}},</span>
+			<span class="s1">&#39;skinned_joints&#39;</span><span class="p">:</span> <span class="p">{}}</span>
+
+
+<div class="viewcode-block" id="FaceJointData"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.joints_data.FaceJointData">[docs]</a><span class="k">class</span> <span class="nc">FaceJointData</span><span class="p">:</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">pyutils</span><span class="o">.</span><span class="n">ObjectDict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+		
+<div class="viewcode-block" id="FaceJointData.create"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.joints_data.FaceJointData.create">[docs]</a>	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">joints</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;rivet_&#39;</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Creates the data structure to connect joints to the face mesh.</span>
+<span class="sd">		</span>
+<span class="sd">		:param nt.Transform mesh: The mesh the joints get attached to.</span>
+<span class="sd">		:param list(nt.Joint) joints: List of joints.</span>
+<span class="sd">		:param string prefix: adds a unique name to the rivet.</span>
+<span class="sd">		:return: Returns an instance of UvPositionData</span>
+<span class="sd">		:rtype: UvPositionData</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;joints&#39;</span> <span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;skinned_joints&#39;</span><span class="p">:</span> <span class="p">{}}</span>
+		<span class="c1">#data = dict(list(UV_DATA.items()) + list(data.items()))</span>
+		<span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="n">joints</span><span class="p">:</span>
+			<span class="c1"># Get the joint uv coordinates</span>
+			<span class="n">rivet_name</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="n">joint</span><span class="o">.</span><span class="n">nodeName</span><span class="p">()</span>
+			<span class="n">uv_pin</span> <span class="o">=</span> <span class="s1">&#39;uvpin_&#39;</span> <span class="o">+</span> <span class="n">joint</span><span class="o">.</span><span class="n">nodeName</span><span class="p">()</span>
+			<span class="n">ws_position</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">joint</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="n">ws_rotation</span> <span class="o">=</span> <span class="n">joint</span><span class="o">.</span><span class="n">rotate</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+			<span class="n">orientation</span> <span class="o">=</span> <span class="n">joint</span><span class="o">.</span><span class="n">jointOrient</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+			<span class="n">uuid</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">),</span> <span class="n">uuid</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+			<span class="n">uv</span> <span class="o">=</span> <span class="n">vert_utils</span><span class="o">.</span><span class="n">get_uv_coordinates</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="n">joint</span><span class="p">)</span>
+			
+			<span class="n">data</span><span class="p">[</span><span class="s1">&#39;joints&#39;</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)]</span> <span class="o">=</span> <span class="p">{}</span>
+			<span class="n">data</span><span class="p">[</span><span class="s1">&#39;joints&#39;</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)][</span><span class="s1">&#39;rivet&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rivet_name</span>
+			<span class="n">data</span><span class="p">[</span><span class="s1">&#39;joints&#39;</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)][</span><span class="s1">&#39;uv_pin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">uv_pin</span>
+			<span class="n">data</span><span class="p">[</span><span class="s1">&#39;joints&#39;</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)][</span><span class="s1">&#39;uv&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">uv</span><span class="p">)</span>
+			<span class="n">data</span><span class="p">[</span><span class="s1">&#39;joints&#39;</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)][</span><span class="s1">&#39;ws_position&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ws_position</span><span class="p">)</span>
+			<span class="n">data</span><span class="p">[</span><span class="s1">&#39;joints&#39;</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)][</span><span class="s1">&#39;rotation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ws_rotation</span><span class="p">)</span>
+			<span class="n">data</span><span class="p">[</span><span class="s1">&#39;joints&#39;</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)][</span><span class="s1">&#39;orientation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">orientation</span><span class="p">)</span>
+			<span class="n">data</span><span class="p">[</span><span class="s1">&#39;joints&#39;</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)][</span><span class="s1">&#39;uuid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">uuid</span>
+			<span class="n">data</span><span class="p">[</span><span class="s1">&#39;joints&#39;</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)][</span><span class="s1">&#39;allow_translate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+			<span class="n">data</span><span class="p">[</span><span class="s1">&#39;joints&#39;</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)][</span><span class="s1">&#39;allow_rotate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+			<span class="n">data</span><span class="p">[</span><span class="s1">&#39;joints&#39;</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)][</span><span class="s1">&#39;allow_scale&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+			<span class="n">data</span><span class="p">[</span><span class="s1">&#39;joints&#39;</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)][</span><span class="s1">&#39;curve_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+			
+			<span class="n">joints</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">joints</span><span class="p">))</span>
+			<span class="n">data</span><span class="p">[</span><span class="s1">&#39;skinned_joints&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">joints</span>
+		<span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FaceJointData.data_check"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.joints_data.FaceJointData.data_check">[docs]</a>	<span class="nd">@staticmethod</span>
+	<span class="k">def</span> <span class="nf">data_check</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Checks to make sure the dictionary is setup correctly.</span>
+<span class="sd">		</span>
+<span class="sd">		:param dictionary data: dictionary with uv data.</span>
+<span class="sd">		:return: Returns a dictionary with at least the basic data needed.</span>
+<span class="sd">		:rtype: dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+			<span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">UV_DATA</span><span class="o">.</span><span class="n">items</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+		<span class="k">return</span> <span class="n">pyutils</span><span class="o">.</span><span class="n">ObjectDict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">joints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns all the joints listed in the data.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns all the joints listed in the data.</span>
+<span class="sd">		:rtype: List(str)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;joints&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">joints_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns a dictionary with all the joints and listed data.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns a dictionary with all the joints and listed data.</span>
+<span class="sd">		:rtype: dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;joints&#39;</span><span class="p">]</span>
+	
+	<span class="nd">@joints_data</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">joints_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets joint data to attach to a mesh.</span>
+<span class="sd">		</span>
+<span class="sd">		:param dictionary value: Dictionary of joints data to attach to a mesh.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;joints&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">rivet_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">rivet_names</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
+			<span class="n">rivet_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;joints&#39;</span><span class="p">][</span><span class="n">joint</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rivet&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">rivet_name</span><span class="p">:</span>
+				<span class="n">rivet_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rivet_name</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">rivet_names</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">skinned_joints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns a list of joints that get skinned to the mesh.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns a list of joints that get skinned to the mesh.</span>
+<span class="sd">		:rtype: List(str)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;skinned_joints&#39;</span><span class="p">]</span>
+	
+	<span class="nd">@skinned_joints</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">skinned_joints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets the skinned joints list.</span>
+<span class="sd">		</span>
+<span class="sd">		:param list(str) value: List of joints that get skinned to a mesh.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;skinned_joints&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+		
+<div class="viewcode-block" id="FaceJointData.set_anim_control_shape"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.joints_data.FaceJointData.set_anim_control_shape">[docs]</a>	<span class="k">def</span> <span class="nf">set_anim_control_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint</span><span class="p">,</span> <span class="n">shape_name</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets the name of the animation curve.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str joint: name of the joint.</span>
+<span class="sd">		:param str shape_name: name of the curve file.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">joints_data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">):</span> <span class="p">{</span><span class="s1">&#39;curve_name&#39;</span><span class="p">:</span> <span class="n">shape_name</span><span class="p">}})</span></div>
+	
+<div class="viewcode-block" id="FaceJointData.get_anim_control_shape"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.joints_data.FaceJointData.get_anim_control_shape">[docs]</a>	<span class="k">def</span> <span class="nf">get_anim_control_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the name of the animation curve.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str joint: name of the joint.</span>
+<span class="sd">		:return: Returns the name of the curve file.</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints_data</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;curve_name&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FaceJointData.connect_rivet"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.joints_data.FaceJointData.connect_rivet">[docs]</a>	<span class="nd">@staticmethod</span>
+	<span class="k">def</span> <span class="nf">connect_rivet</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">uv</span><span class="p">,</span> <span class="n">uv_pin_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">locator_scale</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Creates a nt.UvPin and connects a rivet/locator to a mesh.</span>
+<span class="sd">		</span>
+<span class="sd">		:param nt.Transform mesh: The mesh that will have the rivet connected to.</span>
+<span class="sd">		:param str locator: Name of the locator that will represent the rivet.</span>
+<span class="sd">		:param list(float) uv: UV Coordinates.</span>
+<span class="sd">		:param str uv_pin_name: Name of the UvPin.</span>
+<span class="sd">		:param float locator_scale: Local scale of the locator that gets connected to the UV pin.</span>
+<span class="sd">		:return: Returns the name of the locator and the UvPin.</span>
+<span class="sd">		:rtype: Dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">locator</span><span class="p">):</span>
+			<span class="n">locator</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">spaceLocator</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">locator</span><span class="p">)</span>
+		<span class="c1"># Scale down the locator.</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.localScaleX&#39;</span><span class="p">,</span> <span class="n">locator_scale</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.localScaleY&#39;</span><span class="p">,</span> <span class="n">locator_scale</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.localScaleZ&#39;</span><span class="p">,</span> <span class="n">locator_scale</span><span class="p">)</span>
+		
+		<span class="c1"># Create the name for the UvPin.</span>
+		<span class="n">name_list</span> <span class="o">=</span> <span class="n">locator</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">uv_pin_name</span><span class="p">:</span>
+			<span class="n">name_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;uvpin&#39;</span>
+			<span class="n">uv_pin_name</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">name_list</span><span class="p">)</span>
+		<span class="n">uv_pin</span> <span class="o">=</span> <span class="n">rivets</span><span class="o">.</span><span class="n">create_uv_pin</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span>
+										<span class="n">obj</span><span class="o">=</span><span class="n">locator</span><span class="p">,</span>
+										<span class="n">uv</span><span class="o">=</span><span class="n">uv</span><span class="p">,</span>
+										<span class="n">name</span><span class="o">=</span><span class="n">uv_pin_name</span><span class="p">)</span>
+		<span class="c1"># Add a tag for later use.</span>
+		<span class="n">uv_pin</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;isFaceUvPin&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+		<span class="k">return</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">locator</span><span class="p">):</span> <span class="nb">str</span><span class="p">(</span><span class="n">uv_pin</span><span class="p">)}</span></div>
+
+<div class="viewcode-block" id="FaceJointData.connect_joint_to_rivet"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.joints_data.FaceJointData.connect_joint_to_rivet">[docs]</a>	<span class="k">def</span> <span class="nf">connect_joint_to_rivet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rivet</span><span class="p">,</span> <span class="n">joint</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Connects a joint to a rivet.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str rivet: Name of the rivet.</span>
+<span class="sd">		:param nt.Joint joint: The joint that will be connected to the rivet.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints_data</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)][</span><span class="s1">&#39;allow_translate&#39;</span><span class="p">]:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">pointConstraint</span><span class="p">(</span><span class="n">rivet</span><span class="p">,</span> <span class="n">joint</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints_data</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)][</span><span class="s1">&#39;allow_rotate&#39;</span><span class="p">]:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">orientConstraint</span><span class="p">(</span><span class="n">rivet</span><span class="p">,</span> <span class="n">joint</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mo</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints_data</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)][</span><span class="s1">&#39;allow_scale&#39;</span><span class="p">]:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">scaleComponents</span><span class="p">(</span><span class="n">rivet</span><span class="p">,</span> <span class="n">joint</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">joint</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">joint</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">set_rotate</span><span class="p">(</span><span class="n">joint</span><span class="o">=</span><span class="n">joint</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">set_orientation</span><span class="p">(</span><span class="n">joint</span><span class="o">=</span><span class="n">joint</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FaceJointData.connect_all_joints"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.joints_data.FaceJointData.connect_all_joints">[docs]</a>	<span class="k">def</span> <span class="nf">connect_all_joints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Connects all the joints in the data to the rivets.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">connect_joint_to_rivet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">joints</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)][</span><span class="s1">&#39;rivet&#39;</span><span class="p">],</span> <span class="n">joint</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FaceJointData.connect_all_rivets_joints"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.joints_data.FaceJointData.connect_all_rivets_joints">[docs]</a>	<span class="k">def</span> <span class="nf">connect_all_rivets_joints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">joint_list</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Connects all the rivets and joints in the data to a mesh using the uv coordinates.</span>
+<span class="sd">		</span>
+<span class="sd">		:param nt.Transform mesh: The mesh that will receive the rivets.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">rivet_names</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">joint_list</span><span class="p">:</span>
+			<span class="n">joint_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints</span>
+		<span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="n">joint_list</span><span class="p">:</span>
+			<span class="n">rivet_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints_data</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rivet&#39;</span><span class="p">)</span>
+			<span class="n">uv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints_data</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)][</span><span class="s1">&#39;uv&#39;</span><span class="p">]</span>
+			<span class="n">uv_pin_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints_data</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;uv_pin&#39;</span><span class="p">)</span>
+			<span class="n">rivet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connect_rivet</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span>
+										<span class="n">locator</span><span class="o">=</span><span class="n">rivet_name</span><span class="p">,</span>
+										<span class="n">uv</span><span class="o">=</span><span class="n">uv</span><span class="p">,</span>
+										<span class="n">uv_pin_name</span><span class="o">=</span><span class="n">uv_pin_name</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">connect_joint_to_rivet</span><span class="p">(</span><span class="n">rivet</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">rivet</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">],</span> <span class="n">joint</span><span class="o">=</span><span class="n">joint</span><span class="p">)</span>
+			<span class="n">rivet_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rivet_name</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">rivet_names</span></div>
+	
+<div class="viewcode-block" id="FaceJointData.set_ws_positions"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.joints_data.FaceJointData.set_ws_positions">[docs]</a>	<span class="k">def</span> <span class="nf">set_ws_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joints</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets the world sppace position of a joint.</span>
+<span class="sd">		</span>
+<span class="sd">		:param list(nt.Joint) joints: The joint that will have the world space set.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">joints</span><span class="p">:</span>
+			<span class="n">joints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">joints</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+			<span class="n">joints</span> <span class="o">=</span> <span class="p">[</span><span class="n">joints</span><span class="p">]</span>
+			
+		<span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="n">joints</span><span class="p">:</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">joint</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">):</span>
+				<span class="n">joint</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">joint</span><span class="p">)</span>
+			<span class="n">ws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints_data</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ws_position&#39;</span><span class="p">)</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">joint</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">ws</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">set_rotate</span><span class="p">(</span><span class="n">joint</span><span class="o">=</span><span class="n">joint</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">set_orientation</span><span class="p">(</span><span class="n">joint</span><span class="o">=</span><span class="n">joint</span><span class="p">)</span></div>
+				
+<div class="viewcode-block" id="FaceJointData.set_rotate"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.joints_data.FaceJointData.set_rotate">[docs]</a>	<span class="k">def</span> <span class="nf">set_rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets the rotation of a joint.</span>
+<span class="sd">		</span>
+<span class="sd">		:param nt.Joint joint: The joint that will have the rotation set.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">joint</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">):</span>
+			<span class="n">joint</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">joint</span><span class="p">)</span>
+		<span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints_data</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rotation&#39;</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+			<span class="n">joint</span><span class="o">.</span><span class="n">rotate</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+			
+<div class="viewcode-block" id="FaceJointData.set_orientation"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.joints_data.FaceJointData.set_orientation">[docs]</a>	<span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets the orientation of a joint.</span>
+<span class="sd">		</span>
+<span class="sd">		:param nt.Joint joint: The joint that will have the orientation set.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">joint</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">):</span>
+			<span class="n">joint</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">joint</span><span class="p">)</span>
+		<span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints_data</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;orientation&#39;</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+			<span class="n">joint</span><span class="o">.</span><span class="n">jointOrient</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+		
+<div class="viewcode-block" id="FaceJointData.delete_all_rivets"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.joints_data.FaceJointData.delete_all_rivets">[docs]</a>	<span class="k">def</span> <span class="nf">delete_all_rivets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ns</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Deletes all the rivets that are stored in the data.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str ns: Namespace of the rivets and UvPins.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
+			<span class="n">rivet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints_data</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rivet&#39;</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">rivet</span><span class="p">):</span>
+				<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">ns</span><span class="o">+</span><span class="n">rivet</span><span class="p">)</span>
+			<span class="n">uv_pin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints_data</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">joint</span><span class="p">)]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;uv_pin&#39;</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">uv_pin</span><span class="p">):</span>
+				<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">ns</span><span class="o">+</span><span class="n">uv_pin</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FaceJointData.export"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.joints_data.FaceJointData.export">[docs]</a>	<span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Exports the data to a yaml file.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str file_path: Full path to the file.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">jsonio</span><span class="o">.</span><span class="n">write_to_json_file</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">file_path</span><span class="p">)</span></div>
+		
+<div class="viewcode-block" id="FaceJointData.load"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.joints_data.FaceJointData.load">[docs]</a>	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Loads a yaml file and Returns the instance of the class.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str file_path: Full path to the file.</span>
+<span class="sd">		:return: Returns the instance of the class UvPositionData.</span>
+<span class="sd">		:rtype: UvPositionData</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">data</span> <span class="o">=</span> <span class="n">jsonio</span><span class="o">.</span><span class="n">read_json_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+		<span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FaceJointData.export_yaml"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.joints_data.FaceJointData.export_yaml">[docs]</a>	<span class="k">def</span> <span class="nf">export_yaml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Exports the data to a yaml file.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str file_path: Full path to the file.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">yamlio</span><span class="o">.</span><span class="n">write_to_yaml_file</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">file_path</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FaceJointData.load_yaml"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.joints_data.FaceJointData.load_yaml">[docs]</a>	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">load_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Loads a yaml file and Returns the instance of the class.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str file_path: Full path to the file.</span>
+<span class="sd">		:return: Returns the instance of the class UvPositionData.</span>
+<span class="sd">		:rtype: UvPositionData</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">data</span> <span class="o">=</span> <span class="n">yamlio</span><span class="o">.</span><span class="n">read_yaml_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+		<span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.cinematics.SceneMover &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.cinematics.SceneMover</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.cinematics.SceneMover</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Creates and includes a shelf with buttons in maya for Cinematics</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># python imports</span>
+<span class="c1"># PySide2 imports</span>
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">maya.cmds</span> <span class="k">as</span> <span class="nn">cmds</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common.modifiers</span> <span class="kn">import</span> <span class="n">decorators</span>
+
+
+<div class="viewcode-block" id="makeSceneMover"><a class="viewcode-back" href="../../../../cpg.maya.cinematics.html#cpg.maya.cinematics.SceneMover.makeSceneMover">[docs]</a><span class="k">def</span> <span class="nf">makeSceneMover</span><span class="p">(</span><span class="n">locName</span><span class="p">,</span> <span class="n">topGroups</span><span class="p">):</span>
+    <span class="n">loc</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">spaceLocator</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">locName</span><span class="p">)</span>
+    <span class="n">scale</span> <span class="o">=</span> <span class="mi">250</span>
+    <span class="n">color</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">cmds</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">scale</span><span class="p">))</span>
+    <span class="n">cmds</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.overrideEnabled&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">locName</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">cmds</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.overrideColor&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">locName</span><span class="p">),</span> <span class="n">color</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">topGroups</span><span class="p">:</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="n">parentConstraint</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">each</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">loc</span></div>
+
+
+<div class="viewcode-block" id="deleteSceneMover"><a class="viewcode-back" href="../../../../cpg.maya.cinematics.html#cpg.maya.cinematics.SceneMover.deleteSceneMover">[docs]</a><span class="k">def</span> <span class="nf">deleteSceneMover</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">topGroups</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">topGroups</span><span class="p">:</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="n">setKeyframe</span><span class="p">(</span><span class="n">each</span><span class="p">)</span>
+    <span class="n">cmds</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="makeSceneMoverButtonClick"><a class="viewcode-back" href="../../../../cpg.maya.cinematics.html#cpg.maya.cinematics.SceneMover.makeSceneMoverButtonClick">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+<span class="k">def</span> <span class="nf">makeSceneMoverButtonClick</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="n">targetGroups</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;cameras&#39;</span><span class="p">,</span> <span class="s1">&#39;props&#39;</span><span class="p">,</span> <span class="s1">&#39;chars&#39;</span><span class="p">,</span> <span class="s1">&#39;layout&#39;</span><span class="p">,</span> <span class="s1">&#39;env&#39;</span><span class="p">]</span>
+    <span class="n">topGroups</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cmds</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="s1">&#39;*_grp&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span> <span class="ow">in</span> <span class="n">targetGroups</span><span class="p">]</span>
+    <span class="n">locName</span> <span class="o">=</span> <span class="s1">&#39;sceneMover_locator&#39;</span>
+    <span class="c1">#print(topGroups)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">cmds</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">locName</span><span class="p">):</span>
+        <span class="n">makeSceneMover</span><span class="p">(</span><span class="n">locName</span><span class="p">,</span> <span class="n">topGroups</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">deleteSceneMover</span><span class="p">(</span><span class="n">locName</span><span class="p">,</span> <span class="n">topGroups</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">topGroups</span><span class="p">:</span>
+            <span class="n">cmds</span><span class="o">.</span><span class="n">setKeyframe</span><span class="p">(</span><span class="n">each</span><span class="p">)</span>
+            <span class="n">cmds</span><span class="o">.</span><span class="n">cutKey</span><span class="p">(</span><span class="n">each</span><span class="p">,</span> <span class="n">cl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.modeling.blendshape_model &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.modeling.blendshape_model</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.modeling.blendshape_model</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Helper functions for Blend nodes and shapes</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+
+<span class="c1"># python imports</span>
+
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">lists</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">attr_utils</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="delete_blendshapes"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_model.delete_blendshapes">[docs]</a><span class="k">def</span> <span class="nf">delete_blendshapes</span><span class="p">(</span><span class="n">blendnode</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Deletes the all the blend shape connected to the blend shape node in the scene.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">shapes</span> <span class="o">=</span> <span class="n">get_blendnode_shapes</span><span class="p">(</span><span class="n">blendnode</span><span class="p">)</span>
+	<span class="p">[</span><span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">shapes</span> <span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="set_blendshape_weights_from_mesh"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_model.set_blendshape_weights_from_mesh">[docs]</a><span class="k">def</span> <span class="nf">set_blendshape_weights_from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">blendnode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Set the Blendshape weight on each vert.</span>
+
+<span class="sd">	:param nt.Mesh mesh: Mesh that is being set.</span>
+<span class="sd">	:param nt.BlendShape blendnode: Blend node that has shapes attached.</span>
+<span class="sd">	:param float weight: the blend shape weight value a blend shape should have on a base mesh.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">blendnode</span><span class="p">:</span>
+		<span class="n">blendnode</span> <span class="o">=</span> <span class="n">get_first_blendnode</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">blendnode</span><span class="p">:</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">: No blend node was connected to the mesh.  No Weights were set.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mesh</span><span class="p">))</span>
+		<span class="k">return</span>
+	<span class="n">verts</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">polyEvaluate</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">verts</span><span class="p">):</span>
+		<span class="n">blendnode</span><span class="o">.</span><span class="n">inputTarget</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">inputTargetGroup</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">targetWeights</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set_blendshape_weights"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_model.set_blendshape_weights">[docs]</a><span class="k">def</span> <span class="nf">set_blendshape_weights</span><span class="p">(</span><span class="n">blendnode</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Set the Blendshape weight on each vert.</span>
+
+<span class="sd">	:param nt.BlendShape blendnode: Blend node that has shapes attached.</span>
+<span class="sd">	:param float weight: the blend shape weight value a blend shape should have on a base mesh.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">mesh</span> <span class="o">=</span> <span class="n">blendnode</span><span class="o">.</span><span class="n">outputGeometry</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">mesh</span><span class="p">:</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">: No mesh was connected to the blend node.  No Weights were set.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">blendnode</span><span class="p">))</span>
+		<span class="k">return</span>
+	<span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="n">verts</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">polyEvaluate</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">verts</span><span class="p">):</span>
+		<span class="n">blendnode</span><span class="o">.</span><span class="n">inputTarget</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">inputTargetGroup</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">targetWeights</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_blendnode_index"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_model.get_blendnode_index">[docs]</a><span class="k">def</span> <span class="nf">get_blendnode_index</span><span class="p">(</span><span class="n">blendnode</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Returns an index list of the blend shapes as ints.</span>
+
+<span class="sd">	:param nt.BlendShape blendnode: Blend node that has shapes attached.</span>
+<span class="sd">	:return: Returns an index list of the blend shapes as ints.</span>
+<span class="sd">	:rtype: list[int]</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">return</span> <span class="n">blendnode</span><span class="o">.</span><span class="n">weightIndexList</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_blendnode_index_as_dict"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_model.get_blendnode_index_as_dict">[docs]</a><span class="k">def</span> <span class="nf">get_blendnode_index_as_dict</span><span class="p">(</span><span class="n">blendnode</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Returns the name of the shape as the key and the index as the value.</span>
+
+<span class="sd">	:param nt.BlendShape blendnode: Blend node that has shapes attached.</span>
+<span class="sd">	:return: Returns the name of the shape as the key and the index as the value.</span>
+<span class="sd">	:rtype: dictionary{string:int}</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">shapes</span> <span class="o">=</span> <span class="n">get_blendnode_shapes</span><span class="p">(</span><span class="n">blendnode</span><span class="p">)</span>
+	<span class="n">index</span> <span class="o">=</span> <span class="n">get_blendnode_index</span><span class="p">(</span><span class="n">blendnode</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">shapes</span><span class="p">],</span> <span class="n">index</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="get_blendnode_shapes"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_model.get_blendnode_shapes">[docs]</a><span class="k">def</span> <span class="nf">get_blendnode_shapes</span><span class="p">(</span><span class="n">blendnode</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Gets a list of all the shapes connected to the blend node.</span>
+
+<span class="sd">	:param nt.BlendShape blendnode: Blend node that has shapes attached.</span>
+<span class="sd">	:return: Gets a list of all the shapes connected to the blend node.</span>
+<span class="sd">	:rtype: list[string]</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">history</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">listHistory</span><span class="p">(</span><span class="n">blendnode</span><span class="p">)</span>
+	<span class="n">blendnode_history</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">history</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;blendShape&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="n">shapes</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">listAttr</span><span class="p">(</span><span class="n">blendnode_history</span> <span class="o">+</span> <span class="s2">&quot;.w&quot;</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">shapes</span></div>
+
+
+<div class="viewcode-block" id="get_active_attribute"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_model.get_active_attribute">[docs]</a><span class="k">def</span> <span class="nf">get_active_attribute</span><span class="p">(</span><span class="n">blendnode</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Returns a list of blend shapes that are fully activated.</span>
+
+<span class="sd">	:param nt.BlendShape blendnode: Blend node that has shapes attached.</span>
+<span class="sd">	:return: Returns a list of blend shapes that are fully activated.</span>
+<span class="sd">	:rtype: list[string]</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">shapes</span> <span class="o">=</span> <span class="n">get_blendnode_shapes</span><span class="p">(</span><span class="n">blendnode</span><span class="p">)</span>
+	<span class="n">active</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="n">shapes</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">blendnode</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">shape</span><span class="p">))</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+			<span class="n">active</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">active</span></div>
+
+
+<div class="viewcode-block" id="get_all_blendnodes"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_model.get_all_blendnodes">[docs]</a><span class="k">def</span> <span class="nf">get_all_blendnodes</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Returns all the blend nodes on a mesh.</span>
+
+<span class="sd">	:param nt.Mesh mesh: A poly Mesh.</span>
+<span class="sd">	:return: Returns all the blend nodes on a mesh.</span>
+<span class="sd">	:rtype: list[pm.nt.BlendShape]</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">all_blendnodes</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="n">mesh_shapes</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">getShapes</span><span class="p">()</span>
+	<span class="n">blendnodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">BlendShape</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">mesh_shapes</span><span class="p">]</span>
+	
+	<span class="n">blendnodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">lists</span><span class="o">.</span><span class="n">flatten_list</span><span class="p">(</span><span class="n">blendnodes</span><span class="p">)))</span>
+	<span class="k">for</span> <span class="n">blendnode</span> <span class="ow">in</span> <span class="n">blendnodes</span><span class="p">:</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">blendnode</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;blendNodeType&#39;</span><span class="p">):</span>
+			<span class="n">other_blendnodes</span> <span class="o">=</span> <span class="n">blendnode</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">BlendShape</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">other_blendnodes</span><span class="p">:</span>
+				<span class="k">for</span> <span class="n">blend</span> <span class="ow">in</span> <span class="n">other_blendnodes</span><span class="p">:</span>
+					<span class="k">if</span> <span class="n">blend</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;blendNodeType&#39;</span><span class="p">):</span>
+						<span class="n">all_blendnodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blend</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">all_blendnodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blendnode</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">all_blendnodes</span></div>
+
+
+<div class="viewcode-block" id="get_first_blendnode"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_model.get_first_blendnode">[docs]</a><span class="k">def</span> <span class="nf">get_first_blendnode</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Returns the first blend node.</span>
+
+<span class="sd">	:param nt.transform mesh: A mesh that has a blend node attached.</span>
+<span class="sd">	:return: Returns a blend node.</span>
+<span class="sd">	:rtype: pm.nt.BlendShape</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">BlendShape</span><span class="p">):</span>
+		<span class="k">return</span> <span class="n">mesh</span>
+	<span class="c1"># if a mesh is passed in, return the 1st blend node.</span>
+	<span class="n">blendnode</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">get_all_blendnodes</span><span class="p">(</span><span class="n">mesh</span><span class="p">))</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">blendnode</span><span class="p">:</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No blend node was found connected to </span><span class="si">{0}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mesh</span><span class="p">))</span>
+		<span class="k">return</span>
+	<span class="k">return</span> <span class="n">blendnode</span></div>
+
+
+<div class="viewcode-block" id="create_parallel_blendnode"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_model.create_parallel_blendnode">[docs]</a><span class="k">def</span> <span class="nf">create_parallel_blendnode</span><span class="p">(</span><span class="n">diff_mesh</span><span class="p">,</span> <span class="n">pose_mesh</span><span class="p">,</span> <span class="n">last_mesh</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;parallel_blendshape&#39;</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Creates a parallel blend shape node.</span>
+
+<span class="sd">	:param nt.Mesh last_mesh: Mesh that is the shape you want to blend.</span>
+<span class="sd">	:param nt.Mesh pose_mesh: Source mesh that is the shape you want to blend.</span>
+<span class="sd">	:param nt.Mesh diff_mesh: A neutral posed mesh.</span>
+<span class="sd">	:param string name: name of the blend node.</span>
+<span class="sd">	:return: Returns the parallel blend node.</span>
+<span class="sd">	:rtype: pm.nt.BlendShape</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">parallel_node</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">blendShape</span><span class="p">(</span><span class="n">diff_mesh</span><span class="p">,</span> <span class="n">pose_mesh</span><span class="p">,</span> <span class="n">last_mesh</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">name</span><span class="p">))</span>
+	<span class="n">parallel_node</span><span class="o">.</span><span class="n">weight</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+	<span class="n">parallel_node</span><span class="o">.</span><span class="n">weight</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">parallel_node</span></div>
+
+
+<div class="viewcode-block" id="duplicate_mesh"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_model.duplicate_mesh">[docs]</a><span class="k">def</span> <span class="nf">duplicate_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">remove_attrs</span><span class="o">=</span><span class="p">(),</span> <span class="n">remove_user_attrs</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Duplicates a mesh.</span>
+
+<span class="sd">	:param pm.nt.transform mesh:  Mesh that will be duplicated.</span>
+<span class="sd">	:param string label:  The name of the newly created mesh.</span>
+<span class="sd">	:param list[string] remove_attrs: Removes a list attributes from the mesh.</span>
+<span class="sd">	:param bool remove_user_attrs: Removes all attributes that were added by a user.</span>
+<span class="sd">	:return:  Returns the duplicated mesh.</span>
+<span class="sd">	:rtype: pm.nt.transform</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">label</span><span class="p">:</span>
+		<span class="n">label</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+	<span class="n">dup_mesh</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">duplicate</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">label</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="n">attr_utils</span><span class="o">.</span><span class="n">unlock_all_attrs</span><span class="p">(</span><span class="n">dup_mesh</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">remove_user_attrs</span><span class="p">:</span>
+		<span class="n">attr_utils</span><span class="o">.</span><span class="n">purge_user_defined_attrs</span><span class="p">([</span><span class="n">dup_mesh</span><span class="p">])</span>
+	
+	<span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">remove_attrs</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">dup_mesh</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="n">attr</span><span class="p">):</span>
+			<span class="n">dup_mesh</span><span class="o">.</span><span class="n">deleteAttr</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">dup_mesh</span></div>
+
+
+<div class="viewcode-block" id="dup_and_delete_mesh"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_model.dup_and_delete_mesh">[docs]</a><span class="k">def</span> <span class="nf">dup_and_delete_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">remove_attrs</span><span class="o">=</span><span class="p">(),</span> <span class="n">remove_user_attrs</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Duplicates its a mesh and deletes the old copy. A way to generate a clean mesh/pose.</span>
+
+<span class="sd">	:param pm.nt.transform mesh:  Mesh that will be duplicated.</span>
+<span class="sd">	:param string label:  The name of the newly created mesh.</span>
+<span class="sd">	:param list[string] remove_attrs: Removes a list attributes from the mesh.</span>
+<span class="sd">	:param bool remove_user_attrs: Removes all attributes that were added by a user.</span>
+<span class="sd">	:return:  Returns the duplicated mesh.</span>
+<span class="sd">	:rtype: pm.nt.transform</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">label</span><span class="p">:</span>
+		<span class="n">label</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+	<span class="n">pm</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;temp_mesh_DELETE&#39;</span><span class="p">)</span>
+	
+	<span class="n">dup_mesh</span> <span class="o">=</span> <span class="n">duplicate_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span>
+	                          <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span>
+	                          <span class="n">remove_attrs</span><span class="o">=</span><span class="n">remove_attrs</span><span class="p">,</span>
+	                          <span class="n">remove_user_attrs</span><span class="o">=</span><span class="n">remove_user_attrs</span><span class="p">)</span>
+	<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">dup_mesh</span></div>
+
+
+<div class="viewcode-block" id="set_blendshape_weight_symmetry"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.blendshape_model.set_blendshape_weight_symmetry">[docs]</a><span class="k">def</span> <span class="nf">set_blendshape_weight_symmetry</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">symmetry</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Set Maya&#39;s blend shape weight symmetry.</span>
+<span class="sd">	:param string side: the side the pose is on.</span>
+<span class="sd">	:param bool symmetry: Turn on/off blend shape weight symmetry.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">if</span> <span class="n">symmetry</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">side</span> <span class="o">==</span> <span class="s1">&#39;center&#39;</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">artAttrCtx</span><span class="p">(</span><span class="s1">&#39;artAttrBlendShapeContext&#39;</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">reflection</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">artAttrCtx</span><span class="p">(</span><span class="s1">&#39;artAttrBlendShapeContext&#39;</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">reflection</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">artAttrCtx</span><span class="p">(</span><span class="s1">&#39;artAttrBlendShapeContext&#39;</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">reflection</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

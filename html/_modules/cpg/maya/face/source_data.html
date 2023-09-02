@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.face.source_data &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.face.source_data</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.face.source_data</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Source data for working with the facial rigs.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># python imports</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="c1"># software specific imports</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cpg.common.textio</span> <span class="kn">import</span> <span class="n">jsonio</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">pyutils</span>
+<span class="kn">from</span> <span class="nn">cpg.common.paths</span> <span class="kn">import</span> <span class="n">paths</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.face</span> <span class="kn">import</span> <span class="n">face_vertex_data</span><span class="p">,</span> <span class="n">joints_data</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">frag</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<span class="n">FACE_FILE_NAME</span> <span class="o">=</span> <span class="s1">&#39;rig_source_data.json&#39;</span>
+
+<span class="n">FACE_DATA_TYPES</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;rig_template&#39;</span><span class="p">:</span> <span class="p">{},</span>
+					<span class="c1"># Set the Race</span>
+					<span class="s1">&#39;race&#39;</span><span class="p">:</span> <span class="p">{},</span>
+					<span class="c1"># Setup initial vertex data</span>
+					<span class="s1">&#39;regions&#39;</span><span class="p">:</span> <span class="p">{},</span>
+					<span class="c1"># Setup source head data</span>
+					<span class="s1">&#39;source_head&#39;</span><span class="p">:</span> <span class="p">{},</span>
+					<span class="c1"># Setup world space or local data</span>
+					<span class="s1">&#39;flag_positions&#39;</span><span class="p">:</span> <span class="p">{},</span>
+					<span class="c1"># Set skeleton file</span>
+					<span class="s1">&#39;skeleton&#39;</span><span class="p">:</span> <span class="p">{}}</span>
+
+
+<span class="n">REGION_DATA_TYPES</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;mirror_type&#39;</span><span class="p">:</span> <span class="p">{},</span>
+						<span class="c1"># Set up side</span>
+						<span class="s1">&#39;side&#39;</span><span class="p">:</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span>
+						<span class="s1">&#39;region&#39;</span><span class="p">:</span> <span class="p">{},</span>
+						<span class="s1">&#39;connection_type&#39;</span><span class="p">:</span><span class="s1">&#39;UvPin&#39;</span><span class="p">,</span>
+						<span class="c1"># The named used for the mesh type</span>
+						<span class="s1">&#39;mesh_type_name&#39;</span><span class="p">:</span> <span class="p">{},</span>
+						<span class="c1"># The named used for the general category for the mesh</span>
+						<span class="c1"># Ex: skin_mesh, blendshape_mesh, etc...</span>
+						<span class="s1">&#39;mesh_category&#39;</span><span class="p">:</span> <span class="p">{},</span>
+						<span class="c1"># Set up initial vertex data</span>
+						<span class="s1">&#39;vertex_data&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;vertex_mirror&#39;</span><span class="p">:</span> <span class="p">{},</span>
+										<span class="s1">&#39;eye_shelf&#39;</span> <span class="p">:</span> <span class="p">{},</span>
+										<span class="s1">&#39;eye_blink&#39;</span> <span class="p">:</span> <span class="p">{},</span>
+										<span class="s1">&#39;eyelash_skin_map&#39;</span> <span class="p">:</span> <span class="p">{},</span>
+										<span class="s1">&#39;vertex_default_regions&#39;</span><span class="p">:</span> <span class="p">{}},</span>
+						<span class="c1"># Set up initial parameter data</span>
+						<span class="s1">&#39;parameter_data&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;parameters&#39;</span> <span class="p">:</span> <span class="p">{},</span>
+											<span class="s1">&#39;solve_parameters&#39;</span><span class="p">:</span> <span class="p">{}},</span>
+						<span class="c1"># Set up initial skinning data</span>
+						<span class="s1">&#39;skinning&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;saved&#39;</span><span class="p">:{},</span>
+									<span class="s1">&#39;initial&#39;</span><span class="p">:{},</span>
+									<span class="s1">&#39;final&#39;</span><span class="p">:{}},</span>
+						<span class="c1"># Set up initial joints data</span>
+						<span class="s1">&#39;joints_data&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;skinned&#39;</span><span class="p">:</span> <span class="p">{},</span>
+										<span class="s1">&#39;joints_uv&#39;</span><span class="p">:{},</span>
+										<span class="s1">&#39;anim_ctrls&#39;</span><span class="p">:{}},</span>
+
+						<span class="c1"># Set up eye card data</span>
+						<span class="s1">&#39;eye_card_uv_data&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;eye_shadow&#39;</span><span class="p">:</span> <span class="p">{},</span>
+											 <span class="s1">&#39;eye_tear&#39;</span><span class="p">:</span> <span class="p">{}}}</span>
+
+
+<div class="viewcode-block" id="SourceFaceData"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_data.SourceFaceData">[docs]</a><span class="k">class</span> <span class="nc">SourceFaceData</span><span class="p">:</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+		<span class="n">data</span> <span class="o">=</span> <span class="n">data_check</span><span class="p">(</span><span class="n">FACE_DATA_TYPES</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">pyutils</span><span class="o">.</span><span class="n">ObjectDict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+	
+	<span class="c1">################</span>
+	<span class="c1"># regions</span>
+	<span class="c1">################</span>
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">regions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the regions for the face.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns the regions for the face.</span>
+<span class="sd">		:rtype: list(str)</span>
+<span class="sd">		</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;regions&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+	
+	<span class="nd">@regions</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">regions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets the regions for the face.</span>
+<span class="sd">		</span>
+<span class="sd">		:param value:</span>
+<span class="sd">		:return:</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">regions</span> <span class="o">=</span> <span class="n">value</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">regions_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the regions for the face.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns the regions for the face.</span>
+<span class="sd">		:rtype: list(str)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">regions</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">blendshape_regions_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the regions for the face.</span>
+
+<span class="sd">		:return: Returns the regions for the face.</span>
+<span class="sd">		:rtype: list(str)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">regions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">regions</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+		<span class="n">blend_shapes</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">regions</span><span class="p">:</span>
+			<span class="n">region_category</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">regions</span><span class="p">[</span><span class="n">region</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mesh_category&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">region_category</span> <span class="o">==</span> <span class="n">frag</span><span class="o">.</span><span class="n">FACE_BLENDSHAPE_CATEGORY</span><span class="p">:</span>
+				<span class="n">blend_shapes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">blend_shapes</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">skinned_regions_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the regions for the face.</span>
+
+<span class="sd">		:return: Returns the regions for the face.</span>
+<span class="sd">		:rtype: list(str)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">regions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">regions</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+		<span class="n">blend_shapes</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">regions</span><span class="p">:</span>
+			<span class="n">region_category</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">regions</span><span class="p">[</span><span class="n">region</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mesh_category&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">region_category</span> <span class="o">==</span> <span class="n">frag</span><span class="o">.</span><span class="n">FACE_BLENDSHAPE_CATEGORY</span><span class="p">:</span>
+				<span class="n">blend_shapes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>
+		<span class="n">skinned_regions</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">regions</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">blend_shapes</span><span class="p">]</span>
+		<span class="k">return</span> <span class="n">skinned_regions</span>
+	
+	<span class="c1">################</span>
+	<span class="c1"># Race</span>
+	<span class="c1">################</span>
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">race</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the name of the Race for the character.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns the name of the Race for the character.</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">race</span>
+	
+	<span class="nd">@race</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">race</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets the Race of the character.</span>
+<span class="sd">		:param str value: Name of the character race.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">race</span> <span class="o">=</span> <span class="n">value</span>
+		
+	<span class="c1">################</span>
+	<span class="c1"># Rig Template</span>
+	<span class="c1">################</span>
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">rig_template</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the rig template being used to build the rig.  EX. player_head_template.PlayerHeadTemplate</span>
+<span class="sd">		Name of the .py and the class.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns the rig template being used to build the rig.</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">rig_template</span>
+	
+	<span class="nd">@rig_template</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">rig_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets the rig template being used to build the rig. EX. player_head_template.PlayerHeadTemplate</span>
+<span class="sd">		Name of the .py and the class.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str value: The rig template being used to build the rig.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">rig_template</span> <span class="o">=</span> <span class="n">value</span>
+		
+	<span class="c1">################</span>
+	<span class="c1"># Source Head</span>
+	<span class="c1">################</span>
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">source_head</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the source head to generate blend shapes from.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns the source head to generate blend shapes from.</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">source_head</span>
+	
+	<span class="nd">@source_head</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">source_head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets the source head to generate blend shapes from.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str value: The source head to generate blend shapes from.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">source_head</span> <span class="o">=</span> <span class="n">value</span>
+	
+	<span class="c1">################</span>
+	<span class="c1"># Flag Positions</span>
+	<span class="c1">################</span>
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">flag_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns a keyword on how the flag positions should be set. Examples: &#39;World Space&#39;, &#39;UV Space&#39;</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns a keyword on how the flag positions should be set.</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">flag_positions</span>
+	
+	<span class="nd">@flag_positions</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">flag_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets a keyword on how the flag positions should be set. Examples: &#39;World Space&#39;, &#39;UV Space&#39;</span>
+<span class="sd">		</span>
+<span class="sd">		:param str value: A keyword on how the flag positions should be set.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">flag_positions</span> <span class="o">=</span> <span class="n">value</span>
+	
+	<span class="c1">################</span>
+	<span class="c1"># Flag Positions</span>
+	<span class="c1">################</span>
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the file name of the stored skeleton data.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns the file name of the stored skeleton data.</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;skeleton&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+	
+	<span class="nd">@skeleton</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets the file name of the stored skeleton data.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str value: The file name of the stored skeleton data.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">skeleton</span> <span class="o">=</span> <span class="n">value</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">primary_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the primary parameters dict.</span>
+
+<span class="sd">		:return: Returns the primary parameters dict.</span>
+<span class="sd">		:rtype: dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;primary_parameters&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+	
+	<span class="nd">@primary_parameters</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">primary_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets the primary parameters dict.</span>
+
+<span class="sd">		:param dict value: The primary parameters dict.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;primary_parameters&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+	
+<div class="viewcode-block" id="SourceFaceData.get_primary_parameters"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_data.SourceFaceData.get_primary_parameters">[docs]</a>	<span class="k">def</span> <span class="nf">get_primary_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns an instance of ParameterData.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns an instance of ParameterData.</span>
+<span class="sd">		:rtype: ParameterData</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="n">frag</span><span class="o">.</span><span class="n">ParameterData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">primary_parameters</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="SourceFaceData.get_counterpart"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_data.SourceFaceData.get_counterpart">[docs]</a>	<span class="k">def</span> <span class="nf">get_counterpart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_name</span><span class="p">,</span> <span class="n">region_name</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the opposite region.  Ex: head_mesh - skin_mesh: returns head_mesh - blendshape_mesh</span>
+<span class="sd">		</span>
+<span class="sd">		:param str type_name: a description of the type of mesh.</span>
+<span class="sd">		:param str region_name: a type of category for where the data lives.</span>
+<span class="sd">		:return: Returns the opposite region.</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">regions_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">regions_list</span>
+		<span class="k">for</span> <span class="n">source_region</span> <span class="ow">in</span> <span class="n">regions_list</span><span class="p">:</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">source_region</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+				<span class="k">return</span>
+			<span class="n">mesh_type_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="p">[</span><span class="n">source_region</span><span class="p">][</span><span class="s1">&#39;mesh_type_name&#39;</span><span class="p">]</span>
+			<span class="k">if</span> <span class="n">mesh_type_name</span> <span class="o">==</span> <span class="n">type_name</span><span class="p">:</span>
+				<span class="k">if</span> <span class="ow">not</span> <span class="n">region_name</span> <span class="o">==</span> <span class="n">source_region</span><span class="p">:</span>
+					<span class="k">return</span> <span class="n">source_region</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="SourceFaceData.duplicate_region"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_data.SourceFaceData.duplicate_region">[docs]</a>	<span class="k">def</span> <span class="nf">duplicate_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region_name</span><span class="p">,</span> <span class="n">new_region_name</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Duplicates the region dictionary and stores it under a new region.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str region_name: a type of category for where the data lives.</span>
+<span class="sd">		:param str new_region_name: The name of the new region being added.</span>
+<span class="sd">		:return: Returns an instance of the new region data.</span>
+<span class="sd">		:rtype: FaceMeshRegionData</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">old_region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">region_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">old_region</span><span class="p">:</span>
+			<span class="k">return</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">new_region_name</span><span class="p">:</span> <span class="n">old_region</span><span class="p">})</span>
+		<span class="k">return</span> <span class="n">FaceMeshRegionData</span><span class="p">(</span><span class="n">new_region_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="SourceFaceData.export"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_data.SourceFaceData.export">[docs]</a>	<span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Exports the data to a json file.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str file_path: Full path to the file.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">jsonio</span><span class="o">.</span><span class="n">write_to_json_file</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">file_path</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="SourceFaceData.export_with_asset_id"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_data.SourceFaceData.export_with_asset_id">[docs]</a>	<span class="k">def</span> <span class="nf">export_with_asset_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset_id</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Exports the data to a json file.</span>
+
+<span class="sd">		:param str asset_id: id of the asset.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">paths</span><span class="o">.</span><span class="n">get_face_data_path</span><span class="p">(</span><span class="n">asset_id</span><span class="p">),</span> <span class="n">FACE_FILE_NAME</span><span class="p">)</span>
+		<span class="n">jsonio</span><span class="o">.</span><span class="n">write_to_json_file</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">file_path</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="SourceFaceData.load"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_data.SourceFaceData.load">[docs]</a>	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Loads a json file and Returns the instance of the class.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str file_path: Full path to the file.</span>
+<span class="sd">		:return: Returns the instance of the class SourceFaceData.</span>
+<span class="sd">		:rtype: SourceFaceData</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">data</span> <span class="o">=</span> <span class="n">jsonio</span><span class="o">.</span><span class="n">read_json_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+		<span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="FaceMeshRegionData"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_data.FaceMeshRegionData">[docs]</a><span class="k">class</span> <span class="nc">FaceMeshRegionData</span><span class="p">(</span><span class="n">SourceFaceData</span><span class="p">):</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region_name</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">region_name</span> <span class="o">=</span> <span class="n">region_name</span>
+		<span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_check</span><span class="p">(</span><span class="n">region_name</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">pyutils</span><span class="o">.</span><span class="n">ObjectDict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+		<span class="nb">super</span><span class="p">(</span><span class="n">FaceMeshRegionData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+		
+<div class="viewcode-block" id="FaceMeshRegionData.create"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_data.FaceMeshRegionData.create">[docs]</a>	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">region_name</span><span class="p">,</span>
+					<span class="n">data</span><span class="p">,</span>
+					<span class="n">mesh_type_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+					<span class="n">mesh_category</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+					<span class="n">mirror_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+					<span class="n">side</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+					<span class="n">vertex_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+					<span class="n">mirror</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+					<span class="n">joints</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+					<span class="n">parameter_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Creates an initial dict for setting source data.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str region_name: Name of the region.</span>
+<span class="sd">		:param str mesh_type_name: Type of meshes in this region.</span>
+<span class="sd">		:param str mesh_category: Type of category the meshes belong to in this region.</span>
+<span class="sd">		:param str mirror_type: Mirror type for the meshes in this region</span>
+<span class="sd">		:param str side: Side in which the meshes in this region are on</span>
+<span class="sd">		:param dict vertex_data: Mapped vertex data for different zones of the face.</span>
+<span class="sd">		:param str mirror: The mirror type.  Either mirror_self or mirror_dup.</span>
+<span class="sd">		:param dict joints: Data about the joints.  Names, uv positions, orientation, translation, and rotation.</span>
+<span class="sd">		:param dict skinning: A dictionary of all the skinning data.</span>
+<span class="sd">		:param parameter_data: A dictionary of all the face poses.</span>
+<span class="sd">		:return: Returns an instance of FaceMeshRegionData</span>
+<span class="sd">		:rtype: dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">data</span><span class="p">[</span><span class="s1">&#39;regions&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">region_name</span><span class="p">,</span> <span class="n">REGION_DATA_TYPES</span><span class="p">)</span>
+		<span class="n">data</span><span class="p">[</span><span class="s1">&#39;regions&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">region_name</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;vertex_data&#39;</span><span class="p">:</span> <span class="n">vertex_data</span> <span class="ow">or</span> <span class="p">{},</span>
+							<span class="s1">&#39;mirror&#39;</span><span class="p">:</span> <span class="n">mirror</span> <span class="ow">or</span> <span class="p">{},</span>
+							<span class="s1">&#39;mesh_type_name&#39;</span><span class="p">:</span> <span class="n">mesh_type_name</span> <span class="ow">or</span> <span class="p">{},</span>
+							<span class="s1">&#39;mesh_category&#39;</span><span class="p">:</span> <span class="n">mesh_category</span> <span class="ow">or</span> <span class="p">{},</span>
+							<span class="s1">&#39;joints&#39;</span><span class="p">:</span> <span class="n">joints</span> <span class="ow">or</span> <span class="p">{},</span>
+							<span class="s1">&#39;skinning&#39;</span><span class="p">:</span> <span class="n">joints</span> <span class="ow">or</span> <span class="p">{},</span>
+							<span class="s1">&#39;parameter_data&#39;</span><span class="p">:</span> <span class="n">parameter_data</span> <span class="ow">or</span> <span class="p">{},</span>
+							<span class="s1">&#39;mirror_type&#39;</span><span class="p">:</span> <span class="n">mirror_type</span> <span class="ow">or</span> <span class="p">{},</span>
+							<span class="s1">&#39;side&#39;</span><span class="p">:</span> <span class="n">side</span> <span class="ow">or</span> <span class="p">{}}})</span>
+		
+		<span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">region_name</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FaceMeshRegionData.data_check"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_data.FaceMeshRegionData.data_check">[docs]</a>	<span class="nd">@staticmethod</span>
+	<span class="k">def</span> <span class="nf">data_check</span><span class="p">(</span><span class="n">region_name</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Checks to make sure the dictionary has all base keys and values.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str region_name: Name of the region.</span>
+<span class="sd">		:param dict data: Dictionary of all the face data.</span>
+<span class="sd">		:return: Dictionary of all the face data.</span>
+<span class="sd">		:rtype: Dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+			<span class="n">data</span> <span class="o">=</span> <span class="n">FACE_DATA_TYPES</span>
+		<span class="k">if</span> <span class="n">region_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+			<span class="n">data</span><span class="p">[</span><span class="s1">&#39;regions&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">region_name</span><span class="p">,</span> <span class="n">REGION_DATA_TYPES</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">data</span></div>
+	
+	<span class="c1">##################</span>
+	<span class="c1"># Region Name</span>
+	<span class="c1">##################</span>
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">region</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the name of the region.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns the name of the region.</span>
+<span class="sd">		:rtype: dict</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;regions&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">region_name</span><span class="p">]</span>
+	
+	<span class="nd">@region</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets the name of the region.</span>
+<span class="sd">		</span>
+<span class="sd">		:param dict value: The name of the region.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;regions&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="bp">self</span><span class="o">.</span><span class="n">region_name</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+		
+	<span class="c1">##################</span>
+	<span class="c1"># Vertex Data</span>
+	<span class="c1">##################</span>
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">vertex_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns mapped vertex data for different zones of the face.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns mapped vertex data for different zones of the face.</span>
+<span class="sd">		:rtype: dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">[</span><span class="s1">&#39;vertex_data&#39;</span><span class="p">]</span>
+	
+	<span class="nd">@vertex_data</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">vertex_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets mapped vertex data for different zones of the face.</span>
+<span class="sd">		</span>
+<span class="sd">		:param dict value: Mapped vertex data for different zones of the face.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;vertex_data&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">vertex_mirror</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns vertex numbers for each side of the face.  (Left, Right, Middle)</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns vertex numbers for each side of the face.  (Left, Right, Middle)</span>
+<span class="sd">		:rtype: dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;vertex_mirror&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+	
+	<span class="nd">@vertex_mirror</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">vertex_mirror</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets vertex numbers for each side of the face.  (Left, Right, Middle)</span>
+<span class="sd">		</span>
+<span class="sd">		:param dict value: Vertex numbers for each side of the face.  (Left, Right, Middle)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">vertex_data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;vertex_mirror&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">eye_card_uv_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns UV data for different zones of the face.</span>
+
+<span class="sd">		:return: Returns UV data for different zones of the face.</span>
+<span class="sd">		:rtype: dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;eye_card_uv_data&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+	<span class="nd">@eye_card_uv_data</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">eye_card_uv_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets UV data for different zones of the face.</span>
+
+<span class="sd">		:param dict value: UV data for different zones of the face.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;eye_card_uv_data&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+
+	<span class="c1"># Returns the class</span>
+<div class="viewcode-block" id="FaceMeshRegionData.get_mirror_data"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_data.FaceMeshRegionData.get_mirror_data">[docs]</a>	<span class="k">def</span> <span class="nf">get_mirror_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns an instance of SourceVertexMirror to interact with the mirror vertex data.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns an instance of SourceVertexMirror.</span>
+<span class="sd">		:rtype: SourceVertexMirror</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="n">face_vertex_data</span><span class="o">.</span><span class="n">SourceVertexMirror</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertex_mirror</span><span class="p">)</span></div>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">vertex_eye_shelf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns vertex map of the eye shelf.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns vertex map of the eye shelf.</span>
+<span class="sd">		:rtype: dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;eye_shelf&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+	
+	<span class="nd">@vertex_eye_shelf</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">vertex_eye_shelf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets vertex map of the eye shelf.</span>
+<span class="sd">		</span>
+<span class="sd">		:param dict value: Vertex map of the eye shelf.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">vertex_data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;eye_shelf&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">vertex_lip_snap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns vertex map of the eye shelf.</span>
+
+<span class="sd">		:return: Returns vertex map of the eye shelf.</span>
+<span class="sd">		:rtype: dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lip_snap&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+	<span class="nd">@vertex_lip_snap</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">vertex_lip_snap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets vertex map of the eye shelf.</span>
+
+<span class="sd">		:param dict value: Vertex map of the eye shelf.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">vertex_data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;lip_snap&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">vertex_eye_blink</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns vertex map for the eye blink.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns vertex map for the eye blink.</span>
+<span class="sd">		:rtype: dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;eye_blink&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+	
+	<span class="nd">@vertex_eye_blink</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">vertex_eye_blink</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets vertex map for the eye blink.</span>
+<span class="sd">		</span>
+<span class="sd">		:param dict value: Vertex map for the eye blink.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">vertex_data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;eye_blink&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+	
+	<span class="c1"># Returns the class</span>
+<div class="viewcode-block" id="FaceMeshRegionData.get_eyelids"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_data.FaceMeshRegionData.get_eyelids">[docs]</a>	<span class="k">def</span> <span class="nf">get_eyelids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns an instance of SourceFaceEyelashShelf to handle the eyelids data.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns an instance of SourceFaceEyelashShelf to handle the eyelids data.</span>
+<span class="sd">		:rtype: dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="n">face_vertex_data</span><span class="o">.</span><span class="n">SourceFaceEyelashShelf</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertex_eye_blink</span><span class="p">,</span>
+		                                                      <span class="bp">self</span><span class="o">.</span><span class="n">vertex_eye_shelf</span><span class="p">,</span>
+		                                                      <span class="bp">self</span><span class="o">.</span><span class="n">vertex_lip_snap</span><span class="p">)</span></div>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">vertex_eyelash_skin_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns vertex map for snapping the eyelashes to a mesh.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns vertex map for snapping the eyelashes to a mesh.</span>
+<span class="sd">		:rtype: dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;eyelash_skin_map&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+	
+	<span class="nd">@vertex_eyelash_skin_map</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">vertex_eyelash_skin_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets vertex map for snapping the eyelashes to a mesh.</span>
+<span class="sd">		</span>
+<span class="sd">		:param dict value: Vertex map for snapping the eyelashes to a mesh.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">vertex_data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;eyelash_skin_map&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">vertex_default_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns vertex map for snapping the eyelashes to a mesh.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns vertex map for snapping the eyelashes to a mesh.</span>
+<span class="sd">		:rtype: dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;vertex_default_regions&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+	
+	<span class="nd">@vertex_default_regions</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">vertex_default_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets vertex map for snapping the eyelashes to a mesh.</span>
+<span class="sd">		</span>
+<span class="sd">		:param dict value: Vertex map for snapping the eyelashes to a mesh.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">vertex_data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;vertex_default_regions&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+		
+	<span class="c1"># Returns the class</span>
+<div class="viewcode-block" id="FaceMeshRegionData.get_vertex_default_regions"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_data.FaceMeshRegionData.get_vertex_default_regions">[docs]</a>	<span class="k">def</span> <span class="nf">get_vertex_default_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns an instance of SourceFaceEyelashShelf to handle the eyelids data.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns an instance of SourceFaceEyelashShelf to handle the eyelids data.</span>
+<span class="sd">		:rtype: dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="n">face_vertex_data</span><span class="o">.</span><span class="n">RegionVertices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertex_default_regions</span><span class="p">)</span></div>
+	
+	<span class="c1">##################</span>
+	<span class="c1"># Side</span>
+	<span class="c1">##################</span>
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">side</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the side in which the meshes in this region are on.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns the side in which the meshes in this region are on.</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">[</span><span class="s1">&#39;side&#39;</span><span class="p">]</span>
+	
+	<span class="nd">@side</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">side</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets the side in which the meshes in this region are on.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str value: The side in which the meshes in this region are on.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">[</span><span class="s1">&#39;side&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+	
+	<span class="c1">##################</span>
+	<span class="c1"># Mesh Type Name</span>
+	<span class="c1">##################</span>
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">mesh_type_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns a key word on what type of meshes are in this region.  Examples: head_mesh, jaw_mesh, etc...</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns a key word on what type of meshes are in this region.</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">[</span><span class="s1">&#39;mesh_type_name&#39;</span><span class="p">]</span>
+	
+	<span class="nd">@mesh_type_name</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">mesh_type_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets a key word on what type of meshes are in this region.  Examples: head_mesh, jaw_mesh, etc...</span>
+<span class="sd">		</span>
+<span class="sd">		:param str value: A key word on what type of meshes are in this region.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">[</span><span class="s1">&#39;mesh_type_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+		
+	<span class="c1">##################</span>
+	<span class="c1"># Mesh Category</span>
+	<span class="c1">##################</span>
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">mesh_category</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns a key word on what type of category the meshes belong to in this region.  Examples: skin_mesh,</span>
+<span class="sd">		blendshape_mesh, etc...</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns a key word on what type of category the meshes belong to in this region.</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">[</span><span class="s1">&#39;mesh_category&#39;</span><span class="p">]</span>
+	
+	<span class="nd">@mesh_category</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">mesh_category</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets a key word on what type of category the meshes belong to in this region.  Examples: skin_mesh,</span>
+<span class="sd">		blendshape_mesh, etc...</span>
+<span class="sd">		</span>
+<span class="sd">		:param str value: A key word on what type of category the meshes belong to in this region.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">[</span><span class="s1">&#39;mesh_category&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+	
+	<span class="c1">##################</span>
+	<span class="c1"># Mirror Data</span>
+	<span class="c1">##################</span>
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">mirror_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the mirror type for the meshes in this region.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns the mirror type for the meshes in this region.</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">[</span><span class="s1">&#39;mirror_type&#39;</span><span class="p">]</span>
+	
+	<span class="nd">@mirror_type</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">mirror_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets the mirror type.  Either mirror_self or mirror_dup.</span>
+<span class="sd">		mirror_self will mirror the mesh.</span>
+<span class="sd">		MirrorDup will duplicate the mesh, then flip across an axis to mirror.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str value: Either mirror_self or mirror_dup.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">[</span><span class="s1">&#39;mirror_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+	
+	<span class="c1">##################</span>
+	<span class="c1"># Joints connection type</span>
+	<span class="c1">##################</span>
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">connection_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns a key word on how to attach the joints to the meshes in this region.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns a key word on how to attach the joints to the meshes in this region.</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;connection_type&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+	
+	<span class="nd">@connection_type</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">connection_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets a key word on how to attach the joints to the meshes in this region.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str value: A key word on how to attach the joints to the meshes in this region.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;connection_type&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">clown_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns a key word on how to attach the joints to the meshes in this region.</span>
+
+<span class="sd">		:return: Returns a key word on how to attach the joints to the meshes in this region.</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;clown_mask&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+	
+	<span class="nd">@clown_mask</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">clown_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets a key word on how to attach the joints to the meshes in this region.</span>
+
+<span class="sd">		:param str value: A key word on how to attach the joints to the meshes in this region.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;clown_mask&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+	
+	<span class="c1">##################</span>
+	<span class="c1"># Skinning</span>
+	<span class="c1">##################</span>
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">skinning</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns a dictionary of all the skinning data.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns a dictionary of all the skinning data.</span>
+<span class="sd">		:rtype: dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">[</span><span class="s1">&#39;skinning&#39;</span><span class="p">]</span>
+	
+	<span class="nd">@skinning</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">skinning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets a dictionary with all the skinning data.</span>
+<span class="sd">		</span>
+<span class="sd">		:param dict value: S dictionary with all the skinning data. {{&#39;process&#39;:{},&#39;saved&#39;:{},&#39;initial&#39;:{},&#39;final&#39;:{}}</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">[</span><span class="s1">&#39;skinning&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">skinning_final</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns a key word on how to process the final skinning of the meshes in this region.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns a key word on how to process the final skinning of the meshes in this region.</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">skinning</span><span class="p">[</span><span class="s1">&#39;final&#39;</span><span class="p">]</span>
+	
+	<span class="nd">@skinning_final</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">skinning_final</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets a key word on how to process the final skinning of the meshes in this region.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str value: A key word on how to process the final skinning of the meshes in this region.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">skinning</span><span class="p">[</span><span class="s1">&#39;final&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">skinning_saved</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns saved skinning data.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns saved skinning data.</span>
+<span class="sd">		:rtype: dict</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">skinning</span><span class="p">[</span><span class="s1">&#39;saved&#39;</span><span class="p">]</span>
+	
+	<span class="nd">@skinning_saved</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">skinning_saved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets saved skinning data.</span>
+<span class="sd">		</span>
+<span class="sd">		:param dict value: Saved skinning data.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">skinning</span><span class="p">[</span><span class="s1">&#39;saved&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">skinning_initial</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns a key word on how to process the initial skinning of the meshes in this region.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns a key word on how to process the initial skinning of the meshes in this region.</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">skinning</span><span class="p">[</span><span class="s1">&#39;initial&#39;</span><span class="p">]</span>
+	
+	<span class="nd">@skinning_initial</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">skinning_initial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets a key word on how to process the initial skinning of the meshes in this region.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str value: A key word on how to process the initial skinning of the meshes in this region.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">skinning</span><span class="p">[</span><span class="s1">&#39;initial&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">non_deform_skinning</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns a key word on how to process the initial skinning of the meshes in this region.</span>
+
+<span class="sd">		:return: Returns a key word on how to process the initial skinning of the meshes in this region.</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">skinning</span><span class="p">[</span><span class="s1">&#39;non_deform_skinning&#39;</span><span class="p">]</span>
+
+	<span class="c1">##################</span>
+	<span class="c1"># Joints and UV Positions</span>
+	<span class="c1">##################</span>
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">joints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns a dictionary of all the joint data for this region.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns a dictionary of all the joint data for this region.</span>
+<span class="sd">		:rtype: dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">[</span><span class="s1">&#39;joints_data&#39;</span><span class="p">]</span>
+	
+	<span class="nd">@joints</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">joints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets a dictionary of all the joint data for this region.</span>
+<span class="sd">		</span>
+<span class="sd">		:param dict value: A dictionary of all the joint data for this region.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">[</span><span class="s1">&#39;joints_data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">joints_uv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns a dictionary that has data on the joints and uv positions.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns a dictionary that has data on the joints and uv positions.</span>
+<span class="sd">		:rtype: dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;joints_uv&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+	
+	<span class="nd">@joints_uv</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">joints_uv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets a dictionary that has data on the joints and uv positions.</span>
+<span class="sd">		</span>
+<span class="sd">		:param dict value: A dictionary that has data on the joints and uv positions.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">joints</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;joints_uv&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">anim_ctrls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns a dictionary that has data on the joints for animation controls and their uv positions.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns a dictionary that has data on the joints for animation controls and their uv positions.</span>
+<span class="sd">		:rtype: dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;anim_ctrls&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+	
+	<span class="nd">@anim_ctrls</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">anim_ctrls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets a dictionary that has data on the joints for animation controls and their uv positions.</span>
+<span class="sd">		</span>
+<span class="sd">		:param dict value: A dictionary that has data on the joints for animation controls and their uv positions.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">joints</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;anim_ctrls&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">joints_skinned</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns a list of joints that get skinned to the meshes in this region.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns a list of joints that get skinned to the meshes in this region.</span>
+<span class="sd">		:rtype: list(str)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;skinned&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+	
+	<span class="nd">@joints_skinned</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">joints_skinned</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets a list of joints that get skinned to the meshes in this region.</span>
+<span class="sd">		</span>
+<span class="sd">		:param list(str) value: A list of joints that get skinned to the meshes in this region.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">joints</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;skinned&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+	
+<div class="viewcode-block" id="FaceMeshRegionData.get_joints_uv"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_data.FaceMeshRegionData.get_joints_uv">[docs]</a>	<span class="k">def</span> <span class="nf">get_joints_uv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns an instance of the class FaceJointData for handling joint data.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns an instance of the class FaceJointData for handling joint data.</span>
+<span class="sd">		:rtype: FaceJointData</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="n">joints_data</span><span class="o">.</span><span class="n">FaceJointData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">joints_uv</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FaceMeshRegionData.get_anim_ctrls"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_data.FaceMeshRegionData.get_anim_ctrls">[docs]</a>	<span class="k">def</span> <span class="nf">get_anim_ctrls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns an instance of the class FaceJointData for handling Animation Control data.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns an instance of the class FaceJointData for handling joint data.</span>
+<span class="sd">		:rtype: FaceJointData</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="n">joints_data</span><span class="o">.</span><span class="n">FaceJointData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">anim_ctrls</span><span class="p">)</span></div>
+	
+	<span class="c1">##################</span>
+	<span class="c1"># Parameter Data</span>
+	<span class="c1">##################</span>
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">parameter_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns a dictionary that has pose data for the face.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns a dictionary that has pose data for the face.</span>
+<span class="sd">		:rtype: dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">[</span><span class="s1">&#39;parameter_data&#39;</span><span class="p">]</span>
+	
+	<span class="nd">@parameter_data</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">parameter_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets a dictionary that has pose data for the face.</span>
+<span class="sd">		</span>
+<span class="sd">		:param dict value: A dictionary that has pose data for the face.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">[</span><span class="s1">&#39;parameter_data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns a dictionary that has pose data for the main poses.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns a dictionary that has pose data for the main poses.</span>
+<span class="sd">		:rtype: dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;parameters&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+	
+	<span class="nd">@parameters</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets a dictionary that has pose data for the main poses.</span>
+<span class="sd">		</span>
+<span class="sd">		:param dict value: A dictionary that has pose data for the main poses.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+			<span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_data</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">parameter_data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;parameters&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+	
+<div class="viewcode-block" id="FaceMeshRegionData.get_parameters"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_data.FaceMeshRegionData.get_parameters">[docs]</a>	<span class="k">def</span> <span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns an instance of ParameterData based on the parameters dictionary.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns an instance of ParameterData based on the parameters dictionary.</span>
+<span class="sd">		:rtype: ParameterData</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="n">frag</span><span class="o">.</span><span class="n">ParameterData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span></div>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">solve_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns a dictionary that has pose data for the helper poses.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns a dictionary that has pose data for the helper poses.</span>
+<span class="sd">		:rtype: dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;solve_parameters&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+	
+	<span class="nd">@solve_parameters</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">solve_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets a dictionary that has pose data for the helper poses.</span>
+<span class="sd">		</span>
+<span class="sd">		:param dict value: A dictionary that has pose data for the helper poses.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">parameter_data</span><span class="p">[</span><span class="s1">&#39;solve_parameters&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+	
+<div class="viewcode-block" id="FaceMeshRegionData.get_mesh_dict"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_data.FaceMeshRegionData.get_mesh_dict">[docs]</a>	<span class="k">def</span> <span class="nf">get_mesh_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the string tags that gets added to a mesh for identification.</span>
+<span class="sd">		</span>
+<span class="sd">		:return:  Returns the string tags that gets added to a mesh for identification.</span>
+<span class="sd">		:rtype: dict</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">markup</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;region&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">region_name</span><span class="p">,</span>
+				<span class="s1">&#39;type_name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_type_name</span><span class="p">,</span>
+				<span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_category</span><span class="p">,</span>
+				<span class="s1">&#39;side&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">side</span><span class="p">,</span>
+				<span class="s1">&#39;mirror_type&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">mirror_type</span><span class="p">,</span>
+				<span class="s1">&#39;race&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">race</span><span class="p">,</span>
+				<span class="s1">&#39;joint_connection_type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection_type</span><span class="p">}</span>
+		<span class="k">return</span> <span class="n">markup</span></div>
+	
+<div class="viewcode-block" id="FaceMeshRegionData.load"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_data.FaceMeshRegionData.load">[docs]</a>	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">region_name</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Loads a json file and Returns the instance of the class.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str file_path: Full path to the file.</span>
+<span class="sd">		:param str region_name: Name of the region.</span>
+<span class="sd">		:return: Returns the instance of the class SourceFaceData.</span>
+<span class="sd">		:rtype: SourceFaceData</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">data</span> <span class="o">=</span> <span class="n">jsonio</span><span class="o">.</span><span class="n">read_json_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+		<span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">region_name</span><span class="o">=</span><span class="n">region_name</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="data_check"><a class="viewcode-back" href="../../../../cpg.maya.face.html#cpg.maya.face.source_data.data_check">[docs]</a><span class="k">def</span> <span class="nf">data_check</span><span class="p">(</span><span class="n">empty_data</span><span class="p">,</span> <span class="n">existing_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Checks a dictionary against another and adds missing keys.</span>
+<span class="sd">	</span>
+<span class="sd">	:param dict empty_data: A default set of values for a dictionary.</span>
+<span class="sd">	:param dict existing_data: a dictionary with existing data.</span>
+<span class="sd">	:return: Returns a combined dictionary with out overwriting existing data.</span>
+<span class="sd">	:rtype: dictionary</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">existing_data</span><span class="p">:</span>
+		<span class="n">existing_data</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No data exists.  Creating base dictionary.&#39;</span><span class="p">)</span>
+	
+	<span class="c1"># Compare the 2 dictionaries and add missing keys</span>
+	<span class="n">updated_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">empty_data</span><span class="o">.</span><span class="n">items</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">existing_data</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+	
+	<span class="c1"># Add missing nested keys</span>
+	<span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">empty_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">value</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+			<span class="n">sub_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">empty_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">updated_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+			<span class="n">updated_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">sub_data</span>
+	<span class="k">return</span> <span class="n">pyutils</span><span class="o">.</span><span class="n">ObjectDict</span><span class="p">(</span><span class="n">updated_data</span><span class="p">)</span></div>
+			
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

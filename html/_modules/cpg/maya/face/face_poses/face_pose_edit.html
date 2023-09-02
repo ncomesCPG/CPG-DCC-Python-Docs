@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.face.face_poses.face_pose_edit &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.face.face_poses.face_pose_edit</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.face.face_poses.face_pose_edit</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Parameter data for working with the facial rigs.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+<span class="c1"># python imports</span>
+<span class="kn">import</span> <span class="nn">maya.cmds</span> <span class="k">as</span> <span class="nn">cmds</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="kn">import</span> <span class="nn">maya.mel</span> <span class="k">as</span> <span class="nn">mel</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common.paths</span> <span class="kn">import</span> <span class="n">paths</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">frag</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.pyqt</span> <span class="kn">import</span> <span class="n">dialogs</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">display_layers</span><span class="p">,</span> <span class="n">attr_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.modeling</span> <span class="kn">import</span> <span class="n">vert_utils</span><span class="p">,</span> <span class="n">blendshape_model</span><span class="p">,</span> <span class="n">blendshape_node</span><span class="p">,</span> <span class="n">face_model</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.face.face_utils</span> <span class="kn">import</span> <span class="n">face_util</span><span class="p">,</span> <span class="n">face_import_export</span><span class="p">,</span> <span class="n">face_skinning</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging.flags</span> <span class="kn">import</span> <span class="n">flag_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="c1"># Internal module imports</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="FacePoseEdit"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_poses.html#cpg.maya.face.face_poses.face_pose_edit.FacePoseEdit">[docs]</a><span class="k">class</span> <span class="nc">FacePoseEdit</span><span class="p">:</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edit_inst</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span> <span class="o">=</span> <span class="n">edit_inst</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">dsp_lyrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_display_layers</span><span class="p">()</span>
+	
+<div class="viewcode-block" id="FacePoseEdit.create"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_poses.html#cpg.maya.face.face_poses.face_pose_edit.FacePoseEdit.create">[docs]</a>	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">main_pose</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frag_node</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		This extends the face edit component and allows the user to edit face meshes.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str/None main_pose: The pose that will be edited</span>
+<span class="sd">		:param str mesh: Name of the blend shape mesh.  The one that has all the blend shapes attached.</span>
+<span class="sd">		:param FRAGRig frag_node: The FRAGRig node</span>
+<span class="sd">		:return: Returns an instance of FacePoseEdit.</span>
+<span class="sd">		:rtype: FacePoseEdit</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="n">frag_node</span><span class="p">:</span>
+			<span class="n">frag_rig</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_frag_rig</span><span class="p">(</span><span class="n">frag_node</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">all_frag_roots</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_all_frag_roots</span><span class="p">()</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">all_frag_roots</span><span class="p">:</span>
+				<span class="k">return</span>
+			<span class="n">frag_root</span> <span class="o">=</span> <span class="n">all_frag_roots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+			<span class="n">frag_rig</span> <span class="o">=</span> <span class="n">frag_root</span><span class="o">.</span><span class="n">get_rig</span><span class="p">()</span>
+		
+		<span class="c1"># Make sure the mesh is an instance of the FaceModel Module</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">face_model</span><span class="o">.</span><span class="n">FaceModel</span><span class="p">):</span>
+			<span class="n">mesh</span> <span class="o">=</span> <span class="n">face_model</span><span class="o">.</span><span class="n">FaceModel</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+		
+		<span class="c1"># Check to see if the edit node exists.  If it does, bail.</span>
+		<span class="n">face_edit_component</span> <span class="o">=</span> <span class="n">frag_rig</span><span class="o">.</span><span class="n">get_frag_children</span><span class="p">(</span><span class="n">of_type</span><span class="o">=</span><span class="n">frag</span><span class="o">.</span><span class="n">FaceEditComponent</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">face_edit_component</span><span class="p">:</span>
+			<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">face_edit_component</span><span class="si">}</span><span class="s1"> already exists.&#39;</span><span class="p">)</span>
+			<span class="k">return</span>
+		<span class="c1"># Create the Face Edit Node</span>
+		<span class="n">edit_inst</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">FaceEditComponent</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">frag_rig</span><span class="p">)</span>
+		<span class="c1"># Create compound attributes with all of the poses activated, except the main pose.</span>
+		<span class="n">edit_inst</span><span class="o">.</span><span class="n">set_flags_info</span><span class="p">(</span><span class="n">main_pose</span><span class="o">=</span><span class="n">main_pose</span><span class="p">)</span>
+		<span class="n">edit_inst</span><span class="o">.</span><span class="n">set_main_flag_info</span><span class="p">(</span><span class="n">main_pose</span><span class="o">=</span><span class="n">main_pose</span><span class="p">)</span>
+		
+		<span class="n">asset_id</span> <span class="o">=</span> <span class="n">frag_rig</span><span class="o">.</span><span class="n">get_asset_id</span><span class="p">(</span><span class="n">frag_rig</span><span class="p">)</span>
+		<span class="c1"># get the parameter data so we can get the actual pose name from the mesh.</span>
+		<span class="c1"># The parameter connection will give us the name.</span>
+		<span class="n">parameter_inst</span> <span class="o">=</span> <span class="n">face_util</span><span class="o">.</span><span class="n">get_parameters_region_instance</span><span class="p">(</span><span class="n">asset_id</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">region</span><span class="p">)</span>
+		<span class="n">parameters</span> <span class="o">=</span> <span class="n">parameter_inst</span><span class="o">.</span><span class="n">get_parameters_list</span><span class="p">()</span>
+		<span class="n">pose_name</span> <span class="o">=</span> <span class="kc">None</span>
+		<span class="n">pose_side</span> <span class="o">=</span> <span class="kc">None</span>
+		<span class="n">parameter_node_pose</span> <span class="o">=</span> <span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">parameterNodePose</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">connection</span> <span class="o">==</span> <span class="n">parameter_node_pose</span><span class="p">:</span>
+				<span class="n">pose_name</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">parameter_name</span>
+				<span class="n">pose_side</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">side</span>
+				<span class="k">break</span>
+		
+		<span class="c1"># Set the name of the pose that correlates with the mesh.</span>
+		<span class="k">if</span> <span class="n">pose_name</span><span class="p">:</span>
+			<span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">poseName</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">pose_name</span><span class="p">)</span>
+			<span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">poseSide</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">pose_side</span><span class="p">)</span>
+		<span class="c1"># Set the mesh name</span>
+		<span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">nodeName</span><span class="p">())</span>
+		
+		<span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">edit_inst</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FacePoseEdit.pose_edit_start"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_poses.html#cpg.maya.face.face_poses.face_pose_edit.FacePoseEdit.pose_edit_start">[docs]</a>	<span class="k">def</span> <span class="nf">pose_edit_start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multi_edit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show_skel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">symmetry</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">transfer_jnts</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Puts the tool in a state where the artist can update a blend shape mesh.</span>
+<span class="sd">		It duplicates the mesh, with the pose that is to be updated.</span>
+<span class="sd">		</span>
+<span class="sd">		:param bool multi_edit: If False it puts the user in a Single pose Edit.</span>
+<span class="sd">								IF True, puts the user in a multi pose edit.</span>
+<span class="sd">		:param bool show_skel: If True, it will unhide the skeleton.</span>
+<span class="sd">		:param bool symmetry: If True, will turn on Maya&#39;s modeling Symmetry options.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">mesh</span> <span class="o">=</span> <span class="n">face_model</span><span class="o">.</span><span class="n">FaceModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+		<span class="n">extra_head_mesh</span> <span class="o">=</span> <span class="kc">None</span>
+		
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">multi_edit</span><span class="p">:</span>
+			<span class="c1"># Reset all the flags -  This is for Single pose edit.  We start with no poses and then add them with</span>
+			<span class="c1"># the Flags.</span>
+			<span class="n">flag_utils</span><span class="o">.</span><span class="n">zero_flags</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="p">])</span>
+			<span class="c1"># Set the main flag</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">single_pose</span> <span class="o">=</span> <span class="kc">True</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">set_main_flag</span><span class="p">()</span>
+		
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">multi_edit</span><span class="p">:</span>
+			<span class="c1"># Get the main blend shape mesh so we can duplicate it and edit it</span>
+			<span class="n">extra_head_mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">duplicate_head_mesh_extra</span><span class="p">()</span>
+		
+		<span class="c1"># Duplicate the mesh.  This will be the mesh the artist will edit.</span>
+		<span class="n">pose_mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">duplicate</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">poseName</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="si">}</span><span class="s1">_edit&#39;</span><span class="p">)</span>
+		<span class="n">pose_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;poseMesh&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">pose_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">pose_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">poseMesh</span> <span class="o">&gt;&gt;</span> <span class="n">pose_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">poseMesh</span>
+		
+		<span class="c1"># Duplicate the mesh again.  This is the extra mesh the artist can view his changes one either</span>
+		<span class="c1"># Multiple or Single pose.  This mesh does not get edited.</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">multi_edit</span><span class="p">:</span>
+			<span class="n">flag_utils</span><span class="o">.</span><span class="n">zero_flags</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="p">])</span>
+		<span class="n">live_mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">duplicate</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;live_edit&#39;</span><span class="p">)</span>
+		<span class="n">live_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;liveEditMesh&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">live_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">live_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">tx</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span>
+		<span class="n">live_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">liveEditMesh</span> <span class="o">&gt;&gt;</span> <span class="n">live_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">liveEditMesh</span>
+		
+		<span class="c1"># Make sure they are not under any layers</span>
+		<span class="n">display_layers</span><span class="o">.</span><span class="n">remove_objects_from_layers</span><span class="p">([</span><span class="n">live_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">pose_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">])</span>
+		
+		<span class="c1"># Create a parallel blend shape</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">set_all_flag_block_values</span><span class="p">()</span>
+		<span class="k">if</span> <span class="n">multi_edit</span><span class="p">:</span>
+			<span class="c1"># Get the main blend shape mesh so we can duplicate it and edit it</span>
+			<span class="n">extra_head_mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">duplicate_head_mesh_extra</span><span class="p">()</span>
+			
+		<span class="k">if</span> <span class="n">extra_head_mesh</span> <span class="ow">and</span> <span class="n">mesh</span><span class="o">.</span><span class="n">type_name</span> <span class="o">==</span> <span class="s1">&#39;head_mesh&#39;</span><span class="p">:</span>
+			<span class="n">extra_head_mesh</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+		
+		<span class="n">parallel_blendnode</span> <span class="o">=</span> <span class="n">blendshape_model</span><span class="o">.</span><span class="n">create_parallel_blendnode</span><span class="p">(</span><span class="n">diff_mesh</span><span class="o">=</span><span class="n">mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span>
+																		<span class="n">pose_mesh</span><span class="o">=</span><span class="n">pose_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span>
+																		<span class="n">last_mesh</span><span class="o">=</span><span class="n">live_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span>
+																		<span class="n">name</span><span class="o">=</span><span class="s1">&#39;pose_edit_parallel_blendnode&#39;</span><span class="p">)</span>
+		<span class="n">parallel_blendnode</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;parallelBlendnode&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">parallelBlendnode</span> <span class="o">&gt;&gt;</span> <span class="n">parallel_blendnode</span><span class="o">.</span><span class="n">parallelBlendnode</span>
+		
+		<span class="k">if</span> <span class="n">multi_edit</span><span class="p">:</span>
+			<span class="c1"># Reset all the flags - If we are in Multi Edit mode.  We do the opposite of Single.</span>
+			<span class="c1"># We duplicate the Meshes with all of the poses and then remove them with the flags.</span>
+			<span class="c1"># The User will edit the mesh with all of the poses, but can see their changes on the single pose</span>
+			<span class="c1"># On the extra duplicated mesh.</span>
+			<span class="n">flag_utils</span><span class="o">.</span><span class="n">zero_flags</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="p">])</span>
+			<span class="c1"># Set the main flag</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">set_main_flag</span><span class="p">()</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">multi_pose</span> <span class="o">=</span> <span class="kc">True</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">show_display_layers</span><span class="p">()</span>
+		<span class="k">if</span> <span class="n">show_skel</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">hide_display_layers</span><span class="p">(</span><span class="n">skip_layers</span><span class="o">=</span><span class="p">[</span><span class="n">frag</span><span class="o">.</span><span class="n">SKEL_LYR</span><span class="p">])</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">hide_display_layers</span><span class="p">()</span>
+		<span class="k">if</span> <span class="n">transfer_jnts</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">transfer_joints</span><span class="p">(</span><span class="n">pose_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+		<span class="n">side</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">poseSide</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="n">vert_utils</span><span class="o">.</span><span class="n">set_vertex_symmetry</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">side</span><span class="p">,</span> <span class="n">symmetry</span><span class="o">=</span><span class="n">symmetry</span><span class="p">)</span>
+		
+		<span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FacePoseEdit.pose_edit_end"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_poses.html#cpg.maya.face.face_poses.face_pose_edit.FacePoseEdit.pose_edit_end">[docs]</a>	<span class="k">def</span> <span class="nf">pose_edit_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multi_edit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">due_mirror</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">due_export</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">transfer_jnts</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Ends the editing mode and updates the rig with the newly updated pose.</span>
+<span class="sd">		</span>
+<span class="sd">		:param bool multi_edit: If False it puts the user in a Single pose Edit.</span>
+<span class="sd">								IF True, puts the user in a multi pose edit.</span>
+<span class="sd">		:param bool due_mirror: IF True, will mirror the mesh and updated the mirrored mesh on the rig.</span>
+<span class="sd">		:param bool due_export: If True, will export the meshes so they are saved in Plastic.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">pose_mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">poseMesh</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="n">live_mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">liveEditMesh</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="n">extra_head_mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">dupPosesMesh</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="n">parallel_blendnode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">parallelBlendnode</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="n">old_pose_mesh</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">poseName</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+		<span class="n">mesh</span> <span class="o">=</span> <span class="n">face_model</span><span class="o">.</span><span class="n">FaceModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+		<span class="n">parameter_node</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">FragFaceParameters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">parameterNode</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+		<span class="n">frag_root</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_frag_root</span><span class="p">(</span><span class="n">parameter_node</span><span class="p">)</span>
+		<span class="n">asset_id</span> <span class="o">=</span> <span class="n">frag_root</span><span class="o">.</span><span class="n">asset_id</span>
+		<span class="k">if</span> <span class="n">transfer_jnts</span><span class="p">:</span>
+			<span class="n">mesh</span><span class="o">.</span><span class="n">connect_joints</span><span class="p">(</span><span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">)</span>
+		<span class="c1"># delete the extra head mesh</span>
+		<span class="k">if</span> <span class="n">extra_head_mesh</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">extra_head_mesh</span><span class="p">)</span>
+		
+		<span class="c1"># Get old meshes placement</span>
+		<span class="n">old_mesh_pos</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">old_pose_mesh</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">old_pose_parent</span> <span class="o">=</span> <span class="n">old_pose_mesh</span><span class="o">.</span><span class="n">getParent</span><span class="p">()</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">old_pose_mesh</span><span class="p">)</span>
+		
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">multi_edit</span><span class="p">:</span>
+			<span class="c1"># replace the old mesh with the new one</span>
+			<span class="n">attr_utils</span><span class="o">.</span><span class="n">purge_user_defined_attrs</span><span class="p">([</span><span class="n">pose_mesh</span><span class="p">],</span> <span class="n">skip_dialog</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="n">new_pose_mesh</span> <span class="o">=</span> <span class="n">pose_mesh</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">new_pose_mesh</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">poseName</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">new_pose_mesh</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">old_mesh_pos</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">new_pose_mesh</span><span class="p">,</span> <span class="n">old_pose_parent</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">new_pose_mesh</span> <span class="o">=</span> <span class="n">blendshape_model</span><span class="o">.</span><span class="n">dup_and_delete_mesh</span><span class="p">(</span><span class="n">live_mesh</span><span class="p">,</span> <span class="n">remove_user_attrs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">new_pose_mesh</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">poseName</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">new_pose_mesh</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">old_mesh_pos</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">new_pose_mesh</span><span class="p">,</span> <span class="n">old_pose_parent</span><span class="p">)</span>
+			
+		<span class="c1"># Disconnect all blend shape from the rig.</span>
+		<span class="n">blendnode</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_main_blendnode</span><span class="p">()</span>
+		<span class="n">blendnode</span><span class="o">.</span><span class="n">disconnect_from_rig</span><span class="p">()</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">blendnode</span><span class="o">.</span><span class="n">blendnode</span><span class="p">)</span>
+		
+		<span class="c1"># Mirror Pose</span>
+		<span class="n">parameters_inst</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">()</span>
+		<span class="n">parameter</span> <span class="o">=</span> <span class="n">parameters_inst</span><span class="o">.</span><span class="n">get_parameter</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">new_pose_mesh</span><span class="p">))</span>
+		<span class="n">mirror_pose</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">mirror</span>
+		<span class="n">mirror_mesh</span> <span class="o">=</span> <span class="kc">None</span>
+		<span class="k">if</span> <span class="n">mirror_pose</span> <span class="ow">and</span> <span class="n">due_mirror</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">mesh</span><span class="o">.</span><span class="n">mirror_self</span><span class="p">:</span>
+				<span class="n">mirror_mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirror_edited_mesh</span><span class="p">(</span><span class="n">pose_mesh</span><span class="o">=</span><span class="n">new_pose_mesh</span><span class="p">,</span>
+														<span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span>
+														<span class="n">mirror_pose_name</span><span class="o">=</span><span class="n">mirror_pose</span><span class="p">,</span>
+														<span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">)</span>
+				<span class="n">attr_utils</span><span class="o">.</span><span class="n">purge_user_defined_attrs</span><span class="p">([</span><span class="n">mirror_mesh</span><span class="p">],</span> <span class="n">skip_dialog</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+				<span class="n">dialogs</span><span class="o">.</span><span class="n">display_view_message</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Mirroring Successful!&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s1">&#39;Face Editing&#39;</span><span class="p">)</span>
+		
+		<span class="c1"># Get the parameters and reconnect the blend shapes to the rig</span>
+		<span class="c1">#parameters_inst = mesh.get_parameters()</span>
+		<span class="n">shapes</span> <span class="o">=</span> <span class="n">parameters_inst</span><span class="o">.</span><span class="n">get_pose_list</span><span class="p">()</span>
+		<span class="n">shapes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">shapes</span> <span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+		
+		<span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters_inst</span><span class="o">.</span><span class="n">get_parameters_list</span><span class="p">()</span>
+		
+		<span class="n">new_blendnode</span> <span class="o">=</span> <span class="n">blendshape_node</span><span class="o">.</span><span class="n">BlendShapeNode</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">shapes</span><span class="o">=</span><span class="n">shapes</span><span class="p">,</span>
+																<span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span>
+																<span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">type_name</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+		
+		<span class="n">new_blendnode</span><span class="o">.</span><span class="n">reconnect_to_rig</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">parameter_node</span><span class="p">)</span>
+		
+		<span class="c1"># Export the meshes if necessary.</span>
+		<span class="k">if</span> <span class="n">due_export</span><span class="p">:</span>
+			<span class="n">pose_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">new_pose_mesh</span><span class="p">]</span>
+			<span class="k">if</span> <span class="n">mirror_mesh</span><span class="p">:</span>
+				<span class="n">pose_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">new_pose_mesh</span><span class="p">,</span> <span class="n">mirror_mesh</span><span class="p">]</span>
+			<span class="k">for</span> <span class="n">pose</span> <span class="ow">in</span> <span class="n">pose_list</span><span class="p">:</span>
+				<span class="n">pose_parent</span> <span class="o">=</span> <span class="n">pose</span><span class="o">.</span><span class="n">getParent</span><span class="p">()</span>
+				<span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">pose</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">export_blendshape</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pose</span><span class="p">),</span> <span class="n">asset_id</span><span class="p">)</span>
+				<span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">pose</span><span class="p">,</span> <span class="n">pose_parent</span><span class="p">)</span>
+		
+		<span class="c1"># Clean up</span>
+		<span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">parallel_blendnode</span><span class="p">):</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">parallel_blendnode</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">multi_edit</span> <span class="ow">and</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">live_mesh</span><span class="p">):</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">live_mesh</span><span class="p">)</span>
+		<span class="k">elif</span> <span class="n">multi_edit</span> <span class="ow">and</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">pose_mesh</span><span class="p">):</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">pose_mesh</span><span class="p">)</span>
+		<span class="n">vert_utils</span><span class="o">.</span><span class="n">set_vertex_symmetry</span><span class="p">(</span><span class="n">symmetry</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">hide_display_layers</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">show_display_layers</span><span class="p">([</span><span class="n">frag</span><span class="o">.</span><span class="n">FLAGS_CONTACT_LYR</span><span class="p">,</span> <span class="n">frag</span><span class="o">.</span><span class="n">SKEL_LYR</span><span class="p">,</span> <span class="n">frag</span><span class="o">.</span><span class="n">FLAGS_DETAIL_LYR</span><span class="p">])</span>
+		
+		<span class="c1"># Set the rig settings - put it back to the original flag settings before editing</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">set_main_flag</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">set_all_flag_block_values</span><span class="p">()</span>
+		
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="p">)</span>
+		
+		<span class="n">face_skinning</span><span class="o">.</span><span class="n">apply_face_skinning_from_file</span><span class="p">(</span><span class="n">asset_id</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+		
+		<span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FacePoseEdit.pose_edit_cancel"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_poses.html#cpg.maya.face.face_poses.face_pose_edit.FacePoseEdit.pose_edit_cancel">[docs]</a>	<span class="k">def</span> <span class="nf">pose_edit_cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Cancels the edit modes.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">pose_mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">poseMesh</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="n">live_mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">liveEditMesh</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="n">extra_head_mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">dupPosesMesh</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="n">parallel_blendnode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">parallelBlendnode</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		
+		<span class="c1"># delete the extra head mesh</span>
+		<span class="k">if</span> <span class="n">extra_head_mesh</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">extra_head_mesh</span><span class="p">)</span>
+		
+		<span class="c1"># Clean up</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">parallel_blendnode</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">live_mesh</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">pose_mesh</span><span class="p">)</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">hide_display_layers</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">show_display_layers</span><span class="p">([</span><span class="n">frag</span><span class="o">.</span><span class="n">FLAGS_CONTACT_LYR</span><span class="p">,</span> <span class="n">frag</span><span class="o">.</span><span class="n">SKEL_LYR</span><span class="p">,</span> <span class="n">frag</span><span class="o">.</span><span class="n">FLAGS_DETAIL_LYR</span><span class="p">])</span>
+		
+		<span class="c1"># Set the rig settings - put it back to the original flag settings before editing</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">set_main_flag</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">set_all_flag_block_values</span><span class="p">()</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="p">)</span>
+		<span class="n">vert_utils</span><span class="o">.</span><span class="n">set_vertex_symmetry</span><span class="p">(</span><span class="n">symmetry</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FacePoseEdit.paint_neutral_start"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_poses.html#cpg.maya.face.face_poses.face_pose_edit.FacePoseEdit.paint_neutral_start">[docs]</a>	<span class="k">def</span> <span class="nf">paint_neutral_start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symmetry</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Puts the UI and scene in a state where the artist can paint back the neutral pose on a blend shape.</span>
+<span class="sd">		Only available in Single Pose Edit.  Single pose edit will always be activated when using this tool.</span>
+<span class="sd">		</span>
+<span class="sd">		:param bool symmetry: Turn on/off Blend shape symmetry.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">paint_neutral</span> <span class="o">=</span> <span class="kc">True</span>
+		<span class="c1"># get the pose</span>
+		<span class="n">mesh</span> <span class="o">=</span> <span class="n">face_model</span><span class="o">.</span><span class="n">FaceModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+		<span class="n">pose_mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">poseMesh</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="c1"># the mesh is posed.  Remove the pose, duplicate it and reset the pose.</span>
+		<span class="n">flag_utils</span><span class="o">.</span><span class="n">zero_flags</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="p">])</span>
+		
+		<span class="c1"># Create the new neutral pose so we do not need to use the main mesh.</span>
+		<span class="n">neutral_pose</span> <span class="o">=</span> <span class="n">blendshape_model</span><span class="o">.</span><span class="n">duplicate_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;neutral_pose_edit&#39;</span><span class="p">)</span>
+		<span class="n">neutral_pose</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;neutralPose&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">neutral_pose</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">neutral_pose</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+		<span class="n">display_layers</span><span class="o">.</span><span class="n">remove_objects_from_layers</span><span class="p">([</span><span class="n">neutral_pose</span><span class="p">])</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">neutralPose</span> <span class="o">&gt;&gt;</span> <span class="n">neutral_pose</span><span class="o">.</span><span class="n">neutralPose</span>
+		
+		<span class="c1"># Reset the main flags on the main mesh.</span>
+		<span class="c1">#self.edit_inst.set_main_flag()</span>
+		
+		<span class="c1"># Create a blend shape, so we can paint back the neutral pose.</span>
+		<span class="n">blendnode</span> <span class="o">=</span> <span class="n">blendshape_node</span><span class="o">.</span><span class="n">BlendShapeNode</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">neutral_pose</span><span class="p">,</span> <span class="n">pose_mesh</span><span class="p">)</span>
+		<span class="n">blendnode</span><span class="o">.</span><span class="n">blendnode</span><span class="o">.</span><span class="n">weight</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+		<span class="n">blendnode</span><span class="o">.</span><span class="n">set_blendshape_weights</span><span class="p">()</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">pose_mesh</span><span class="p">)</span>
+		
+		<span class="c1"># Opens the Maya Blend Shape Paints Weights tool</span>
+		<span class="n">mel</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;ArtPaintBlendShapeWeightsToolOptions&#39;</span><span class="p">)</span>
+		
+		<span class="k">if</span> <span class="n">symmetry</span><span class="p">:</span>
+			<span class="n">side</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">poseSide</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+			<span class="n">blendshape_model</span><span class="o">.</span><span class="n">set_blendshape_weight_symmetry</span><span class="p">(</span><span class="n">side</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">pose_mesh</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FacePoseEdit.paint_neutral_end"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_poses.html#cpg.maya.face.face_poses.face_pose_edit.FacePoseEdit.paint_neutral_end">[docs]</a>	<span class="k">def</span> <span class="nf">paint_neutral_end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Applies the neutral blend shape painting to the current pose being edited.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">paint_neutral</span> <span class="o">=</span> <span class="kc">False</span>
+		<span class="c1"># dup and delete pose_mesh</span>
+		<span class="n">mesh</span> <span class="o">=</span> <span class="n">face_model</span><span class="o">.</span><span class="n">FaceModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+		<span class="n">pose_mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">poseMesh</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="n">uv_pin_nodes</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="n">pose_mesh_shape</span> <span class="o">=</span> <span class="n">pose_mesh</span><span class="o">.</span><span class="n">getShape</span><span class="p">()</span>
+		<span class="n">connected_nodes</span> <span class="o">=</span> <span class="n">pose_mesh_shape</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">connected_nodes</span><span class="p">:</span>
+			<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nodetypes</span><span class="o">.</span><span class="n">UvPin</span><span class="p">):</span>
+				<span class="n">uv_pin_nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">uv_pin_nodes</span><span class="p">:</span>
+			<span class="n">rivet_group</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">xform</span> <span class="k">for</span> <span class="n">xform</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">)</span> <span class="k">if</span> <span class="n">xform</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;isRivetGrp&#39;</span><span class="p">)),</span> <span class="kc">None</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">rivet_group</span><span class="p">:</span>
+				<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">rivet_group</span><span class="p">)</span>
+
+		<span class="n">pose_mesh</span> <span class="o">=</span> <span class="n">blendshape_model</span><span class="o">.</span><span class="n">dup_and_delete_mesh</span><span class="p">(</span><span class="n">pose_mesh</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">uv_pin_nodes</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">transfer_joints</span><span class="p">(</span><span class="n">pose_mesh</span><span class="p">)</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">poseMesh</span> <span class="o">&gt;&gt;</span> <span class="n">pose_mesh</span><span class="o">.</span><span class="n">poseMesh</span>
+
+		<span class="n">neutral_pose</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">neutralPose</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">neutral_pose</span><span class="p">)</span>
+
+		<span class="c1"># Reconnect parallel_blend - Set the scene back up to the Single pose edit.</span>
+		<span class="n">parallel_blendnode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">parallelBlendnode</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="k">if</span> <span class="n">parallel_blendnode</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">parallel_blendnode</span><span class="p">)</span>
+		
+		<span class="n">parallel_blendnode</span> <span class="o">=</span> <span class="n">blendshape_model</span><span class="o">.</span><span class="n">create_parallel_blendnode</span><span class="p">(</span><span class="n">diff_mesh</span><span class="o">=</span><span class="n">mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span>
+																		<span class="n">pose_mesh</span><span class="o">=</span><span class="n">pose_mesh</span><span class="p">,</span>
+																		<span class="n">last_mesh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">liveEditMesh</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+																		<span class="n">name</span><span class="o">=</span><span class="s1">&#39;pose_edit_parallel_blendnode&#39;</span><span class="p">)</span>
+		<span class="n">parallel_blendnode</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;parallelBlendnode&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">parallelBlendnode</span> <span class="o">&gt;&gt;</span> <span class="n">parallel_blendnode</span><span class="o">.</span><span class="n">parallelBlendnode</span>
+
+		<span class="n">blendshape_model</span><span class="o">.</span><span class="n">set_blendshape_weight_symmetry</span><span class="p">(</span><span class="n">symmetry</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+		<span class="c1"># set flags back to the selected poses</span>
+		<span class="c1">#self.edit_inst.set_main_flag()</span>
+	
+<div class="viewcode-block" id="FacePoseEdit.paint_neutral_cancel"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_poses.html#cpg.maya.face.face_poses.face_pose_edit.FacePoseEdit.paint_neutral_cancel">[docs]</a>	<span class="k">def</span> <span class="nf">paint_neutral_cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Cancels out the the blend shape painting and returns the artist back to</span>
+<span class="sd">		single pose edit mode without any changes from blend shape painting.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">paint_neutral</span> <span class="o">=</span> <span class="kc">False</span>
+		
+		<span class="n">neutral_pose</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">neutralPose</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="n">blendnode</span> <span class="o">=</span> <span class="n">blendshape_model</span><span class="o">.</span><span class="n">get_first_blendnode</span><span class="p">(</span><span class="n">neutral_pose</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">neutral_pose</span><span class="p">,</span> <span class="n">blendnode</span><span class="p">)</span>
+		
+		<span class="n">blendshape_model</span><span class="o">.</span><span class="n">set_blendshape_weight_symmetry</span><span class="p">(</span><span class="n">symmetry</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+		<span class="c1"># set flags back to the selected poses</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">set_main_flag</span><span class="p">()</span></div>
+	
+<div class="viewcode-block" id="FacePoseEdit.base_edit_start"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_poses.html#cpg.maya.face.face_poses.face_pose_edit.FacePoseEdit.base_edit_start">[docs]</a>	<span class="k">def</span> <span class="nf">base_edit_start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symmetry</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show_skel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">replace_mesh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Puts the tool in a state where the artist can update a blend shape mesh.</span>
+<span class="sd">		It duplicates the mesh, with the pose that is to be updated.</span>
+
+<span class="sd">		:param bool show_skel: If True, it will unhide the skeleton.</span>
+<span class="sd">		:param bool symmetry: If True, will turn on Maya&#39;s modeling Symmetry options.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="c1"># Reset all the flags -  This is for Single pose edit.  We start with no poses and then add them with</span>
+		<span class="c1"># the Flags.</span>
+		<span class="n">flag_utils</span><span class="o">.</span><span class="n">zero_flags</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="p">])</span>
+		<span class="c1"># # Set the main flag</span>
+		<span class="c1"># self.edit_inst.set_main_flag()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">base_edit</span> <span class="o">=</span> <span class="kc">True</span>
+		
+		<span class="c1"># Get the main blend shape mesh so we can duplicate it and edit it</span>
+		<span class="n">mesh</span> <span class="o">=</span> <span class="n">face_model</span><span class="o">.</span><span class="n">FaceModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+		
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">replace_mesh</span><span class="p">:</span>
+			<span class="c1"># Duplicate the mesh.  This will be the mesh the artist will edit.</span>
+			<span class="n">pose_mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">duplicate</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">poseName</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="si">}</span><span class="s1">_edit&#39;</span><span class="p">)</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">pose_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="n">pose_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">tx</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span>
+			<span class="n">pose_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">pose_mesh</span> <span class="o">=</span> <span class="n">face_model</span><span class="o">.</span><span class="n">FaceModel</span><span class="p">(</span><span class="n">replace_mesh</span><span class="p">)</span>
+		
+		<span class="n">pose_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;poseMesh&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">poseMesh</span> <span class="o">&gt;&gt;</span> <span class="n">pose_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">poseMesh</span>
+		
+		<span class="c1"># Duplicate the mesh again.  This is the extra mesh the artist can view his changes one either</span>
+		<span class="c1"># Multiple or Single pose.  This mesh does not get edited.</span>
+
+		<span class="n">live_mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">duplicate</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;live_edit&#39;</span><span class="p">)</span>
+		<span class="n">live_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;liveEditMesh&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">live_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">live_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">liveEditMesh</span> <span class="o">&gt;&gt;</span> <span class="n">live_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">liveEditMesh</span>
+		
+		<span class="c1"># Make sure they are not under any layers</span>
+		<span class="n">display_layers</span><span class="o">.</span><span class="n">remove_objects_from_layers</span><span class="p">([</span><span class="n">live_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">pose_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">])</span>
+		
+		<span class="c1"># Create a parallel blend shape</span>
+		
+		<span class="n">parallel_blendnode</span> <span class="o">=</span> <span class="n">blendshape_model</span><span class="o">.</span><span class="n">create_parallel_blendnode</span><span class="p">(</span><span class="n">diff_mesh</span><span class="o">=</span><span class="n">live_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span>
+																		<span class="n">pose_mesh</span><span class="o">=</span><span class="n">pose_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span>
+																		<span class="n">last_mesh</span><span class="o">=</span><span class="n">mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span>
+																		<span class="n">name</span><span class="o">=</span><span class="s1">&#39;pose_edit_parallel_blendnode&#39;</span><span class="p">)</span>
+		<span class="n">parallel_blendnode</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;parallelBlendnode&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">parallelBlendnode</span> <span class="o">&gt;&gt;</span> <span class="n">parallel_blendnode</span><span class="o">.</span><span class="n">parallelBlendnode</span>
+	
+		<span class="c1"># Set the flags again</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">set_all_flag_block_values</span><span class="p">()</span>
+		
+		<span class="k">if</span> <span class="n">show_skel</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">hide_display_layers</span><span class="p">()</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">show_display_layers</span><span class="p">(</span><span class="n">skip_layers</span><span class="o">=</span><span class="p">[</span><span class="n">frag</span><span class="o">.</span><span class="n">FLAGS_CONTACT_LYR</span><span class="p">,</span> <span class="n">frag</span><span class="o">.</span><span class="n">FLAGS_DETAIL_LYR</span><span class="p">])</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">hide_display_layers</span><span class="p">()</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">show_display_layers</span><span class="p">(</span><span class="n">skip_layers</span><span class="o">=</span><span class="p">[</span><span class="n">frag</span><span class="o">.</span><span class="n">FLAGS_CONTACT_LYR</span><span class="p">,</span> <span class="n">frag</span><span class="o">.</span><span class="n">SKEL_LYR</span><span class="p">,</span> <span class="n">frag</span><span class="o">.</span><span class="n">FLAGS_DETAIL_LYR</span><span class="p">])</span>
+		
+		<span class="n">vert_utils</span><span class="o">.</span><span class="n">set_vertex_symmetry</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">symmetry</span><span class="o">=</span><span class="n">symmetry</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FacePoseEdit.base_edit_end"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_poses.html#cpg.maya.face.face_poses.face_pose_edit.FacePoseEdit.base_edit_end">[docs]</a>	<span class="k">def</span> <span class="nf">base_edit_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">due_export</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Ends the editing mode and updates the rig with the newly updated pose.</span>
+<span class="sd">		</span>
+<span class="sd">		:param bool due_export: If True, will export the meshes so they are saved in Plastic.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">mesh</span> <span class="o">=</span> <span class="n">face_model</span><span class="o">.</span><span class="n">FaceModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+		<span class="n">parameter_node</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">FragFaceParameters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">parameterNode</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+		<span class="n">face_component</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_face_mesh_component</span><span class="p">(</span><span class="n">parameter_node</span><span class="o">.</span><span class="n">pynode</span><span class="p">)</span>
+		<span class="n">frag_root</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_frag_root</span><span class="p">(</span><span class="n">parameter_node</span><span class="p">)</span>
+		<span class="n">asset_id</span> <span class="o">=</span> <span class="n">frag_root</span><span class="o">.</span><span class="n">asset_id</span>
+		<span class="n">parameter_inst</span> <span class="o">=</span> <span class="n">face_util</span><span class="o">.</span><span class="n">get_parameters_region_instance</span><span class="p">(</span><span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="n">mesh</span><span class="o">.</span><span class="n">region</span><span class="p">)</span>
+		
+		<span class="n">skin_mesh</span> <span class="o">=</span> <span class="n">face_component</span><span class="o">.</span><span class="n">get_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">type_name</span><span class="p">,</span> <span class="n">frag</span><span class="o">.</span><span class="n">FACE_SKINNED_CATEGORY</span><span class="p">)</span>
+		<span class="n">skin_mesh</span> <span class="o">=</span> <span class="n">face_model</span><span class="o">.</span><span class="n">FaceModel</span><span class="p">(</span><span class="n">skin_mesh</span><span class="p">)</span>
+		
+		<span class="c1"># Disconnect all blend shape from the rig.</span>
+		<span class="n">blendnode</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_main_blendnode</span><span class="p">()</span>
+		<span class="n">shapes</span> <span class="o">=</span> <span class="n">blendnode</span><span class="o">.</span><span class="n">shapes</span>
+		<span class="n">blendnode</span><span class="o">.</span><span class="n">disconnect_from_rig</span><span class="p">()</span>
+		<span class="n">pose_grp</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">shapes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">p</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">blendnode</span><span class="o">.</span><span class="n">delete_blendshapes</span><span class="p">()</span>
+		
+		<span class="n">new_shapes</span> <span class="o">=</span> <span class="n">blendnode</span><span class="o">.</span><span class="n">generate_face_shapes</span><span class="p">()</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">blendnode</span><span class="o">.</span><span class="n">blendnode</span><span class="p">)</span>
+		
+		<span class="n">new_mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">dup_and_delete</span><span class="p">()</span>
+		<span class="n">blendnode</span> <span class="o">=</span> <span class="n">blendshape_node</span><span class="o">.</span><span class="n">BlendShapeNode</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">shapes</span><span class="o">=</span><span class="n">new_shapes</span><span class="p">,</span>
+															<span class="n">mesh</span><span class="o">=</span><span class="n">new_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span>
+															<span class="n">label</span><span class="o">=</span><span class="n">new_mesh</span><span class="o">.</span><span class="n">part_type_name</span><span class="p">)</span>
+		
+		<span class="k">if</span> <span class="n">due_export</span><span class="p">:</span>
+			<span class="n">path</span> <span class="o">=</span> <span class="n">paths</span><span class="o">.</span><span class="n">get_face_blendshape_path</span><span class="p">(</span><span class="n">asset_id</span><span class="p">)</span>
+			<span class="n">blendshapes_meshes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">new_shapes</span><span class="p">))</span>
+			<span class="n">face_import_export</span><span class="o">.</span><span class="n">export_blendshapes</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">meshes</span><span class="o">=</span><span class="n">blendshapes_meshes</span><span class="p">,</span> <span class="n">remove_mtls</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		
+		<span class="k">if</span> <span class="n">pose_grp</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">new_shapes</span><span class="p">,</span> <span class="n">pose_grp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+		
+		<span class="n">parameters</span> <span class="o">=</span> <span class="n">parameter_inst</span><span class="o">.</span><span class="n">get_parameters_list</span><span class="p">()</span>
+		<span class="n">blendnode</span><span class="o">.</span><span class="n">reconnect_to_rig</span><span class="p">(</span><span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span> <span class="n">parameter_node</span><span class="o">=</span><span class="n">parameter_node</span><span class="p">)</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">base_edit_cancel</span><span class="p">(</span><span class="n">set_block_values</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+		<span class="n">face_util</span><span class="o">.</span><span class="n">sort_shapes</span><span class="p">(</span><span class="n">new_shapes</span><span class="p">)</span>
+		<span class="n">display_layers</span><span class="o">.</span><span class="n">remove_objects_from_layers</span><span class="p">(</span><span class="n">new_shapes</span><span class="p">)</span>
+		
+		<span class="c1"># clean up the meshes</span>
+		<span class="c1"># Need to recreate the skinned mesh and connect both meshes back to the mesh component.</span>
+		<span class="n">new_mesh</span><span class="o">.</span><span class="n">reconnect_to_mesh_component</span><span class="p">(</span><span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">)</span>
+		<span class="n">skin_mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">swap_mesh_with_new_base</span><span class="p">(</span><span class="n">skin_mesh</span><span class="p">,</span> <span class="n">new_mesh</span><span class="p">)</span>
+		<span class="n">skin_mesh</span><span class="o">.</span><span class="n">reconnect_to_mesh_component</span><span class="p">(</span><span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">)</span>
+
+		<span class="n">face_skinning</span><span class="o">.</span><span class="n">apply_face_skinning_from_file</span><span class="p">(</span><span class="n">asset_id</span><span class="p">,</span> <span class="n">new_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+		<span class="n">face_skinning</span><span class="o">.</span><span class="n">apply_face_skinning_from_file</span><span class="p">(</span><span class="n">asset_id</span><span class="p">,</span> <span class="n">skin_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span></div>
+		
+<div class="viewcode-block" id="FacePoseEdit.base_edit_cancel"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_poses.html#cpg.maya.face.face_poses.face_pose_edit.FacePoseEdit.base_edit_cancel">[docs]</a>	<span class="k">def</span> <span class="nf">base_edit_cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">set_block_values</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Cancels the edit mode.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">pose_mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">poseMesh</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="n">live_mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">liveEditMesh</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="n">parallel_blendnode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">parallelBlendnode</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		
+		<span class="c1"># Clean up</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">parallel_blendnode</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">live_mesh</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">pose_mesh</span><span class="p">)</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">hide_display_layers</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">show_display_layers</span><span class="p">([</span><span class="n">frag</span><span class="o">.</span><span class="n">FLAGS_CONTACT_LYR</span><span class="p">,</span> <span class="n">frag</span><span class="o">.</span><span class="n">SKEL_LYR</span><span class="p">,</span> <span class="n">frag</span><span class="o">.</span><span class="n">FLAGS_DETAIL_LYR</span><span class="p">])</span>
+		
+		<span class="c1"># Set the rig settings - put it back to the original flag settings before editing</span>
+		<span class="k">if</span> <span class="n">set_block_values</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">set_all_flag_block_values</span><span class="p">()</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="p">)</span>
+		<span class="n">vert_utils</span><span class="o">.</span><span class="n">set_vertex_symmetry</span><span class="p">(</span><span class="n">symmetry</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FacePoseEdit.duplicate_head_mesh_extra"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_poses.html#cpg.maya.face.face_poses.face_pose_edit.FacePoseEdit.duplicate_head_mesh_extra">[docs]</a>	<span class="k">def</span> <span class="nf">duplicate_head_mesh_extra</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns an extra pose head mesh.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns an extra pose head mesh.</span>
+<span class="sd">		:rtype: pm.nt.Transform</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">parameter_node</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">FragFaceParameters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">parameterNode</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+		<span class="n">face_component</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_face_mesh_component</span><span class="p">(</span><span class="n">parameter_node</span><span class="o">.</span><span class="n">pynode</span><span class="p">)</span>
+		<span class="n">head_mesh</span> <span class="o">=</span> <span class="n">face_component</span><span class="o">.</span><span class="n">get_mesh</span><span class="p">(</span><span class="s1">&#39;head_mesh&#39;</span><span class="p">,</span> <span class="n">frag</span><span class="o">.</span><span class="n">FACE_BLENDSHAPE_CATEGORY</span><span class="p">)</span>
+		
+		<span class="n">dup_mesh</span> <span class="o">=</span> <span class="n">blendshape_model</span><span class="o">.</span><span class="n">duplicate_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">head_mesh</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;DELETE_ME_DUP_MESH&#39;</span><span class="p">,</span> <span class="n">remove_user_attrs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">dup_mesh</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;dupPosesMesh&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">dup_mesh</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">display_layers</span><span class="o">.</span><span class="n">remove_objects_from_layers</span><span class="p">(</span><span class="n">dup_mesh</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">dupPosesMesh</span> <span class="o">&gt;&gt;</span> <span class="n">dup_mesh</span><span class="o">.</span><span class="n">dupPosesMesh</span>
+		<span class="k">return</span> <span class="n">dup_mesh</span></div>
+	
+<div class="viewcode-block" id="FacePoseEdit.replace_base"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_poses.html#cpg.maya.face.face_poses.face_pose_edit.FacePoseEdit.replace_base">[docs]</a>	<span class="k">def</span> <span class="nf">replace_base</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">replace_mesh</span><span class="p">,</span> <span class="n">due_export</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">base_edit_start</span><span class="p">(</span><span class="n">replace_mesh</span><span class="o">=</span><span class="n">replace_mesh</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">base_edit_end</span><span class="p">(</span><span class="n">due_export</span><span class="o">=</span><span class="n">due_export</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FacePoseEdit.swap_mesh_with_new_base"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_poses.html#cpg.maya.face.face_poses.face_pose_edit.FacePoseEdit.swap_mesh_with_new_base">[docs]</a>	<span class="k">def</span> <span class="nf">swap_mesh_with_new_base</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_mesh</span><span class="p">,</span> <span class="n">new_mesh</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Swaps a new mesh with an old mesh and adding the markup data.</span>
+<span class="sd">		</span>
+<span class="sd">		:param face_model.FaceModel old_mesh: An instance of face_model.FaceModel that represents the unedited mesh.</span>
+<span class="sd">		:param face_model.FaceModel new_mesh: An instance of face_model.FaceModel that represents the edited mesh.</span>
+<span class="sd">		:return: Returns An instance of face_model.FaceModel that represents the edited mesh.</span>
+<span class="sd">		:rtype: face_model.FaceModel</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">mark_up</span> <span class="o">=</span> <span class="n">old_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">cpgMeshMarkup</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="n">old_parent</span> <span class="o">=</span> <span class="n">old_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getParent</span><span class="p">()</span>
+		<span class="n">dup_mesh</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">duplicate</span><span class="p">(</span><span class="n">new_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="s1">&#39;TEMPFACEEDITMESH&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">dup_mesh</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;cpgMeshMarkup&#39;</span><span class="p">):</span>
+			<span class="n">dup_mesh</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;cpgMeshMarkup&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+		<span class="n">old_mesh_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">old_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">old_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+		<span class="n">dup_mesh</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">old_mesh_name</span><span class="p">)</span>
+		<span class="n">dup_mesh</span><span class="o">.</span><span class="n">cpgMeshMarkup</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">mark_up</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">old_parent</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">dup_mesh</span><span class="p">,</span> <span class="n">old_parent</span><span class="p">)</span>
+		<span class="n">dup_mesh</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">face_model</span><span class="o">.</span><span class="n">FaceModel</span><span class="p">(</span><span class="n">dup_mesh</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FacePoseEdit.export_blendshape"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_poses.html#cpg.maya.face.face_poses.face_pose_edit.FacePoseEdit.export_blendshape">[docs]</a>	<span class="k">def</span> <span class="nf">export_blendshape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pose_mesh</span><span class="p">,</span> <span class="n">asset_id</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Exports a blend shape pose.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str pose_mesh: Pose mesh name.</span>
+<span class="sd">		:param str asset_id: Asset identifier.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">path</span> <span class="o">=</span> <span class="n">paths</span><span class="o">.</span><span class="n">get_face_blendshape_path</span><span class="p">(</span><span class="n">asset_id</span><span class="p">)</span>
+		<span class="n">face_import_export</span><span class="o">.</span><span class="n">export_blendshapes</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">pose_mesh</span><span class="p">,</span> <span class="n">remove_mtls</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">dialogs</span><span class="o">.</span><span class="n">display_view_message</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">pose_mesh</span><span class="si">}</span><span class="s1">: Exported Successfully&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s1">&#39;Face Editing&#39;</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FacePoseEdit.mirror_edited_mesh"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_poses.html#cpg.maya.face.face_poses.face_pose_edit.FacePoseEdit.mirror_edited_mesh">[docs]</a>	<span class="k">def</span> <span class="nf">mirror_edited_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pose_mesh</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">mirror_pose_name</span><span class="p">,</span> <span class="n">asset_id</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Mirrors a mesh and renames it to the mirrored pose.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str pose_mesh: Name of the original pose being edited.</span>
+<span class="sd">		:param FaceModel mesh: Name of the blend shape that has all the blend shapes attached.</span>
+<span class="sd">		:param str mirror_pose_name: name of the mirrored pose.</span>
+<span class="sd">		:param str asset_id: Asset identifier.</span>
+<span class="sd">		:return: Returns the mirrored mesh.</span>
+<span class="sd">		:rtype: pm.nt.Transform</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">face_model</span><span class="o">.</span><span class="n">FaceModel</span><span class="p">):</span>
+			<span class="n">mesh</span> <span class="o">=</span> <span class="n">face_model</span><span class="o">.</span><span class="n">FaceModel</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+		
+		<span class="n">mirror_mesh</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">mirror_pose_name</span><span class="p">)</span>
+		
+		<span class="n">region_data</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_region_data</span><span class="p">(</span><span class="n">asset_id</span><span class="p">)</span>
+		<span class="n">mirror_data</span> <span class="o">=</span> <span class="n">region_data</span><span class="o">.</span><span class="n">get_mirror_data</span><span class="p">()</span>
+		<span class="n">dup_mesh</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">duplicate</span><span class="p">(</span><span class="n">pose_mesh</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;temp_mirror_pose&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">mirror_data</span><span class="o">.</span><span class="n">mirror_mesh</span><span class="p">(</span><span class="n">mesh_name</span><span class="o">=</span><span class="n">dup_mesh</span><span class="p">)</span>
+		
+		<span class="n">old_pose_parent</span> <span class="o">=</span> <span class="n">mirror_mesh</span><span class="o">.</span><span class="n">getParent</span><span class="p">()</span>
+		<span class="n">pos</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">mirror_mesh</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">mirror_mesh</span><span class="p">)</span>
+		<span class="n">dup_mesh</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">mirror_pose_name</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">dup_mesh</span><span class="p">,</span> <span class="n">old_pose_parent</span><span class="p">)</span>
+		
+		<span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">dup_mesh</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">pos</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">dup_mesh</span></div>
+	
+<div class="viewcode-block" id="FacePoseEdit.get_display_layers"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_poses.html#cpg.maya.face.face_poses.face_pose_edit.FacePoseEdit.get_display_layers">[docs]</a>	<span class="k">def</span> <span class="nf">get_display_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Gets all the display layers from frag.DisplayLayers</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="c1"># Hide the Display Layers</span>
+		<span class="n">frag_rig</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_frag_rig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="p">)</span>
+		<span class="n">dsp_lyrs</span> <span class="o">=</span> <span class="n">frag_rig</span><span class="o">.</span><span class="n">get_frag_children</span><span class="p">(</span><span class="n">of_type</span><span class="o">=</span><span class="n">frag</span><span class="o">.</span><span class="n">DisplayLayers</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">dsp_lyrs</span><span class="p">:</span>
+			<span class="k">return</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">dsp_lyrs</span> <span class="o">=</span> <span class="n">dsp_lyrs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+	
+<div class="viewcode-block" id="FacePoseEdit.show_display_layers"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_poses.html#cpg.maya.face.face_poses.face_pose_edit.FacePoseEdit.show_display_layers">[docs]</a>	<span class="k">def</span> <span class="nf">show_display_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">skip_layers</span><span class="o">=</span><span class="p">()):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Makes the Rig layers visible expected for what is in the skip list.</span>
+<span class="sd">		</span>
+<span class="sd">		:param list(str) skip_layers:  The layers to skip</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">get_display_layers</span><span class="p">()</span>
+		<span class="c1"># Hide the Display Layers</span>
+		<span class="n">layers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsp_lyrs</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+		<span class="k">for</span> <span class="n">lyr</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">skip_layers</span> <span class="ow">and</span> <span class="n">lyr</span> <span class="ow">in</span> <span class="n">skip_layers</span><span class="p">:</span>
+				<span class="k">continue</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">dsp_lyrs</span><span class="o">.</span><span class="n">show_layer</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">lyr</span><span class="p">))</span></div>
+	
+<div class="viewcode-block" id="FacePoseEdit.hide_display_layers"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_poses.html#cpg.maya.face.face_poses.face_pose_edit.FacePoseEdit.hide_display_layers">[docs]</a>	<span class="k">def</span> <span class="nf">hide_display_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">skip_layers</span><span class="o">=</span><span class="p">()):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Makes the Rig layers not visible expected for what is in the skip list.</span>
+
+<span class="sd">		:param list(str) skip_layers:  The layers to skip</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">get_display_layers</span><span class="p">()</span>
+		<span class="c1"># Hide the Display Layers</span>
+		<span class="n">layers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsp_lyrs</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+		<span class="k">for</span> <span class="n">lyr</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">skip_layers</span> <span class="ow">and</span> <span class="n">lyr</span> <span class="ow">in</span> <span class="n">skip_layers</span><span class="p">:</span>
+				<span class="k">continue</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">dsp_lyrs</span><span class="o">.</span><span class="n">hide_layer</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">lyr</span><span class="p">))</span></div>
+		
+<div class="viewcode-block" id="FacePoseEdit.lock_display_layers"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_poses.html#cpg.maya.face.face_poses.face_pose_edit.FacePoseEdit.lock_display_layers">[docs]</a>	<span class="k">def</span> <span class="nf">lock_display_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">skip_layers</span><span class="o">=</span><span class="p">()):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Makes the Rig layers locked expected for what is in the skip list.</span>
+
+<span class="sd">		:param list(str) skip_layers:  The layers to skip</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">get_display_layers</span><span class="p">()</span>
+		<span class="c1"># Lock the Display Layers</span>
+		<span class="n">layers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsp_lyrs</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+		<span class="k">for</span> <span class="n">lyr</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">skip_layers</span> <span class="ow">and</span> <span class="n">lyr</span> <span class="ow">in</span> <span class="n">skip_layers</span><span class="p">:</span>
+				<span class="k">continue</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">dsp_lyrs</span><span class="o">.</span><span class="n">set_layer_to_reference</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">lyr</span><span class="p">))</span></div>
+	
+
+<div class="viewcode-block" id="FacePoseEdit.transfer_joints"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_poses.html#cpg.maya.face.face_poses.face_pose_edit.FacePoseEdit.transfer_joints">[docs]</a>	<span class="k">def</span> <span class="nf">transfer_joints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_mesh</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Connects joints through UV pins to a new mesh</span>
+
+<span class="sd">		:param new_mesh: Mesh that will receive UV pins</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">new_mesh_model</span> <span class="o">=</span> <span class="n">face_model</span><span class="o">.</span><span class="n">FaceModel</span><span class="p">(</span><span class="n">new_mesh</span><span class="p">)</span>
+		<span class="n">frag_rig_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edit_inst</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">fragParent</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">frag_root</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_frag_root</span><span class="p">(</span><span class="n">frag_rig_node</span><span class="p">)</span>
+		<span class="n">asset_id</span> <span class="o">=</span> <span class="n">frag_root</span><span class="o">.</span><span class="n">asset_id</span>
+		<span class="n">new_mesh_model</span><span class="o">.</span><span class="n">connect_joints</span><span class="p">(</span><span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

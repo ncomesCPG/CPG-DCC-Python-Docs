@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.animation.anim_curves &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.animation.anim_curves</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.animation.anim_curves</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Modules to interact with animation curves.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+<span class="c1"># python imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">lists</span>
+
+<span class="c1"># Internal module imports</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="crop_time_range"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_curves.crop_time_range">[docs]</a><span class="k">def</span> <span class="nf">crop_time_range</span><span class="p">(</span><span class="n">anim_curve</span><span class="p">,</span> <span class="n">min_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_time</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Removes keys from start and/or end of the animation clip.</span>
+
+<span class="sd">	:param pm.nt.AnimCurve anim_curve: The animation curve to evaluate.</span>
+<span class="sd">	:param float min_time: New 1st frame.</span>
+<span class="sd">	:param float max_time: New last frame.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">pm</span><span class="o">.</span><span class="n">setKeyframe</span><span class="p">(</span><span class="n">anim_curve</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">min_time</span><span class="p">)</span>
+	<span class="n">key_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">anim_curve</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">key_time</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">min_time</span> <span class="ow">and</span> <span class="n">key</span> <span class="o">&lt;</span> <span class="n">min_time</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">cutKey</span><span class="p">(</span><span class="n">anim_curve</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">cl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">max_time</span> <span class="ow">and</span> <span class="n">key</span> <span class="o">&gt;</span> <span class="n">max_time</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">cutKey</span><span class="p">(</span><span class="n">anim_curve</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">cl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="change_curve_start_time"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_curves.change_curve_start_time">[docs]</a><span class="k">def</span> <span class="nf">change_curve_start_time</span><span class="p">(</span><span class="n">animation_curve</span><span class="p">,</span> <span class="n">start_difference</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Updates the time range on an animation curve.</span>
+<span class="sd">	Note: if there are more than one animation curve you are moving and one curve starts at</span>
+<span class="sd">	frame 5 and another starts at frame 10.  You want them all to move the same amount and you may need to change</span>
+<span class="sd">	the start time to match.</span>
+
+<span class="sd">	:param pm.nt.AnimCurve animation_curve: The animation curve that the time will be updated.</span>
+<span class="sd">	:param float start_difference: How much the all frames should move.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">key_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">animation_curve</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="c1"># Maya does not move a keyframe if there is already a keyframe in that position.</span>
+	<span class="c1"># If the keys are moving in the positive, Start with the last frame.</span>
+	<span class="c1"># If the keys are moving in the negative, start with the first frame.</span>
+	<span class="k">if</span> <span class="n">start_difference</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">key_time</span><span class="p">))):</span>
+			<span class="n">new_key_time</span> <span class="o">=</span> <span class="n">key_time</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">+</span> <span class="n">start_difference</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">animation_curve</span><span class="p">,</span> <span class="n">option</span><span class="o">=</span><span class="s1">&#39;move&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">absolute</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeChange</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">new_key_time</span><span class="p">))</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">key_time</span><span class="p">)):</span>
+			<span class="n">new_key_time</span> <span class="o">=</span> <span class="n">key_time</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">+</span> <span class="n">start_difference</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">animation_curve</span><span class="p">,</span> <span class="n">option</span><span class="o">=</span><span class="s1">&#39;move&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">absolute</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeChange</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">new_key_time</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="replace_into_curve"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_curves.replace_into_curve">[docs]</a><span class="k">def</span> <span class="nf">replace_into_curve</span><span class="p">(</span><span class="n">curve_a</span><span class="p">,</span> <span class="n">curve_b</span><span class="p">,</span> <span class="n">delete_curve</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Copies on anim curve onto another.</span>
+
+<span class="sd">	:param pm.nt.AnimCurve curve_a: The animation curve that is being copied.</span>
+<span class="sd">	:param pm.nt.AnimCurve curve_b: The animation curve that is receiving the copied curves.</span>
+<span class="sd">	:param delete_curve:  Deletes the animation curve that is being copied from.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">pm</span><span class="o">.</span><span class="n">copyKey</span><span class="p">(</span><span class="n">curve_a</span><span class="p">)</span>
+	<span class="n">key_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">curve_a</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="n">pm</span><span class="o">.</span><span class="n">pasteKey</span><span class="p">(</span><span class="n">curve_b</span><span class="p">,</span> <span class="n">o</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="n">key_time</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">key_time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+	<span class="k">if</span> <span class="n">delete_curve</span><span class="p">:</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">curve_a</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="merge_curves"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_curves.merge_curves">[docs]</a><span class="k">def</span> <span class="nf">merge_curves</span><span class="p">(</span><span class="n">curve_a</span><span class="p">,</span> <span class="n">curve_b</span><span class="p">,</span> <span class="n">delete_curves</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Merges two animation curves.</span>
+
+<span class="sd">	:param pm.nt.AnimCurve curve_a: The animation curve that is being copied.</span>
+<span class="sd">	:param pm.nt.AnimCurve curve_b: The animation curve that is receiving the copied curves.</span>
+<span class="sd">	:param delete_curve:  Deletes the animation curve that is being copied from.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">merged_curve</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">duplicate</span><span class="p">(</span><span class="n">curve_b</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="n">keyframes</span> <span class="o">=</span> <span class="p">[</span><span class="n">keyframe</span> <span class="k">for</span> <span class="n">keyframe</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">([</span><span class="n">curve_a</span><span class="p">,</span> <span class="n">curve_b</span><span class="p">],</span> <span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+	<span class="n">max_keyframe</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">keyframes</span><span class="p">)</span>
+
+	<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">max_keyframe</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+		<span class="n">value</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">curve_a</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">vc</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+		<span class="k">if</span> <span class="n">value</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">setKeyframe</span><span class="p">(</span><span class="n">merged_curve</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+
+	<span class="k">if</span> <span class="n">delete_curves</span><span class="p">:</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">curve_a</span><span class="p">,</span> <span class="n">curve_b</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">merged_curve</span></div>
+
+
+<div class="viewcode-block" id="multiply_curve_values"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_curves.multiply_curve_values">[docs]</a><span class="k">def</span> <span class="nf">multiply_curve_values</span><span class="p">(</span><span class="n">animation_curve</span><span class="p">,</span> <span class="n">multi</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Multiplies all the anim values.</span>
+
+<span class="sd">	:param pm.nt.AnimCurve animation_curve: The animation curve that is being changed.</span>
+<span class="sd">	:param float multi: multiplies all the anim values.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">animation_curve</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+		<span class="n">value</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">animation_curve</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">vc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">frame</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">multi</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">animation_curve</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">frame</span><span class="p">,</span> <span class="n">vc</span><span class="o">=</span><span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="restore_from_anim_curves"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_curves.restore_from_anim_curves">[docs]</a><span class="k">def</span> <span class="nf">restore_from_anim_curves</span><span class="p">(</span><span class="n">anim_curve</span><span class="p">,</span>
+							 <span class="n">object_attribute</span><span class="p">,</span>
+							 <span class="n">keep_curves</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+							 <span class="n">delete_old_curves</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+							 <span class="n">start_time</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Restores animation curves.  Takes existing curves and connects it to an object attribute.</span>
+
+<span class="sd">	:param pm.nt.AnimCurve anim_curve: The animation curve node.</span>
+<span class="sd">	:param pm.nt.Attribute object_attribute:  THe attribute on an object that you are attaching animation.</span>
+<span class="sd">	:param bool keep_curves: If True, The animation curve will be duplicated before connecting.</span>
+<span class="sd">	:param bool delete_old_curves: If True, If there is an existing animation curve on the object attribute it will</span>
+<span class="sd">	delete it first.</span>
+<span class="sd">	:param float/None start_time: the start time of the animation.  It will adjust the animation curve times.</span>
+<span class="sd">	:return:  The end frame of the animation curve.</span>
+<span class="sd">	:rtype: float</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">if</span> <span class="n">keep_curves</span><span class="p">:</span>
+		<span class="n">anim_curve</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">duplicate</span><span class="p">(</span><span class="n">anim_curve</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+	
+	<span class="c1"># adjust time range to match the selected timeline</span>
+	<span class="n">end_frame</span> <span class="o">=</span> <span class="kc">None</span>
+	<span class="k">if</span> <span class="n">start_time</span><span class="p">:</span>
+		<span class="n">change_curve_start_time</span><span class="p">(</span><span class="n">anim_curve</span><span class="p">,</span> <span class="n">start_time</span><span class="p">)</span>
+		<span class="n">end_frame</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">anim_curve</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+	
+	<span class="c1"># If there is a curve already connected to that object attribute.  Delete it.</span>
+	<span class="n">obj_curve</span> <span class="o">=</span> <span class="n">object_attribute</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">obj_curve</span><span class="p">:</span>
+		<span class="c1"># Swap the animation curve from the node to the object.</span>
+		<span class="n">anim_curve</span><span class="o">.</span><span class="n">output</span> <span class="o">&gt;&gt;</span> <span class="n">object_attribute</span>
+	<span class="k">elif</span> <span class="n">obj_curve</span> <span class="ow">and</span> <span class="n">delete_old_curves</span><span class="p">:</span>
+		<span class="c1"># Delete the old curves 1st, then swap the animation curve from the node to the object.</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">obj_curve</span><span class="p">)</span>
+		<span class="n">anim_curve</span><span class="o">.</span><span class="n">output</span> <span class="o">&gt;&gt;</span> <span class="n">object_attribute</span>
+	<span class="k">elif</span> <span class="n">obj_curve</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">delete_old_curves</span><span class="p">:</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">copyKey</span><span class="p">(</span><span class="n">anim_curve</span><span class="p">)</span>
+		<span class="n">key_time</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">anim_curve</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="c1"># One frame animation uses &quot;merge&quot;, a full animation uses replace.</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">key_time</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">pasteKey</span><span class="p">(</span><span class="n">obj_curve</span><span class="p">,</span> <span class="n">o</span><span class="o">=</span><span class="s1">&#39;merge&#39;</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="n">key_time</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">key_time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">pasteKey</span><span class="p">(</span><span class="n">obj_curve</span><span class="p">,</span> <span class="n">o</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="n">key_time</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">key_time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+	<span class="k">return</span> <span class="n">end_frame</span></div>
+
+
+<div class="viewcode-block" id="reanimate_from_anim_curves"><a class="viewcode-back" href="../../../../cpg.maya.animation.html#cpg.maya.animation.anim_curves.reanimate_from_anim_curves">[docs]</a><span class="k">def</span> <span class="nf">reanimate_from_anim_curves</span><span class="p">(</span><span class="n">anim_curve</span><span class="p">,</span>
+							<span class="n">object_attribute</span><span class="p">,</span>
+							<span class="n">start_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+							<span class="n">end_time</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Restores animation curves.  Takes existing curves and connects it to an object attribute.</span>
+
+<span class="sd">	:param pm.nt.AnimCurve anim_curve: The animation curve node.</span>
+<span class="sd">	:param pm.nt.Attribute object_attribute:  The attribute on an object that you are attaching animation.</span>
+<span class="sd">	:param float/None start_time: the start time of the animation</span>
+<span class="sd">	:param float/None end_time: the end time of the animation</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">anim_curve</span><span class="p">:</span>
+		<span class="k">return</span>
+
+	<span class="k">if</span> <span class="n">end_time</span><span class="p">:</span>
+		<span class="n">keyframes</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">anim_curve</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeChange</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">delete_keyframes</span> <span class="o">=</span> <span class="p">[</span><span class="n">keyframe</span> <span class="k">for</span> <span class="n">keyframe</span> <span class="ow">in</span> <span class="n">keyframes</span> <span class="k">if</span> <span class="n">keyframe</span> <span class="o">&lt;</span> <span class="n">start_time</span> <span class="ow">or</span> <span class="n">keyframe</span> <span class="o">&gt;</span> <span class="n">end_time</span><span class="p">]</span>
+		<span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pm</span><span class="o">.</span><span class="n">cutKey</span><span class="p">(</span><span class="n">anim_curve</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">option</span><span class="o">=</span><span class="s1">&#39;keys&#39;</span><span class="p">),</span> <span class="n">delete_keyframes</span><span class="p">))</span>
+
+	<span class="n">obj_curve</span> <span class="o">=</span> <span class="n">object_attribute</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">obj_curve</span><span class="p">:</span>
+		<span class="n">anim_curve</span> <span class="o">=</span> <span class="n">merge_curves</span><span class="p">(</span><span class="n">anim_curve</span><span class="p">,</span> <span class="n">obj_curve</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">delete_curves</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+	<span class="n">anim_curve</span><span class="o">.</span><span class="n">output</span> <span class="o">&gt;&gt;</span> <span class="n">object_attribute</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

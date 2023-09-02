@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.modeling.face_model &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.modeling.face_model</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.modeling.face_model</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot; Face: Utility Functions. &quot;&quot;&quot;</span>
+
+<span class="c1"># system global imports</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="kn">import</span> <span class="nn">maya.cmds</span> <span class="k">as</span> <span class="nn">cmds</span>
+
+<span class="c1"># cpg python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">frag</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">lists</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">mesh_markup_rig</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.face.face_utils</span> <span class="kn">import</span> <span class="n">face_util</span><span class="p">,</span> <span class="n">face_import_export</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.modeling</span> <span class="kn">import</span> <span class="n">blendshape_model</span><span class="p">,</span> <span class="n">blendshape_node</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">attr_utils</span><span class="p">,</span> <span class="n">naming</span><span class="p">,</span> <span class="n">display_layers</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="FaceModel"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.face_model.FaceModel">[docs]</a><span class="k">class</span> <span class="nc">FaceModel</span><span class="p">:</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">):</span>
+		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+			<span class="n">mesh</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span> <span class="o">=</span> <span class="n">mesh</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span>
+	
+<div class="viewcode-block" id="FaceModel.create"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.face_model.FaceModel.create">[docs]</a>	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mesh</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Creates an instance of the class using either the base mesh or the source mesh.</span>
+
+<span class="sd">		:param pm.nt.Transform mesh: Whether to search for the base mesh or the source mesh.  By default it will search for the base mesh.</span>
+<span class="sd">		:return class instance:</span>
+<span class="sd">		:rtype:</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FaceModel.get_string_name"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.face_model.FaceModel.get_string_name">[docs]</a>	<span class="k">def</span> <span class="nf">get_string_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_namespace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the string name of the mesh</span>
+
+<span class="sd">		:param bool include_namespace: include the namespace</span>
+<span class="sd">		:return: mesh name</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">include_namespace</span> <span class="ow">and</span> <span class="s1">&#39;:&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">nodeName</span><span class="p">():</span>
+			<span class="n">string_mesh</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">naming</span><span class="o">.</span><span class="n">get_basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">))</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">nodeName</span><span class="p">()</span>
+		<span class="k">return</span> <span class="n">string_mesh</span></div>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">mesh_markup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="n">mesh_markup_rig</span><span class="o">.</span><span class="n">MeshMarkup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">region</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_markup</span><span class="o">.</span><span class="n">region</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">type_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_markup</span><span class="o">.</span><span class="n">type_name</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">category</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_markup</span><span class="o">.</span><span class="n">category</span>
+	
+	<span class="nd">@category</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">category</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">mesh_markup</span><span class="o">.</span><span class="n">category</span> <span class="o">=</span> <span class="n">value</span>
+		<span class="n">new_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_markup</span><span class="o">.</span><span class="n">get_dict</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">mesh_markup</span><span class="o">.</span><span class="n">set_dict</span><span class="p">(</span><span class="n">new_dict</span><span class="p">)</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">side</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_markup</span><span class="o">.</span><span class="n">side</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">mirror_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_markup</span><span class="o">.</span><span class="n">mirror_type</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">race</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_markup</span><span class="o">.</span><span class="n">race</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">source_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_markup</span><span class="o">.</span><span class="n">source_mesh</span>
+	
+	<span class="nd">@source_mesh</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">source_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">mesh_markup</span><span class="o">.</span><span class="n">source_mesh</span> <span class="o">=</span> <span class="n">value</span>
+		<span class="n">new_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_markup</span><span class="o">.</span><span class="n">get_dict</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">mesh_markup</span><span class="o">.</span><span class="n">set_dict</span><span class="p">(</span><span class="n">new_dict</span><span class="p">)</span>
+	
+<div class="viewcode-block" id="FaceModel.mirror_self"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.face_model.FaceModel.mirror_self">[docs]</a>	<span class="k">def</span> <span class="nf">mirror_self</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirror_type</span> <span class="o">==</span> <span class="s1">&#39;mirror_self&#39;</span></div>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">part_type_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the 1st part of the name</span>
+
+<span class="sd">		:return: Returns the 1st part of the name</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;left&#39;</span> <span class="ow">or</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;right&#39;</span> <span class="ow">or</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;center&#39;</span><span class="p">:</span>
+			<span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+		<span class="k">return</span> <span class="n">name</span>
+	
+<div class="viewcode-block" id="FaceModel.set_markup"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.face_model.FaceModel.set_markup">[docs]</a>	<span class="k">def</span> <span class="nf">set_markup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_name</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Creates the &quot;cpgMeshMarkup&quot; attribute on the mesh and adds the markup.</span>
+
+<span class="sd">		:param str type_name: a key word on what type of meshes are in this region.  Examples: head_mesh, jaw_mesh, etc...</span>
+<span class="sd">		:param str category: a key word on what type of category the meshes belong to in this region.</span>
+<span class="sd">		Examples: skin_mesh, blendshape_mesh, etc...</span>
+<span class="sd">		:param str side: side the mesh is on.</span>
+<span class="sd">		:param str kwargs: Any added data that needs to be tagged.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">mesh_markup</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">type_name</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FaceModel.delete"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.face_model.FaceModel.delete">[docs]</a>	<span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Deletes it&#39;s self and any blendshapes connected to it.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">blendnodes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getShape</span><span class="p">()</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">BlendShape</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">blendnodes</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">blendnodes</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FaceModel.connect_joints"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.face_model.FaceModel.connect_joints">[docs]</a>	<span class="k">def</span> <span class="nf">connect_joints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+	                   <span class="n">asset_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+	                   <span class="n">delete_rivets</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+	                   <span class="n">delete_old_rivet_grp</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Connects joints to the blend shape model using rivets.</span>
+
+<span class="sd">		:param str asset_id: ID of the asset we want to retrieve path of.</span>
+<span class="sd">		:param bool delete_rivets: Deletes the rivets when the task is complete.</span>
+<span class="sd">		:param bool delete_old_rivet_grp: Checks for and deletes old rivet group.</span>
+<span class="sd">		:return: Returns a list of the created rivets</span>
+<span class="sd">		:rtype: list[str]</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">try</span><span class="p">:</span>
+			<span class="n">mesh_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_region_data</span><span class="p">(</span><span class="n">asset_id</span><span class="p">)</span>
+		<span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+			<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No source data found for </span><span class="si">{</span><span class="n">asset_id</span><span class="si">}</span><span class="s1">, using common&#39;</span><span class="p">)</span>
+			<span class="n">mesh_data</span> <span class="o">=</span> <span class="n">face_util</span><span class="o">.</span><span class="n">get_common_face_region_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">)</span>
+		
+		<span class="c1"># may not need to unlock skeleton</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">unlock_skeleton_display_layer</span><span class="p">()</span>
+		
+		<span class="c1"># Get the UV data.  This is positions and names.</span>
+		<span class="n">uv_positions</span> <span class="o">=</span> <span class="n">mesh_data</span><span class="o">.</span><span class="n">get_joints_uv</span><span class="p">()</span>
+		
+		<span class="c1"># See if the rivets exist.  If they do, remove them.</span>
+		<span class="n">ns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">namespace</span><span class="p">()</span>
+		<span class="n">rivet_names</span> <span class="o">=</span> <span class="n">uv_positions</span><span class="o">.</span><span class="n">rivet_names</span>
+		<span class="n">rivet_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ns</span><span class="si">}{</span><span class="n">x</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">rivet_names</span><span class="p">))</span>
+		<span class="p">[</span><span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">rivet_names</span> <span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+		<span class="c1"># See if the rivet group exists and delete if desired. If not, old rivet group is used.</span>
+		<span class="n">check_for_grp</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ns</span><span class="si">}</span><span class="s1">rivet_grp&#39;</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">check_for_grp</span> <span class="ow">and</span> <span class="n">delete_old_rivet_grp</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ns</span><span class="si">}</span><span class="s1">rivet_grp&#39;</span><span class="p">)</span>
+		
+		<span class="n">rivets</span> <span class="o">=</span> <span class="n">uv_positions</span><span class="o">.</span><span class="n">connect_all_rivets_joints</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">check_for_grp</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">delete_old_rivet_grp</span><span class="p">:</span>
+			<span class="n">rivet_grp</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ns</span><span class="si">}</span><span class="s1">rivet_grp&#39;</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">rivet_grp</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">em</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="s1">&#39;rivet_grp&#39;</span><span class="p">)</span>
+			<span class="n">rivet_grp</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;isRivetGrp&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		
+		<span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">rivet_names</span><span class="p">,</span> <span class="n">rivet_grp</span><span class="p">)</span>
+		<span class="n">rivet_grp</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">delete_rivets</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">rivet_grp</span><span class="p">)</span>
+		
+		<span class="k">return</span> <span class="n">rivets</span></div>
+	
+<div class="viewcode-block" id="FaceModel.reconnect_to_mesh_component"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.face_model.FaceModel.reconnect_to_mesh_component">[docs]</a>	<span class="k">def</span> <span class="nf">reconnect_to_mesh_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Reconnects a mesh to the mesh_component</span>
+
+<span class="sd">		:param str asset_id: ID of the asset we want to retrieve path of.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">asset_id</span><span class="p">:</span>
+			<span class="n">frag_rig</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_frag_rig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+			<span class="n">frag_root</span> <span class="o">=</span> <span class="n">frag_rig</span><span class="o">.</span><span class="n">get_frag_parent</span><span class="p">()</span>
+			<span class="n">asset_id</span> <span class="o">=</span> <span class="n">frag_root</span><span class="o">.</span><span class="n">assetID</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		
+		<span class="n">all_roots</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_all_frag_roots</span><span class="p">()</span>
+		<span class="n">frag_root</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">all_roots</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">asset_id</span> <span class="o">==</span> <span class="n">asset_id</span><span class="p">]</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">frag_root</span><span class="p">:</span>
+			<span class="k">return</span>
+		<span class="n">frag_root</span> <span class="o">=</span> <span class="n">frag_root</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">skeletal_mesh</span> <span class="o">=</span> <span class="n">frag_root</span><span class="o">.</span><span class="n">get_skeletal_mesh</span><span class="p">()</span>
+		<span class="n">face_components</span> <span class="o">=</span> <span class="n">skeletal_mesh</span><span class="o">.</span><span class="n">get_frag_children</span><span class="p">(</span><span class="n">of_type</span><span class="o">=</span><span class="n">frag</span><span class="o">.</span><span class="n">FaceMeshComponent</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">face_components</span><span class="p">:</span>
+			<span class="k">return</span>
+		<span class="n">face_component</span> <span class="o">=</span> <span class="n">face_components</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">face_component</span><span class="o">.</span><span class="n">reconnect_mesh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FaceModel.reconnect_shapes_to_rig"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.face_model.FaceModel.reconnect_shapes_to_rig">[docs]</a>	<span class="k">def</span> <span class="nf">reconnect_shapes_to_rig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset_id</span><span class="p">,</span> <span class="n">parameter_node</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Reconnects blend shapes back to the rig.</span>
+
+<span class="sd">		:param str asset_id: ID of the asset we want to retrieve path of.</span>
+<span class="sd">		:param frag.FragFaceParameters parameter_node: The node that connects the blend shapes to the rig.</span>
+<span class="sd">		:return: If True, The shapes were successfully connected.</span>
+<span class="sd">		:rtype: Bool</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">parameter_node</span><span class="p">:</span>
+			<span class="n">frag_rig</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_frag_rig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">frag_rig</span><span class="p">:</span>
+				<span class="k">return</span> <span class="kc">False</span>
+			<span class="n">parameter_node</span> <span class="o">=</span> <span class="n">frag_rig</span><span class="o">.</span><span class="n">get_frag_children</span><span class="p">(</span><span class="n">of_type</span><span class="o">=</span><span class="n">frag</span><span class="o">.</span><span class="n">FragFaceParameters</span><span class="p">)</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">parameter_node</span><span class="p">:</span>
+				<span class="k">return</span> <span class="kc">False</span>
+			<span class="n">parameter_node</span> <span class="o">=</span> <span class="n">parameter_node</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		
+		<span class="n">blendnode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_main_blendnode</span><span class="p">()</span>
+		<span class="k">if</span> <span class="n">blendnode</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">blendnode</span><span class="o">.</span><span class="n">blendnode</span><span class="p">)</span>
+		<span class="n">parameters_inst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">(</span><span class="n">asset_id</span><span class="p">)</span>
+		<span class="n">parameter_list</span> <span class="o">=</span> <span class="n">parameters_inst</span><span class="o">.</span><span class="n">get_parameters_list</span><span class="p">()</span>
+		<span class="n">shapes</span> <span class="o">=</span> <span class="n">parameters_inst</span><span class="o">.</span><span class="n">get_pose_list</span><span class="p">()</span>
+		<span class="n">shapes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">shapes</span> <span class="k">if</span> <span class="n">cmds</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+		
+		<span class="n">new_blendnode</span> <span class="o">=</span> <span class="n">blendshape_node</span><span class="o">.</span><span class="n">BlendShapeNode</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">shapes</span><span class="o">=</span><span class="n">shapes</span><span class="p">,</span>
+		                                                      <span class="n">mesh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span>
+		                                                      <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">part_type_name</span><span class="p">)</span>
+		
+		<span class="n">new_blendnode</span><span class="o">.</span><span class="n">reconnect_to_rig</span><span class="p">(</span><span class="n">parameter_list</span><span class="p">,</span> <span class="n">parameter_node</span><span class="p">)</span>
+		<span class="k">return</span> <span class="kc">True</span></div>
+	
+<div class="viewcode-block" id="FaceModel.get_face_mesh_component"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.face_model.FaceModel.get_face_mesh_component">[docs]</a>	<span class="k">def</span> <span class="nf">get_face_mesh_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the FaceMeshComponent that is attached to the mesh.</span>
+
+<span class="sd">		:return: Returns the FaceMeshComponent that is attached to the mesh.</span>
+<span class="sd">		:rtype: FaceMeshComponent</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">comp_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()</span> <span class="k">if</span>
+		             <span class="n">x</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;fragType&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">x</span><span class="o">.</span><span class="n">fragType</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;FaceMeshComponent&#39;</span><span class="p">]</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">comp_list</span><span class="p">:</span>
+			<span class="k">return</span>
+		<span class="n">face_component</span> <span class="o">=</span> <span class="n">comp_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="k">return</span> <span class="n">frag</span><span class="o">.</span><span class="n">FRAGNode</span><span class="p">(</span><span class="n">face_component</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FaceModel.get_parameters"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.face_model.FaceModel.get_parameters">[docs]</a>	<span class="k">def</span> <span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns an instanced of ParameterData.  This is has all the data about the poses.</span>
+
+<span class="sd">		:param str asset_id: ID of the asset we want to retrieve path of.</span>
+<span class="sd">		:return: Returns an instanced of ParameterData.</span>
+<span class="sd">		:rtype: ParameterData</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">asset_id</span><span class="p">:</span>
+			<span class="n">frag_rig</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_frag_rig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+			<span class="n">frag_root</span> <span class="o">=</span> <span class="n">frag_rig</span><span class="o">.</span><span class="n">get_frag_parent</span><span class="p">()</span>
+			<span class="n">asset_id</span> <span class="o">=</span> <span class="n">frag_root</span><span class="o">.</span><span class="n">assetID</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		
+		<span class="c1"># returns the frag.face_parameters.ParameterData instance</span>
+		<span class="n">parameters</span> <span class="o">=</span> <span class="n">face_util</span><span class="o">.</span><span class="n">get_parameters_region_instance</span><span class="p">(</span><span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">parameters</span></div>
+	
+<div class="viewcode-block" id="FaceModel.get_region_data"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.face_model.FaceModel.get_region_data">[docs]</a>	<span class="k">def</span> <span class="nf">get_region_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns an instance of the FaceMeshRegionData.</span>
+
+<span class="sd">		:param str asset_id: ID of the asset we want to retrieve path of.</span>
+<span class="sd">		:return:Returns an instance of the FaceMeshRegionData.</span>
+<span class="sd">		:rtype: FaceMeshRegionData</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">asset_id</span><span class="p">:</span>
+			<span class="n">frag_rig</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_frag_rig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+			<span class="n">frag_root</span> <span class="o">=</span> <span class="n">frag_rig</span><span class="o">.</span><span class="n">get_frag_parent</span><span class="p">()</span>
+			<span class="n">asset_id</span> <span class="o">=</span> <span class="n">frag_root</span><span class="o">.</span><span class="n">assetID</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="n">mesh_data</span> <span class="o">=</span> <span class="n">face_util</span><span class="o">.</span><span class="n">get_face_region_data</span><span class="p">(</span><span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">mesh_data</span></div>
+	
+<div class="viewcode-block" id="FaceModel.unlock_skeleton_display_layer"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.face_model.FaceModel.unlock_skeleton_display_layer">[docs]</a>	<span class="k">def</span> <span class="nf">unlock_skeleton_display_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Unlocks the skins layer so all the head meshes can be edited.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">control_rig</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_frag_rig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">control_rig</span><span class="p">:</span>
+			<span class="n">world_root</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_root_joint</span><span class="p">(</span><span class="n">control_rig</span><span class="p">)</span>
+			<span class="n">joint</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">world_root</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+			<span class="n">display_layer</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">display_layers</span><span class="o">.</span><span class="n">get_display_layers</span><span class="p">([</span><span class="n">joint</span><span class="p">]))</span>
+			<span class="k">if</span> <span class="n">display_layer</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">display_layer</span><span class="o">.</span><span class="n">displayType</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">display_layer</span><span class="o">.</span><span class="n">displayType</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+					<span class="n">display_layer</span><span class="o">.</span><span class="n">displayType</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">display_layer</span><span class="o">.</span><span class="n">displayType</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FaceModel.clean_up_mesh"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.face_model.FaceModel.clean_up_mesh">[docs]</a>	<span class="k">def</span> <span class="nf">clean_up_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remove_user_attrs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+	                  <span class="n">remove_poly_blind</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+	                  <span class="n">remove_deform_shapes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+	                  <span class="n">unlock_normals</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+	                  <span class="n">remove_layer</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+	                  <span class="n">delete_history</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Cleans up a blend shape mesh and strips it down to the core so the file is small.</span>
+
+<span class="sd">		:param bool remove_poly_blind: Searches for PolyBlindData nodes and deletes them</span>
+<span class="sd">		:param bool remove_deform_shapes: Deletes extra deformable shapes that are not used.</span>
+<span class="sd">		:param bool unlock_normals: Unlocks the poly normals on the mesh.</span>
+<span class="sd">		:param bool remove_layer: Removes from the display layer.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="c1"># Removes User Defined Attributes</span>
+		<span class="k">if</span> <span class="n">remove_user_attrs</span><span class="p">:</span>
+			<span class="n">attr_utils</span><span class="o">.</span><span class="n">purge_user_defined_attrs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+		
+		<span class="c1"># delete PolyBlindData since we are not using skinning info and will keep file size down.</span>
+		<span class="k">if</span> <span class="n">remove_poly_blind</span><span class="p">:</span>
+			<span class="n">poly_blind_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getShape</span><span class="p">()</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">PolyBlindData</span><span class="p">)</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">poly_blind_data</span><span class="p">)</span>
+		
+		<span class="c1"># delete any unwanted deformers to keep file size down</span>
+		<span class="k">if</span> <span class="n">remove_deform_shapes</span><span class="p">:</span>
+			<span class="n">deformable_shapes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">()</span>
+			<span class="p">[</span><span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">deformable_shapes</span> <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+		
+		<span class="c1"># unlock the normals</span>
+		<span class="k">if</span> <span class="n">unlock_normals</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">polyNormalPerVertex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">ufn</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">polySoftEdge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span> <span class="n">ch</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		
+		<span class="k">if</span> <span class="n">remove_layer</span><span class="p">:</span>
+			<span class="n">display_layers</span><span class="o">.</span><span class="n">remove_objects_from_layers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+		
+		<span class="k">if</span> <span class="n">delete_history</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">ch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FaceModel.import_blendshapes"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.face_model.FaceModel.import_blendshapes">[docs]</a>	<span class="k">def</span> <span class="nf">import_blendshapes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="s1">&#39;.obj&#39;</span><span class="p">,</span> <span class="n">exist_check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Imports all the blend shapes associated with the mesh.</span>
+<span class="sd">		:param str asset_id: Asset Identifier.</span>
+<span class="sd">		:param str ext: The file extension.</span>
+<span class="sd">		:param bool exist_check: If True, will check to see if the mesh is already in the scene.</span>
+<span class="sd">		:return: Returns a list of all the shapes that were imported.</span>
+<span class="sd">		:rtype: list(str)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">asset_id</span><span class="p">:</span>
+			<span class="n">frag_rig</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_frag_rig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+			<span class="n">frag_root</span> <span class="o">=</span> <span class="n">frag_rig</span><span class="o">.</span><span class="n">get_frag_parent</span><span class="p">()</span>
+			<span class="n">asset_id</span> <span class="o">=</span> <span class="n">frag_root</span><span class="o">.</span><span class="n">assetID</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="n">shape_result</span> <span class="o">=</span> <span class="n">face_import_export</span><span class="o">.</span><span class="n">import_all_blendshapes</span><span class="p">(</span><span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">,</span>
+		                                                         <span class="n">region</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span>
+		                                                         <span class="n">ext</span><span class="o">=</span><span class="n">ext</span><span class="p">,</span>
+		                                                         <span class="n">exist_check</span><span class="o">=</span><span class="n">exist_check</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">shape_result</span></div>
+	
+<div class="viewcode-block" id="FaceModel.get_blendnode"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.face_model.FaceModel.get_blendnode">[docs]</a>	<span class="k">def</span> <span class="nf">get_blendnode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns a blend node.  If you pass in a mesh it will grab the 1st blend node.</span>
+
+<span class="sd">		:return: Returns a blend node.</span>
+<span class="sd">		:rtype: pm.nt.Blendnode</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">first_blendnode</span> <span class="o">=</span> <span class="n">blendshape_model</span><span class="o">.</span><span class="n">get_first_blendnode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">first_blendnode</span><span class="p">:</span>
+			<span class="c1"># raising error, it can get confusing if this returns none.</span>
+			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;The object is not a blend shape or an object with a blend shape attached.&#39;</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">blendshape_node</span><span class="o">.</span><span class="n">BlendShapeNode</span><span class="p">(</span><span class="n">first_blendnode</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FaceModel.get_main_blendnode"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.face_model.FaceModel.get_main_blendnode">[docs]</a>	<span class="k">def</span> <span class="nf">get_main_blendnode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns a blend node.  Gets the blend node with the &quot;main&quot; type.</span>
+
+<span class="sd">		:return: Returns a blend node.</span>
+<span class="sd">		:rtype: pm.nt.Blendnode</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">all_blendnodes</span> <span class="o">=</span> <span class="n">blendshape_model</span><span class="o">.</span><span class="n">get_all_blendnodes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">blendnode</span> <span class="ow">in</span> <span class="n">all_blendnodes</span><span class="p">:</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">blendnode</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;blendNodeType&#39;</span><span class="p">):</span>
+				<span class="k">continue</span>
+			<span class="k">if</span> <span class="n">blendnode</span><span class="o">.</span><span class="n">blendNodeType</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;main&#39;</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">blendshape_node</span><span class="o">.</span><span class="n">BlendShapeNode</span><span class="p">(</span><span class="n">blendnode</span><span class="p">)</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="FaceModel.duplicate"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.face_model.FaceModel.duplicate">[docs]</a>	<span class="k">def</span> <span class="nf">duplicate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">remove_attrs</span><span class="o">=</span><span class="p">(),</span> <span class="n">remove_user_attrs</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Duplicates a mesh.</span>
+
+<span class="sd">		:param list remove_attrs: Removes listed attributes from the mesh.</span>
+<span class="sd">		:param string label:  The name of the newly created mesh.</span>
+<span class="sd">		:param bool remove_user_attrs: Removes all attributes that were added by a user.</span>
+<span class="sd">		:return: Returns an instance of FaceModel.</span>
+<span class="sd">		:rtype: FaceModel</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">new_mesh</span> <span class="o">=</span> <span class="n">blendshape_model</span><span class="o">.</span><span class="n">duplicate_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span>
+		                                           <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span>
+		                                           <span class="n">remove_attrs</span><span class="o">=</span><span class="n">remove_attrs</span><span class="p">,</span>
+		                                           <span class="n">remove_user_attrs</span><span class="o">=</span><span class="n">remove_user_attrs</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">FaceModel</span><span class="p">(</span><span class="n">new_mesh</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FaceModel.dup_and_delete"><a class="viewcode-back" href="../../../../cpg.maya.modeling.html#cpg.maya.modeling.face_model.FaceModel.dup_and_delete">[docs]</a>	<span class="k">def</span> <span class="nf">dup_and_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">remove_attrs</span><span class="o">=</span><span class="p">(),</span> <span class="n">remove_user_attrs</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Duplicates its a mesh and deletes the old copy. A way to generate a clean mesh/pose.</span>
+
+<span class="sd">		:param list remove_attrs: Removes listed attributes from the mesh.</span>
+<span class="sd">		:param string label:  The name of the newly created mesh.</span>
+<span class="sd">		:param bool remove_user_attrs: Removes all attributes that were added by a user.</span>
+<span class="sd">		:return: Returns an instance of FaceModel.</span>
+<span class="sd">		:rtype: FaceModel</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">new_mesh</span> <span class="o">=</span> <span class="n">blendshape_model</span><span class="o">.</span><span class="n">dup_and_delete_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span>
+		                                                <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span>
+		                                                <span class="n">remove_attrs</span><span class="o">=</span><span class="n">remove_attrs</span><span class="p">,</span>
+		                                                <span class="n">remove_user_attrs</span><span class="o">=</span><span class="n">remove_user_attrs</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">FaceModel</span><span class="p">(</span><span class="n">new_mesh</span><span class="p">)</span></div></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

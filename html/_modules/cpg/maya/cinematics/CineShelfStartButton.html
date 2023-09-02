@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.cinematics.CineShelfStartButton &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.cinematics.CineShelfStartButton</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.cinematics.CineShelfStartButton</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Creates and includes a shelf with buttons in maya for Cinematics</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># python imports</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="c1"># PySide2 imports</span>
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">maya.cmds</span> <span class="k">as</span> <span class="nn">cmds</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common.modifiers</span> <span class="kn">import</span> <span class="n">decorators</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hold on to your...&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="startButtonCommand"><a class="viewcode-back" href="../../../../cpg.maya.cinematics.html#cpg.maya.cinematics.CineShelfStartButton.startButtonCommand">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+<span class="k">def</span> <span class="nf">startButtonCommand</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">getProjectPath</span><span class="p">()</span>
+    <span class="c1">#print(path)</span>
+    <span class="n">customPyDir</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">Python</span><span class="se">\\</span><span class="s1">framework</span><span class="se">\\</span><span class="s1">cpg</span><span class="se">\\</span><span class="s1">maya</span><span class="se">\\</span><span class="s1">cinematics&#39;</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">customPyDir</span><span class="p">)</span>
+    <span class="n">setCinematicProjectPaths</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="kn">import</span> <span class="nn">cpg.maya.cinematics.CinematicShelf</span> <span class="k">as</span> <span class="nn">cShelf</span>
+    <span class="n">cShelf</span><span class="o">.</span><span class="n">createCineShelf</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="getProjectPath"><a class="viewcode-back" href="../../../../cpg.maya.cinematics.html#cpg.maya.cinematics.CineShelfStartButton.getProjectPath">[docs]</a><span class="k">def</span> <span class="nf">getProjectPath</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>    
+    <span class="c1">#Studio Specific import of tools to get the project</span>
+    <span class="kn">from</span> <span class="nn">cpg.common.paths</span> <span class="kn">import</span> <span class="n">project_paths</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">project_paths</span><span class="o">.</span><span class="n">CPG_PROJECT_ROOT</span>
+    <span class="c1">####</span>
+
+    <span class="k">return</span> <span class="n">path</span></div>
+
+
+<div class="viewcode-block" id="setCinematicProjectPaths"><a class="viewcode-back" href="../../../../cpg.maya.cinematics.html#cpg.maya.cinematics.CineShelfStartButton.setCinematicProjectPaths">[docs]</a><span class="k">def</span> <span class="nf">setCinematicProjectPaths</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">cpg.maya.cinematics.CineClasses</span> <span class="kn">import</span> <span class="n">CineStaticClass</span> <span class="k">as</span> <span class="n">csc</span>
+    <span class="n">csc</span><span class="o">.</span><span class="n">projectPath</span> <span class="o">=</span> <span class="n">path</span>
+    <span class="n">csc</span><span class="o">.</span><span class="n">customPyDir</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">csc</span><span class="o">.</span><span class="n">projectPath</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">Python</span><span class="se">\\</span><span class="s1">framework</span><span class="se">\\</span><span class="s1">cpg</span><span class="se">\\</span><span class="s1">maya</span><span class="se">\\</span><span class="s1">cinematics&#39;</span><span class="p">)</span>
+    <span class="n">csc</span><span class="o">.</span><span class="n">iconPath</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">csc</span><span class="o">.</span><span class="n">projectPath</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">Python</span><span class="se">\\</span><span class="s1">framework</span><span class="se">\\</span><span class="s1">cpg</span><span class="se">\\</span><span class="s1">maya</span><span class="se">\\</span><span class="s1">cinematics</span><span class="se">\\</span><span class="s1">icons</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">csc</span><span class="o">.</span><span class="n">sequencesFolderPath</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">csc</span><span class="o">.</span><span class="n">projectPath</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">Cinematics</span><span class="se">\\</span><span class="s1">Sequences&#39;</span><span class="p">)</span>
+    <span class="n">csc</span><span class="o">.</span><span class="n">cameraPath</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">csc</span><span class="o">.</span><span class="n">projectPath</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">Cinematics</span><span class="se">\\</span><span class="s1">Assets</span><span class="se">\\</span><span class="s1">camera</span><span class="se">\\</span><span class="s1">shotCam_2point35_30fps_v1.ma&#39;</span><span class="p">)</span>
+    <span class="n">csc</span><span class="o">.</span><span class="n">scriptsPath</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">csc</span><span class="o">.</span><span class="n">projectPath</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">Python</span><span class="se">\\</span><span class="s1">framework</span><span class="se">\\</span><span class="s1">cpg</span><span class="se">\\</span><span class="s1">maya</span><span class="se">\\</span><span class="s1">cinematics&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="makeCustomShelf"><a class="viewcode-back" href="../../../../cpg.maya.cinematics.html#cpg.maya.cinematics.CineShelfStartButton.makeCustomShelf">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+<span class="k">def</span> <span class="nf">makeCustomShelf</span><span class="p">():</span>
+    <span class="n">shelfName</span> <span class="o">=</span> <span class="s2">&quot;Cinematics&quot;</span>
+    <span class="n">labelBackground</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">labelColour</span> <span class="o">=</span> <span class="p">(</span><span class="mf">.9</span><span class="p">,</span> <span class="mf">.9</span><span class="p">,</span> <span class="mf">.9</span><span class="p">)</span>
+    <span class="n">cleanOldShelf</span><span class="p">(</span><span class="n">shelfName</span><span class="p">)</span>
+    <span class="n">cmds</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="n">shelfName</span><span class="p">)</span>
+    <span class="n">cmds</span><span class="o">.</span><span class="n">shelfButton</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">37</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">37</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="s1">&#39;pythonFamily.png&#39;</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="s2">&quot;Start&quot;</span><span class="p">,</span> <span class="n">imageOverlayLabel</span><span class="o">=</span><span class="s2">&quot;Start&quot;</span><span class="p">,</span>
+                    <span class="n">command</span><span class="o">=</span><span class="s2">&quot;startButtonCommand()&quot;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">shelfName</span><span class="p">,</span> <span class="n">olb</span><span class="o">=</span><span class="n">labelBackground</span><span class="p">,</span>
+                    <span class="n">olc</span><span class="o">=</span><span class="n">labelColour</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;textOnly&#39;</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ebg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="cleanOldShelf"><a class="viewcode-back" href="../../../../cpg.maya.cinematics.html#cpg.maya.cinematics.CineShelfStartButton.cleanOldShelf">[docs]</a><span class="k">def</span> <span class="nf">cleanOldShelf</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Checks if the shelf exists and empties it if it does or creates it if it does not.&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">cmds</span><span class="o">.</span><span class="n">shelfLayout</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">ex</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">cmds</span><span class="o">.</span><span class="n">shelfLayout</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ca</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">cmds</span><span class="o">.</span><span class="n">shelfLayout</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ca</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">cmds</span><span class="o">.</span><span class="n">deleteUI</span><span class="p">(</span><span class="n">each</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">shelfLayout</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="s2">&quot;ShelfLayout&quot;</span><span class="p">)</span></div>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;...butts&quot;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.face.face_utils.face_skinning &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.face.face_utils.face_skinning</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.face.face_utils.face_skinning</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Parameter data for working with the facial rigs.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># system global imports</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span class="c1"># python imports</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="kn">import</span> <span class="nn">maya.cmds</span> <span class="k">as</span> <span class="nn">cmds</span>
+<span class="kn">import</span> <span class="nn">maya.mel</span> <span class="k">as</span> <span class="nn">mel</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common.paths</span> <span class="kn">import</span> <span class="n">paths</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">lists</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils.om</span> <span class="kn">import</span> <span class="n">om_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.common.textio</span> <span class="kn">import</span> <span class="n">jsonio</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.modifiers</span> <span class="kn">import</span> <span class="n">ma_decorators</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.modeling</span> <span class="kn">import</span> <span class="n">vert_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">naming</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.deformations.skinner</span> <span class="kn">import</span> <span class="n">core</span> <span class="k">as</span> <span class="n">skin_core</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">chain_markup</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.deformations</span> <span class="kn">import</span> <span class="n">skin_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.common.tools.progressbar</span> <span class="kn">import</span> <span class="n">progressbar_ui</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+
+<div class="viewcode-block" id="apply_face_skinning_from_file"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_utils.html#cpg.maya.face.face_utils.face_skinning.apply_face_skinning_from_file">[docs]</a><span class="k">def</span> <span class="nf">apply_face_skinning_from_file</span><span class="p">(</span><span class="n">asset_id</span><span class="p">,</span> <span class="n">mesh</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Applies skinning from an existing .sknr file.</span>
+
+<span class="sd">    :param str asset_id: id of the rig</span>
+<span class="sd">    :param pm.nt.mesh mesh: The mesh that the skinning will get applied.</span>
+<span class="sd">    :return: Returns if the skin was set or not.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">skin_folder</span> <span class="o">=</span> <span class="n">paths</span><span class="o">.</span><span class="n">get_asset_skin_data_path</span><span class="p">(</span><span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skin_folder</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">mesh</span><span class="si">}</span><span class="s1">_skin_data.json&#39;</span><span class="p">)):</span>
+        <span class="n">skin_utils</span><span class="o">.</span><span class="n">apply_skinning_to_mesh</span><span class="p">([</span><span class="n">mesh</span><span class="p">],</span> <span class="n">skin_folder</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="export_face_skinning_to_file"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_utils.html#cpg.maya.face.face_utils.face_skinning.export_face_skinning_to_file">[docs]</a><span class="k">def</span> <span class="nf">export_face_skinning_to_file</span><span class="p">(</span><span class="n">asset_id</span><span class="p">,</span> <span class="n">mesh</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exports skinning from a mesh.</span>
+
+<span class="sd">    :param str asset_id: id of the rig</span>
+<span class="sd">    :param str/pm.nt.Transform mesh: The mesh that the skinning will get exported.</span>
+<span class="sd">    :return: Returns The file name of the exported file.</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">mesh</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">pm</span><span class="o">.</span><span class="n">mel</span><span class="o">.</span><span class="n">findRelatedSkinCluster</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">mesh</span><span class="si">}</span><span class="s1"> does not have a skincluster attached.  No skinning was saved.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="n">skin_folder</span> <span class="o">=</span> <span class="n">paths</span><span class="o">.</span><span class="n">get_asset_skin_data_path</span><span class="p">(</span><span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+    <span class="n">skin_utils</span><span class="o">.</span><span class="n">save_skin_weights_cmd</span><span class="p">(</span><span class="n">skin_folder</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="skin_to_head_joint"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_utils.html#cpg.maya.face.face_utils.face_skinning.skin_to_head_joint">[docs]</a><span class="k">def</span> <span class="nf">skin_to_head_joint</span><span class="p">(</span><span class="n">mesh_to_skin</span><span class="p">,</span> <span class="n">root_joint</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Skins a mesh to the head joint.</span>
+
+<span class="sd">    :param list(pm.nt.Transform or pm.general.MeshVertex) mesh_to_skin: The mesh that the skinning will get applied.</span>
+<span class="sd">    :param pm.nt.Joint root_joint:  The root joint of the skeleton.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">markup</span> <span class="o">=</span> <span class="n">chain_markup</span><span class="o">.</span><span class="n">ChainMarkup</span><span class="p">(</span><span class="n">root_joint</span><span class="p">)</span>
+    <span class="n">head_joint</span> <span class="o">=</span> <span class="n">markup</span><span class="o">.</span><span class="n">get_end</span><span class="p">(</span><span class="s1">&#39;neck&#39;</span><span class="p">,</span> <span class="s1">&#39;center&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mesh_to_skin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">):</span>
+        <span class="n">obj_to_skin</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">mesh_to_skin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">Shape&#39;</span>
+        <span class="n">selected_verts</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">mesh_to_skin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">Shape.vtx[*]&#39;</span><span class="p">,</span> <span class="n">fl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mesh_to_skin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pm</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">MeshVertex</span><span class="p">):</span>
+        <span class="n">obj_to_skin</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mesh_to_skin</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.vtx&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">selected_verts</span> <span class="o">=</span> <span class="n">mesh_to_skin</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">obj_clus</span> <span class="o">=</span> <span class="n">skin_utils</span><span class="o">.</span><span class="n">get_skin_cluster_from_geometry</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">obj_to_skin</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">obj_clus</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">skinCluster</span><span class="p">(</span><span class="n">head_joint</span><span class="p">,</span> <span class="n">obj_to_skin</span><span class="p">,</span> <span class="n">tsb</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mi</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">nw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">vert</span> <span class="ow">in</span> <span class="n">selected_verts</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">skinPercent</span><span class="p">(</span><span class="n">obj_clus</span><span class="p">,</span> <span class="n">vert</span><span class="p">,</span> <span class="n">transformValue</span><span class="o">=</span><span class="p">(</span><span class="n">head_joint</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">skinCluster</span><span class="p">(</span><span class="n">obj_clus</span><span class="p">,</span> <span class="n">edit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ai</span><span class="o">=</span><span class="n">head_joint</span><span class="p">)</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">skinPercent</span><span class="p">(</span><span class="n">obj_clus</span><span class="p">,</span> <span class="n">vert</span><span class="p">,</span> <span class="n">transformValue</span><span class="o">=</span><span class="p">(</span><span class="n">head_joint</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="apply_common_skinning"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_utils.html#cpg.maya.face.face_utils.face_skinning.apply_common_skinning">[docs]</a><span class="k">def</span> <span class="nf">apply_common_skinning</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">mesh_type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Applies common skinning</span>
+
+<span class="sd">    :param list(pm.nt.Transform) mesh: Mesh to skin</span>
+<span class="sd">    :param str mesh_type: Blendshape type to find skinning for</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">skin_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">paths</span><span class="o">.</span><span class="n">get_common_face</span><span class="p">(),</span> <span class="s1">&#39;BaseSkinning&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">mesh_type</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">skin_utils</span><span class="o">.</span><span class="n">apply_skinning_to_mesh</span><span class="p">([</span><span class="n">mesh</span><span class="p">],</span> <span class="n">skin_folder</span><span class="p">,</span> <span class="n">name_override</span><span class="o">=</span><span class="n">mesh_type</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="apply_non_deform_skinning"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_utils.html#cpg.maya.face.face_utils.face_skinning.apply_non_deform_skinning">[docs]</a><span class="k">def</span> <span class="nf">apply_non_deform_skinning</span><span class="p">(</span><span class="n">asset_id</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">non_deform_data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Applies non_deform skinning</span>
+
+<span class="sd">    :param str asset_id: Asset ID of character we are skinning (to check for skin data, if none yet will use common)</span>
+<span class="sd">    :param str mesh: Mesh name</span>
+<span class="sd">    :param dict non_deform_data: Dict containing non_deform vertex IDs from rig source data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">vert_nums</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">non_deform_data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">vertex_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pm</span><span class="o">.</span><span class="n">MeshVertex</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">mesh</span><span class="si">}</span><span class="s1">Shape.vtx[</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">]&#39;</span><span class="p">),</span> <span class="n">vert_nums</span><span class="p">))</span>
+    <span class="n">skin_folder</span> <span class="o">=</span> <span class="n">paths</span><span class="o">.</span><span class="n">get_asset_skin_data_path</span><span class="p">(</span><span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">)</span>
+    <span class="n">name_override</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skin_folder</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">mesh</span><span class="si">}</span><span class="s1">_skin_data&#39;</span><span class="p">)):</span>
+        <span class="n">skin_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">paths</span><span class="o">.</span><span class="n">get_common_face</span><span class="p">(),</span> <span class="s1">&#39;BaseSkinning&#39;</span><span class="p">)</span>
+        <span class="n">name_override</span> <span class="o">=</span> <span class="s1">&#39;head_blendshape&#39;</span>
+    <span class="n">skin_utils</span><span class="o">.</span><span class="n">apply_skinning_to_verts</span><span class="p">(</span><span class="n">vertex_list</span><span class="p">,</span> <span class="n">skin_folder</span><span class="p">,</span> <span class="n">name_override</span><span class="o">=</span><span class="n">name_override</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="face_skinning_converter_cmd"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_utils.html#cpg.maya.face.face_utils.face_skinning.face_skinning_converter_cmd">[docs]</a><span class="k">def</span> <span class="nf">face_skinning_converter_cmd</span><span class="p">(</span><span class="n">blendshape_mesh</span><span class="p">,</span> <span class="n">skin_mesh</span><span class="p">,</span> <span class="n">joints</span><span class="p">,</span> <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">,</span> <span class="n">delete_decomp_mesh</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Runs the Hans Godard Linear Skinning Decomposition Plugin.</span>
+
+<span class="sd">    :param str/pm.nt.Transform blendshape_mesh: mesh to get skinned</span>
+<span class="sd">    :param str/pm.nt.Transform skin_mesh: mesh to get skinned</span>
+<span class="sd">    :param list(str/pm.nt.Joint) joints: List of joints that get skinned</span>
+<span class="sd">    :param int start_frame: Start frame of the poses</span>
+<span class="sd">    :param int end_frame: End frame of the poses</span>
+<span class="sd">    :param list(str) end_frame: End frame of the poses</span>
+<span class="sd">    :return: Returns a dictionary of everything that was created.</span>
+<span class="sd">    :rtype: Dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">blendshape_mesh</span><span class="p">,</span> <span class="n">joints</span><span class="p">)</span>
+    <span class="n">str_joints</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">sl</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;joint&#39;</span><span class="p">)</span>
+
+    <span class="c1"># run skinning tool!</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">skin_utils</span><span class="o">.</span><span class="n">skinning_converter_cmd</span><span class="p">(</span><span class="n">str_joints</span><span class="p">,</span> <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">)</span>
+    <span class="n">decomp_grp</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;meshGrp&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">decomp_grp</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">decomp_mesh</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">cmds</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">decomp_grp</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">decomp_mesh</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">skin_utils</span><span class="o">.</span><span class="n">copy_skin_weights</span><span class="p">(</span><span class="n">source_list</span><span class="o">=</span><span class="p">[</span><span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">decomp_mesh</span><span class="p">)],</span>
+                            <span class="n">target_list</span><span class="o">=</span><span class="p">[</span><span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">skin_mesh</span><span class="p">)],</span>
+                            <span class="n">match_influences</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">delete_decomp_mesh</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;meshGrp&#39;</span><span class="p">])</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="apply_skinning_from_data"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_utils.html#cpg.maya.face.face_utils.face_skinning.apply_skinning_from_data">[docs]</a><span class="k">def</span> <span class="nf">apply_skinning_from_data</span><span class="p">(</span><span class="n">verts_data</span><span class="p">,</span> <span class="n">face_mesh</span><span class="p">,</span> <span class="n">skinned_joints</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Applies skin data saved in rig_source_data.json</span>
+
+<span class="sd">    :param FaceMeshRegionData face_data: Instance of FaceMeshRegionData class</span>
+<span class="sd">    :param str/pm.nt.Transform face_mesh: Skinned face mesh to apply weights on</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">skin_clus</span> <span class="o">=</span> <span class="n">skin_utils</span><span class="o">.</span><span class="n">get_skin_cluster_from_geometry</span><span class="p">(</span><span class="n">face_mesh</span><span class="p">)</span>
+    <span class="n">vert_numbers</span> <span class="o">=</span> <span class="n">verts_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">skin_clus</span><span class="p">:</span>
+        <span class="n">skin_clus</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">skinCluster</span><span class="p">(</span><span class="n">skinned_joints</span><span class="p">,</span> <span class="n">face_mesh</span><span class="p">,</span> <span class="n">tsb</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">vert_number</span> <span class="ow">in</span> <span class="n">vert_numbers</span><span class="p">:</span>
+        <span class="n">full_vert_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">face_mesh</span><span class="si">}</span><span class="s1">.vtx[</span><span class="si">{</span><span class="n">vert_number</span><span class="si">}</span><span class="s1">]&#39;</span>
+        <span class="n">influences</span> <span class="o">=</span> <span class="n">verts_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vert_number</span><span class="p">)</span>
+        <span class="n">influencing_joints</span> <span class="o">=</span> <span class="n">influences</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">influencing_joint</span> <span class="ow">in</span> <span class="n">influencing_joints</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">influencing_joint</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">influencing_joints</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">influence_value</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">influence_value</span> <span class="o">=</span> <span class="n">influences</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">influencing_joint</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">cmds</span><span class="o">.</span><span class="n">skinPercent</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">skin_clus</span><span class="p">),</span> <span class="n">full_vert_name</span><span class="p">,</span> <span class="n">tv</span><span class="o">=</span><span class="p">(</span><span class="n">influencing_joint</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">influence_value</span><span class="p">)))</span>
+            <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">skinCluster</span><span class="p">(</span><span class="n">skin_clus</span><span class="p">,</span> <span class="n">edit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ai</span><span class="o">=</span><span class="n">influencing_joint</span><span class="p">)</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">skinPercent</span><span class="p">(</span><span class="n">skin_clus</span><span class="p">,</span> <span class="n">full_vert_name</span><span class="p">,</span> <span class="n">transformValue</span><span class="o">=</span><span class="p">(</span><span class="n">influencing_joint</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">influence_value</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="verts_skin_data"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_utils.html#cpg.maya.face.face_utils.face_skinning.verts_skin_data">[docs]</a><span class="k">def</span> <span class="nf">verts_skin_data</span><span class="p">(</span><span class="n">verts</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a dictionary containing vertex skin data</span>
+<span class="sd">    :param list verts: List of vertices</span>
+<span class="sd">    :param skinCluster skin_cluster:</span>
+<span class="sd">    :return: Returns dictionary of all vertex skin data</span>
+<span class="sd">    :rtype: dict</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">skinned_mesh</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">verts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.vtx&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">skin_cluster</span> <span class="o">=</span> <span class="n">skin_utils</span><span class="o">.</span><span class="n">get_skin_cluster_from_geometry</span><span class="p">(</span><span class="n">skinned_mesh</span><span class="p">)</span>
+
+    <span class="n">vertices_skin_data</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">vert</span> <span class="ow">in</span> <span class="n">verts</span><span class="p">:</span>
+        <span class="n">vert_number</span> <span class="o">=</span> <span class="n">vert_utils</span><span class="o">.</span><span class="n">get_vertices_as_numbers</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">vert</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">skinned_joints</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">skinCluster</span><span class="p">(</span><span class="n">vert</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inf</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">influences_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">jnt</span> <span class="ow">in</span> <span class="n">skinned_joints</span><span class="p">:</span>
+            <span class="n">influ</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">skinPercent</span><span class="p">(</span><span class="n">skin_cluster</span><span class="p">,</span> <span class="n">vert</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">jnt</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">influ</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="n">influences_dict</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">jnt</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">influ</span><span class="p">)</span>
+            <span class="n">vertices_skin_data</span><span class="p">[</span><span class="n">vert_number</span><span class="p">]</span> <span class="o">=</span> <span class="n">influences_dict</span>
+
+    <span class="k">return</span> <span class="n">vertices_skin_data</span></div>
+
+
+<div class="viewcode-block" id="copy_weights_from_head"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_utils.html#cpg.maya.face.face_utils.face_skinning.copy_weights_from_head">[docs]</a><span class="k">def</span> <span class="nf">copy_weights_from_head</span><span class="p">(</span><span class="n">face_mesh</span><span class="p">,</span> <span class="n">face_data</span><span class="p">,</span> <span class="n">mesh_to_skin</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Copies weights from head mesh and applies them to another mesh</span>
+
+<span class="sd">    param: str face_mesh: Name of face mesh to copy weights from</span>
+<span class="sd">    param: FaceMeshRegionData face_data: Data for head, used to determine what joints should be skinned</span>
+<span class="sd">    param: list(pm.nt.Transform or pm.general.MeshVertex) mesh_to_skin: Mesh or vertices to copy weights into</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">skinnable_joints</span> <span class="o">=</span> <span class="n">face_data</span><span class="o">.</span><span class="n">joints_skinned</span>
+    <span class="n">head_skin_clus</span> <span class="o">=</span> <span class="n">skin_utils</span><span class="o">.</span><span class="n">get_skin_cluster_from_geometry</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">face_mesh</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">head_skin_clus</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mesh_to_skin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">):</span>
+        <span class="n">obj_to_skin</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">mesh_to_skin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">Shape&#39;</span>
+        <span class="n">obj_verts</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">mesh_to_skin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">Shape.vtx[*]&#39;</span><span class="p">,</span> <span class="n">fl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mesh_to_skin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pm</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">MeshVertex</span><span class="p">):</span>
+        <span class="n">obj_to_skin</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mesh_to_skin</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.vtx&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">obj_verts</span> <span class="o">=</span> <span class="n">mesh_to_skin</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">obj_clus</span> <span class="o">=</span> <span class="n">skin_utils</span><span class="o">.</span><span class="n">get_skin_cluster_from_geometry</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">obj_to_skin</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">obj_clus</span><span class="p">:</span>
+        <span class="n">obj_clus</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">skinCluster</span><span class="p">(</span><span class="n">obj_to_skin</span><span class="p">,</span> <span class="n">skinnable_joints</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">current_influences</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">skinCluster</span><span class="p">(</span><span class="n">obj_to_skin</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inf</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">skinnable_joint</span> <span class="ow">in</span> <span class="n">skinnable_joints</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">skinnable_joint</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">current_influences</span><span class="p">:</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">skinCluster</span><span class="p">(</span><span class="n">obj_clus</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ai</span><span class="o">=</span><span class="n">skinnable_joint</span><span class="p">)</span>
+
+    <span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">face_mesh</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">obj_verts</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">copySkinWeights</span><span class="p">(</span><span class="n">noMirror</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">surfaceAssociation</span><span class="o">=</span><span class="s1">&#39;closestPoint&#39;</span><span class="p">,</span> <span class="n">influenceAssociation</span><span class="o">=</span><span class="s1">&#39;closestJoint&#39;</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">skinCluster</span><span class="p">(</span><span class="n">obj_clus</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rui</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="mirror_face_weights"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_utils.html#cpg.maya.face.face_utils.face_skinning.mirror_face_weights">[docs]</a><span class="k">def</span> <span class="nf">mirror_face_weights</span><span class="p">(</span><span class="n">verts_to_mirror</span><span class="p">,</span> <span class="n">face_mesh</span><span class="p">,</span> <span class="n">face_data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mirrors vertex weights on face mesh</span>
+
+<span class="sd">    :param: list(pm.general.MeshVertex) verts_to_mirror: List of vertices to mirror weights from</span>
+<span class="sd">    :param: str face_mesh: Name of face mesh</span>
+<span class="sd">    :param: FaceMeshRegionData face_data: Data for head, used to find mirror vertex</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">prog_ui</span> <span class="o">=</span> <span class="n">progressbar_ui</span><span class="o">.</span><span class="n">ProgressBarStandard</span><span class="p">()</span>
+    <span class="n">prog_ui</span><span class="o">.</span><span class="n">update_status</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;Starting Up&#39;</span><span class="p">)</span>
+
+    <span class="n">i</span> <span class="o">=</span> <span class="mf">100.0</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">verts_to_mirror</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">head_skin_clus</span> <span class="o">=</span> <span class="n">skin_utils</span><span class="o">.</span><span class="n">get_skin_cluster_from_geometry</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">face_mesh</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">head_skin_clus</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">all_vert_data</span> <span class="o">=</span> <span class="n">verts_skin_data</span><span class="p">(</span><span class="n">verts_to_mirror</span><span class="p">)</span>
+    <span class="n">mirror_data</span> <span class="o">=</span> <span class="n">face_data</span><span class="o">.</span><span class="n">get_mirror_data</span><span class="p">()</span>
+    <span class="n">vert_mirror_data</span> <span class="o">=</span> <span class="n">mirror_data</span><span class="o">.</span><span class="n">mirror_map</span>
+
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">vertex</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">verts_to_mirror</span><span class="p">):</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">i</span>
+        <span class="n">prog_ui</span><span class="o">.</span><span class="n">update_status</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Mirroring skin data...&#39;</span><span class="p">)</span>
+        <span class="n">vertex_number</span> <span class="o">=</span> <span class="n">vert_utils</span><span class="o">.</span><span class="n">get_vertices_as_numbers</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">vertex</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">vert_skinning</span> <span class="o">=</span> <span class="n">all_vert_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vertex_number</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">mir</span> <span class="o">=</span> <span class="n">vert_mirror_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">vertex_number</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mir</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mirror_vert_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">face_mesh</span><span class="si">}</span><span class="s1">.vtx[</span><span class="si">{</span><span class="n">mir</span><span class="si">}</span><span class="s1">]&#39;</span>
+
+            <span class="k">for</span> <span class="n">face_joint</span> <span class="ow">in</span> <span class="n">vert_skinning</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">face_joint</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">vert_skinning</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">joint_weight</span> <span class="o">=</span> <span class="mf">1.0</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">joint_weight</span> <span class="o">=</span> <span class="n">vert_skinning</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">face_joint</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+                <span class="n">side</span> <span class="o">=</span> <span class="n">face_joint</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">side</span> <span class="o">==</span> <span class="s1">&#39;r_&#39;</span><span class="p">:</span>
+                    <span class="n">face_joint</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;l_</span><span class="si">{</span><span class="n">face_joint</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span><span class="si">}</span><span class="s1">&#39;</span>
+
+                <span class="k">elif</span> <span class="n">side</span> <span class="o">==</span> <span class="s1">&#39;l_&#39;</span><span class="p">:</span>
+                    <span class="n">face_joint</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;r_</span><span class="si">{</span><span class="n">face_joint</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="n">cmds</span><span class="o">.</span><span class="n">skinPercent</span><span class="p">(</span><span class="n">head_skin_clus</span><span class="p">,</span> <span class="n">mirror_vert_name</span><span class="p">,</span> <span class="n">tv</span><span class="o">=</span><span class="p">(</span><span class="n">face_joint</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">joint_weight</span><span class="p">)))</span>
+
+    <span class="n">prog_ui</span><span class="o">.</span><span class="n">update_status</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;Finished&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="cleanup_face_skinning_right_left"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_utils.html#cpg.maya.face.face_utils.face_skinning.cleanup_face_skinning_right_left">[docs]</a><span class="k">def</span> <span class="nf">cleanup_face_skinning_right_left</span><span class="p">(</span><span class="n">face_mesh</span><span class="p">,</span> <span class="n">mirror_data</span><span class="p">,</span> <span class="n">joint_list</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Removes left side joint influences from right side of face mesh and vice versa.</span>
+
+<span class="sd">    :param pm.nt.Transform face_mesh: Mesh to edit skinning on</span>
+<span class="sd">    :param SourceVertexMirror mirror_data: Mirror vertex data from rig source data</span>
+<span class="sd">    :param list(str) joint_list: List of all joint names</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="n">right_vert_list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">mirror_data</span><span class="o">.</span><span class="n">right</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+    <span class="n">left_vert_list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">mirror_data</span><span class="o">.</span><span class="n">left</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+
+    <span class="n">weight_dict</span><span class="p">,</span> <span class="n">blend_weights</span> <span class="o">=</span> <span class="n">skin_utils</span><span class="o">.</span><span class="n">remove_wrong_side_influ</span><span class="p">(</span><span class="n">face_mesh</span><span class="o">.</span><span class="n">name</span><span class="p">(),</span>
+                                                                    <span class="n">right_vert_list</span><span class="p">,</span>
+                                                                    <span class="n">left_vert_list</span><span class="p">,</span>
+                                                                    <span class="n">joint_list</span><span class="p">,</span>
+                                                                    <span class="n">l_r_labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;l_&#39;</span><span class="p">,</span> <span class="s1">&#39;r_&#39;</span><span class="p">])</span>
+    <span class="n">skin_utils</span><span class="o">.</span><span class="n">set_skin_weights</span><span class="p">(</span><span class="n">weight_dict</span><span class="p">,</span>
+                                <span class="n">blend_weights</span><span class="p">,</span>
+                                <span class="n">face_mesh</span><span class="p">,</span>
+                                <span class="n">influence_set</span><span class="o">=</span><span class="n">joint_list</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="smooth_vert_weights"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_utils.html#cpg.maya.face.face_utils.face_skinning.smooth_vert_weights">[docs]</a><span class="k">def</span> <span class="nf">smooth_vert_weights</span><span class="p">(</span><span class="n">vert_index_list</span><span class="p">,</span> <span class="n">mesh_name</span><span class="p">,</span> <span class="n">tol_val</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Smooths vertex weights out</span>
+
+<span class="sd">    :param list(int) vert_index_list: List of vertex indices to operate on</span>
+<span class="sd">    :param str mesh_name: Name of the mesh they belong to</span>
+<span class="sd">    :param float tol_val: Tolerance value for smoothWeights operation (lower value = more smooth)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">skin_clus</span> <span class="o">=</span> <span class="n">skin_utils</span><span class="o">.</span><span class="n">get_skin_cluster_from_geometry</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">mesh_name</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">vert</span> <span class="ow">in</span> <span class="n">vert_index_list</span><span class="p">:</span>
+        <span class="c1"># smoothWeights combines weights from all selected, so we only want to run this</span>
+        <span class="c1"># operation on small pieces otherwise we entirely lose integrity of our skinning</span>
+        <span class="n">adjacent_verts</span> <span class="o">=</span> <span class="n">om_utils</span><span class="o">.</span><span class="n">get_adjacent_vertices</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">mesh_name</span><span class="si">}</span><span class="s1">Shape.vtx[</span><span class="si">{</span><span class="n">vert</span><span class="si">}</span><span class="s1">]&#39;</span><span class="p">)</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">mesh_name</span><span class="si">}</span><span class="s1">Shape.vtx[</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">]&#39;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">adjacent_verts</span> <span class="o">+</span> <span class="p">[</span><span class="n">vert</span><span class="p">]]</span>
+        <span class="c1"># You can&#39;t just indicate which vertices to smooth for this command, they must be selected</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="n">skinCluster</span><span class="p">(</span><span class="n">skin_clus</span><span class="p">,</span> <span class="n">edit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">smoothWeights</span><span class="o">=</span><span class="n">tol_val</span><span class="p">)</span>
+        <span class="c1"># Not flushing undo or only flushing at the end will result in way too much RAM usage</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="n">flushUndo</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="cleanup_lips_skinning"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_utils.html#cpg.maya.face.face_utils.face_skinning.cleanup_lips_skinning">[docs]</a><span class="k">def</span> <span class="nf">cleanup_lips_skinning</span><span class="p">(</span><span class="n">face_mesh</span><span class="p">,</span> <span class="n">eyelash_data</span><span class="p">,</span> <span class="n">joint_list</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Removes upper lip joint influences from bottom which is a common issue after LSD process</span>
+
+<span class="sd">    :param pm.nt.Transform face_mesh: Mesh to edit skinning on</span>
+<span class="sd">    :param SourceFaceEyelashShelf eyelash_data: Eye (and lip) snapping data from rig source data</span>
+<span class="sd">    :param list(str) joint_list: List of all joint names</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">lip_data</span> <span class="o">=</span> <span class="n">eyelash_data</span><span class="o">.</span><span class="n">lip_snap</span>
+    <span class="n">og_vert_list</span> <span class="o">=</span> <span class="n">lip_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bottom&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="n">cmds</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">face_mesh</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="si">}</span><span class="s1">Shape.vtx[</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">]&#39;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">og_vert_list</span><span class="p">],</span> <span class="n">r</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># Expand selection from just the lip snap vertices to include surrounding as well</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+        <span class="n">mel</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;PolySelectTraverse 1&#39;</span><span class="p">)</span>
+    <span class="n">sel_verts</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">sl</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">cmds</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">vert_list</span> <span class="o">=</span> <span class="n">vert_utils</span><span class="o">.</span><span class="n">get_vertices_as_numbers</span><span class="p">(</span><span class="n">sel_verts</span><span class="p">)</span>
+    <span class="n">weight_dictionary</span><span class="p">,</span> <span class="n">blend_wghts</span> <span class="o">=</span> <span class="n">skin_utils</span><span class="o">.</span><span class="n">remove_keywords_influ_from_verts</span><span class="p">(</span><span class="n">face_mesh</span><span class="o">.</span><span class="n">name</span><span class="p">(),</span>
+                                                                                 <span class="n">vert_list</span><span class="p">,</span>
+                                                                                 <span class="n">joint_list</span><span class="p">,</span>
+                                                                                 <span class="p">[</span><span class="s1">&#39;upper&#39;</span><span class="p">,</span> <span class="s1">&#39;lower_lip_corner_02&#39;</span><span class="p">,</span> <span class="s1">&#39;lip&#39;</span><span class="p">,</span>
+                                                                                  <span class="s1">&#39;eyelid&#39;</span><span class="p">,</span> <span class="s1">&#39;cheek&#39;</span><span class="p">,</span> <span class="s1">&#39;nasolabial&#39;</span><span class="p">])</span>
+
+    <span class="n">skin_utils</span><span class="o">.</span><span class="n">set_skin_weights</span><span class="p">(</span><span class="n">weight_dictionary</span><span class="p">,</span>
+                                <span class="n">blend_wghts</span><span class="p">,</span>
+                                <span class="n">face_mesh</span><span class="o">.</span><span class="n">name</span><span class="p">(),</span>
+                                <span class="n">influence_set</span><span class="o">=</span><span class="n">joint_list</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="cleanup_brows_skinning"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_utils.html#cpg.maya.face.face_utils.face_skinning.cleanup_brows_skinning">[docs]</a><span class="k">def</span> <span class="nf">cleanup_brows_skinning</span><span class="p">(</span><span class="n">face_mesh</span><span class="p">,</span> <span class="n">vert_list</span><span class="p">,</span> <span class="n">joint_list</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Removes some influences from common offenders knows for having influences in the brow region</span>
+<span class="sd">    when they should not</span>
+
+<span class="sd">    :param pm.nt.Transform face_mesh: Mesh to edit skinning on</span>
+<span class="sd">    :param list(int) vert_list: List of vertex indices to operate on</span>
+<span class="sd">    :param list(str) joint_list: List of all joint names</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">weight_dictionary</span><span class="p">,</span> <span class="n">blend_wghts</span> <span class="o">=</span> <span class="n">skin_utils</span><span class="o">.</span><span class="n">remove_keywords_influ_from_verts</span><span class="p">(</span><span class="n">face_mesh</span><span class="o">.</span><span class="n">name</span><span class="p">(),</span>
+                                                                                 <span class="n">vert_list</span><span class="p">,</span>
+                                                                                 <span class="n">joint_list</span><span class="p">,</span>
+                                                                                 <span class="p">[</span><span class="s1">&#39;nose&#39;</span><span class="p">,</span> <span class="s1">&#39;chin&#39;</span><span class="p">])</span>
+    <span class="n">skin_utils</span><span class="o">.</span><span class="n">set_skin_weights</span><span class="p">(</span><span class="n">weight_dictionary</span><span class="p">,</span>
+                                <span class="n">blend_wghts</span><span class="p">,</span>
+                                <span class="n">face_mesh</span><span class="o">.</span><span class="n">name</span><span class="p">(),</span>
+                                <span class="n">influence_set</span><span class="o">=</span><span class="n">joint_list</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="post_lsd_face_cleanup"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_utils.html#cpg.maya.face.face_utils.face_skinning.post_lsd_face_cleanup">[docs]</a><span class="k">def</span> <span class="nf">post_lsd_face_cleanup</span><span class="p">(</span><span class="n">mesh_node</span><span class="p">,</span>
+                          <span class="n">region_data</span><span class="p">,</span>
+                          <span class="n">wrapped_root</span><span class="p">,</span>
+                          <span class="n">asset_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Runs functions for cleaning up face skinning.</span>
+
+<span class="sd">    :param pm.nt.Transform mesh_node: Face mesh node we are cleaning up skinning on</span>
+<span class="sd">    :param FaceMeshRegionData region_data: Rig source data</span>
+<span class="sd">    :param ChainMarkup wrapped_root: Wrapped root joint of the rig</span>
+<span class="sd">    :param str asset_id: ID of the asset we are skinning. If None we&#39;ll grab common skinning data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">joint_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">naming</span><span class="o">.</span><span class="n">get_basename</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">wrapped_root</span><span class="o">.</span><span class="n">joints</span><span class="p">))</span>
+
+    <span class="n">apply_non_deform_skinning</span><span class="p">(</span><span class="n">asset_id</span><span class="p">,</span> <span class="n">mesh_node</span><span class="p">,</span> <span class="n">region_data</span><span class="o">.</span><span class="n">vertex_default_regions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;non_deform&#39;</span><span class="p">))</span>
+    <span class="n">brows</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">region_data</span><span class="o">.</span><span class="n">vertex_default_regions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;brows&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+    <span class="n">deform_area</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">region_data</span><span class="o">.</span><span class="n">vertex_default_regions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;deform_area&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+
+    <span class="n">cleanup_face_skinning_right_left</span><span class="p">(</span><span class="n">mesh_node</span><span class="p">,</span> <span class="n">region_data</span><span class="o">.</span><span class="n">get_mirror_data</span><span class="p">(),</span> <span class="n">joint_list</span><span class="p">)</span>
+    <span class="n">cleanup_lips_skinning</span><span class="p">(</span><span class="n">mesh_node</span><span class="p">,</span> <span class="n">region_data</span><span class="o">.</span><span class="n">get_eyelids</span><span class="p">(),</span> <span class="n">joint_list</span><span class="p">)</span>
+    <span class="n">cleanup_brows_skinning</span><span class="p">(</span><span class="n">mesh_node</span><span class="p">,</span> <span class="n">brows</span><span class="p">,</span> <span class="n">joint_list</span><span class="p">)</span>
+
+    <span class="n">majority_smooth</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">deform_area</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">brows</span><span class="p">]</span>
+    <span class="n">smooth_vert_weights</span><span class="p">(</span><span class="n">majority_smooth</span><span class="p">,</span> <span class="n">mesh_node</span><span class="o">.</span><span class="n">name</span><span class="p">(),</span> <span class="mf">0.08</span><span class="p">)</span>
+    <span class="n">smooth_vert_weights</span><span class="p">(</span><span class="n">brows</span><span class="p">,</span> <span class="n">mesh_node</span><span class="o">.</span><span class="n">name</span><span class="p">(),</span> <span class="mf">0.3</span><span class="p">)</span>
+
+    <span class="n">skin_cluster</span> <span class="o">=</span> <span class="n">skin_utils</span><span class="o">.</span><span class="n">get_skin_cluster_from_geometry</span><span class="p">(</span><span class="n">mesh_node</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">skinPercent</span><span class="p">(</span><span class="n">skin_cluster</span><span class="p">,</span> <span class="n">mesh_node</span><span class="p">,</span> <span class="n">nrm</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+
+
+
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

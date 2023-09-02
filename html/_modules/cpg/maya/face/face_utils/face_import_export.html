@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.face.face_utils.face_import_export &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.face.face_utils.face_import_export</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.face.face_utils.face_import_export</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot; Face: Staging UI. &quot;&quot;&quot;</span>
+
+<span class="c1"># system global imports</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="kn">import</span> <span class="nn">maya.cmds</span> <span class="k">as</span> <span class="nn">cmds</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="c1"># cpg python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">frag</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.face.face_utils</span> <span class="kn">import</span> <span class="n">face_util</span>
+<span class="kn">from</span> <span class="nn">cpg.common.paths</span> <span class="kn">import</span> <span class="n">paths</span>
+<span class="kn">from</span> <span class="nn">cpg.common.tools.progressbar</span> <span class="kn">import</span> <span class="n">progressbar_ui</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">fbx_utils</span><span class="p">,</span> <span class="n">scene_utils</span>
+
+
+<div class="viewcode-block" id="export_all_blendshapes"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_utils.html#cpg.maya.face.face_utils.face_import_export.export_all_blendshapes">[docs]</a><span class="k">def</span> <span class="nf">export_all_blendshapes</span><span class="p">(</span><span class="n">asset_id</span><span class="p">,</span> <span class="n">region_name</span><span class="p">,</span> <span class="n">remove_mtls</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exports all the blend shapes in a scene.</span>
+
+<span class="sd">    :param string asset_id: The str asset id for the asset.</span>
+<span class="sd">    :param string region_name: The region name for the mesh to identify what mesh is being looked at.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># get all meshes that have blend shapes</span>
+    <span class="n">shapes</span> <span class="o">=</span> <span class="n">face_util</span><span class="o">.</span><span class="n">get_all_scene_blendshapes</span><span class="p">(</span><span class="n">asset_id</span><span class="p">,</span> <span class="n">region_name</span><span class="p">)</span>
+    <span class="n">blendshape_path</span> <span class="o">=</span> <span class="n">paths</span><span class="o">.</span><span class="n">get_face_blendshape_path</span><span class="p">(</span><span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">)</span>
+    <span class="n">shapes_grp</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">shapes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">shapes</span> <span class="k">if</span> <span class="n">cmds</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="n">shapes</span><span class="p">:</span>
+        <span class="n">grp</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">grp</span><span class="p">:</span>
+            <span class="n">shapes_grp</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">grp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">cmds</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">shapes</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">export_blendshapes</span><span class="p">(</span><span class="n">blendshape_path</span><span class="p">,</span> <span class="n">shapes</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">shape</span><span class="p">,</span> <span class="n">pose_grp</span> <span class="ow">in</span> <span class="n">shapes_grp</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">pose_grp</span><span class="p">:</span>
+            <span class="n">cmds</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">pose_grp</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">remove_mtls</span><span class="p">:</span>
+        <span class="n">mtls</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">blendshape_path</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">blendshape_path</span><span class="p">)</span> <span class="k">if</span> <span class="s1">&#39;.mtl&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+        <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">mtls</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="export_blendshapes"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_utils.html#cpg.maya.face.face_utils.face_import_export.export_blendshapes">[docs]</a><span class="k">def</span> <span class="nf">export_blendshapes</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">meshes</span><span class="p">,</span> <span class="n">remove_mtls</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exports a list of meshes.</span>
+
+<span class="sd">    :param str path: The file path.</span>
+<span class="sd">    :param list(str) meshes: List of meshes that will be exported.</span>
+<span class="sd">    :param bool remove_mtls: If True, the mtls in the folder will be removed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ui</span> <span class="o">=</span> <span class="n">progressbar_ui</span><span class="o">.</span><span class="n">ProgressBarStandard</span><span class="p">()</span>
+    <span class="n">ui</span><span class="o">.</span><span class="n">update_status</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;Exporting Blend Shapes&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">meshes</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">meshes</span> <span class="o">=</span> <span class="p">[</span><span class="n">meshes</span><span class="p">]</span>
+    <span class="n">meshes_paths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">.fbx&#39;</span><span class="p">),</span> <span class="n">meshes</span><span class="p">))</span>
+
+    <span class="n">i</span> <span class="o">=</span> <span class="mf">100.0</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">meshes_paths</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">step</span> <span class="o">=</span> <span class="n">i</span>
+    <span class="c1"># Export meshes</span>
+    <span class="k">for</span> <span class="n">blendshape_mesh</span><span class="p">,</span> <span class="n">blendshape_path</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">meshes</span><span class="p">,</span> <span class="n">meshes_paths</span><span class="p">):</span>
+
+        <span class="n">mesh_group</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">blendshape_mesh</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mesh_group</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">blendshape_mesh</span><span class="p">,</span> <span class="n">world</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">ui</span><span class="o">.</span><span class="n">update_status</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Exporting: </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">blendshape_path</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">mesh_pos</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">blendshape_mesh</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">blendshape_mesh</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">ws</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">texture_attr</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">blendshape_mesh</span><span class="si">}</span><span class="s1">Shape&#39;</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">ShadingEngine</span><span class="p">,</span> <span class="n">plugs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">texture_attr</span><span class="p">:</span>
+            <span class="n">texture_attrs</span> <span class="o">=</span> <span class="n">texture_attr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">des_texture_attr</span> <span class="o">=</span> <span class="n">texture_attrs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">source_texture_attr</span> <span class="o">=</span> <span class="n">texture_attrs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="n">des_texture_attr</span><span class="p">,</span> <span class="n">source_texture_attr</span><span class="p">)</span>
+
+        <span class="n">cmds</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">blendshape_mesh</span><span class="p">)</span>
+        <span class="n">fbx_utils</span><span class="o">.</span><span class="n">export_fbx</span><span class="p">(</span><span class="n">blendshape_path</span><span class="p">,</span> <span class="n">blendshape_mesh</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">blendshape_mesh</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">mesh_pos</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">mesh_group</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">blendshape_mesh</span><span class="p">,</span> <span class="n">mesh_group</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">texture_attr</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">connectAttr</span><span class="p">(</span><span class="n">des_texture_attr</span><span class="p">,</span> <span class="n">source_texture_attr</span><span class="p">)</span>
+
+        <span class="n">step</span> <span class="o">+=</span> <span class="n">i</span>
+
+    <span class="k">if</span> <span class="n">remove_mtls</span><span class="p">:</span>
+        <span class="n">mtls</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">if</span> <span class="s1">&#39;.mtl&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+        <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">mtls</span><span class="p">]</span>
+
+    <span class="n">ui</span><span class="o">.</span><span class="n">update_status</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;Blend Shapes Exported&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="import_all_blendshapes"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_utils.html#cpg.maya.face.face_utils.face_import_export.import_all_blendshapes">[docs]</a><span class="k">def</span> <span class="nf">import_all_blendshapes</span><span class="p">(</span><span class="n">asset_id</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="s1">&#39;.fbx&#39;</span><span class="p">,</span> <span class="n">exist_check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Imports blend shapes associated with a blend shape mesh.</span>
+
+<span class="sd">    :param string asset_id: The str asset id for the asset.</span>
+<span class="sd">    :param string region: The region name for the mesh to identify what mesh is being looked at.</span>
+<span class="sd">    :param str ext: Name of the file extension.</span>
+<span class="sd">    :param bool exist_check: If True, will check to see if the mesh is already in the scene.</span>
+<span class="sd">    :return: Returns a dictionary with all of the poses that were imported and the pose group that the get</span>
+<span class="sd">            Parented under.</span>
+<span class="sd">    :rtype: Dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ui</span> <span class="o">=</span> <span class="n">progressbar_ui</span><span class="o">.</span><span class="n">ProgressBarStandard</span><span class="p">()</span>
+    <span class="n">ui</span><span class="o">.</span><span class="n">update_status</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;Starting Up&#39;</span><span class="p">)</span>
+
+    <span class="n">all_roots</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_all_frag_roots</span><span class="p">()</span>
+    <span class="n">frag_root</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">all_roots</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">asset_id</span> <span class="o">==</span> <span class="n">asset_id</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">frag_root</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cannot import blend shapes.  No rig will in the scene with the asset id </span><span class="si">{</span><span class="n">asset_id</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">frag_root</span> <span class="o">=</span> <span class="n">frag_root</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">pose_grp</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">node</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="s1">&#39;*.isPoseGrp&#39;</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">o</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">pose_grp</span><span class="p">:</span>
+        <span class="n">pose_grp</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">em</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="s1">&#39;pose_grp&#39;</span><span class="p">)</span>
+        <span class="n">pose_grp</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;isPoseGrp&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pose_grp</span> <span class="o">=</span> <span class="n">pose_grp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">frag_root</span><span class="o">.</span><span class="n">get_rig</span><span class="p">()</span><span class="o">.</span><span class="n">connect_node</span><span class="p">(</span><span class="n">pose_grp</span><span class="p">,</span> <span class="s1">&#39;facePoseGrp&#39;</span><span class="p">,</span> <span class="s1">&#39;facePoseGrp&#39;</span><span class="p">)</span>
+
+    <span class="n">parameters</span> <span class="o">=</span> <span class="n">face_util</span><span class="o">.</span><span class="n">get_parameters_region_instance</span><span class="p">(</span><span class="n">asset_id</span><span class="p">,</span> <span class="n">region</span><span class="p">)</span>
+    <span class="n">pose_list</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get_pose_list</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">exist_check</span><span class="p">:</span>
+        <span class="n">pose_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pose_list</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+
+    <span class="n">blendshape_path</span> <span class="o">=</span> <span class="n">paths</span><span class="o">.</span><span class="n">get_face_blendshape_path</span><span class="p">(</span><span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">)</span>
+    <span class="n">meshes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">blendshape_path</span><span class="p">)</span> <span class="k">if</span> <span class="n">ext</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">pose_list</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">meshes</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">meshes_paths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">blendshape_path</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span> <span class="n">meshes</span><span class="p">))</span>
+    <span class="n">import_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mf">100.0</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">meshes</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">step</span> <span class="o">=</span> <span class="n">i</span>
+
+    <span class="n">dialog_style</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">optionVar</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="s1">&#39;FileDialogStyle&#39;</span><span class="p">)</span>
+    <span class="n">changed_dialog</span> <span class="o">=</span> <span class="n">set_native_dialog</span><span class="p">(</span><span class="n">dialog_style</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">blendshape_mesh</span><span class="p">,</span> <span class="n">mesh_path</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">meshes</span><span class="p">,</span> <span class="n">meshes_paths</span><span class="p">):</span>
+            <span class="n">ui</span><span class="o">.</span><span class="n">update_status</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;importing: </span><span class="si">{</span><span class="n">blendshape_mesh</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">new_nodes</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">file</span><span class="p">(</span><span class="n">mesh_path</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">returnNewNodes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">clean_node</span> <span class="o">=</span> <span class="n">scene_utils</span><span class="o">.</span><span class="n">clean_imported_nodes</span><span class="p">(</span><span class="n">new_nodes</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">clean_node</span><span class="p">:</span>
+                <span class="n">imported_node</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">clean_node</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">blendshape_mesh</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">import_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imported_node</span><span class="p">)</span>
+            <span class="n">step</span> <span class="o">+=</span> <span class="n">i</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">import_list</span><span class="p">,</span> <span class="n">pose_grp</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">changed_dialog</span><span class="p">:</span>
+            <span class="n">cmds</span><span class="o">.</span><span class="n">optionVar</span><span class="p">(</span><span class="n">iv</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;FileDialogStyle&#39;</span><span class="p">,</span> <span class="n">dialog_style</span><span class="p">))</span>
+
+    <span class="c1"># Temporary hot mess</span>
+    <span class="n">face_util</span><span class="o">.</span><span class="n">sort_shapes</span><span class="p">(</span><span class="n">import_list</span><span class="p">)</span>
+
+    <span class="n">ui</span><span class="o">.</span><span class="n">update_status</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;Finished Importing&#39;</span><span class="p">)</span>
+    <span class="n">pose_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">pose_dict</span><span class="p">[</span><span class="s1">&#39;shapes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">import_list</span>
+    <span class="n">pose_dict</span><span class="p">[</span><span class="s1">&#39;pose_grp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pose_grp</span>
+
+    <span class="k">return</span> <span class="n">pose_dict</span></div>
+
+
+<div class="viewcode-block" id="set_native_dialog"><a class="viewcode-back" href="../../../../../cpg.maya.face.face_utils.html#cpg.maya.face.face_utils.face_import_export.set_native_dialog">[docs]</a><span class="k">def</span> <span class="nf">set_native_dialog</span><span class="p">(</span><span class="n">dialog_style</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets Maya default file dialog style to avoid import issues when using cmds.file()</span>
+
+<span class="sd">    :param int dialog_style: Current file dialog style, 1 for OS native and 2 for Maya default</span>
+<span class="sd">    :return: True if dialog style was changed to Maya default, otherwise False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">dialog_style</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="n">optionVar</span><span class="p">(</span><span class="n">iv</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;FileDialogStyle&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
