@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.utils.fbx_utils &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.utils.fbx_utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.utils.fbx_utils</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module that contains functions related with Maya FBX library</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">maya.mel</span> <span class="k">as</span> <span class="nn">mel</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">fileio</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.animation</span> <span class="kn">import</span> <span class="n">time_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.modifiers</span> <span class="kn">import</span> <span class="n">ma_decorators</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">namespace</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="import_fbx"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.import_fbx">[docs]</a><span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_namespace_decorator</span>
+<span class="k">def</span> <span class="nf">import_fbx</span><span class="p">(</span><span class="n">fbx_path</span><span class="p">,</span> <span class="n">import_namespace</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Import a given FBX file. If it contains several animation clips it will only import the last.</span>
+
+<span class="sd">    :param str fbx_path: A path to a given FBX file.</span>
+<span class="sd">    :param str import_namespace: If the imported data should be organized under a namespace.</span>
+<span class="sd">    :return: A list of all imported files. If an import namespace was given it will only return the new subset of nodes.</span>
+<span class="sd">    :rtype: list[PyNode]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fbx_path</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="sa">f</span><span class="s1">&#39;File not found at: </span><span class="si">{</span><span class="n">fbx_path</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="c1"># Note path conversion for FBX calls, for whatever reason this needs to be the style.</span>
+    <span class="n">formatted_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">fbx_path</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span>
+    <span class="c1"># need to make sure we&#39;re in the root namespace or we&#39;ll have problems on import.</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">namespace</span><span class="p">(</span><span class="nb">set</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+    <span class="n">original_node_list</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">))</span>
+    <span class="n">FBXImportMode</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="s2">&quot;add&quot;</span><span class="p">)</span>
+    <span class="n">FBXImportShapes</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">FBXImportSkins</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">FBXImportCacheFile</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">FBXImportGenerateLog</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">FBXImport</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">formatted_path</span><span class="p">,</span> <span class="n">t</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">imported_node_list</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">))</span>
+    <span class="n">return_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">imported_node_list</span><span class="o">-</span><span class="n">original_node_list</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">import_namespace</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">return_list</span><span class="p">:</span>
+            <span class="n">namespace</span><span class="o">.</span><span class="n">move_node_to_namespace</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">import_namespace</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">return_list</span></div>
+
+
+<div class="viewcode-block" id="export_fbx"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.export_fbx">[docs]</a><span class="k">def</span> <span class="nf">export_fbx</span><span class="p">(</span><span class="n">fbx_path</span><span class="p">,</span> <span class="n">node_list</span><span class="p">,</span> <span class="n">clip_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_frame</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Export the passed nodes to an FBX file.</span>
+
+<span class="sd">    :param str fbx_path: A path to a given FBX file.</span>
+<span class="sd">    :param list[PyNode] node_list: A list of nodes to be exported.</span>
+<span class="sd">    :param str clip_name: If we&#39;re exporting animation what we should call the clip associated with this file.</span>
+<span class="sd">        NOTE: The FBX format can support multiple clips per FBX. We will not be supporting that here.</span>
+<span class="sd">    :param int start_frame: The starting frame of the animation if we&#39;re slicing the file.</span>
+<span class="sd">    :param int end_frame: The last frame of the animation if we&#39;re slicing the file.</span>
+<span class="sd">        NOTE: If either a start or end frame are not passed we&#39;ll use our best guess.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">fileio</span><span class="o">.</span><span class="n">touch_path</span><span class="p">(</span><span class="n">fbx_path</span><span class="p">)</span>
+    <span class="n">formatted_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">fbx_path</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span>
+    <span class="n">FBXExportGenerateLog</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">FBXExportAnimationOnly</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">FBXExportShapes</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">FBXExportSkins</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">FBXExportSmoothingGroups</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">FBXExportSplitAnimationIntoTakes</span><span class="p">(</span><span class="n">clear</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">FBXExportDeleteOriginalTakeOnSplitAnimation</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">clip_name</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">start_frame</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">end_frame</span><span class="p">:</span>
+            <span class="n">time_range</span> <span class="o">=</span> <span class="n">time_utils</span><span class="o">.</span><span class="n">get_times</span><span class="p">()</span>
+            <span class="n">start_frame</span> <span class="o">=</span> <span class="n">time_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">start_frame</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">start_frame</span>
+            <span class="n">end_frame</span> <span class="o">=</span> <span class="n">time_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">end_frame</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">end_frame</span>
+        <span class="n">FBXExportBakeComplexStart</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="n">start_frame</span><span class="p">)</span>
+        <span class="n">FBXExportBakeComplexEnd</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="n">end_frame</span><span class="p">)</span>
+        <span class="n">FBXExportSplitAnimationIntoTakes</span><span class="p">(</span><span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">clip_name</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">node_list</span><span class="p">)</span>
+    <span class="n">FBXExport</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">formatted_path</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">FBXExportSplitAnimationIntoTakes</span><span class="p">(</span><span class="n">clear</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_fbx"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.load_fbx">[docs]</a><span class="k">def</span> <span class="nf">load_fbx</span><span class="p">(</span><span class="n">version_string</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads FBX plugin.</span>
+
+<span class="sd">    :param str version_string: FBX plugin string version.</span>
+<span class="sd">    :return: True if FBX plugin was loaded successfully; False otherwise.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">pm</span><span class="o">.</span><span class="n">loadPlugin</span><span class="p">(</span><span class="s1">&#39;fbxmaya.mll&#39;</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">plugin_is_loaded</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">pluginInfo</span><span class="p">(</span><span class="s1">&#39;fbxmaya.mll&#39;</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">==</span> <span class="n">version_string</span>
+
+    <span class="k">assert</span> <span class="n">plugin_is_loaded</span></div>
+
+
+<div class="viewcode-block" id="assert_property"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.assert_property">[docs]</a><span class="k">def</span> <span class="nf">assert_property</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Quickly FBX property asset.</span>
+
+<span class="sd">    :param str prop_name: FBX property name.</span>
+<span class="sd">    :param any value: FBX property value.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">assert</span> <span class="n">FBXProperty</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">==</span> <span class="n">value</span></div>
+
+
+<span class="k">def</span> <span class="nf">_FBXCmd</span><span class="p">(</span><span class="n">_CMD</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Internal command that parses the FBX command arguments into MEL strings.</span>
+
+<span class="sd">    :param _CMD:</span>
+<span class="sd">    :param args:</span>
+<span class="sd">    :param kwargs:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># format strings with quotes</span>
+    <span class="n">arg_string</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="n">local_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&quot; &#39;</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1"> &#39;</span>
+        <span class="n">arg_string</span> <span class="o">+=</span> <span class="n">local_str</span>
+
+    <span class="c1"># special case -q for compatibility with python API</span>
+    <span class="n">kwargs_string</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&quot;&#39;</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">value</span>
+        <span class="n">local_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;-</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> &#39;</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;clear&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;-</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1"> &#39;</span>
+        <span class="n">kwargs_string</span> <span class="o">+=</span> <span class="n">local_str</span>
+
+    <span class="n">kwargs_string</span> <span class="o">=</span> <span class="n">kwargs_string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;True&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;False&#39;</span><span class="p">,</span> <span class="s1">&#39;false&#39;</span><span class="p">)</span>
+
+    <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">_CMD</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">kwargs_string</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">arg_string</span><span class="si">}</span><span class="s1">;&#39;</span>
+    <span class="k">return</span> <span class="n">mel</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="FBXImport"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImport">[docs]</a><span class="k">def</span> <span class="nf">FBXImport</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImport&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExport"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExport">[docs]</a><span class="k">def</span> <span class="nf">FBXExport</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExport&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXResetImport"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXResetImport">[docs]</a><span class="k">def</span> <span class="nf">FBXResetImport</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXResetImport&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXResetExport"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXResetExport">[docs]</a><span class="k">def</span> <span class="nf">FBXResetExport</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXResetExport&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXLoadImportPresetFile"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXLoadImportPresetFile">[docs]</a><span class="k">def</span> <span class="nf">FBXLoadImportPresetFile</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXLoadImportPresetFile&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXLoadExportPresetFile"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXLoadExportPresetFile">[docs]</a><span class="k">def</span> <span class="nf">FBXLoadExportPresetFile</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXLoadExportPresetFile&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportShowUI"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportShowUI">[docs]</a><span class="k">def</span> <span class="nf">FBXImportShowUI</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportShowUI&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportGenerateLog"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportGenerateLog">[docs]</a><span class="k">def</span> <span class="nf">FBXImportGenerateLog</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportGenerateLog&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportMode"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportMode">[docs]</a><span class="k">def</span> <span class="nf">FBXImportMode</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportMode&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportMergeBackNullPivots"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportMergeBackNullPivots">[docs]</a><span class="k">def</span> <span class="nf">FBXImportMergeBackNullPivots</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportMergeBackNullPivots&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportConvertDeformingNullsToJoint"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportConvertDeformingNullsToJoint">[docs]</a><span class="k">def</span> <span class="nf">FBXImportConvertDeformingNullsToJoint</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportConvertDeformingNullsToJoint&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportHardEdges"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportHardEdges">[docs]</a><span class="k">def</span> <span class="nf">FBXImportHardEdges</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportHardEdges&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportUnlockNormals"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportUnlockNormals">[docs]</a><span class="k">def</span> <span class="nf">FBXImportUnlockNormals</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportUnlockNormals&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportProtectDrivenKeys"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportProtectDrivenKeys">[docs]</a><span class="k">def</span> <span class="nf">FBXImportProtectDrivenKeys</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportProtectDrivenKeys&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportMergeAnimationLayers"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportMergeAnimationLayers">[docs]</a><span class="k">def</span> <span class="nf">FBXImportMergeAnimationLayers</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportMergeAnimationLayers&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportResamplingRateSource"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportResamplingRateSource">[docs]</a><span class="k">def</span> <span class="nf">FBXImportResamplingRateSource</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportResamplingRateSource&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportSetMayaFrameRate"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportSetMayaFrameRate">[docs]</a><span class="k">def</span> <span class="nf">FBXImportSetMayaFrameRate</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportSetMayaFrameRate&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportQuaternion"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportQuaternion">[docs]</a><span class="k">def</span> <span class="nf">FBXImportQuaternion</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportQuaternion&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportSetLockedAttribute"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportSetLockedAttribute">[docs]</a><span class="k">def</span> <span class="nf">FBXImportSetLockedAttribute</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportSetLockedAttribute&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportAxisConversionEnable"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportAxisConversionEnable">[docs]</a><span class="k">def</span> <span class="nf">FBXImportAxisConversionEnable</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportAxisConversionEnable&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportScaleFactorEnable"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportScaleFactorEnable">[docs]</a><span class="k">def</span> <span class="nf">FBXImportScaleFactorEnable</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportScaleFactorEnable&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportScaleFactor"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportScaleFactor">[docs]</a><span class="k">def</span> <span class="nf">FBXImportScaleFactor</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportScaleFactor&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportUpAxis"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportUpAxis">[docs]</a><span class="k">def</span> <span class="nf">FBXImportUpAxis</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportUpAxis&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportAutoAxisEnable"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportAutoAxisEnable">[docs]</a><span class="k">def</span> <span class="nf">FBXImportAutoAxisEnable</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportAutoAxisEnable&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportForcedFileAxis"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportForcedFileAxis">[docs]</a><span class="k">def</span> <span class="nf">FBXImportForcedFileAxis</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportForcedFileAxis&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportCacheFile"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportCacheFile">[docs]</a><span class="k">def</span> <span class="nf">FBXImportCacheFile</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportCacheFile&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportSkins"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportSkins">[docs]</a><span class="k">def</span> <span class="nf">FBXImportSkins</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportSkins&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportShapes"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportShapes">[docs]</a><span class="k">def</span> <span class="nf">FBXImportShapes</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportShapes&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportCameras"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportCameras">[docs]</a><span class="k">def</span> <span class="nf">FBXImportCameras</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportCameras&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportLights"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportLights">[docs]</a><span class="k">def</span> <span class="nf">FBXImportLights</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportLights&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportFillTimeline"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportFillTimeline">[docs]</a><span class="k">def</span> <span class="nf">FBXImportFillTimeline</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportFillTimeline&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportConstraints"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportConstraints">[docs]</a><span class="k">def</span> <span class="nf">FBXImportConstraints</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportConstraints&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportCharacter"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportCharacter">[docs]</a><span class="k">def</span> <span class="nf">FBXImportCharacter</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportCharacter&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportShowUI"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportShowUI">[docs]</a><span class="k">def</span> <span class="nf">FBXExportShowUI</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportShowUI&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FBXExportSplitAnimationIntoTakes"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportSplitAnimationIntoTakes">[docs]</a><span class="k">def</span> <span class="nf">FBXExportSplitAnimationIntoTakes</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportSplitAnimationIntoTakes&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FBXExportDeleteOriginalTakeOnSplitAnimation"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportDeleteOriginalTakeOnSplitAnimation">[docs]</a><span class="k">def</span> <span class="nf">FBXExportDeleteOriginalTakeOnSplitAnimation</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportDeleteOriginalTakeOnSplitAnimation&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FBXExportGenerateLog"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportGenerateLog">[docs]</a><span class="k">def</span> <span class="nf">FBXExportGenerateLog</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportGenerateLog&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportFileVersion"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportFileVersion">[docs]</a><span class="k">def</span> <span class="nf">FBXExportFileVersion</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportFileVersion&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportApplyConstantKeyReducer"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportApplyConstantKeyReducer">[docs]</a><span class="k">def</span> <span class="nf">FBXExportApplyConstantKeyReducer</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportApplyConstantKeyReducer&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportQuaternion"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportQuaternion">[docs]</a><span class="k">def</span> <span class="nf">FBXExportQuaternion</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportQuaternion&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportSkins"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportSkins">[docs]</a><span class="k">def</span> <span class="nf">FBXExportSkins</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportSkins&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportShapes"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportShapes">[docs]</a><span class="k">def</span> <span class="nf">FBXExportShapes</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportShapes&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportCameras"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportCameras">[docs]</a><span class="k">def</span> <span class="nf">FBXExportCameras</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportCameras&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportLights"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportLights">[docs]</a><span class="k">def</span> <span class="nf">FBXExportLights</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportLights&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportInstances"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportInstances">[docs]</a><span class="k">def</span> <span class="nf">FBXExportInstances</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportInstances&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportReferencedContainersContent"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportReferencedContainersContent">[docs]</a><span class="k">def</span> <span class="nf">FBXExportReferencedContainersContent</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportReferencedContainersContent&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportBakeComplexStart"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportBakeComplexStart">[docs]</a><span class="k">def</span> <span class="nf">FBXExportBakeComplexStart</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportBakeComplexStart&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportBakeComplexEnd"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportBakeComplexEnd">[docs]</a><span class="k">def</span> <span class="nf">FBXExportBakeComplexEnd</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportBakeComplexEnd&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportBakeComplexStep"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportBakeComplexStep">[docs]</a><span class="k">def</span> <span class="nf">FBXExportBakeComplexStep</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportBakeComplexStep&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportEmbeddedTextures"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportEmbeddedTextures">[docs]</a><span class="k">def</span> <span class="nf">FBXExportEmbeddedTextures</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportEmbeddedTextures&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportConvert2Tif"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportConvert2Tif">[docs]</a><span class="k">def</span> <span class="nf">FBXExportConvert2Tif</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportConvert2Tif&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportInAscii"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportInAscii">[docs]</a><span class="k">def</span> <span class="nf">FBXExportInAscii</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportInAscii&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportBakeComplexAnimation"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportBakeComplexAnimation">[docs]</a><span class="k">def</span> <span class="nf">FBXExportBakeComplexAnimation</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportBakeComplexAnimation&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportBakeResampleAnimation"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportBakeResampleAnimation">[docs]</a><span class="k">def</span> <span class="nf">FBXExportBakeResampleAnimation</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportBakeResampleAnimation&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportUseSceneName"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportUseSceneName">[docs]</a><span class="k">def</span> <span class="nf">FBXExportUseSceneName</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportUseSceneName&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportAnimationOnly"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportAnimationOnly">[docs]</a><span class="k">def</span> <span class="nf">FBXExportAnimationOnly</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportAnimationOnly&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportHardEdges"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportHardEdges">[docs]</a><span class="k">def</span> <span class="nf">FBXExportHardEdges</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportHardEdges&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportTangents"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportTangents">[docs]</a><span class="k">def</span> <span class="nf">FBXExportTangents</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportTangents&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportSmoothMesh"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportSmoothMesh">[docs]</a><span class="k">def</span> <span class="nf">FBXExportSmoothMesh</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportSmoothMesh&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportSmoothingGroups"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportSmoothingGroups">[docs]</a><span class="k">def</span> <span class="nf">FBXExportSmoothingGroups</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportSmoothingGroups&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportFinestSubdivLevel"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportFinestSubdivLevel">[docs]</a><span class="k">def</span> <span class="nf">FBXExportFinestSubdivLevel</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportFinestSubdivLevel&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportInputConnections"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportInputConnections">[docs]</a><span class="k">def</span> <span class="nf">FBXExportInputConnections</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportInputConnections&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportConstraints"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportConstraints">[docs]</a><span class="k">def</span> <span class="nf">FBXExportConstraints</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportConstraints&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportCharacter"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportCharacter">[docs]</a><span class="k">def</span> <span class="nf">FBXExportCharacter</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportCharacter&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportCacheFile"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportCacheFile">[docs]</a><span class="k">def</span> <span class="nf">FBXExportCacheFile</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportCacheFile&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportQuickSelectSetAsCache"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportQuickSelectSetAsCache">[docs]</a><span class="k">def</span> <span class="nf">FBXExportQuickSelectSetAsCache</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportQuickSelectSetAsCache&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportColladaTriangulate"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportColladaTriangulate">[docs]</a><span class="k">def</span> <span class="nf">FBXExportColladaTriangulate</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportColladaTriangulate&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportColladaSingleMatrix"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportColladaSingleMatrix">[docs]</a><span class="k">def</span> <span class="nf">FBXExportColladaSingleMatrix</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportColladaSingleMatrix&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportColladaFrameRate"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportColladaFrameRate">[docs]</a><span class="k">def</span> <span class="nf">FBXExportColladaFrameRate</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportColladaFrameRate&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXResamplingRate"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXResamplingRate">[docs]</a><span class="k">def</span> <span class="nf">FBXResamplingRate</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXResamplingRate&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXRead"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXRead">[docs]</a><span class="k">def</span> <span class="nf">FBXRead</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXRead&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXGetTakeCount"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXGetTakeCount">[docs]</a><span class="k">def</span> <span class="nf">FBXGetTakeCount</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXGetTakeCount&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXGetTakeIndex"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXGetTakeIndex">[docs]</a><span class="k">def</span> <span class="nf">FBXGetTakeIndex</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXGetTakeIndex&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXGetTakeName"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXGetTakeName">[docs]</a><span class="k">def</span> <span class="nf">FBXGetTakeName</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXGetTakeName&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXGetTakeComment"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXGetTakeComment">[docs]</a><span class="k">def</span> <span class="nf">FBXGetTakeComment</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXGetTakeComment&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXGetTakeLocalTimeSpan"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXGetTakeLocalTimeSpan">[docs]</a><span class="k">def</span> <span class="nf">FBXGetTakeLocalTimeSpan</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXGetTakeLocalTimeSpan&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXGetTakeReferenceTimeSpan"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXGetTakeReferenceTimeSpan">[docs]</a><span class="k">def</span> <span class="nf">FBXGetTakeReferenceTimeSpan</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXGetTakeReferenceTimeSpan&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXConvertUnitString"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXConvertUnitString">[docs]</a><span class="k">def</span> <span class="nf">FBXConvertUnitString</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXConvertUnitString&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXImportConvertUnitString"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXImportConvertUnitString">[docs]</a><span class="k">def</span> <span class="nf">FBXImportConvertUnitString</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXImportConvertUnitString&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportConvertUnitString"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportConvertUnitString">[docs]</a><span class="k">def</span> <span class="nf">FBXExportConvertUnitString</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportConvertUnitString&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportAxisConversionMethod"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportAxisConversionMethod">[docs]</a><span class="k">def</span> <span class="nf">FBXExportAxisConversionMethod</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportAxisConversionMethod&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportUpAxis"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportUpAxis">[docs]</a><span class="k">def</span> <span class="nf">FBXExportUpAxis</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportUpAxis&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportScaleFactor"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportScaleFactor">[docs]</a><span class="k">def</span> <span class="nf">FBXExportScaleFactor</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportScaleFactor&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXProperties"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXProperties">[docs]</a><span class="k">def</span> <span class="nf">FBXProperties</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXProperties&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXProperty"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXProperty">[docs]</a><span class="k">def</span> <span class="nf">FBXProperty</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Wraps the FBXProperty command, which is unusually useful but needs special argument formatting</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="c1"># special case query here because FBX is stupid</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;-q&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXProperty&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;v&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">quoted</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="s1">&#39;&quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">p</span> <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">==</span> <span class="n">p</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>  <span class="c1"># format strings with quotes</span>
+        <span class="c1"># args = (quoted(args[0]) +  (&quot; -v %s&quot; % quoted(kwargs.get(&#39;v&#39;)) ), )</span>
+        <span class="c1">#kwargs[&#39;&#39;] = quoted(args[0])</span>
+
+        <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s1">&#39;FBXProperty  &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXExportUseTmpFilePeripheral"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXExportUseTmpFilePeripheral">[docs]</a><span class="k">def</span> <span class="nf">FBXExportUseTmpFilePeripheral</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXExportUseTmpFilePeripheral&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXUICallBack"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXUICallBack">[docs]</a><span class="k">def</span> <span class="nf">FBXUICallBack</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXUICallBack&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FBXUIShowOptions"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.fbx_utils.FBXUIShowOptions">[docs]</a><span class="k">def</span> <span class="nf">FBXUIShowOptions</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_FBXCmd</span><span class="p">(</span><span class="s2">&quot;FBXUIShowOptions&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

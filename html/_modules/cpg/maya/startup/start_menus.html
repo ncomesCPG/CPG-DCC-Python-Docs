@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.startup.start_menus &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.startup.start_menus</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.startup.start_menus</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">These are the Maya menus that get loaded</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># python imports</span>
+
+<span class="c1"># software specific imports</span>
+<span class="kn">from</span> <span class="nn">PySide2.QtWidgets</span> <span class="kn">import</span> <span class="n">QApplication</span>
+<span class="kn">from</span> <span class="nn">PySide2.QtCore</span> <span class="kn">import</span> <span class="n">QTimer</span>
+
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.pyqt.utils</span> <span class="kn">import</span> <span class="n">ma_main_window</span>
+<span class="kn">from</span> <span class="nn">cpg.common.startup</span> <span class="kn">import</span> <span class="n">startup_menus</span>
+<span class="kn">from</span> <span class="nn">cpg.common.pyqt.qt_utils</span> <span class="kn">import</span> <span class="n">qt_menus</span>
+<span class="kn">from</span> <span class="nn">cpg.common.resources</span> <span class="kn">import</span> <span class="n">resources</span>
+<span class="kn">from</span> <span class="nn">cpg.common.tools.toolbox</span> <span class="kn">import</span> <span class="n">toolbox_data</span><span class="p">,</span> <span class="n">toolbox_editor</span>
+
+<span class="kn">from</span> <span class="nn">cpg.maya.tools.toolbox</span> <span class="kn">import</span> <span class="n">ma_toolbox_ui</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.tools.helios</span> <span class="kn">import</span> <span class="n">helios_ui</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.tools.summoner</span> <span class="kn">import</span> <span class="n">summoner</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.tools.reanimator</span> <span class="kn">import</span> <span class="n">reanimator</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.tools.animationexporter</span> <span class="kn">import</span> <span class="n">animationexporter_ui</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">ma_fileio</span>
+
+<span class="n">resources</span><span class="o">.</span><span class="n">register_resources</span><span class="p">()</span>
+
+
+<span class="n">ACTION_PROJ_DOCS</span> <span class="o">=</span> <span class="s1">&#39;ProjectDocuments&#39;</span>
+<span class="n">MENU_HELP_DOCS</span> <span class="o">=</span> <span class="s1">&#39;HelpDocuments&#39;</span>
+<span class="n">ACTION_ANIM_DOCS</span> <span class="o">=</span> <span class="s1">&#39;Animation Help&#39;</span>
+<span class="n">ACTION_MODEL_DOCS</span> <span class="o">=</span> <span class="s1">&#39;Modeling Help&#39;</span>
+<span class="n">ACTION_RIG_DOCS</span> <span class="o">=</span> <span class="s1">&#39;Rigging Help&#39;</span>
+<span class="n">ACTION_JIRA_DOCS</span> <span class="o">=</span> <span class="s1">&#39;Jira URL&#39;</span>
+
+<span class="n">MENU_CPG_TOOLS</span> <span class="o">=</span> <span class="s1">&#39;CPG Tools&#39;</span>
+<span class="n">MENU_CPG_TOOLBOX</span> <span class="o">=</span> <span class="s1">&#39;Toolbox&#39;</span>
+
+
+<div class="viewcode-block" id="action_proj_docs"><a class="viewcode-back" href="../../../../cpg.maya.startup.html#cpg.maya.startup.start_menus.action_proj_docs">[docs]</a><span class="k">def</span> <span class="nf">action_proj_docs</span><span class="p">(</span><span class="n">maya_menu_bar</span><span class="p">,</span> <span class="n">maya_window</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds the help docs to Maya&#39;s main window.</span>
+
+<span class="sd">    :param QMainWindow maya_window: Maya&#39;s main window</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">menu_inst</span> <span class="o">=</span> <span class="n">qt_menus</span><span class="o">.</span><span class="n">MainWindowsMenus</span><span class="p">(</span><span class="n">maya_menu_bar</span><span class="p">,</span> <span class="n">maya_window</span><span class="p">)</span>
+    
+    <span class="c1"># Add Project Documents Action</span>
+    <span class="n">menu_inst</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">ACTION_PROJ_DOCS</span><span class="p">,</span> <span class="n">startup_menus</span><span class="o">.</span><span class="n">project_url_menu</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">resources</span><span class="o">.</span><span class="n">icon</span><span class="p">(</span><span class="s1">&#39;darkwinter&#39;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="menu_help_urls"><a class="viewcode-back" href="../../../../cpg.maya.startup.html#cpg.maya.startup.start_menus.menu_help_urls">[docs]</a><span class="k">def</span> <span class="nf">menu_help_urls</span><span class="p">(</span><span class="n">maya_window</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds the Help docs to Maya&#39;s main window.</span>
+
+<span class="sd">    :param QMainWindow maya_window: Maya&#39;s main window</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">menu_inst</span> <span class="o">=</span> <span class="n">qt_menus</span><span class="o">.</span><span class="n">MainWindowsMenus</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">MENU_HELP_DOCS</span><span class="p">,</span> <span class="n">maya_window</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">resources</span><span class="o">.</span><span class="n">icon</span><span class="p">(</span><span class="s1">&#39;cpg&#39;</span><span class="p">))</span>
+    <span class="n">menu_inst</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">ACTION_ANIM_DOCS</span><span class="p">,</span> <span class="n">startup_menus</span><span class="o">.</span><span class="n">animation_url_menu</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">resources</span><span class="o">.</span><span class="n">icon</span><span class="p">(</span><span class="s1">&#39;animation&#39;</span><span class="p">))</span>
+    <span class="n">menu_inst</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">ACTION_MODEL_DOCS</span><span class="p">,</span> <span class="n">startup_menus</span><span class="o">.</span><span class="n">modeling_url_menu</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">resources</span><span class="o">.</span><span class="n">icon</span><span class="p">(</span><span class="s1">&#39;art&#39;</span><span class="p">))</span>
+    <span class="n">menu_inst</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">ACTION_RIG_DOCS</span><span class="p">,</span> <span class="n">startup_menus</span><span class="o">.</span><span class="n">rigging_url_menu</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">resources</span><span class="o">.</span><span class="n">icon</span><span class="p">(</span><span class="s1">&#39;puppet&#39;</span><span class="p">))</span>
+    <span class="n">menu_inst</span><span class="o">.</span><span class="n">add_separator</span><span class="p">()</span>
+    <span class="n">menu_inst</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">ACTION_JIRA_DOCS</span><span class="p">,</span> <span class="n">startup_menus</span><span class="o">.</span><span class="n">jira_url_menu</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">resources</span><span class="o">.</span><span class="n">icon</span><span class="p">(</span><span class="s1">&#39;jira&#39;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="menu_cpg_tools"><a class="viewcode-back" href="../../../../cpg.maya.startup.html#cpg.maya.startup.start_menus.menu_cpg_tools">[docs]</a><span class="k">def</span> <span class="nf">menu_cpg_tools</span><span class="p">(</span><span class="n">maya_window</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds the toolbox to Maya&#39;s main window.</span>
+<span class="sd">    </span>
+<span class="sd">    :param QMainWindow maya_window: Maya&#39;s main window</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">menu_tools_inst</span> <span class="o">=</span> <span class="n">qt_menus</span><span class="o">.</span><span class="n">MainWindowsMenus</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">MENU_CPG_TOOLBOX</span><span class="p">,</span> <span class="n">maya_window</span><span class="p">)</span>
+    <span class="n">menu_tools_inst</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="s1">&#39;Toolbox Editor&#39;</span><span class="p">,</span>
+                             <span class="k">lambda</span> <span class="n">sacrificial</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">maya_window</span><span class="o">=</span><span class="n">maya_window</span><span class="p">:</span> <span class="n">ma_toolbox_ui</span><span class="o">.</span><span class="n">MayaToolboxEditor</span><span class="p">(),</span>
+                             <span class="n">icon</span><span class="o">=</span><span class="n">resources</span><span class="o">.</span><span class="n">icon</span><span class="p">(</span><span class="s1">&#39;cpg&#39;</span><span class="p">))</span>
+    <span class="n">menu_toolbars</span> <span class="o">=</span> <span class="n">qt_menus</span><span class="o">.</span><span class="n">MainWindowsMenus</span><span class="p">(</span><span class="n">menu_tools_inst</span><span class="o">.</span><span class="n">menu</span><span class="p">,</span> <span class="n">maya_window</span><span class="p">)</span>
+    <span class="n">menu_toolbars</span><span class="o">.</span><span class="n">add_menu</span><span class="p">(</span><span class="s1">&#39;ToolBox&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">toolbox_name</span><span class="p">,</span> <span class="n">toolbox_class</span> <span class="ow">in</span> <span class="n">toolbox_data</span><span class="o">.</span><span class="n">ToolboxRegistry</span><span class="p">()</span><span class="o">.</span><span class="n">TOOLBOX_NAME_DICT</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">menu_toolbars</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">toolbox_name</span><span class="p">,</span>
+                             <span class="k">lambda</span> <span class="n">sacrificial</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">toolbox_class</span><span class="o">=</span><span class="n">toolbox_class</span><span class="p">:</span> <span class="n">ma_toolbox_ui</span><span class="o">.</span><span class="n">MayaToolBox</span><span class="p">(</span><span class="n">toolbox_class</span><span class="o">=</span><span class="n">toolbox_class</span><span class="p">),</span>
+                             <span class="n">icon</span><span class="o">=</span><span class="n">resources</span><span class="o">.</span><span class="n">icon</span><span class="p">(</span><span class="s1">&#39;cpg&#39;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="menu_cpg_quick_tools"><a class="viewcode-back" href="../../../../cpg.maya.startup.html#cpg.maya.startup.start_menus.menu_cpg_quick_tools">[docs]</a><span class="k">def</span> <span class="nf">menu_cpg_quick_tools</span><span class="p">(</span><span class="n">maya_window</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds the toolbox to Maya&#39;s main window.</span>
+
+<span class="sd">    :param QMainWindow maya_window: Maya&#39;s main window</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">menu_tools_inst</span> <span class="o">=</span> <span class="n">qt_menus</span><span class="o">.</span><span class="n">MainWindowsMenus</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">MENU_CPG_TOOLS</span><span class="p">,</span> <span class="n">maya_window</span><span class="p">)</span>
+    <span class="n">menu_toolbars</span> <span class="o">=</span> <span class="n">qt_menus</span><span class="o">.</span><span class="n">MainWindowsMenus</span><span class="p">(</span><span class="n">menu_tools_inst</span><span class="o">.</span><span class="n">menu</span><span class="p">,</span> <span class="n">maya_window</span><span class="p">)</span>
+    <span class="n">menu_toolbars</span><span class="o">.</span><span class="n">add_menu</span><span class="p">(</span><span class="s1">&#39;General&#39;</span><span class="p">)</span>
+    <span class="n">menu_toolbars</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="s1">&#39;Plastic Check Out&#39;</span><span class="p">,</span> <span class="n">ma_fileio</span><span class="o">.</span><span class="n">touch_and_checkout_cmd</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">resources</span><span class="o">.</span><span class="n">icon</span><span class="p">(</span><span class="s1">&#39;plasticscm_logo&#39;</span><span class="p">))</span>
+    <span class="n">menu_tools_inst</span> <span class="o">=</span> <span class="n">qt_menus</span><span class="o">.</span><span class="n">MainWindowsMenus</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">MENU_CPG_TOOLS</span><span class="p">,</span> <span class="n">maya_window</span><span class="p">)</span>
+    <span class="n">menu_toolbars</span> <span class="o">=</span> <span class="n">qt_menus</span><span class="o">.</span><span class="n">MainWindowsMenus</span><span class="p">(</span><span class="n">menu_tools_inst</span><span class="o">.</span><span class="n">menu</span><span class="p">,</span> <span class="n">maya_window</span><span class="p">)</span>
+    <span class="n">menu_toolbars</span><span class="o">.</span><span class="n">add_menu</span><span class="p">(</span><span class="s1">&#39;Modeling&#39;</span><span class="p">)</span>
+    <span class="n">menu_toolbars</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="s1">&#39;Helios&#39;</span><span class="p">,</span> <span class="n">helios_ui</span><span class="o">.</span><span class="n">Helios</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">resources</span><span class="o">.</span><span class="n">icon</span><span class="p">(</span><span class="s1">&#39;cpg&#39;</span><span class="p">))</span>
+    <span class="n">menu_tools_inst</span> <span class="o">=</span> <span class="n">qt_menus</span><span class="o">.</span><span class="n">MainWindowsMenus</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">MENU_CPG_TOOLS</span><span class="p">,</span> <span class="n">maya_window</span><span class="p">)</span>
+    <span class="n">menu_toolbars</span> <span class="o">=</span> <span class="n">qt_menus</span><span class="o">.</span><span class="n">MainWindowsMenus</span><span class="p">(</span><span class="n">menu_tools_inst</span><span class="o">.</span><span class="n">menu</span><span class="p">,</span> <span class="n">maya_window</span><span class="p">)</span>
+    <span class="n">menu_toolbars</span><span class="o">.</span><span class="n">add_menu</span><span class="p">(</span><span class="s1">&#39;Animation&#39;</span><span class="p">)</span>
+    <span class="n">menu_toolbars</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="s1">&#39;Summoner&#39;</span><span class="p">,</span> <span class="n">summoner</span><span class="o">.</span><span class="n">Summoner</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">resources</span><span class="o">.</span><span class="n">icon</span><span class="p">(</span><span class="s1">&#39;cpg&#39;</span><span class="p">))</span>
+    <span class="n">menu_toolbars</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="s1">&#39;Re-Animator&#39;</span><span class="p">,</span> <span class="n">reanimator</span><span class="o">.</span><span class="n">Reanimator</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">resources</span><span class="o">.</span><span class="n">icon</span><span class="p">(</span><span class="s1">&#39;cpg&#39;</span><span class="p">))</span>
+    <span class="n">menu_toolbars</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="s1">&#39;Export Animations&#39;</span><span class="p">,</span> <span class="n">animationexporter_ui</span><span class="o">.</span><span class="n">AnimationExporter</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">resources</span><span class="o">.</span><span class="n">icon</span><span class="p">(</span><span class="s1">&#39;cpg&#39;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="create_menus"><a class="viewcode-back" href="../../../../cpg.maya.startup.html#cpg.maya.startup.start_menus.create_menus">[docs]</a><span class="k">def</span> <span class="nf">create_menus</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates the Maya menus at the top of Maya</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># This is here because, if the menus are already open the actions don&#39;t close properly.</span>
+    <span class="n">menu_bars</span> <span class="o">=</span> <span class="n">ma_main_window</span><span class="o">.</span><span class="n">get_main_menu_menubar</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">menu_bar</span> <span class="ow">in</span> <span class="n">menu_bars</span><span class="o">.</span><span class="n">children</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">ACTION_PROJ_DOCS</span> <span class="ow">in</span> <span class="n">menu_bar</span><span class="o">.</span><span class="n">objectName</span><span class="p">():</span>
+            <span class="n">force_remove_actions</span><span class="p">()</span>
+            <span class="k">break</span>
+    <span class="c1"># Give the UI a second to think</span>
+    <span class="n">QTimer</span><span class="o">.</span><span class="n">singleShot</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">activeWindow</span><span class="p">())</span>
+    
+    <span class="c1"># Get the main window and menu bar.</span>
+    <span class="n">maya_window</span> <span class="o">=</span> <span class="n">ma_main_window</span><span class="o">.</span><span class="n">get_maya_window</span><span class="p">()</span>
+    <span class="n">maya_menu_bar</span> <span class="o">=</span> <span class="n">ma_main_window</span><span class="o">.</span><span class="n">get_main_menu_menubar</span><span class="p">()</span>
+    
+    <span class="c1"># Add Project URL Documents Action</span>
+    <span class="n">action_proj_docs</span><span class="p">(</span><span class="n">maya_menu_bar</span><span class="p">,</span> <span class="n">maya_window</span><span class="p">)</span>
+    <span class="c1"># Help URLs</span>
+    <span class="n">menu_help_urls</span><span class="p">(</span><span class="n">maya_window</span><span class="p">)</span>
+    <span class="c1"># Tools</span>
+    <span class="n">menu_cpg_quick_tools</span><span class="p">(</span><span class="n">maya_window</span><span class="p">)</span>
+    <span class="c1"># Toolbox</span>
+    <span class="n">menu_cpg_tools</span><span class="p">(</span><span class="n">maya_window</span><span class="p">)</span></div>
+    
+
+<div class="viewcode-block" id="remove_menus"><a class="viewcode-back" href="../../../../cpg.maya.startup.html#cpg.maya.startup.start_menus.remove_menus">[docs]</a><span class="k">def</span> <span class="nf">remove_menus</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Removes the menus at the top of Maya</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">maya_window</span> <span class="o">=</span> <span class="n">ma_main_window</span><span class="o">.</span><span class="n">get_maya_window</span><span class="p">()</span>
+    <span class="n">maya_menu_bar</span> <span class="o">=</span> <span class="n">ma_main_window</span><span class="o">.</span><span class="n">get_main_menu_menubar</span><span class="p">()</span>
+    
+    <span class="c1"># Remove Help URLs</span>
+    <span class="n">menu_inst</span> <span class="o">=</span> <span class="n">qt_menus</span><span class="o">.</span><span class="n">MainWindowsMenus</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">MENU_HELP_DOCS</span><span class="p">,</span> <span class="n">maya_window</span><span class="p">)</span>
+    <span class="n">menu_inst</span><span class="o">.</span><span class="n">remove_menu</span><span class="p">()</span>
+    
+    <span class="c1"># Remove the Tools Menu</span>
+    <span class="n">menu_tools_inst</span> <span class="o">=</span> <span class="n">qt_menus</span><span class="o">.</span><span class="n">MainWindowsMenus</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">MENU_CPG_TOOLS</span><span class="p">,</span> <span class="n">maya_window</span><span class="p">)</span>
+    <span class="n">menu_tools_inst</span><span class="o">.</span><span class="n">remove_menu</span><span class="p">()</span>
+
+    <span class="c1"># Remove the Quick Tools Menu</span>
+    <span class="n">menu_tools_inst</span> <span class="o">=</span> <span class="n">qt_menus</span><span class="o">.</span><span class="n">MainWindowsMenus</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">MENU_CPG_TOOLBOX</span><span class="p">,</span> <span class="n">maya_window</span><span class="p">)</span>
+    <span class="n">menu_tools_inst</span><span class="o">.</span><span class="n">remove_menu</span><span class="p">()</span>
+    
+    <span class="c1"># Remove URL</span>
+    <span class="n">main_menu_inst</span> <span class="o">=</span> <span class="n">qt_menus</span><span class="o">.</span><span class="n">MainWindowsMenus</span><span class="p">(</span><span class="n">maya_menu_bar</span><span class="p">,</span> <span class="n">maya_window</span><span class="p">)</span>
+    <span class="n">main_menu_inst</span><span class="o">.</span><span class="n">remove_action</span><span class="p">(</span><span class="n">ACTION_PROJ_DOCS</span><span class="p">)</span>
+    
+    <span class="n">force_remove_actions</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="force_remove_actions"><a class="viewcode-back" href="../../../../cpg.maya.startup.html#cpg.maya.startup.start_menus.force_remove_actions">[docs]</a><span class="k">def</span> <span class="nf">force_remove_actions</span><span class="p">():</span>
+    <span class="c1"># force remove all cpg actions</span>
+    <span class="n">menu_bars</span> <span class="o">=</span> <span class="n">ma_main_window</span><span class="o">.</span><span class="n">get_main_menu_menubar</span><span class="p">()</span>
+    <span class="n">action_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">ACTION_PROJ_DOCS</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">menu_bar</span> <span class="ow">in</span> <span class="n">menu_bars</span><span class="o">.</span><span class="n">children</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">act</span> <span class="ow">in</span> <span class="n">action_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">act</span> <span class="ow">in</span> <span class="n">menu_bar</span><span class="o">.</span><span class="n">objectName</span><span class="p">():</span>
+                <span class="n">menu_bar</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">()</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

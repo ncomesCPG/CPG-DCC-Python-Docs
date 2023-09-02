@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.tools.timewarp.timewarp &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.tools.timewarp.timewarp</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.tools.timewarp.timewarp</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module that contains Test tool implementation.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="c1"># Software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">lists</span>
+<span class="kn">from</span> <span class="nn">cpg.common.modifiers</span> <span class="kn">import</span> <span class="n">decorators</span>
+<span class="kn">from</span> <span class="nn">cpg.common.tools.dcctracking</span> <span class="kn">import</span> <span class="n">dcc_tracking</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.animation</span> <span class="kn">import</span> <span class="n">baking</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">attr_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging.flags</span> <span class="kn">import</span> <span class="n">frag_flag</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.pyqt</span> <span class="kn">import</span> <span class="n">mayawindows</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">frag</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="Timewarp"><a class="viewcode-back" href="../../../../../cpg.maya.tools.timewarp.html#cpg.maya.tools.timewarp.timewarp.Timewarp">[docs]</a><span class="k">class</span> <span class="nc">Timewarp</span><span class="p">(</span><span class="n">mayawindows</span><span class="o">.</span><span class="n">CPGMayaWindow</span><span class="p">):</span>
+    <span class="n">VERSION</span> <span class="o">=</span> <span class="s1">&#39;1.0.0&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">root_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+        <span class="n">ui_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_path</span><span class="p">,</span> <span class="s1">&#39;ui&#39;</span><span class="p">,</span> <span class="s1">&#39;TimewarpUI.ui&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Timewarp&#39;</span><span class="p">,</span>
+                         <span class="n">ui_path</span><span class="o">=</span><span class="n">ui_path</span><span class="p">,</span>
+                         <span class="n">version</span><span class="o">=</span><span class="n">Timewarp</span><span class="o">.</span><span class="n">VERSION</span><span class="p">)</span>
+        
+        <span class="c1"># ==============================</span>
+        <span class="c1"># Signals</span>
+        <span class="c1"># ==============================</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">add_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">add_objects_to_timewarp_cmd</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">remove_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">remove_objects_from_timewarp_cmd</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">get_all_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">get_all_timewarped_nodes_cmd</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">bake_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">bake_timewarp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">delete_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">remove_timewarp</span><span class="p">)</span></div>
+    <span class="c1"># ==============================</span>
+    <span class="c1"># Slots</span>
+    <span class="c1"># ==============================</span>
+
+
+<div class="viewcode-block" id="get_timewarp"><a class="viewcode-back" href="../../../../../cpg.maya.tools.timewarp.html#cpg.maya.tools.timewarp.timewarp.get_timewarp">[docs]</a><span class="k">def</span> <span class="nf">get_timewarp</span><span class="p">(</span><span class="n">create_new</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return or build a new timewarp control.</span>
+
+<span class="sd">    :param bool create_new: If unable to find a timewarp system create a new one.</span>
+<span class="sd">    :return: The control that represents a new timewarp system in the scene.</span>
+<span class="sd">    :rtype: Transform</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">time_control</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="s1">&#39;*.timewarp_node&#39;</span><span class="p">,</span> <span class="n">o</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">time_control</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">create_new</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">time_control</span> <span class="o">=</span> <span class="n">setup_timewarp_control</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">time_control</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;timewarp_node&#39;</span><span class="p">):</span>
+        <span class="n">setup_timewarp_node</span><span class="p">(</span><span class="n">time_control</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">time_control</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;animation_layer&#39;</span><span class="p">):</span>
+        <span class="n">setup_timewarp_layer</span><span class="p">(</span><span class="n">time_control</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">time_control</span></div>
+
+
+<div class="viewcode-block" id="setup_timewarp_control"><a class="viewcode-back" href="../../../../../cpg.maya.tools.timewarp.html#cpg.maya.tools.timewarp.timewarp.setup_timewarp_control">[docs]</a><span class="k">def</span> <span class="nf">setup_timewarp_control</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a new control object for the timewarp system. This generates the flag and required attributes.</span>
+
+<span class="sd">    :return: The control that represents a new timewarp system in the scene.</span>
+<span class="sd">    :rtype: Transform</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">sca</span> <span class="o">=</span> <span class="mi">125</span>
+    <span class="c1"># main face</span>
+    <span class="n">time_control</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">curve</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="p">[(</span><span class="n">sca</span> <span class="o">*</span> <span class="mf">.8528</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="mf">.8528</span><span class="p">),</span> <span class="p">((</span><span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.8528</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.8528</span><span class="p">)),</span>
+                               <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="mf">.8528</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="mf">.8528</span><span class="p">),</span> <span class="p">((</span><span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.8528</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                               <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.8528</span><span class="p">))],</span> <span class="n">per</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="n">d</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                            <span class="n">n</span><span class="o">=</span><span class="s2">&quot;timewarp_flag&quot;</span><span class="p">)</span>
+    <span class="n">curve_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># hands</span>
+    <span class="n">curve_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">curve</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.2</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.35</span><span class="p">)]))</span>
+    <span class="n">curve_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">curve</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="mf">.05</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.05</span><span class="p">),</span> <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="mf">.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.1</span><span class="p">),</span> <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="mf">.15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.15</span><span class="p">)]))</span>
+
+    <span class="c1"># ticks</span>
+    <span class="n">curve_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">curve</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.4</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.42</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.44</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.45</span><span class="p">)]))</span>
+    <span class="n">curve_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">curve</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="p">[(</span><span class="n">sca</span> <span class="o">*</span> <span class="mf">.28</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.28</span><span class="p">),</span> <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="mf">.29</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.29</span><span class="p">),</span> <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="mf">.31</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.31</span><span class="p">),</span>
+                                  <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="mf">.32</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.32</span><span class="p">)]))</span>
+    <span class="n">curve_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">curve</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="p">[(</span><span class="n">sca</span> <span class="o">*</span> <span class="mf">.4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="mf">.42</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="mf">.44</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="mf">.45</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]))</span>
+    <span class="n">curve_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">curve</span><span class="p">(</span>
+        <span class="n">p</span><span class="o">=</span><span class="p">[(</span><span class="n">sca</span> <span class="o">*</span> <span class="mf">.28</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="mf">.28</span><span class="p">),</span> <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="mf">.29</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="mf">.29</span><span class="p">),</span> <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="mf">.31</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="mf">.31</span><span class="p">),</span> <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="mf">.32</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="mf">.32</span><span class="p">)]))</span>
+    <span class="n">curve_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">curve</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="mf">.4</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="mf">.42</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="mf">.44</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="mf">.45</span><span class="p">)]))</span>
+    <span class="n">curve_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">curve</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="p">[(</span><span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.28</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="mf">.28</span><span class="p">),</span> <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.29</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="mf">.29</span><span class="p">),</span> <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.31</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="mf">.31</span><span class="p">),</span>
+                                  <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.32</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="mf">.32</span><span class="p">)]))</span>
+    <span class="n">curve_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">curve</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="p">[(</span><span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.42</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.44</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.45</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]))</span>
+    <span class="n">curve_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">curve</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="p">[(</span><span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.28</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.28</span><span class="p">),</span> <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.29</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.29</span><span class="p">),</span> <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.31</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.31</span><span class="p">),</span>
+                                  <span class="p">(</span><span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.32</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sca</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.32</span><span class="p">)]))</span>
+
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">curve_list</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">getShape</span><span class="p">(),</span> <span class="n">time_control</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="n">time_control</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;timewarp_node&#39;</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+    <span class="n">time_control</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;animation_layer&#39;</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+    <span class="n">time_control</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;timewarp_input&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">attr_utils</span><span class="o">.</span><span class="n">lock_and_hide_attrs</span><span class="p">(</span><span class="n">time_control</span><span class="p">,</span> <span class="n">attr_utils</span><span class="o">.</span><span class="n">TRANSFORM_ATTRS</span><span class="o">+</span><span class="p">[</span><span class="s1">&#39;v&#39;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">time_control</span></div>
+
+
+<div class="viewcode-block" id="setup_timewarp_layer"><a class="viewcode-back" href="../../../../../cpg.maya.tools.timewarp.html#cpg.maya.tools.timewarp.timewarp.setup_timewarp_layer">[docs]</a><span class="k">def</span> <span class="nf">setup_timewarp_layer</span><span class="p">(</span><span class="n">time_control</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a new animation layer for the timewarp system to work with.</span>
+
+<span class="sd">    :param Transform time_control: The control that represents a timewarp system in the scene.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">animation_layer</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="s1">&#39;Timewarp_Selection&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimLayer</span><span class="p">))</span>
+    <span class="n">animation_layer</span> <span class="o">=</span> <span class="n">animation_layer</span> <span class="ow">or</span> <span class="n">pm</span><span class="o">.</span><span class="n">animLayer</span><span class="p">(</span><span class="s1">&#39;Timewarp_Selection&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">time_control</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;animation_layer&#39;</span><span class="p">):</span>
+        <span class="n">time_control</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;animation_layer&#39;</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+    <span class="n">animation_layer</span><span class="o">.</span><span class="n">message</span> <span class="o">&gt;&gt;</span> <span class="n">time_control</span><span class="o">.</span><span class="n">animation_layer</span>
+    <span class="n">animation_layer</span><span class="o">.</span><span class="n">addMember</span><span class="p">(</span><span class="n">time_control</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="setup_timewarp_node"><a class="viewcode-back" href="../../../../../cpg.maya.tools.timewarp.html#cpg.maya.tools.timewarp.timewarp.setup_timewarp_node">[docs]</a><span class="k">def</span> <span class="nf">setup_timewarp_node</span><span class="p">(</span><span class="n">time_control</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a new timewarp node to link animation curves to. Which allows us to retime them by offsetting keys.</span>
+
+<span class="sd">    :param Transform time_control: The control that represents a timewarp system in the scene.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">timewarp_node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">TimeWarp</span><span class="p">)</span>
+    <span class="n">timewarp_node</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s1">&#39;animation_timewarp&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">time_control</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;timewarp_node&#39;</span><span class="p">):</span>
+        <span class="n">time_control</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;timewarp_node&#39;</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+    <span class="n">timewarp_node</span><span class="o">.</span><span class="n">message</span> <span class="o">&gt;&gt;</span> <span class="n">time_control</span><span class="o">.</span><span class="n">timewarp_node</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">time_control</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;timewarp_input&#39;</span><span class="p">):</span>
+        <span class="n">time_control</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;timewarp_input&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">time_control</span><span class="o">.</span><span class="n">timewarp_input</span> <span class="o">&gt;&gt;</span> <span class="n">timewarp_node</span><span class="o">.</span><span class="n">input</span></div>
+
+
+<div class="viewcode-block" id="add_remove_objects_from_timewarp"><a class="viewcode-back" href="../../../../../cpg.maya.tools.timewarp.html#cpg.maya.tools.timewarp.timewarp.add_remove_objects_from_timewarp">[docs]</a><span class="k">def</span> <span class="nf">add_remove_objects_from_timewarp</span><span class="p">(</span><span class="n">node_list</span><span class="p">,</span> <span class="n">add_to_warp</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add or remove objects from their connection to the scene&#39;s timewarp node.</span>
+
+<span class="sd">    :param list[PyNode] node_list: A list of objects with keys on them.</span>
+<span class="sd">    :param bool add_to_warp: If objects should be added or removed to the timewarp.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">time_control</span> <span class="o">=</span> <span class="n">get_timewarp</span><span class="p">()</span>
+
+    <span class="n">timewarp_node</span> <span class="o">=</span> <span class="n">time_control</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;timewarp_node&#39;</span><span class="p">)</span>
+
+    <span class="n">current_anim_curve_list</span> <span class="o">=</span> <span class="n">timewarp_node</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimCurve</span><span class="p">)</span>
+    <span class="n">curves_to_append</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="n">node_list</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimCurve</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">curves_to_append</span><span class="p">:</span>
+        <span class="c1"># no keyframes on selected objects.</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The selected objects have no animation curves. Set keys to use timewarp.&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">current_anim_curve_list</span><span class="p">:</span>
+        <span class="c1"># setup first time keys based on incoming curves.</span>
+        <span class="n">keyframe_range</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">curves_to_append</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">start_frame</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">keyframe_range</span><span class="p">)</span>
+        <span class="n">end_frame</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">keyframe_range</span><span class="p">)</span>
+
+        <span class="n">pm</span><span class="o">.</span><span class="n">setKeyframe</span><span class="p">(</span><span class="n">time_control</span><span class="o">.</span><span class="n">timewarp_input</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">start_frame</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">start_frame</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">setKeyframe</span><span class="p">(</span><span class="n">time_control</span><span class="o">.</span><span class="n">timewarp_input</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">end_frame</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">end_frame</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">keyTangent</span><span class="p">(</span><span class="n">time_control</span><span class="o">.</span><span class="n">timewarp_input</span><span class="p">,</span> <span class="n">itt</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="n">ott</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Start and end keys added </span><span class="si">{</span><span class="n">start_frame</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">end_frame</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="n">timewarp_output_attr</span> <span class="o">=</span> <span class="n">time_control</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;timewarp_node&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">output</span>
+    <span class="k">if</span> <span class="n">add_to_warp</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">curves_to_append</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">current_anim_curve_list</span><span class="p">):</span>
+            <span class="c1"># incoming curves are not already connected.</span>
+            <span class="k">for</span> <span class="n">anim_curve</span> <span class="ow">in</span> <span class="n">curves_to_append</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">anim_curve</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">current_anim_curve_list</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">anim_curve</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">listConnections</span><span class="p">():</span>
+                        <span class="c1"># break previous connection if there was one.</span>
+                        <span class="n">anim_curve</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+                    <span class="n">timewarp_output_attr</span> <span class="o">&gt;&gt;</span> <span class="n">anim_curve</span><span class="o">.</span><span class="n">input</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">anim_curve</span> <span class="ow">in</span> <span class="n">curves_to_append</span><span class="p">:</span>
+            <span class="c1"># break connections to the timewarp.</span>
+            <span class="k">if</span> <span class="n">timewarp_node</span> <span class="ow">in</span> <span class="n">anim_curve</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">listConnections</span><span class="p">():</span>
+                <span class="n">timewarp_output_attr</span> <span class="o">//</span> <span class="n">anim_curve</span><span class="o">.</span><span class="n">input</span></div>
+
+
+<div class="viewcode-block" id="get_all_timewarped_nodes"><a class="viewcode-back" href="../../../../../cpg.maya.tools.timewarp.html#cpg.maya.tools.timewarp.timewarp.get_all_timewarped_nodes">[docs]</a><span class="k">def</span> <span class="nf">get_all_timewarped_nodes</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    From the timewarp return all PyNodes that are connected to the override.</span>
+
+<span class="sd">    :return: A list of all objects under the timewarp.</span>
+<span class="sd">    :rtype: list[PyNode]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">time_control</span> <span class="o">=</span> <span class="n">get_timewarp</span><span class="p">(</span><span class="n">create_new</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">time_control</span><span class="p">:</span>
+        <span class="c1"># no timewrap present in the scene.</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;This scene does not have an active timewarp.&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="n">timewarp_node</span> <span class="o">=</span> <span class="n">time_control</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;timewarp_node&#39;</span><span class="p">)</span>
+    <span class="n">current_anim_curve_list</span> <span class="o">=</span> <span class="n">timewarp_node</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimCurve</span><span class="p">)</span>
+    <span class="n">source_node_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">anim_curve</span> <span class="ow">in</span> <span class="n">current_anim_curve_list</span><span class="p">:</span>
+        <span class="n">source_node</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">anim_curve</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">listConnections</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">source_node</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">source_node_list</span><span class="p">:</span>
+            <span class="n">source_node_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">source_node</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">source_node_list</span></div>
+
+
+<div class="viewcode-block" id="add_objects_to_timewarp_cmd"><a class="viewcode-back" href="../../../../../cpg.maya.tools.timewarp.html#cpg.maya.tools.timewarp.timewarp.add_objects_to_timewarp_cmd">[docs]</a><span class="k">def</span> <span class="nf">add_objects_to_timewarp_cmd</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add objects to the scene&#39;s timewarp.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">selection</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">selected</span><span class="p">()</span>
+    <span class="n">filtered_selection</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">selection</span> <span class="k">if</span> <span class="n">frag_flag</span><span class="o">.</span><span class="n">is_flag_node</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+    <span class="n">add_remove_objects_from_timewarp</span><span class="p">(</span><span class="n">filtered_selection</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">filtered_selection</span><span class="p">:</span>
+        <span class="n">frag_root</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_frag_root</span><span class="p">(</span><span class="n">filtered_selection</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="c1"># dcc data</span>
+        <span class="n">dcc_tracking</span><span class="o">.</span><span class="n">ddc_tool_entry_thead</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="n">add_objects_to_timewarp_cmd</span><span class="p">,</span> <span class="n">asset_id</span><span class="o">=</span><span class="n">frag_root</span><span class="o">.</span><span class="n">asset_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="remove_objects_from_timewarp_cmd"><a class="viewcode-back" href="../../../../../cpg.maya.tools.timewarp.html#cpg.maya.tools.timewarp.timewarp.remove_objects_from_timewarp_cmd">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+<span class="k">def</span> <span class="nf">remove_objects_from_timewarp_cmd</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Remove objects from the scene&#39;s timewarp.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">selection</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">selected</span><span class="p">()</span>
+    <span class="n">filtered_selection</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">selection</span> <span class="k">if</span> <span class="n">frag_flag</span><span class="o">.</span><span class="n">is_flag_node</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+    <span class="n">add_remove_objects_from_timewarp</span><span class="p">(</span><span class="n">filtered_selection</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">filtered_selection</span><span class="p">:</span>
+        <span class="n">frag_root</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_frag_root</span><span class="p">(</span><span class="n">filtered_selection</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="c1"># dcc data</span>
+        <span class="n">dcc_tracking</span><span class="o">.</span><span class="n">ddc_tool_entry_thead</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="n">remove_objects_from_timewarp_cmd</span><span class="p">,</span> <span class="n">asset_id</span><span class="o">=</span><span class="n">frag_root</span><span class="o">.</span><span class="n">asset_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_all_timewarped_nodes_cmd"><a class="viewcode-back" href="../../../../../cpg.maya.tools.timewarp.html#cpg.maya.tools.timewarp.timewarp.get_all_timewarped_nodes_cmd">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+<span class="k">def</span> <span class="nf">get_all_timewarped_nodes_cmd</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Select all objects overriden by the timewarp</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">get_all_timewarped_nodes</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="remove_timewarp"><a class="viewcode-back" href="../../../../../cpg.maya.tools.timewarp.html#cpg.maya.tools.timewarp.timewarp.remove_timewarp">[docs]</a><span class="k">def</span> <span class="nf">remove_timewarp</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Remove the scenes timewarp and all associated nodes and layers.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">things_to_delete</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">time_control</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="s1">&#39;*.timewarp_node&#39;</span><span class="p">,</span> <span class="n">o</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">things_to_delete</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">time_control</span><span class="p">)</span>
+        <span class="n">things_to_delete</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">time_control</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;timewarp_node&#39;</span><span class="p">))</span>
+        <span class="n">things_to_delete</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">time_control</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;animation_layer&#39;</span><span class="p">))</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">things_to_delete</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="bake_timewarp"><a class="viewcode-back" href="../../../../../cpg.maya.tools.timewarp.html#cpg.maya.tools.timewarp.timewarp.bake_timewarp">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+<span class="k">def</span> <span class="nf">bake_timewarp</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Bake the scene&#39;s timewarp down and remove it.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">time_control</span> <span class="o">=</span> <span class="n">get_timewarp</span><span class="p">(</span><span class="n">create_new</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">time_control</span><span class="p">:</span>
+        <span class="c1"># no timewarp present in the scene.</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;This scene does not have an active timewarp.&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="n">timewarp_node</span> <span class="o">=</span> <span class="n">time_control</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;timewarp_node&#39;</span><span class="p">)</span>
+    <span class="n">current_anim_curve_list</span> <span class="o">=</span> <span class="n">timewarp_node</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimCurve</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">current_anim_curve_list</span><span class="p">:</span>
+        <span class="c1"># no keys on the timewarp system.</span>
+        <span class="k">return</span>
+
+    <span class="n">bake_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">anim_curve</span> <span class="ow">in</span> <span class="n">current_anim_curve_list</span><span class="p">:</span>
+        <span class="n">bake_list</span> <span class="o">+=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">anim_curve</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()</span> <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="n">timewarp_node</span> <span class="ow">and</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">bake_list</span><span class="p">]</span>
+
+    <span class="n">keyframe_range</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">current_anim_curve_list</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">start_frame</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">keyframe_range</span><span class="p">)</span>
+    <span class="n">end_frame</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">keyframe_range</span><span class="p">)</span>
+
+    <span class="n">baking</span><span class="o">.</span><span class="n">bake_objects</span><span class="p">(</span><span class="n">bake_list</span><span class="p">,</span> <span class="n">bake_range</span><span class="o">=</span><span class="p">[</span><span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">])</span>
+    <span class="n">remove_timewarp</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

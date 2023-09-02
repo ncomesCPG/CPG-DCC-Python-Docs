@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.tools.animationexporter.animationexporter_utils &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.tools.animationexporter.animationexporter_utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.tools.animationexporter.animationexporter_utils</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module that contains misc utils for use within the animation export system.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># python imports</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+
+<span class="kn">from</span> <span class="nn">cpg.common.assetlist</span> <span class="kn">import</span> <span class="n">assetlist</span>
+<span class="kn">from</span> <span class="nn">cpg.common.modifiers</span> <span class="kn">import</span> <span class="n">decorators</span>
+<span class="kn">from</span> <span class="nn">cpg.common.paths</span> <span class="kn">import</span> <span class="n">path_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.common.pyqt</span> <span class="kn">import</span> <span class="n">messages</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">pymaths</span>
+
+<span class="kn">from</span> <span class="nn">cpg.maya.animation</span> <span class="kn">import</span> <span class="n">keyframes</span><span class="p">,</span> <span class="n">time_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">frag</span><span class="p">,</span> <span class="n">rig_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">fbx_utils</span><span class="p">,</span> <span class="n">namespace</span> <span class="k">as</span> <span class="n">namespace_utils</span><span class="p">,</span> <span class="n">scene_utils</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="AnimSequence"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_utils.AnimSequence">[docs]</a><span class="k">class</span> <span class="nc">AnimSequence</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class wrapper for the animation sequencer attributes, just to make these a little easier to work with.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequencer_attr</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span> <span class="o">=</span> <span class="n">sequencer_attr</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rig</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">found_connection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">rig</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">found_connection</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">frag</span><span class="o">.</span><span class="n">FRAGNode</span><span class="p">(</span><span class="n">found_connection</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Rig connection is missing or not a valid FRAGRig&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@rig</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">rig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frag_rig</span><span class="p">):</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">rig</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">frag_rig</span><span class="p">:</span>
+            <span class="n">frag_rig</span><span class="o">.</span><span class="n">message</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">rig</span>
+            <span class="n">asset_id</span> <span class="o">=</span> <span class="n">frag_rig</span><span class="o">.</span><span class="n">get_asset_id</span><span class="p">(</span><span class="n">frag_rig</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">asset_id</span> <span class="o">=</span> <span class="n">asset_id</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">asset_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">asset_id</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+    <span class="nd">@asset_id</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">asset_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">asset_id</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">bookmark</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">found_connection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">bookmark</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">found_connection</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">found_connection</span>
+
+    <span class="nd">@bookmark</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">bookmark</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeslider_bookmark</span><span class="p">):</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">bookmark</span><span class="p">)</span>
+        <span class="n">timeslider_bookmark</span><span class="o">.</span><span class="n">message</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">bookmark</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sequence_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">sequence_path</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+    <span class="nd">@sequence_path</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sequence_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">sequence_path</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">frame_range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">start_frame</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">end_frame</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+    <span class="nd">@frame_range</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">frame_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_range</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">start_frame</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">frame_range</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">end_frame</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">frame_range</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">start_at_zero</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">start_at_zero</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+    <span class="nd">@start_at_zero</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">start_at_zero</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">start_at_zero</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">root_to_origin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">root_to_origin</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+    <span class="nd">@root_to_origin</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">root_to_origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">root_to_origin</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sequence_notes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">sequence_notes</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+    <span class="nd">@sequence_notes</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sequence_notes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">sequence_notes</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ui_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">node</span><span class="p">()</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;ui_index&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">ui_index</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="nd">@ui_index</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">ui_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">ui_index</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+    <span class="c1"># Helper properties.</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence_path</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+<div class="viewcode-block" id="AnimSequence.get_data"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_utils.AnimSequence.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">return_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;frag_rig&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">rig</span><span class="p">}</span>
+        <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;sequence_path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequence_path</span>
+        <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;frame_range&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_range</span>
+        <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;start_at_zero&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_at_zero</span>
+        <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;root_to_origin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_to_origin</span>
+        <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;sequence_notes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequence_notes</span>
+        <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;ui_index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui_index</span>
+        <span class="k">return</span> <span class="n">return_dict</span></div>
+
+<div class="viewcode-block" id="AnimSequence.set_data"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_utils.AnimSequence.set_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_dict</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rig</span> <span class="o">=</span> <span class="n">data_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;frag_rig&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequence_path</span> <span class="o">=</span> <span class="n">data_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sequence_path&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_range</span> <span class="o">=</span> <span class="n">data_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;frame_range&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_at_zero</span> <span class="o">=</span> <span class="n">data_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;start_at_zero&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_to_origin</span> <span class="o">=</span> <span class="n">data_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;root_to_origin&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequence_notes</span> <span class="o">=</span> <span class="n">data_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sequence_notes&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui_index</span> <span class="o">=</span> <span class="n">data_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ui_index&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div></div>
+
+
+<span class="k">def</span> <span class="nf">_get_sequences</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    From the FragSequencer return all registered sequences.</span>
+
+<span class="sd">    :return: A dictionary of FRAGRigs to sequence_paths to AnimSequencer, the FRAGSequencer node, and the current index.</span>
+<span class="sd">    :rtype: dict, FRAGSequencer, int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">frag_sequencer</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_frag_sequencer</span><span class="p">()</span>
+    <span class="n">entry_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">current_index</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">sequence_entry</span> <span class="ow">in</span> <span class="n">frag_sequencer</span><span class="o">.</span><span class="n">sequence_list</span><span class="o">.</span><span class="n">iterDescendants</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">current_index</span> <span class="o">=</span> <span class="n">sequence_entry</span><span class="o">.</span><span class="n">index</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">sequence_wrapper</span> <span class="o">=</span> <span class="n">AnimSequence</span><span class="p">(</span><span class="n">sequence_entry</span><span class="p">)</span>
+        <span class="n">sequence_frag_rig</span> <span class="o">=</span> <span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">rig</span> <span class="ow">or</span> <span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">rig</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">sequence_frag_rig</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">entry_dict</span><span class="p">:</span>
+            <span class="c1"># None entries are okay.</span>
+            <span class="n">entry_dict</span><span class="p">[</span><span class="n">sequence_frag_rig</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">entry_dict</span><span class="p">[</span><span class="n">sequence_frag_rig</span><span class="p">][</span><span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">sequence_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">sequence_wrapper</span>
+    <span class="k">return</span> <span class="n">entry_dict</span><span class="p">,</span> <span class="n">frag_sequencer</span><span class="p">,</span> <span class="n">current_index</span>
+
+
+<div class="viewcode-block" id="get_sequences"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_utils.get_sequences">[docs]</a><span class="k">def</span> <span class="nf">get_sequences</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper function that returns only the sequencer&#39;s data dict.</span>
+
+<span class="sd">    :return: A dictionary of FRAGRigs to sequence_paths to AnimSequencer</span>
+<span class="sd">    :rtype dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">entry_dict</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">__</span> <span class="o">=</span> <span class="n">_get_sequences</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">entry_dict</span></div>
+
+
+<div class="viewcode-block" id="set_sequence"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_utils.set_sequence">[docs]</a><span class="k">def</span> <span class="nf">set_sequence</span><span class="p">(</span><span class="n">sequence_path</span><span class="p">,</span> <span class="n">frag_rig</span><span class="p">,</span> <span class="n">frame_range</span><span class="p">,</span> <span class="n">start_at_zero</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">root_to_origin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sequence_notes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set a new sequence on the FragSequencer.</span>
+
+<span class="sd">    :param str sequence_path: The unique identifying fbx path for this rig&#39;s sequence.</span>
+<span class="sd">    :param FRAGRig frag_rig: The FRAGRig related to the sequence entry.</span>
+<span class="sd">    :param list[int, int] frame_range: A list containing the starting and ending frames of the sequence.</span>
+<span class="sd">    :param bool start_at_zero: Stored value if the animation should be set to frame 0 before exporting.</span>
+<span class="sd">    :param bool root_to_origin: Stored value if the animation should move the root node to origin before exporting.</span>
+<span class="sd">    :param str sequence_notes: Any notes about this particular sequence.</span>
+<span class="sd">    :return: The newly set AnimSequence wrapper class.</span>
+<span class="sd">    :rtype: AnimSequence</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">entry_dict</span><span class="p">,</span> <span class="n">frag_sequencer</span><span class="p">,</span> <span class="n">current_index</span> <span class="o">=</span> <span class="n">_get_sequences</span><span class="p">()</span>
+
+    <span class="n">sequence_path</span> <span class="o">=</span> <span class="n">path_utils</span><span class="o">.</span><span class="n">to_relative_path</span><span class="p">(</span><span class="n">sequence_path</span><span class="p">)</span>
+
+    <span class="n">sequence_wrapper</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">frag_rig</span> <span class="ow">in</span> <span class="n">entry_dict</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">sequence_path</span> <span class="ow">in</span> <span class="n">entry_dict</span><span class="p">[</span><span class="n">frag_rig</span><span class="p">]:</span>
+            <span class="n">sequence_wrapper</span> <span class="o">=</span> <span class="n">entry_dict</span><span class="p">[</span><span class="n">frag_rig</span><span class="p">][</span><span class="n">sequence_path</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sequence_wrapper</span><span class="p">:</span>
+        <span class="n">sequence_wrapper</span> <span class="o">=</span> <span class="n">AnimSequence</span><span class="p">(</span><span class="n">frag_sequencer</span><span class="o">.</span><span class="n">sequence_list</span><span class="p">[</span><span class="n">current_index</span><span class="p">])</span>
+        <span class="n">ui_index</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">entry_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">frag_rig</span><span class="p">,</span> <span class="p">{}))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ui_index</span> <span class="o">=</span> <span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">ui_index</span>
+
+    <span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">set_data</span><span class="p">({</span><span class="s1">&#39;frag_rig&#39;</span><span class="p">:</span> <span class="n">frag_rig</span><span class="p">,</span>
+                               <span class="s1">&#39;sequence_path&#39;</span><span class="p">:</span> <span class="n">sequence_path</span><span class="p">,</span>
+                               <span class="s1">&#39;frame_range&#39;</span><span class="p">:</span> <span class="n">frame_range</span><span class="p">,</span>
+                               <span class="s1">&#39;start_at_zero&#39;</span><span class="p">:</span> <span class="n">start_at_zero</span><span class="p">,</span>
+                               <span class="s1">&#39;root_to_origin&#39;</span><span class="p">:</span> <span class="n">root_to_origin</span><span class="p">,</span>
+                               <span class="s1">&#39;sequence_notes&#39;</span><span class="p">:</span> <span class="n">sequence_notes</span><span class="p">,</span>
+                               <span class="s1">&#39;ui_index&#39;</span><span class="p">:</span> <span class="n">ui_index</span><span class="p">})</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">bookmark</span><span class="p">:</span>
+        <span class="n">timeslider_bookmark</span> <span class="o">=</span> <span class="n">time_utils</span><span class="o">.</span><span class="n">create_bookmark</span><span class="p">(</span><span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="p">[</span><span class="n">frame_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">frame_range</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+        <span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">bookmark</span> <span class="o">=</span> <span class="n">timeslider_bookmark</span>
+        <span class="c1"># $BUG FSchorsch the timeslider cannot have incoming connections to its start/stop ranges it won&#39;t update.</span>
+        <span class="c1">#sequence_wrapper.pynode.start_frame &gt;&gt; timeslider_bookmark.timeRangeStart</span>
+        <span class="c1">#sequence_wrapper.pynode.end_frame &gt;&gt; timeslider_bookmark.timeRangeStop</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">bookmark</span><span class="o">.</span><span class="n">timeRangeStart</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">frame_range</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">bookmark</span><span class="o">.</span><span class="n">timeRangeStop</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">frame_range</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">sequence_wrapper</span></div>
+
+
+<div class="viewcode-block" id="remove_sequence"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_utils.remove_sequence">[docs]</a><span class="k">def</span> <span class="nf">remove_sequence</span><span class="p">(</span><span class="n">sequence_path</span><span class="p">,</span> <span class="n">frag_rig</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Remove an entry in the FRAGSequencer based on the path and frag rig.</span>
+
+<span class="sd">    :param str sequence_path: The unique identifying fbx path for this rig&#39;s sequence.</span>
+<span class="sd">    :param FRAGRig frag_rig: The FRAGRig related to the sequence entry.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">entry_dict</span><span class="p">,</span> <span class="n">frag_sequencer</span><span class="p">,</span> <span class="n">current_index</span> <span class="o">=</span> <span class="n">_get_sequences</span><span class="p">()</span>
+    <span class="n">sequence_path</span> <span class="o">=</span> <span class="n">path_utils</span><span class="o">.</span><span class="n">to_relative_path</span><span class="p">(</span><span class="n">sequence_path</span><span class="p">)</span>
+    <span class="n">sequence_wrapper</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">frag_rig</span> <span class="ow">in</span> <span class="n">entry_dict</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">sequence_path</span> <span class="ow">in</span> <span class="n">entry_dict</span><span class="p">[</span><span class="n">frag_rig</span><span class="p">]:</span>
+            <span class="n">sequence_wrapper</span> <span class="o">=</span> <span class="n">entry_dict</span><span class="p">[</span><span class="n">frag_rig</span><span class="p">][</span><span class="n">sequence_path</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">sequence_wrapper</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">bookmark</span><span class="p">)</span>
+        <span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">refresh_ui_index</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="reorder_sequence"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_utils.reorder_sequence">[docs]</a><span class="k">def</span> <span class="nf">reorder_sequence</span><span class="p">(</span><span class="n">sequence_path</span><span class="p">,</span> <span class="n">frag_rig</span><span class="p">,</span> <span class="n">positive_move</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adjust the ui_index value for an entry based on the frag_rig and sequence_path</span>
+
+<span class="sd">    :param str sequence_path: The unique identifying fbx path for this rig&#39;s sequence.</span>
+<span class="sd">    :param FRAGRig frag_rig: The FRAGRig related to the sequence entry.</span>
+<span class="sd">    :param bool positive_move: If the entry&#39;s ui_index should be moved towards the head of the list or further down.</span>
+<span class="sd">        True = lower index position, False = higher index position.</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">entry_dict</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_get_sequences</span><span class="p">()</span>
+    <span class="n">entry_dict</span> <span class="o">=</span> <span class="n">entry_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">frag_rig</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">entry_dict</span><span class="p">:</span>
+        <span class="n">sequence_wrapper</span> <span class="o">=</span> <span class="n">entry_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">sequence_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sequence_wrapper</span><span class="p">:</span>
+            <span class="n">sorted_entry_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">entry_dict</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">sequence_wrapper</span><span class="p">:</span> <span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">ui_index</span><span class="p">)</span>
+            <span class="n">entry_index</span> <span class="o">=</span> <span class="n">sorted_entry_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">sequence_wrapper</span><span class="p">)</span>
+
+            <span class="n">replacement_entry</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">positive_move</span> <span class="ow">and</span> <span class="n">entry_index</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">replacement_entry</span> <span class="o">=</span> <span class="n">sorted_entry_list</span><span class="p">[</span><span class="n">entry_index</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">positive_move</span> <span class="ow">and</span> <span class="n">entry_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_entry_list</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">replacement_entry</span> <span class="o">=</span> <span class="n">sorted_entry_list</span><span class="p">[</span><span class="n">entry_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">replacement_entry</span><span class="p">:</span>
+                <span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">ui_index</span> <span class="o">=</span> <span class="n">replacement_entry</span><span class="o">.</span><span class="n">ui_index</span>
+                <span class="n">replacement_entry</span><span class="o">.</span><span class="n">ui_index</span> <span class="o">=</span> <span class="n">entry_index</span>
+                <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="refresh_ui_index"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_utils.refresh_ui_index">[docs]</a><span class="k">def</span> <span class="nf">refresh_ui_index</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Iterate through all our sequences and reset the ui_index positions to compensate for gaps or duplicates.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">entry_dict</span><span class="p">,</span> <span class="n">frag_sequencer</span><span class="p">,</span> <span class="n">current_index</span> <span class="o">=</span> <span class="n">_get_sequences</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">frag_rig</span><span class="p">,</span> <span class="n">sequence_dict</span> <span class="ow">in</span> <span class="n">entry_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">ui_index_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">sequence_wrapper</span> <span class="ow">in</span> <span class="n">sequence_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">ui_index</span> <span class="o">=</span> <span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">ui_index</span>
+
+            <span class="k">while</span> <span class="n">ui_index</span> <span class="ow">in</span> <span class="n">ui_index_dict</span><span class="p">:</span>
+                <span class="c1"># negate duplicate ui_index values</span>
+                <span class="n">ui_index</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">ui_index_dict</span><span class="p">[</span><span class="n">ui_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">sequence_wrapper</span>
+
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">sequence_wrapper</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">ui_index_dict</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">entry_tuple</span><span class="p">:</span> <span class="n">entry_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+            <span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">ui_index</span> <span class="o">=</span> <span class="n">index</span></div>
+
+
+<div class="viewcode-block" id="convert_legacy"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_utils.convert_legacy">[docs]</a><span class="k">def</span> <span class="nf">convert_legacy</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert legacy .notes attribute markup to new entries on the FRAG sequencer node.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">notes_attr</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="s1">&#39;*.notes&#39;</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">notes_str</span> <span class="o">=</span> <span class="n">notes_attr</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="c1"># Split notes str on new line and formatting characters.</span>
+        <span class="n">split_notes</span> <span class="o">=</span> <span class="s1">&#39;::&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">notes_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;::&#39;</span><span class="p">)</span>
+        <span class="c1"># Organize them into groups of 8 which includes all the sequence data.</span>
+        <span class="n">sequence_str_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">split_notes</span><span class="p">[(</span><span class="mi">0</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="mi">9</span><span class="p">:</span><span class="n">n</span> <span class="o">*</span> <span class="mi">9</span> <span class="o">+</span> <span class="mi">9</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">split_notes</span><span class="p">)</span> <span class="o">/</span> <span class="mi">9</span><span class="p">))]</span>
+        <span class="c1"># Collect our FRAG rig from the objects the notes attr is on.</span>
+        <span class="n">frag_rig</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_frag_rig</span><span class="p">(</span><span class="n">notes_attr</span><span class="o">.</span><span class="n">node</span><span class="p">())</span> <span class="ow">or</span> <span class="n">notes_attr</span><span class="o">.</span><span class="n">node</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">sequence_str</span> <span class="ow">in</span> <span class="n">sequence_str_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sequence_str</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">sequence_path</span><span class="p">,</span> <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">__</span><span class="p">,</span> <span class="n">sequence_notes</span><span class="p">,</span> <span class="n">root_to_origin</span><span class="p">,</span> <span class="n">start_at_zero</span> <span class="o">=</span> <span class="n">sequence_str</span> <span class="c1"># sequence_path, start_frame, end_frame, exportable, frame_rate, sequence_notes, root_to_origin, start_at_origin</span>
+                <span class="n">set_sequence</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">sequence_path</span><span class="p">),</span> <span class="n">frag_rig</span><span class="p">,</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">start_frame</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">end_frame</span><span class="p">)],</span> <span class="nb">bool</span><span class="p">(</span><span class="n">start_at_zero</span><span class="p">),</span> <span class="nb">bool</span><span class="p">(</span><span class="n">root_to_origin</span><span class="p">),</span> <span class="n">sequence_notes</span><span class="p">)</span>
+        <span class="c1"># Remove notes attr so we don&#39;t leave this laying around.</span>
+        <span class="c1"># Node can be locked, so just unlock first then purge.</span>
+        <span class="n">notes_attr</span><span class="o">.</span><span class="n">unlock</span><span class="p">()</span>
+        <span class="n">notes_attr</span><span class="o">.</span><span class="n">node</span><span class="p">()</span><span class="o">.</span><span class="n">unlock</span><span class="p">()</span>
+        <span class="n">notes_attr</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+
+    <span class="n">frag_sequencer</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_frag_sequencer</span><span class="p">()</span>
+    <span class="n">frag_sequence_data_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">frag_sequencer</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;ui_index&#39;</span><span class="p">):</span>
+        <span class="n">frag_sequence_dict</span> <span class="o">=</span> <span class="n">get_sequences</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">frag_rig</span><span class="p">,</span> <span class="n">sequence_dict</span> <span class="ow">in</span> <span class="n">frag_sequence_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">frag_sequence_data_dict</span><span class="p">[</span><span class="n">frag_rig</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">sequence_path</span><span class="p">,</span> <span class="n">sequence_wrapper</span> <span class="ow">in</span> <span class="n">sequence_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">frag_sequence_data_dict</span><span class="p">[</span><span class="n">frag_rig</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">get_data</span><span class="p">())</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">frag_sequencer</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">TimeSliderBookmark</span><span class="p">):</span>
+        <span class="c1"># Cleanup old TimeSliderBookmarks</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">listConnections</span><span class="p">():</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">frag_rig</span><span class="p">,</span> <span class="n">entries_list</span> <span class="ow">in</span> <span class="n">frag_sequence_data_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">entries_list</span><span class="p">:</span>
+            <span class="n">entry</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;ui_index&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">set_sequence</span><span class="p">(</span><span class="o">**</span><span class="n">entry</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="reconnect_orphaned_sequences"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_utils.reconnect_orphaned_sequences">[docs]</a><span class="k">def</span> <span class="nf">reconnect_orphaned_sequences</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    For all entries on the FRAGSequencer that no longer have a FRAGRig connection see if there is a matching rig left in the scene.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sequence_dict</span> <span class="o">=</span> <span class="n">get_sequences</span><span class="p">()</span>
+    <span class="k">if</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">sequence_dict</span><span class="p">:</span>
+        <span class="n">frag_root_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">frag_root</span><span class="o">.</span><span class="n">asset_id</span><span class="p">:</span> <span class="n">frag_root</span><span class="o">.</span><span class="n">get_rig</span><span class="p">()</span> <span class="k">for</span> <span class="n">frag_root</span> <span class="ow">in</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_all_frag_roots</span><span class="p">()}</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">sequence_wrapper</span> <span class="ow">in</span> <span class="n">sequence_dict</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">asset_id</span> <span class="o">=</span> <span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">asset_id</span>
+            <span class="n">frag_rig</span> <span class="o">=</span> <span class="n">frag_root_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asset_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">cpg_asset</span> <span class="o">=</span> <span class="n">assetlist</span><span class="o">.</span><span class="n">get_asset_by_id</span><span class="p">(</span><span class="n">asset_id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">cpg_asset</span> <span class="ow">and</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">asset_id</span><span class="p">:</span>
+                <span class="n">frag_rig</span> <span class="o">=</span> <span class="n">frag_root_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">frag_rig</span><span class="p">:</span>
+                <span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">rig</span> <span class="o">=</span> <span class="n">frag_rig</span></div>
+
+
+<div class="viewcode-block" id="export_frag_sequences"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_utils.export_frag_sequences">[docs]</a><span class="k">def</span> <span class="nf">export_frag_sequences</span><span class="p">(</span><span class="n">frag_rig_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sequences_to_skip</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    From the FRAG Sequencer export all registered animations filtering by inclusive frag rig list, or exclusively by sequence path.</span>
+
+<span class="sd">    :param list(FRAGRig) frag_rig_list: A list of FRAGRigs to export. This is done to facilitate selection based rig exporting.</span>
+<span class="sd">    :param list(str) sequences_to_skip: A list of sequences that should be skipped. This is done so the UI can send a list of sequences to skip.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">scene_utils</span><span class="o">.</span><span class="n">backup_scene</span><span class="p">(</span><span class="s1">&#39;animation_exporter&#39;</span><span class="p">)</span>
+
+    <span class="n">namespace_utils</span><span class="o">.</span><span class="n">set_namespace</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+    <span class="n">convert_legacy</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">sequences_to_skip</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sequences_to_skip</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># In case full paths are passed to the fnc.</span>
+        <span class="n">sequences_to_skip</span> <span class="o">=</span> <span class="p">[</span><span class="n">path_utils</span><span class="o">.</span><span class="n">to_relative_path</span><span class="p">(</span><span class="n">sequence_path</span><span class="p">)</span> <span class="k">for</span> <span class="n">sequence_path</span> <span class="ow">in</span> <span class="n">sequences_to_skip</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">frag_rig</span><span class="p">,</span> <span class="n">sequence_dict_list</span> <span class="ow">in</span> <span class="n">get_sequences</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">current_scale</span> <span class="o">=</span> <span class="n">frag_rig</span><span class="o">.</span><span class="n">rig_scale</span>
+        <span class="k">if</span> <span class="n">current_scale</span> <span class="o">!=</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="n">frag_rig</span><span class="o">.</span><span class="n">rig_scale</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+        <span class="k">if</span> <span class="n">frag_rig_list</span> <span class="ow">and</span> <span class="n">frag_rig</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">frag_rig_list</span><span class="p">:</span>
+            <span class="c1"># If this frag rig in the sequencer should be skipped</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;FRAGRig: </span><span class="si">{</span><span class="n">frag_rig</span><span class="si">}</span><span class="s1"> is not on the whitelist for export.&#39;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="n">sequences_to_export</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">sequence_path</span><span class="p">,</span> <span class="n">sequence_wrapper</span> <span class="ow">in</span> <span class="n">sequence_dict_list</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">path_utils</span><span class="o">.</span><span class="n">to_relative_path</span><span class="p">(</span><span class="n">sequence_path</span><span class="p">)</span> <span class="ow">in</span> <span class="n">sequences_to_skip</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">sequence_path</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.fbx&#39;</span><span class="p">):</span>
+                <span class="n">sequences_to_export</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sequence_wrapper</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">sequences_to_export</span><span class="p">:</span>
+            <span class="c1"># If every sequence in this rig&#39;s sequence are skipped.</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;All sequences are skipped for </span><span class="si">{</span><span class="n">frag_rig</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sequences_to_export</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">sequences_to_export</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mf">.25</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">sequence_dict_list</span><span class="p">):</span>
+            <span class="c1"># if we only have one sequence OR the total number of sequences we&#39;re exporting is greater than 25% of the possible sequences.</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sequences_to_export</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># Bake selectively</span>
+                <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span> <span class="o">=</span> <span class="n">sequences_to_export</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">frame_range</span>
+                <span class="n">export_root</span> <span class="o">=</span> <span class="n">rig_utils</span><span class="o">.</span><span class="n">bake_skeleton_from_rig</span><span class="p">(</span><span class="n">frag_rig</span><span class="p">,</span> <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span> <span class="o">=</span> <span class="n">time_utils</span><span class="o">.</span><span class="n">get_keyframe_range_from_nodes</span><span class="p">(</span><span class="n">frag_rig</span><span class="o">.</span><span class="n">get_flags</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">start_frame</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">end_frame</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;There are no keyframes on this rig </span><span class="si">{</span><span class="n">frag_rig</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="c1"># We don&#39;t want to shift the keys here our sequences are all coded based on the scene range.</span>
+                <span class="n">export_root</span> <span class="o">=</span> <span class="n">rig_utils</span><span class="o">.</span><span class="n">bake_skeleton_from_rig</span><span class="p">(</span><span class="n">frag_rig</span><span class="p">,</span> <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">export_root</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Exportable root not found. Bake failed, aborting export.&#39;</span><span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="n">export_hierarchy</span> <span class="o">=</span> <span class="n">_trim_export_hierarchy</span><span class="p">(</span><span class="n">export_root</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">wrapped_sequence</span> <span class="ow">in</span> <span class="n">sequences_to_export</span><span class="p">:</span>
+                <span class="n">_export_baked_skeleton</span><span class="p">(</span><span class="n">export_hierarchy</span><span class="p">,</span> <span class="n">wrapped_sequence</span><span class="p">)</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">export_root</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># if we have less than 25% of sequences do them individually.</span>
+            <span class="k">for</span> <span class="n">wrapped_sequence</span> <span class="ow">in</span> <span class="n">sequences_to_export</span><span class="p">:</span>
+                <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span> <span class="o">=</span> <span class="n">wrapped_sequence</span><span class="o">.</span><span class="n">frame_range</span>
+                <span class="n">export_root</span> <span class="o">=</span> <span class="n">rig_utils</span><span class="o">.</span><span class="n">bake_skeleton_from_rig</span><span class="p">(</span><span class="n">frag_rig</span><span class="p">,</span> <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">export_root</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Exportable root not found. Bake failed, aborting export.&#39;</span><span class="p">)</span>
+                    <span class="k">return</span>
+
+                <span class="n">export_hierarchy</span> <span class="o">=</span> <span class="n">_trim_export_hierarchy</span><span class="p">(</span><span class="n">export_root</span><span class="p">)</span>
+                <span class="n">_export_baked_skeleton</span><span class="p">(</span><span class="n">export_hierarchy</span><span class="p">,</span> <span class="n">wrapped_sequence</span><span class="p">)</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">export_root</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">current_scale</span> <span class="o">!=</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="n">frag_rig</span><span class="o">.</span><span class="n">rig_scale</span> <span class="o">=</span> <span class="n">current_scale</span></div>
+
+
+<div class="viewcode-block" id="export_frag_sequences_cmd"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_utils.export_frag_sequences_cmd">[docs]</a><span class="k">def</span> <span class="nf">export_frag_sequences_cmd</span><span class="p">(</span><span class="n">frag_rig_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sequences_to_skip</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    UI wrapper for the export frag sequences fnc. This will abort if the frame rate isn&#39;t set as expected.</span>
+
+<span class="sd">    :param list(FRAGRig) frag_rig_list: A list of FRAGRigs to export. This is done to facilitate selection based rig exporting.</span>
+<span class="sd">    :param list(str) sequences_to_skip: A list of sequences that should be skipped. This is done so the UI can send a list of sequences to skip.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">frame_rate</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">currentUnit</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">frame_rate</span> <span class="o">!=</span> <span class="s1">&#39;ntsc&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">messages</span><span class="o">.</span><span class="n">question_message</span><span class="p">(</span><span class="s1">&#39;Continue Export?&#39;</span><span class="p">,</span> <span class="s1">&#39;Your frame rate is not set to NTSC 30 FPS. It</span><span class="se">\&#39;</span><span class="s1">s recommended to have your frame rate set to 30 FPS.&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Yes&#39;</span><span class="p">:</span>
+            <span class="k">return</span>
+
+    <span class="n">export_frag_sequences</span><span class="p">(</span><span class="n">frag_rig_list</span><span class="p">,</span> <span class="n">sequences_to_skip</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_trim_export_hierarchy</span><span class="p">(</span><span class="n">export_root</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Clean the given hierarchy in preperation for export, removing all joints not marked for animationExport</span>
+
+<span class="sd">    :param Joint export_root: The root of the export skeleton.</span>
+<span class="sd">    :return: A list of all the exportable joints</span>
+<span class="sd">    :rtype: list(Joint)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">export_root</span><span class="o">.</span><span class="n">name</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="s1">&#39;|root&#39;</span><span class="p">]:</span>
+        <span class="n">existing_root</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="s1">&#39;root&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">existing_root</span><span class="p">:</span>
+            <span class="n">existing_root</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s1">&#39;root1&#39;</span><span class="p">)</span>
+        <span class="n">export_root</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s1">&#39;root&#39;</span><span class="p">)</span>
+    <span class="n">baked_hierarchy</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">export_root</span><span class="p">,</span> <span class="n">ad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">export_root</span><span class="p">]</span>
+    <span class="n">joints_to_delete</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">joint_node</span> <span class="ow">in</span> <span class="n">baked_hierarchy</span><span class="p">:</span>
+        <span class="c1"># Trim hierarchy to only animatable joints.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">joint_node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">joint_node</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;animationExport&#39;</span><span class="p">):</span>
+            <span class="n">joints_to_delete</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">joint_node</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">joints_to_delete</span><span class="p">)</span>
+    <span class="c1"># Repull hierarchy don&#39;t trust the for loop, if we have any odd skeletal markup we could have deleted a joint that</span>
+    <span class="c1"># is not animation exportable, but has a child that is.</span>
+    <span class="n">export_hierarchy</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">export_root</span><span class="p">,</span> <span class="n">ad</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">)</span><span class="o">+</span><span class="p">[</span><span class="n">export_root</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">export_hierarchy</span>
+
+
+<span class="k">def</span> <span class="nf">_export_baked_skeleton</span><span class="p">(</span><span class="n">export_hierarchy</span><span class="p">,</span> <span class="n">sequence_wrapper</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    From a baked skeleton and a sequence wrapper export the animation to its destination.</span>
+
+<span class="sd">    :param list(Joint) export_hierarchy: A list of all exportable joints.</span>
+<span class="sd">    :param AnimSequence sequence_wrapper: A wrapped sequence entry representing this export.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">export_path</span> <span class="o">=</span> <span class="n">path_utils</span><span class="o">.</span><span class="n">to_full_path</span><span class="p">(</span><span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">sequence_path</span><span class="p">)</span>
+    <span class="n">frame_range</span> <span class="o">=</span> <span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">frame_range</span>
+    <span class="n">export_root</span> <span class="o">=</span> <span class="n">export_hierarchy</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">export_frame_range</span> <span class="o">=</span> <span class="n">frame_range</span><span class="p">[:]</span>
+    <span class="k">if</span> <span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">start_at_zero</span> <span class="ow">and</span> <span class="n">frame_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># Shift Keys so the animation starts at zero.</span>
+        <span class="n">offset_keys</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">-</span> <span class="n">frame_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">keyframes</span><span class="o">.</span><span class="n">shift_keys</span><span class="p">(</span><span class="n">export_hierarchy</span><span class="p">,</span> <span class="n">shift_length</span><span class="o">=</span><span class="n">offset_keys</span><span class="p">)</span>
+
+        <span class="n">export_frame_range</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="n">offset_keys</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">export_frame_range</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">root_to_origin</span><span class="p">:</span>
+        <span class="n">root_pos</span> <span class="o">=</span> <span class="n">export_root</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;translate&#39;</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">export_frame_range</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">root_rot</span> <span class="o">=</span> <span class="n">export_root</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;rotate&#39;</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">export_frame_range</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">root_pos</span> <span class="o">!=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Vector</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="s1">&#39;XYZ&#39;</span><span class="p">,</span> <span class="n">pymaths</span><span class="o">.</span><span class="n">scale_vector</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">root_pos</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">export_root</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">iub</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;translate</span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">vc</span><span class="o">=</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">root_rot</span> <span class="o">!=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Vector</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="s1">&#39;XYZ&#39;</span><span class="p">,</span> <span class="n">pymaths</span><span class="o">.</span><span class="n">scale_vector</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">root_rot</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">export_root</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">iub</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;rotate</span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">vc</span><span class="o">=</span><span class="n">val</span><span class="p">)</span>
+
+    <span class="n">fbx_utils</span><span class="o">.</span><span class="n">export_fbx</span><span class="p">(</span><span class="n">export_path</span><span class="p">,</span> <span class="n">export_hierarchy</span><span class="p">,</span> <span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">export_frame_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">export_frame_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">root_to_origin</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">root_pos</span> <span class="o">!=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Vector</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="s1">&#39;XYZ&#39;</span><span class="p">,</span> <span class="n">root_pos</span><span class="p">):</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">export_root</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">iub</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;translate</span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">vc</span><span class="o">=</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">root_rot</span> <span class="o">!=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Vector</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="s1">&#39;XYZ&#39;</span><span class="p">,</span> <span class="n">root_rot</span><span class="p">):</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">keyframe</span><span class="p">(</span><span class="n">export_root</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">iub</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;rotate</span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">vc</span><span class="o">=</span><span class="n">val</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">start_at_zero</span> <span class="ow">and</span> <span class="n">frame_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># Move keys back if we shifted them so we&#39;re starting fresh for the next sequence.</span>
+        <span class="n">keyframes</span><span class="o">.</span><span class="n">shift_keys</span><span class="p">(</span><span class="n">export_hierarchy</span><span class="p">,</span> <span class="n">shift_length</span><span class="o">=</span><span class="n">offset_keys</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="quick_export_frag_sequences_cmd"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_utils.quick_export_frag_sequences_cmd">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+<span class="k">def</span> <span class="nf">quick_export_frag_sequences_cmd</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper command to convert a selection into a list of FRAGRigs, then export all sequences associated with those rigs.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">selection</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">selected</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">selection</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Please select a rig to continue.&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">frame_rate</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">currentUnit</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">frame_rate</span> <span class="o">!=</span> <span class="s1">&#39;ntsc&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">messages</span><span class="o">.</span><span class="n">question_message</span><span class="p">(</span><span class="s1">&#39;Continue Export?&#39;</span><span class="p">,</span> <span class="s1">&#39;Your frame rate is not set to NTSC 30 FPS. It</span><span class="se">\&#39;</span><span class="s1">s recommended to have your frame rate set to 30 FPS.&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Yes&#39;</span><span class="p">:</span>
+            <span class="k">return</span>
+
+    <span class="n">frag_rig_list</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">frag</span><span class="o">.</span><span class="n">get_frag_rig</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">selection</span><span class="p">])</span>
+    <span class="n">export_frag_sequences_cmd</span><span class="p">(</span><span class="n">frag_rig_list</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.utils.material_utils &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.utils.material_utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.utils.material_utils</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module that contains utilities for working with Maya materials and shader groups.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="kn">import</span> <span class="nn">maya.api.OpenMaya</span> <span class="k">as</span> <span class="nn">om2</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cpg.common.paths</span> <span class="kn">import</span> <span class="n">path_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">lists</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils.om</span> <span class="kn">import</span> <span class="n">om_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">naming</span><span class="p">,</span> <span class="n">node_util</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="get_object_material_face_dict"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.material_utils.get_object_material_face_dict">[docs]</a><span class="k">def</span> <span class="nf">get_object_material_face_dict</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    From a given node return the material application dictionary</span>
+
+<span class="sd">    :param Transform node: A shaped transform node we wish to query material details about.</span>
+<span class="sd">    :return: A dictionary of material nodes to a list of faces it is applied to.</span>
+<span class="sd">    :rtype: dict{PyNode:list[int...]}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">getShape</span><span class="p">():</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s1">, an object must be a valid shape node.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{}</span>
+    <span class="n">m_dag_path</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">om_utils</span><span class="o">.</span><span class="n">pynode_to_om2_mobject_mdag_path</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+    <span class="n">m_dag_path</span> <span class="o">=</span> <span class="n">om2</span><span class="o">.</span><span class="n">MDagPath</span><span class="p">(</span><span class="n">m_dag_path</span><span class="p">)</span>
+    <span class="n">fnm</span> <span class="o">=</span> <span class="n">om2</span><span class="o">.</span><span class="n">MFnMesh</span><span class="p">(</span><span class="n">m_dag_path</span><span class="o">.</span><span class="n">extendToShape</span><span class="p">()</span><span class="o">.</span><span class="n">node</span><span class="p">())</span>
+
+    <span class="n">shading_engine_list</span><span class="p">,</span> <span class="n">face_list</span> <span class="o">=</span> <span class="n">fnm</span><span class="o">.</span><span class="n">getConnectedShaders</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">material_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">shading_engine</span> <span class="ow">in</span> <span class="n">shading_engine_list</span><span class="p">:</span>
+        <span class="n">m_dep</span> <span class="o">=</span> <span class="n">om2</span><span class="o">.</span><span class="n">MFnDependencyNode</span><span class="p">(</span><span class="n">shading_engine</span><span class="p">)</span>
+        <span class="n">m_plug</span> <span class="o">=</span> <span class="n">m_dep</span><span class="o">.</span><span class="n">findPlug</span><span class="p">(</span><span class="s2">&quot;surfaceShader&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">material_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">om2</span><span class="o">.</span><span class="n">MFnDependencyNode</span><span class="p">(</span><span class="n">m_plug</span><span class="o">.</span><span class="n">connectedTo</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">node</span><span class="p">())</span><span class="o">.</span><span class="n">name</span><span class="p">()))</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">log_string</span><span class="o">=</span><span class="s1">&#39;ShaderEngine without a surface material&#39;</span><span class="p">)</span>
+            <span class="n">material_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="n">shader_face_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">material_node</span> <span class="ow">in</span> <span class="n">material_list</span><span class="p">:</span>
+        <span class="n">shader_face_dict</span><span class="p">[</span><span class="n">material_node</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">material_index</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">face_list</span><span class="p">):</span>
+        <span class="n">shader_face_dict</span><span class="p">[</span><span class="n">material_list</span><span class="p">[</span><span class="n">material_index</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">shader_face_dict</span></div>
+
+
+<div class="viewcode-block" id="assign_material"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.material_utils.assign_material">[docs]</a><span class="k">def</span> <span class="nf">assign_material</span><span class="p">(</span><span class="n">material_node</span><span class="p">,</span> <span class="n">node_list</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Apply material to assignment.</span>
+
+<span class="sd">    :param PyNode material_node: Material to assign</span>
+<span class="sd">    :param list[PyNodes] node_list: A list of trasnforms, or faces to apply the given material to.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">shading_groups</span> <span class="o">=</span> <span class="n">material_node</span><span class="o">.</span><span class="n">outColor</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="n">destination</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">ShadingEngine</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">shading_groups</span><span class="p">:</span>
+        <span class="c1"># The material is not associated with any shading group, so</span>
+        <span class="c1"># we&#39;ll create one now, and &amp; connect this material to it.</span>
+        <span class="n">shading_groups</span> <span class="o">=</span> <span class="p">[</span><span class="n">pm</span><span class="o">.</span><span class="n">sets</span><span class="p">(</span><span class="n">renderable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">noSurfaceShader</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">empty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">material_node</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="si">}</span><span class="s1">SG&#39;</span><span class="p">)]</span>
+        <span class="n">material_node</span><span class="o">.</span><span class="n">outColor</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">shading_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">surfaceShader</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">shading_group</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">shading_groups</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">sets</span><span class="p">(</span><span class="n">shading_group</span><span class="p">,</span> <span class="n">edit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">forceElement</span><span class="o">=</span><span class="n">node_list</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="create_texture"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.material_utils.create_texture">[docs]</a><span class="k">def</span> <span class="nf">create_texture</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates new file node and assigns texture from file_path.</span>
+
+<span class="sd">    :param str file_path: path to texture file</span>
+<span class="sd">    :param str name: The name to be used for the file/place2dTexture nodes.</span>
+<span class="sd">    :return: The File pynode that represents the Maya converted texture.</span>
+<span class="sd">    :rtype: File</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">file_node</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">place_texture_node</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">split_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">split_path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="n">naming</span><span class="o">.</span><span class="n">make_maya_safe_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+        <span class="n">file_node</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">_file&#39;</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">File</span><span class="p">))</span>
+        <span class="n">place_texture_node</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">_place2dTexture&#39;</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Place2dTexture</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">file_node</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+            <span class="n">file_node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">shadingNode</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">File</span><span class="p">,</span> <span class="n">asTexture</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">_file&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">file_node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">shadingNode</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">File</span><span class="p">,</span> <span class="n">asTexture</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">place_texture_node</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+            <span class="n">place_texture_node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">shadingNode</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Place2dTexture</span><span class="p">,</span> <span class="n">asUtility</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">_place2dTexture&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">place_texture_node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">shadingNode</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Place2dTexture</span><span class="p">,</span> <span class="n">asUtility</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">place_texture_node</span><span class="o">.</span><span class="n">coverage</span> <span class="o">&gt;&gt;</span> <span class="n">file_node</span><span class="o">.</span><span class="n">coverage</span>
+        <span class="n">place_texture_node</span><span class="o">.</span><span class="n">translateFrame</span> <span class="o">&gt;&gt;</span> <span class="n">file_node</span><span class="o">.</span><span class="n">translateFrame</span>
+        <span class="n">place_texture_node</span><span class="o">.</span><span class="n">rotateFrame</span> <span class="o">&gt;&gt;</span> <span class="n">file_node</span><span class="o">.</span><span class="n">rotateFrame</span>
+        <span class="n">place_texture_node</span><span class="o">.</span><span class="n">mirrorU</span> <span class="o">&gt;&gt;</span> <span class="n">file_node</span><span class="o">.</span><span class="n">mirrorU</span>
+        <span class="n">place_texture_node</span><span class="o">.</span><span class="n">mirrorV</span> <span class="o">&gt;&gt;</span> <span class="n">file_node</span><span class="o">.</span><span class="n">mirrorV</span>
+        <span class="n">place_texture_node</span><span class="o">.</span><span class="n">stagger</span> <span class="o">&gt;&gt;</span> <span class="n">file_node</span><span class="o">.</span><span class="n">stagger</span>
+        <span class="n">place_texture_node</span><span class="o">.</span><span class="n">wrapU</span> <span class="o">&gt;&gt;</span> <span class="n">file_node</span><span class="o">.</span><span class="n">wrapU</span>
+        <span class="n">place_texture_node</span><span class="o">.</span><span class="n">wrapV</span> <span class="o">&gt;&gt;</span> <span class="n">file_node</span><span class="o">.</span><span class="n">wrapV</span>
+        <span class="n">place_texture_node</span><span class="o">.</span><span class="n">repeatUV</span> <span class="o">&gt;&gt;</span> <span class="n">file_node</span><span class="o">.</span><span class="n">repeatUV</span>
+        <span class="n">place_texture_node</span><span class="o">.</span><span class="n">offset</span> <span class="o">&gt;&gt;</span> <span class="n">file_node</span><span class="o">.</span><span class="n">offset</span>
+        <span class="n">place_texture_node</span><span class="o">.</span><span class="n">rotateUV</span> <span class="o">&gt;&gt;</span> <span class="n">file_node</span><span class="o">.</span><span class="n">rotateUV</span>
+        <span class="n">place_texture_node</span><span class="o">.</span><span class="n">noiseUV</span> <span class="o">&gt;&gt;</span> <span class="n">file_node</span><span class="o">.</span><span class="n">noiseUV</span>
+        <span class="n">place_texture_node</span><span class="o">.</span><span class="n">vertexUvOne</span> <span class="o">&gt;&gt;</span> <span class="n">file_node</span><span class="o">.</span><span class="n">vertexUvOne</span>
+        <span class="n">place_texture_node</span><span class="o">.</span><span class="n">vertexUvTwo</span> <span class="o">&gt;&gt;</span> <span class="n">file_node</span><span class="o">.</span><span class="n">vertexUvTwo</span>
+        <span class="n">place_texture_node</span><span class="o">.</span><span class="n">vertexUvThree</span> <span class="o">&gt;&gt;</span> <span class="n">file_node</span><span class="o">.</span><span class="n">vertexUvThree</span>
+        <span class="n">place_texture_node</span><span class="o">.</span><span class="n">vertexCameraOne</span> <span class="o">&gt;&gt;</span> <span class="n">file_node</span><span class="o">.</span><span class="n">vertexCameraOne</span>
+
+        <span class="n">place_texture_node</span><span class="o">.</span><span class="n">outUV</span> <span class="o">&gt;&gt;</span> <span class="n">file_node</span><span class="o">.</span><span class="n">uv</span>
+        <span class="n">place_texture_node</span><span class="o">.</span><span class="n">outUvFilterSize</span> <span class="o">&gt;&gt;</span> <span class="n">file_node</span><span class="o">.</span><span class="n">uvFilterSize</span>
+    <span class="n">file_node</span><span class="o">.</span><span class="n">fileTextureName</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split_path</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mari_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">split_path</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">mari_val</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">mari_val</span> <span class="o">&gt;</span> <span class="mi">1001</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">mari_val</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">mari_val</span><span class="o">+</span><span class="mi">1</span><span class="p">))):</span>
+                    <span class="n">file_node</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;uvTilingMode&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+                    <span class="n">file_node</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;uvTileProxyQuality&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="c1"># Preview generation fails when switched to MARI uv tiling.</span>
+                    <span class="n">pm</span><span class="o">.</span><span class="n">evalDeferred</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">mel</span><span class="o">.</span><span class="n">generateUvTilePreview</span><span class="p">(</span><span class="n">file_node</span><span class="o">.</span><span class="n">name</span><span class="p">()))</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">file_node</span><span class="o">.</span><span class="n">fileHasAlpha</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+        <span class="n">file_node</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;alphaIsLuminance&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">file_node</span></div>
+
+
+<div class="viewcode-block" id="create_normal"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.material_utils.create_normal">[docs]</a><span class="k">def</span> <span class="nf">create_normal</span><span class="p">(</span><span class="n">normal_path</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a new bump2d node from the normal path, and return that for use.</span>
+
+<span class="sd">    :param str normal_path: The path to a given normal path.</span>
+<span class="sd">    :param str name: The name to be used for the file/place2dTexture nodes.</span>
+<span class="sd">    :return: The bump2d pynode that represents the Maya converted texture.</span>
+<span class="sd">    :rtype: Bump2d</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">normal_path</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="n">naming</span><span class="o">.</span><span class="n">make_maya_safe_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="n">file_node</span> <span class="o">=</span> <span class="n">create_texture</span><span class="p">(</span><span class="n">normal_path</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="n">bump2d_node</span> <span class="o">=</span> <span class="n">node_util</span><span class="o">.</span><span class="n">create_or_find</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">_bump2d&#39;</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Bump2d</span><span class="p">)</span>
+
+    <span class="n">bump2d_node</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;bumpInterp&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">bump2d_node</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="s1">&#39;bumpValue&#39;</span><span class="p">)</span>
+    <span class="n">file_node</span><span class="o">.</span><span class="n">outAlpha</span> <span class="o">&gt;&gt;</span> <span class="n">bump2d_node</span><span class="o">.</span><span class="n">bumpValue</span>
+    <span class="k">return</span> <span class="n">bump2d_node</span></div>
+
+
+<div class="viewcode-block" id="create_basic_blinn"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.material_utils.create_basic_blinn">[docs]</a><span class="k">def</span> <span class="nf">create_basic_blinn</span><span class="p">(</span><span class="n">diffuse_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a new maya blinn material node for use in the scene.</span>
+
+<span class="sd">    :param str diffuse_path: A path to a given diffuse file.</span>
+<span class="sd">    :param list[float, float, float] default_color: Float3 that represents the RGB values of the shader, this will be applied if a diffuse map is not passed.</span>
+<span class="sd">    :param str name: The name of the new material node. If not it will try to generate from the diffuse path, or a generic name.</span>
+<span class="sd">    :return: The newly created material node</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">default_color</span> <span class="o">=</span> <span class="n">default_color</span> <span class="ow">or</span> <span class="p">[</span><span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">]</span>
+
+    <span class="n">base_name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">diffuse_path</span><span class="p">)</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="s1">&#39;basicBlinn&#39;</span>
+    <span class="n">material_node</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">base_name</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Blinn</span><span class="p">))</span> <span class="k">if</span> <span class="n">base_name</span> <span class="o">!=</span> <span class="s1">&#39;basicBlinn&#39;</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">material_node</span><span class="p">:</span>
+        <span class="n">material_node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">shadingNode</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Blinn</span><span class="p">,</span> <span class="n">asShader</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">base_name</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">material_node</span><span class="o">.</span><span class="n">eccentricity</span><span class="o">.</span><span class="n">connections</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">material_node</span><span class="o">.</span><span class="n">eccentricity</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">0.8</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">material_node</span><span class="o">.</span><span class="n">specularRollOff</span><span class="o">.</span><span class="n">connections</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">material_node</span><span class="o">.</span><span class="n">specularRollOff</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">material_node</span><span class="o">.</span><span class="n">specularRollOff</span><span class="o">.</span><span class="n">connections</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">material_node</span><span class="o">.</span><span class="n">diffuse</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">material_node</span><span class="o">.</span><span class="n">color</span><span class="o">.</span><span class="n">connections</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">material_node</span><span class="o">.</span><span class="n">colorR</span><span class="o">.</span><span class="n">connections</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">material_node</span><span class="o">.</span><span class="n">color</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">default_color</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">diffuse_path</span><span class="p">:</span>
+        <span class="n">file_node</span> <span class="o">=</span> <span class="n">create_texture</span><span class="p">(</span><span class="n">diffuse_path</span><span class="p">)</span>
+        <span class="n">material_node</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">)</span>
+        <span class="n">file_node</span><span class="o">.</span><span class="n">outColor</span> <span class="o">&gt;&gt;</span> <span class="n">material_node</span><span class="o">.</span><span class="n">color</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">material_node</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;texture_path&#39;</span><span class="p">):</span>
+            <span class="n">material_node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;texture_path&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+        <span class="n">material_node</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;texture_path&#39;</span><span class="p">,</span> <span class="n">path_utils</span><span class="o">.</span><span class="n">to_relative_path</span><span class="p">(</span><span class="n">diffuse_path</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">material_node</span></div>
+
+
+<div class="viewcode-block" id="consolidate_materials"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.material_utils.consolidate_materials">[docs]</a><span class="k">def</span> <span class="nf">consolidate_materials</span><span class="p">(</span><span class="n">material_node_list</span><span class="p">,</span> <span class="n">rebuild</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">simple_material</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    For a list of materials convert them to CPG defaults and apply them in place of the original stuff.</span>
+
+<span class="sd">    :param list[PyNode] material_node_list: A list of material nodes to reprocess.</span>
+<span class="sd">        NOTE: These needed to be marked up with a texture path.</span>
+<span class="sd">    :param bool rebuild: If materials should be rebuilt even if they already exist.</span>
+<span class="sd">    :param bool simple_material: If materials should be built with only diffuse and alpha.</span>
+<span class="sd">        NOTE: For increased performance/stability it&#39;s recommended to use this option.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">things_to_delete</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">material_node</span> <span class="ow">in</span> <span class="n">material_node_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">material_node</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;texture_path&#39;</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">material_node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Blinn</span><span class="p">)</span> <span class="ow">and</span> <span class="n">material_node</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;texture_path&#39;</span><span class="p">):</span>
+            <span class="n">DefaultMaterial</span><span class="p">(</span><span class="n">path_utils</span><span class="o">.</span><span class="n">to_full_path</span><span class="p">(</span><span class="n">material_node</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;texture_path&#39;</span><span class="p">)),</span> <span class="n">simple_material</span><span class="o">=</span><span class="n">simple_material</span><span class="p">,</span> <span class="n">rebuild</span><span class="o">=</span><span class="n">rebuild</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="n">material_node</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s1">&#39;temp&#39;</span><span class="p">)</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">path_utils</span><span class="o">.</span><span class="n">to_full_path</span><span class="p">(</span><span class="n">material_node</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;texture_path&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="n">cpg_material</span> <span class="o">=</span> <span class="n">DefaultMaterial</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">simple_material</span><span class="o">=</span><span class="n">simple_material</span><span class="p">,</span> <span class="n">rebuild</span><span class="o">=</span><span class="n">rebuild</span><span class="p">)</span>
+        <span class="n">replace_material</span><span class="p">(</span><span class="n">material_node</span><span class="p">,</span> <span class="n">cpg_material</span><span class="o">.</span><span class="n">material_node</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="replace_material"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.material_utils.replace_material">[docs]</a><span class="k">def</span> <span class="nf">replace_material</span><span class="p">(</span><span class="n">source_material</span><span class="p">,</span> <span class="n">replacement_material</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Replace the usage of one material with another.</span>
+<span class="sd">    NOTE: This will remove the original material and its shader groups.</span>
+
+<span class="sd">    :param PyNode source_material: The material we want to replace.</span>
+<span class="sd">    :param PyNode replacement_material: The material we will be replacing with.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">things_to_delete</span> <span class="o">=</span> <span class="p">[</span><span class="n">source_material</span><span class="p">]</span>
+
+    <span class="n">target_shading_group</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">replacement_material</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">ShadingEngine</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">target_shading_group</span><span class="p">:</span>
+        <span class="n">target_shading_group</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sets</span><span class="p">(</span><span class="n">renderable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">noSurfaceShader</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">empty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">replacement_material</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="si">}</span><span class="s1">SG&#39;</span><span class="p">)</span>
+        <span class="n">replacement_material</span><span class="o">.</span><span class="n">outColor</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">target_shading_group</span><span class="o">.</span><span class="n">surfaceShader</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">og_sg</span> <span class="ow">in</span> <span class="n">source_material</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">ShadingEngine</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">og_sg</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">og_sg</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s1">&#39;tempSG&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">og_sg</span><span class="o">.</span><span class="n">members</span><span class="p">():</span>
+            <span class="n">og_sg</span><span class="o">.</span><span class="n">removeMember</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">target_shading_group</span><span class="o">.</span><span class="n">addMember</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="n">things_to_delete</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">og_sg</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">things_to_delete</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="refresh_file_nodes"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.material_utils.refresh_file_nodes">[docs]</a><span class="k">def</span> <span class="nf">refresh_file_nodes</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Resets texture paths to local paths.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">file_node</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">File</span><span class="p">):</span>
+        <span class="n">file_node</span><span class="o">.</span><span class="n">fileTextureName</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">path_utils</span><span class="o">.</span><span class="n">to_relative_path</span><span class="p">(</span><span class="n">file_node</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;fileTextureName&#39;</span><span class="p">)))</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">mel</span><span class="o">.</span><span class="n">generateUvTilePreview</span><span class="p">(</span><span class="n">file_node</span><span class="o">.</span><span class="n">name</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="DefaultMaterial"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.material_utils.DefaultMaterial">[docs]</a><span class="k">class</span> <span class="nc">DefaultMaterial</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">diffuse_path</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">rida_path</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">normal_path</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">mra_path</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">orme_path</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">material_node</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">base_name</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">simple_material</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rebuild</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This is a generic shader builder that works with Diffuse, MRA, and Normal maps.</span>
+
+<span class="sd">        :param str file_path: The path to one of the three supported maps.</span>
+<span class="sd">        :param bool simple_material: If materials should be built with only diffuse and alpha.</span>
+<span class="sd">        :param bool rebuild: If materials should be rebuilt even if they already exist.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialize_textures</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">simple_material</span><span class="o">=</span><span class="n">simple_material</span><span class="p">,</span> <span class="n">rebuild</span><span class="o">=</span><span class="n">rebuild</span><span class="p">)</span>
+
+        <span class="n">hardware_globals_node</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">HardwareRenderingGlobals</span><span class="p">))</span>
+        <span class="n">hardware_globals_node</span><span class="o">.</span><span class="n">transparencyAlgorithm</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DefaultMaterial.initialize_textures"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.material_utils.DefaultMaterial.initialize_textures">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_textures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This runs during initialization and collects our used maps. If not found the material will default to a light grey.</span>
+
+<span class="sd">        :param str file_path: The path to one of the three supported maps.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">base_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="n">split_path</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="n">identifier</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split_path</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">identifier</span> <span class="o">=</span> <span class="n">split_path</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">base_dir</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">identifier</span> <span class="ow">and</span> <span class="n">identifier</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">file_name</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">file_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="si">}</span><span class="s1">_D&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">diffuse_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">file_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="si">}</span><span class="s1">_RIDA&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">rida_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">file_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="si">}</span><span class="s1">_N&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">normal_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">file_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="si">}</span><span class="s1">_MRA&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mra_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">file_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="si">}</span><span class="s1">_ORME&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">orme_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+
+                <span class="c1"># strip off the T_ leading characters if they are in the path name.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;T_&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_name</span></div>
+
+<div class="viewcode-block" id="DefaultMaterial.build"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.material_utils.DefaultMaterial.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simple_material</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rebuild</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This connects our found maps to the blinn shader node.</span>
+
+<span class="sd">        :param bool simple_material: If materials should be built with only diffuse and alpha.</span>
+<span class="sd">        :param bool rebuild: If materials should be rebuilt even if they already exist.</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">rebuild</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffuse_path</span><span class="p">:</span>
+                <span class="n">diffuse_file</span> <span class="o">=</span> <span class="n">create_texture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">diffuse_path</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span> <span class="o">=</span> <span class="n">create_basic_blinn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">diffuse_path</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;M_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">rebuild</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">use_alpha</span> <span class="o">=</span> <span class="n">diffuse_file</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;fileHasAlpha&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">use_alpha</span><span class="p">:</span>
+                    <span class="n">reverse_node</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="si">}</span><span class="s1">_reverse&#39;</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Reverse</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">reverse_node</span><span class="p">:</span>
+                        <span class="n">reverse_node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Reverse</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="si">}</span><span class="s1">_reverse&#39;</span><span class="p">)</span>
+                    <span class="n">reverse_node</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="s1">&#39;inputX&#39;</span><span class="p">)</span>
+                    <span class="n">diffuse_file</span><span class="o">.</span><span class="n">outAlpha</span> <span class="o">&gt;&gt;</span> <span class="n">reverse_node</span><span class="o">.</span><span class="n">inputX</span>
+                    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="s1">&#39;RGB&#39;</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;transparency</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                        <span class="n">reverse_node</span><span class="o">.</span><span class="n">outputX</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;transparency</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">rida_path</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span> <span class="o">=</span> <span class="n">create_basic_blinn</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;M_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;texture_path&#39;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;texture_path&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;texture_path&#39;</span><span class="p">,</span> <span class="n">path_utils</span><span class="o">.</span><span class="n">to_relative_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rida_path</span><span class="p">))</span>
+
+                <span class="n">file_node</span> <span class="o">=</span> <span class="n">create_texture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rida_path</span><span class="p">)</span>
+                <span class="n">color_remap</span> <span class="o">=</span> <span class="n">node_util</span><span class="o">.</span><span class="n">create_or_find</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="si">}</span><span class="s1">_color_remap&#39;</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">RemapValue</span><span class="p">)</span>
+                <span class="n">color_remap</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;outputMax&#39;</span><span class="p">,</span> <span class="mf">.1</span><span class="p">)</span>
+                <span class="n">color_remap</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;outputMax&#39;</span><span class="p">,</span> <span class="mf">.25</span><span class="p">)</span>
+                <span class="n">color_remap</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="s1">&#39;inputValue&#39;</span><span class="p">)</span>
+                <span class="n">file_node</span><span class="o">.</span><span class="n">outColorG</span> <span class="o">&gt;&gt;</span> <span class="n">color_remap</span><span class="o">.</span><span class="n">inputValue</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="s1">&#39;RGB&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;color</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">color_remap</span><span class="o">.</span><span class="n">outValue</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;color</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+                <span class="n">rebuild</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">use_alpha</span> <span class="o">=</span> <span class="n">file_node</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;fileHasAlpha&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">use_alpha</span><span class="p">:</span>
+                    <span class="n">rida_reverse</span> <span class="o">=</span> <span class="n">node_util</span><span class="o">.</span><span class="n">create_or_find</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="si">}</span><span class="s1">_M_reverse&#39;</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Reverse</span><span class="p">)</span>
+                    <span class="n">rida_file</span> <span class="o">=</span> <span class="n">create_texture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rida_path</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="s1">&#39;XYZ&#39;</span><span class="p">:</span>
+                        <span class="n">rida_reverse</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;input</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                        <span class="n">rida_file</span><span class="o">.</span><span class="n">outAlpha</span> <span class="o">&gt;&gt;</span> <span class="n">rida_reverse</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;input</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="s1">&#39;transparency&#39;</span><span class="p">)</span>
+                    <span class="n">rida_reverse</span><span class="o">.</span><span class="n">output</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">transparency</span>
+
+                    <span class="c1"># technically this handles some spec stuff but it looks really broken without.</span>
+                    <span class="n">spec_remap</span> <span class="o">=</span> <span class="n">node_util</span><span class="o">.</span><span class="n">create_or_find</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="si">}</span><span class="s1">_spec_remap&#39;</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">RemapValue</span><span class="p">)</span>
+                    <span class="n">spec_remap</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;outputMax&#39;</span><span class="p">,</span> <span class="mf">.25</span><span class="p">)</span>
+                    <span class="n">spec_remap</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="s1">&#39;inputValue&#39;</span><span class="p">)</span>
+                    <span class="n">rida_file</span><span class="o">.</span><span class="n">outAlpha</span> <span class="o">&gt;&gt;</span> <span class="n">spec_remap</span><span class="o">.</span><span class="n">inputValue</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="s1">&#39;eccentricity&#39;</span><span class="p">)</span>
+                    <span class="n">spec_remap</span><span class="o">.</span><span class="n">outValue</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">eccentricity</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">rebuild</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">simple_material</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal_path</span><span class="p">:</span>
+                <span class="c1"># Normal</span>
+                <span class="n">normal_bump2d_node</span> <span class="o">=</span> <span class="n">create_normal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normal_path</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="s1">&#39;normalCamera&#39;</span><span class="p">)</span>
+                <span class="n">normal_bump2d_node</span><span class="o">.</span><span class="n">outNormal</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">normalCamera</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># break normal connections.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="s1">&#39;normalCamera&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mra_path</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">orme_path</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mra_path</span><span class="p">:</span>
+                    <span class="n">mra_file_node</span> <span class="o">=</span> <span class="n">create_texture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mra_path</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">orme_path</span><span class="p">:</span>
+                    <span class="n">mra_file_node</span> <span class="o">=</span> <span class="n">create_texture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">orme_path</span><span class="p">)</span>
+
+                <span class="c1"># Metalness</span>
+                <span class="n">remap_node</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="si">}</span><span class="s1">_M_remap&#39;</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">RemapValue</span><span class="p">))</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">remap_node</span><span class="p">:</span>
+                    <span class="n">remap_node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">RemapValue</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="si">}</span><span class="s1">_M_remap&#39;</span><span class="p">)</span>
+                <span class="n">remap_node</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="s1">&#39;inputValue&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mra_path</span><span class="p">:</span>
+                    <span class="n">mra_file_node</span><span class="o">.</span><span class="n">outColorR</span> <span class="o">&gt;&gt;</span> <span class="n">remap_node</span><span class="o">.</span><span class="n">inputValue</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">orme_path</span><span class="p">:</span>
+                    <span class="n">mra_file_node</span><span class="o">.</span><span class="n">outColorB</span> <span class="o">&gt;&gt;</span> <span class="n">remap_node</span><span class="o">.</span><span class="n">inputValue</span>
+                <span class="c1"># clamp down the metalness value reduce surface shine.</span>
+                <span class="n">remap_node</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;outputMax&#39;</span><span class="p">,</span> <span class="mf">.25</span><span class="p">)</span>
+
+                <span class="n">reverse_node</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="si">}</span><span class="s1">_reverse&#39;</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Reverse</span><span class="p">))</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">reverse_node</span><span class="p">:</span>
+                    <span class="n">reverse_node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Reverse</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="si">}</span><span class="s1">_reverse&#39;</span><span class="p">)</span>
+
+                <span class="n">diffuse_file</span> <span class="o">=</span> <span class="n">create_texture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">diffuse_path</span><span class="p">)</span>
+                <span class="n">reverse_node</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="s1">&#39;inputX&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">use_alpha</span><span class="p">:</span>
+                    <span class="n">diffuse_file</span><span class="o">.</span><span class="n">outAlpha</span> <span class="o">&gt;&gt;</span> <span class="n">reverse_node</span><span class="o">.</span><span class="n">inputX</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">reverse_node</span><span class="o">.</span><span class="n">inputX</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+                <span class="n">multi_node</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span>
+                    <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="si">}</span><span class="s1">_multi&#39;</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">MultiplyDivide</span><span class="p">))</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">multi_node</span><span class="p">:</span>
+                    <span class="n">multi_node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">MultiplyDivide</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="si">}</span><span class="s1">_multi&#39;</span><span class="p">)</span>
+
+                <span class="n">multi_node</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="s1">&#39;input1X&#39;</span><span class="p">)</span>
+                <span class="n">reverse_node</span><span class="o">.</span><span class="n">outputX</span> <span class="o">&gt;&gt;</span> <span class="n">multi_node</span><span class="o">.</span><span class="n">input1X</span>
+                <span class="n">multi_node</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="s1">&#39;input1Y&#39;</span><span class="p">)</span>
+                <span class="n">reverse_node</span><span class="o">.</span><span class="n">outputX</span> <span class="o">&gt;&gt;</span> <span class="n">multi_node</span><span class="o">.</span><span class="n">input1Y</span>
+                <span class="n">multi_node</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="s1">&#39;input2X&#39;</span><span class="p">)</span>
+                <span class="n">remap_node</span><span class="o">.</span><span class="n">outValue</span> <span class="o">&gt;&gt;</span> <span class="n">multi_node</span><span class="o">.</span><span class="n">input2X</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="s1">&#39;eccentricity&#39;</span><span class="p">)</span>
+                <span class="n">multi_node</span><span class="o">.</span><span class="n">outputX</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">eccentricity</span>
+
+                <span class="c1"># Roughness</span>
+                <span class="n">remap_node</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="si">}</span><span class="s1">_R_remap&#39;</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">RemapValue</span><span class="p">))</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">remap_node</span><span class="p">:</span>
+                    <span class="n">remap_node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">RemapValue</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="si">}</span><span class="s1">_R_remap&#39;</span><span class="p">)</span>
+                <span class="n">remap_node</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="s1">&#39;inputValue&#39;</span><span class="p">)</span>
+                <span class="n">mra_file_node</span><span class="o">.</span><span class="n">outColorG</span> <span class="o">&gt;&gt;</span> <span class="n">remap_node</span><span class="o">.</span><span class="n">inputValue</span>
+                <span class="c1"># clamp down the roughness to reduce spot shine.</span>
+                <span class="n">remap_node</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;outputMax&#39;</span><span class="p">,</span> <span class="mf">.25</span><span class="p">)</span>
+
+                <span class="n">multi_node</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="s1">&#39;input2Y&#39;</span><span class="p">)</span>
+                <span class="n">remap_node</span><span class="o">.</span><span class="n">outValue</span> <span class="o">&gt;&gt;</span> <span class="n">multi_node</span><span class="o">.</span><span class="n">input2Y</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="s1">&#39;specularRollOff&#39;</span><span class="p">)</span>
+                <span class="n">multi_node</span><span class="o">.</span><span class="n">outputY</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">specularRollOff</span>
+
+                <span class="c1"># Ambient Occlusion</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="s1">&#39;RGB&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ambientColor</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mra_path</span><span class="p">:</span>
+                        <span class="n">material_attr</span> <span class="o">=</span> <span class="n">mra_file_node</span><span class="o">.</span><span class="n">outColorB</span>
+                    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">orme_path</span><span class="p">:</span>
+                        <span class="n">material_attr</span> <span class="o">=</span> <span class="n">mra_file_node</span><span class="o">.</span><span class="n">outColorR</span>
+                    <span class="n">material_attr</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ambientColor</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">rida_path</span><span class="p">:</span>
+                <span class="c1"># RIDA spec</span>
+                <span class="n">rida_file</span> <span class="o">=</span> <span class="n">create_texture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rida_path</span><span class="p">)</span>
+                <span class="n">rida_remap</span> <span class="o">=</span> <span class="n">node_util</span><span class="o">.</span><span class="n">create_or_find</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="si">}</span><span class="s1">_M_remap_ecc&#39;</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">RemapValue</span><span class="p">)</span>
+                <span class="n">rida_remap</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;outputMax&#39;</span><span class="p">,</span> <span class="mf">.5</span><span class="p">)</span>
+                <span class="n">rida_remap</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="s1">&#39;inputValue&#39;</span><span class="p">)</span>
+                <span class="n">rida_file</span><span class="o">.</span><span class="n">outColorB</span> <span class="o">&gt;&gt;</span> <span class="n">rida_remap</span><span class="o">.</span><span class="n">inputValue</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="s1">&#39;specularRollOff&#39;</span><span class="p">)</span>
+                <span class="n">rida_remap</span><span class="o">.</span><span class="n">outValue</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">specularRollOff</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># break spec connections.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="s1">&#39;eccentricity&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="s1">&#39;specularRollOff&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">material_node</span></div></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

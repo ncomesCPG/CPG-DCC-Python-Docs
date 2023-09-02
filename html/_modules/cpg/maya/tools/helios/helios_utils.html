@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.tools.helios.helios_utils &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.tools.helios.helios_utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.tools.helios.helios_utils</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module that contains misc utils for use within Helios&#39; ecosystem.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">maya.cmds</span> <span class="k">as</span> <span class="nn">cmds</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="c1"># PySide2 imports</span>
+<span class="kn">from</span> <span class="nn">PySide2</span> <span class="kn">import</span> <span class="n">QtWidgets</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">paths</span> <span class="k">as</span> <span class="n">path_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.common.assetlist</span> <span class="kn">import</span> <span class="n">assetlist</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">lists</span><span class="p">,</span> <span class="n">fileio</span>
+<span class="kn">from</span> <span class="nn">cpg.common.paths</span> <span class="kn">import</span> <span class="n">path_utils</span><span class="p">,</span> <span class="n">project_paths</span>
+<span class="kn">from</span> <span class="nn">cpg.common.pyqt</span> <span class="kn">import</span> <span class="n">messages</span>
+<span class="kn">from</span> <span class="nn">cpg.common.modifiers</span> <span class="kn">import</span> <span class="n">decorators</span>
+
+<span class="kn">from</span> <span class="nn">cpg.maya.modifiers</span> <span class="kn">import</span> <span class="n">ma_decorators</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">attr_utils</span><span class="p">,</span> <span class="n">dag</span><span class="p">,</span> <span class="n">fbx_utils</span><span class="p">,</span> <span class="n">node_util</span><span class="p">,</span> <span class="n">optionvars</span><span class="p">,</span> <span class="n">material_utils</span><span class="p">,</span> <span class="n">naming</span><span class="p">,</span> <span class="n">scene_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.deformations</span> <span class="kn">import</span> <span class="n">skin_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">skel_utils</span><span class="p">,</span> <span class="n">rig_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.pyqt</span> <span class="kn">import</span> <span class="n">dialogs</span>
+
+<span class="kn">from</span> <span class="nn">cpg.maya.tools.helios</span> <span class="kn">import</span> <span class="n">helios_registry</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="CPGHeliosOptionVars"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars">[docs]</a><span class="k">class</span> <span class="nc">CPGHeliosOptionVars</span><span class="p">(</span><span class="n">optionvars</span><span class="o">.</span><span class="n">CPGOptionVars</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This handles keeping track of Helio&#39;s UI values to be restored or used during various UI functions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Helios Misc</span>
+    <span class="n">CPGLastMaterialPath</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="n">project_paths</span><span class="o">.</span><span class="n">CPG_PROJECT_ROOT</span><span class="p">,</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;Branch content path.&#39;</span><span class="p">}</span>
+
+    <span class="c1"># Helios Main</span>
+    <span class="n">CPGLastOpenTab</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;The last opened tabs.&#39;</span><span class="p">}</span>
+
+    <span class="n">CPGPerfMaterials</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;If performance materials should be used when importing assets.&#39;</span><span class="p">}</span>
+    <span class="n">CPGWithSkinning</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;If skins should be imported when importing assets.&#39;</span><span class="p">}</span>
+    <span class="n">CPGToSelected</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;If existing scene skeletons should be used when importing assets.&#39;</span><span class="p">}</span>
+    <span class="n">CPGWithFullSkeleton</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;If the full skeleton should be merged in.&#39;</span><span class="p">}</span>
+
+    <span class="n">CPGExportSourceMa</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;If when exporting a source file should be saved as well.&#39;</span><span class="p">}</span>
+    <span class="n">CPGExportSkn</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;If when exporting a skn file should be saved as well.&#39;</span><span class="p">}</span>
+
+    <span class="c1"># Helios Wizard</span>
+    <span class="n">CPGLastAssetType</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;The last archetype selected in the wizard.&#39;</span><span class="p">}</span>
+    <span class="n">CPGLastRelease</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;The last release option selected in the wizard.&#39;</span><span class="p">}</span>
+    <span class="n">CPGCreateFolders</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;If the new asset folder structure should be generated when the scene is organized.&#39;</span><span class="p">}</span></div>
+
+
+<span class="n">HELIOS_OPTION_VARS</span> <span class="o">=</span> <span class="n">CPGHeliosOptionVars</span><span class="p">()</span>
+<span class="n">NODE_WHITE_LIST</span> <span class="o">=</span> <span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Mesh</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">SkinCluster</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">BlendShape</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">DagPose</span><span class="p">,</span>
+                   <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Phong</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Blinn</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Lambert</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">ShadingEngine</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">GroupId</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">GroupParts</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">MaterialInfo</span><span class="p">,</span>
+                   <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Reverse</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">RemapValue</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Bump2d</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Place2dTexture</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">File</span><span class="p">)</span>
+
+
+<span class="c1"># Misc tools</span>
+<div class="viewcode-block" id="apply_materials_to_selected_cmd"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_utils.apply_materials_to_selected_cmd">[docs]</a><span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_selection_decorator</span>
+<span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+<span class="k">def</span> <span class="nf">apply_materials_to_selected_cmd</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    UI command to find and apply materials using the CPG material builder. This works within Helios&#39; ecosystem to import/restore materials on models.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># sort selection</span>
+    <span class="n">selection</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">selected</span><span class="p">()</span>
+    <span class="n">selection</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">selection</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">MeshFace</span><span class="p">))]</span>
+
+    <span class="c1"># find materials</span>
+    <span class="n">starting_directory</span> <span class="o">=</span> <span class="n">HELIOS_OPTION_VARS</span><span class="o">.</span><span class="n">CPGLastMaterialPath</span>
+    <span class="n">found_path_list</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileNames</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;Select Shader&#39;</span><span class="p">,</span> <span class="n">starting_directory</span><span class="p">,</span> <span class="s1">&#39;texture (*.tga)&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">found_path_list</span><span class="p">:</span>
+        <span class="n">HELIOS_OPTION_VARS</span><span class="o">.</span><span class="n">CPGLastMaterialPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">found_path_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="c1"># sort files to unique list.</span>
+    <span class="n">found_material_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">unique_file_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">found_path_list</span><span class="p">:</span>
+        <span class="n">file_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">file_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">found_material_list</span><span class="p">:</span>
+            <span class="n">found_material_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+            <span class="n">unique_file_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+
+    <span class="c1"># generate CPG materials and apply the first we found.</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">unique_file_list</span><span class="p">):</span>
+        <span class="n">cpg_material</span> <span class="o">=</span> <span class="n">material_utils</span><span class="o">.</span><span class="n">DefaultMaterial</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">index</span><span class="p">:</span>
+            <span class="n">material_utils</span><span class="o">.</span><span class="n">assign_material</span><span class="p">(</span><span class="n">cpg_material</span><span class="o">.</span><span class="n">material_node</span><span class="p">,</span> <span class="n">selection</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="duplicate_material_cmd"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_utils.duplicate_material_cmd">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+<span class="k">def</span> <span class="nf">duplicate_material_cmd</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Duplicate a Helios safe material with a different name so that the engine see it</span>
+<span class="sd">    as a new material slot.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">selected_material</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">selected</span><span class="p">())</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">selected_material</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">selected_material</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;texture_path&#39;</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="n">new_name</span> <span class="o">=</span> <span class="n">messages</span><span class="o">.</span><span class="n">text_prompt_message</span><span class="p">(</span><span class="s1">&#39;Enter a name&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">selected_material</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="si">}</span><span class="s1">: Select a new name for this material.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">new_name</span> <span class="o">==</span> <span class="s1">&#39;Cancel&#39;</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">new_name</span> <span class="o">=</span> <span class="n">naming</span><span class="o">.</span><span class="n">make_maya_safe_name</span><span class="p">(</span><span class="n">new_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">new_name</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">new_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;M_&#39;</span><span class="p">):</span>
+        <span class="n">new_name</span> <span class="o">=</span> <span class="s1">&#39;M_&#39;</span><span class="o">+</span><span class="n">new_name</span>
+    <span class="n">new_material</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">duplicate</span><span class="p">(</span><span class="n">selected_material</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">new_name</span><span class="p">,</span> <span class="n">ic</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">new_material</span><span class="o">.</span><span class="n">deleteAttr</span><span class="p">(</span><span class="s1">&#39;texture_path&#39;</span><span class="p">)</span></div>
+
+
+<span class="c1"># Import fncs</span>
+<div class="viewcode-block" id="import_source_file"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_utils.import_source_file">[docs]</a><span class="k">def</span> <span class="nf">import_source_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helios core function for importing and cleaning fbx files for use in organizing scenes.</span>
+<span class="sd">    Based on the NODE_WHITE_LIST established at the head of this file all other node types are removed.</span>
+<span class="sd">    NOTE this function should be modified to support other file times if required.</span>
+
+<span class="sd">    :param str file_path: A full path to a given .fbx file.</span>
+<span class="sd">    :return: A list of all imported nodes that are part of a type matching those in the NODE_WHITE_LIST.</span>
+<span class="sd">    :rtype: list[PyNode]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">return_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">imported_node_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">things_to_delete</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">file_path</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.fbx&#39;</span><span class="p">):</span>
+        <span class="n">imported_node_list</span> <span class="o">=</span> <span class="n">fbx_utils</span><span class="o">.</span><span class="n">import_fbx</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="n">material_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">imported_node_list</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;texture_path&#39;</span><span class="p">)]</span>
+        <span class="n">material_utils</span><span class="o">.</span><span class="n">consolidate_materials</span><span class="p">(</span><span class="n">material_list</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">imported_node_list</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">DisplayLayer</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">imported_node_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cmds</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">()):</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">NODE_WHITE_LIST</span><span class="p">):</span>
+            <span class="n">return_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">things_to_delete</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">things_to_delete</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">return_list</span></div>
+
+
+<div class="viewcode-block" id="copy_skn_weights"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_utils.copy_skn_weights">[docs]</a><span class="k">def</span> <span class="nf">copy_skn_weights</span><span class="p">(</span><span class="n">bind_root</span><span class="p">,</span> <span class="n">node_list</span><span class="p">,</span> <span class="n">skin_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    From a save skin weights file, import and copy skins.</span>
+
+<span class="sd">    :param Joint bind_root: The root joint of the skeleton our meshes will be bound to.</span>
+<span class="sd">    :param list[Transform] node_list: A list of all shaped transforms that need skinning data.</span>
+<span class="sd">    :param str skin_path: The path to a save skin weights file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">unbound_nodes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">node_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">getShape</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">skin_utils</span><span class="o">.</span><span class="n">find_related_skin_cluster</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+                <span class="n">unbound_nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">child_list</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">getChildren</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">child_node</span> <span class="ow">in</span> <span class="n">child_list</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">child_node</span><span class="o">.</span><span class="n">getShape</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">skin_utils</span><span class="o">.</span><span class="n">find_related_skin_cluster</span><span class="p">(</span><span class="n">child_node</span><span class="p">):</span>
+                        <span class="n">unbound_nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child_node</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">unbound_nodes</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">skin_path</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">unbound_nodes</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">skinCluster</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="p">[</span><span class="n">bind_root</span><span class="p">],</span> <span class="n">tsb</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                           <span class="n">normalizeWeights</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">maximumInfluences</span><span class="o">=</span><span class="n">skin_utils</span><span class="o">.</span><span class="n">DEFAULT_MAX_INFLUENCES</span><span class="p">,</span>
+                           <span class="n">obeyMaxInfluences</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">removeUnusedInfluence</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">imported_skin_node_list</span> <span class="o">=</span> <span class="n">fbx_utils</span><span class="o">.</span><span class="n">import_fbx</span><span class="p">(</span><span class="n">skin_path</span><span class="p">)</span>
+
+        <span class="n">skinned_node_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">imported_skin_node_list</span> <span class="k">if</span>
+                             <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">)</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">getShape</span><span class="p">()</span> <span class="ow">and</span>
+                             <span class="n">skin_utils</span><span class="o">.</span><span class="n">find_related_skin_cluster</span><span class="p">(</span><span class="n">node</span><span class="p">)]</span>
+
+        <span class="c1"># bind to the imported skeleton</span>
+        <span class="c1"># $TODO FSchorch Maybe make something that does the bind rebind at the same time?</span>
+        <span class="n">skin_utils</span><span class="o">.</span><span class="n">copy_skin_weights</span><span class="p">(</span><span class="n">skinned_node_list</span><span class="p">,</span> <span class="n">unbound_nodes</span><span class="p">,</span> <span class="n">match_influences</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">skin_utils</span><span class="o">.</span><span class="n">rebind_mesh_to_skel</span><span class="p">(</span><span class="n">unbound_nodes</span><span class="p">,</span> <span class="n">bind_root</span><span class="p">)</span>
+
+        <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">imported_skin_node_list</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="import_helios_asset"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_utils.import_helios_asset">[docs]</a><span class="k">def</span> <span class="nf">import_helios_asset</span><span class="p">(</span><span class="n">cpg_asset</span><span class="p">,</span> <span class="n">with_skinning</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">skel_root_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">organize_only</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    From a Helios Data class import and organize the asset.</span>
+
+<span class="sd">    :param CPGAsset cpg_asset: CPGAsset data class which contains information on how to import and construct the scene hierarchy.</span>
+<span class="sd">    :param bool with_skinning: If skinning should be kept or applied to the imported models.</span>
+<span class="sd">    :param dict{str|Joint} skel_root_dict: A dictionary of rig asset ids to the joints they represent. When importing</span>
+<span class="sd">        with skinning if the rig asset id matches the incoming asset it will be bound against it instead of deleted.</span>
+<span class="sd">        If skinning is enabled but a root dict was not provided this will be generated during the import process.</span>
+<span class="sd">    :param bool organize_only: If the scene should only build organization groups and not attempt to import.</span>
+<span class="sd">    :return: The imported organization group, and the skel_root_dict</span>
+<span class="sd">    :rtype: Transform, dict{str|Joint}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">skel_root_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">skel_root_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">organization_group</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_name</span><span class="p">,</span> <span class="n">em</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">attr_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_name</span><span class="p">,</span>
+                 <span class="s1">&#39;asset_id&#39;</span><span class="p">:</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_id</span><span class="p">,</span>
+                 <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="n">path_utils</span><span class="o">.</span><span class="n">to_relative_path</span><span class="p">(</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">sm_path</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_type</span><span class="p">,</span>
+                 <span class="s1">&#39;subtype&#39;</span><span class="p">:</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_subtype</span><span class="p">,</span>
+                 <span class="s1">&#39;archetype&#39;</span><span class="p">:</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_archetype</span>
+                 <span class="p">}</span>
+    <span class="n">attr_utils</span><span class="o">.</span><span class="n">set_compound_attribute_groups</span><span class="p">(</span><span class="n">organization_group</span><span class="p">,</span> <span class="s1">&#39;helios&#39;</span><span class="p">,</span> <span class="n">attr_dict</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">sm_path</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">organize_only</span><span class="p">:</span>
+        <span class="n">sm_path</span> <span class="o">=</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">sm_path</span>
+        <span class="n">sk_path</span> <span class="o">=</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">sk_path</span>
+        <span class="n">import_path</span> <span class="o">=</span> <span class="n">sk_path</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">sk_path</span><span class="p">)</span> <span class="k">else</span> <span class="n">sm_path</span>
+
+        <span class="n">imported_node_list</span> <span class="o">=</span> <span class="n">import_source_file</span><span class="p">(</span><span class="n">import_path</span><span class="p">)</span>
+        <span class="n">parentable_object_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">shaped_transform_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># geo organization</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">imported_node_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">getShape</span><span class="p">():</span>
+                    <span class="n">shaped_transform_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">getParent</span><span class="p">():</span>
+                    <span class="k">continue</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Locator</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">)):</span>
+                        <span class="c1"># this may need to be revisited but it&#39;s normally reserved for nodes under another shaped transform.</span>
+                        <span class="k">continue</span>
+                <span class="n">parentable_object_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parentable_object_list</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">parentable_object_list</span><span class="p">,</span> <span class="n">organization_group</span><span class="p">)</span>
+        <span class="n">imported_joints</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">imported_node_list</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">)</span>
+
+        <span class="c1"># skinning</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">with_skinning</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">imported_joints</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># if we want the asset skinned lets try and do so.</span>
+            <span class="k">if</span> <span class="n">imported_joints</span><span class="p">:</span>
+                <span class="c1"># if it&#39;s already skinned because it came in with joints</span>
+                <span class="k">if</span> <span class="n">skel_root_dict</span> <span class="ow">and</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">skel_path</span> <span class="ow">in</span> <span class="n">skel_root_dict</span><span class="p">:</span>
+                    <span class="n">skin_utils</span><span class="o">.</span><span class="n">rebind_mesh_to_skel</span><span class="p">(</span><span class="n">shaped_transform_list</span><span class="p">,</span> <span class="n">skel_root_dict</span><span class="p">[</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">skel_path</span><span class="p">])</span>
+                    <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">imported_joints</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">skel_root_dict</span> <span class="ow">and</span> <span class="s1">&#39;default&#39;</span> <span class="ow">in</span> <span class="n">skel_root_dict</span><span class="p">:</span>
+                    <span class="n">skin_utils</span><span class="o">.</span><span class="n">rebind_mesh_to_skel</span><span class="p">(</span><span class="n">shaped_transform_list</span><span class="p">,</span> <span class="n">skel_root_dict</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+                    <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">imported_joints</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># we do not have a skel root for this type of asset so lets register it and pass it down.</span>
+                    <span class="n">imported_root</span> <span class="o">=</span> <span class="n">dag</span><span class="o">.</span><span class="n">get_absolute_parent</span><span class="p">(</span><span class="n">imported_joints</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">node_type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">)</span>
+                    <span class="n">imported_root</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;asset_id&#39;</span><span class="p">,</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_id</span><span class="p">)</span>
+                    <span class="n">skel_root_dict</span><span class="p">[</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">skel_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">imported_root</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">skel_path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">skel_root_dict</span><span class="p">:</span>
+                    <span class="c1"># we didn&#39;t have a skeleton from import, so lets see if we have a root joint to bind against for this type.</span>
+                    <span class="n">skel_path</span> <span class="o">=</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">skel_path</span>
+                    <span class="k">if</span> <span class="n">skel_path</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">skel_path</span><span class="p">):</span>
+                        <span class="n">bind_root</span> <span class="o">=</span> <span class="n">skel_utils</span><span class="o">.</span><span class="n">import_skeleton</span><span class="p">(</span><span class="n">skel_path</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">bind_root</span><span class="p">:</span>
+                            <span class="n">bind_root</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;asset_id&#39;</span><span class="p">,</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_id</span><span class="p">)</span>
+                            <span class="n">skel_root_dict</span><span class="p">[</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">skel_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">bind_root</span>
+                <span class="k">if</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">skel_path</span> <span class="ow">in</span> <span class="n">skel_root_dict</span><span class="p">:</span>
+                    <span class="c1"># we should almost never hit this. Either an asset will be skinned with an SK or there is a reason</span>
+                    <span class="c1"># we never exported it with skinning to being with.</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">skin_path</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">skin_path</span><span class="p">:</span>
+                        <span class="n">copy_skn_weights</span><span class="p">(</span><span class="n">skel_root_dict</span><span class="p">[</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">skel_path</span><span class="p">],</span> <span class="n">shaped_transform_list</span><span class="p">,</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">skin_path</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">shaped_transform_list</span><span class="p">:</span>
+                            <span class="c1"># if we don&#39;t have a skin file bind them all to the root.</span>
+                            <span class="n">pm</span><span class="o">.</span><span class="n">skinCluster</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="p">[</span><span class="n">skel_root_dict</span><span class="p">[</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">skel_path</span><span class="p">]],</span> <span class="n">tsb</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                           <span class="n">normalizeWeights</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">maximumInfluences</span><span class="o">=</span><span class="n">skin_utils</span><span class="o">.</span><span class="n">DEFAULT_MAX_INFLUENCES</span><span class="p">,</span>
+                                           <span class="n">obeyMaxInfluences</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">removeUnusedInfluence</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">sub_asset</span> <span class="ow">in</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">local_asset_list</span><span class="p">:</span>
+        <span class="c1"># recursively import and organize under the root.</span>
+        <span class="n">sub_org_group</span><span class="p">,</span> <span class="n">sub_skel_root_dict</span> <span class="o">=</span> <span class="n">import_helios_asset</span><span class="p">(</span><span class="n">sub_asset</span><span class="p">,</span> <span class="n">with_skinning</span><span class="o">=</span><span class="n">with_skinning</span><span class="p">,</span> <span class="n">skel_root_dict</span><span class="o">=</span><span class="n">skel_root_dict</span><span class="p">)</span>
+        <span class="n">sub_skel_root_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">skel_root_dict</span><span class="p">)</span>
+        <span class="n">skel_root_dict</span> <span class="o">=</span> <span class="n">sub_skel_root_dict</span>
+        <span class="n">sub_org_group</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="n">organization_group</span><span class="p">)</span>
+
+    <span class="n">displaylayer_node</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">file_name</span><span class="si">}</span><span class="s1">_dl&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">DisplayLayer</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">displaylayer_node</span><span class="p">:</span>
+        <span class="n">displaylayer_node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">createDisplayLayer</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">file_name</span><span class="si">}</span><span class="s1">_dl&#39;</span><span class="p">,</span> <span class="n">nr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">displaylayer_node</span><span class="o">.</span><span class="n">addMembers</span><span class="p">(</span><span class="n">organization_group</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">organization_group</span><span class="p">,</span> <span class="n">skel_root_dict</span></div>
+
+
+<div class="viewcode-block" id="find_export_groups"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_utils.find_export_groups">[docs]</a><span class="k">def</span> <span class="nf">find_export_groups</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Search through all children and identify exportable groups.</span>
+
+<span class="sd">    :param Transform node: The starting group to base our export off of.</span>
+<span class="sd">    :return: Tuples of the export group and its export path in a list of all found groups.</span>
+<span class="sd">    :rtype: list[(Transform, str)...]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">helios_group_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">dag</span><span class="o">.</span><span class="n">get_children_in_order</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">node_type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;helios&#39;</span><span class="p">):</span>
+            <span class="n">export_path</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;helios_type&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;helios_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;model&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;helios_path&#39;</span><span class="p">):</span>
+                    <span class="n">export_path</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;helios_path&#39;</span><span class="p">)</span>
+            <span class="n">helios_group_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">node</span><span class="p">,</span> <span class="n">path_utils</span><span class="o">.</span><span class="n">to_full_path</span><span class="p">(</span><span class="n">export_path</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">helios_group_list</span></div>
+
+
+<div class="viewcode-block" id="get_exportable_meshes"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_utils.get_exportable_meshes">[docs]</a><span class="k">def</span> <span class="nf">get_exportable_meshes</span><span class="p">(</span><span class="n">export_group</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    From a valid export group find all exportable meshes. This is used during SM/SK exports.</span>
+
+<span class="sd">    :param Transform export_group: A group that represents a valid exportable group.</span>
+<span class="sd">    :return: A list of all valid shaped transforms or groups containing valid shaped transforms.</span>
+<span class="sd">    :rtype: list[Transform]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">exportable_node_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">blendshape_targets</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">export_group</span><span class="o">.</span><span class="n">getChildren</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;helios&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Take all objects not marked up with Helios&#39; markup. Since we can have nested exports we want to make sure</span>
+        <span class="c1"># we&#39;re only grabbing one representative of it at a time.</span>
+        <span class="n">node_shape</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">getShape</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">node_shape</span><span class="p">:</span>
+            <span class="n">blend_node</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">node_shape</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">BlendShape</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">blend_node</span><span class="p">:</span>
+                <span class="n">blendshape_targets</span> <span class="o">+=</span> <span class="n">pm</span><span class="o">.</span><span class="n">blendShape</span><span class="p">(</span><span class="n">blend_node</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">node_children</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">getChildren</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">node_children</span><span class="p">:</span>
+            <span class="c1"># We&#39;re recursively running this to find and delete blendshape targets. They&#39;re restored on import.</span>
+            <span class="c1"># They become embedded in the FBX file.</span>
+            <span class="n">get_exportable_meshes</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+        <span class="n">exportable_node_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+    <span class="n">exportable_node_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">exportable_node_list</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">blendshape_targets</span><span class="p">]</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">blendshape_targets</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">exportable_node_list</span></div>
+
+
+<div class="viewcode-block" id="get_exportable_meshes_organization"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_utils.get_exportable_meshes_organization">[docs]</a><span class="k">def</span> <span class="nf">get_exportable_meshes_organization</span><span class="p">(</span><span class="n">export_group</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    From a valid export group find all meshes and the names of their parents for restoring after RBF operations.</span>
+<span class="sd">    This is used to find group pairings for RBF retargeting.</span>
+
+<span class="sd">    :param Transform export_group: A group that represents a valid exportable group.</span>
+<span class="sd">    :return: A list of all valid shaped transforms or groups containing valid shaped transforms.</span>
+<span class="sd">    :rtype: list[Transform]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">organization_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;main&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+    <span class="n">return_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">export_group</span><span class="o">.</span><span class="n">getChildren</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">):</span>
+        <span class="c1"># Take all objects not marked up with Helios&#39; markup. Since we can have nested exports we want to make sure</span>
+        <span class="c1"># we&#39;re only grabbing one representative of it at a time.</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;helios&#39;</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">getShape</span><span class="p">():</span>
+            <span class="n">return_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="n">organization_dict</span><span class="p">[</span><span class="s1">&#39;main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">naming</span><span class="o">.</span><span class="n">get_basename</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">node_children</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">getChildren</span><span class="p">()</span>
+            <span class="n">return_list</span> <span class="o">+=</span> <span class="n">node_children</span>
+            <span class="n">organization_dict</span><span class="p">[</span><span class="n">naming</span><span class="o">.</span><span class="n">get_basename</span><span class="p">(</span><span class="n">node</span><span class="p">)]</span> <span class="o">=</span> <span class="p">[</span><span class="n">naming</span><span class="o">.</span><span class="n">get_basename</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">node_children</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">getShape</span><span class="p">()]</span>
+
+    <span class="k">return</span> <span class="n">return_list</span><span class="p">,</span> <span class="n">organization_dict</span></div>
+
+
+<div class="viewcode-block" id="get_asset_from_export_group"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_utils.get_asset_from_export_group">[docs]</a><span class="k">def</span> <span class="nf">get_asset_from_export_group</span><span class="p">(</span><span class="n">export_group</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read Helios markup off an object to build an asset data class for use with exporting.</span>
+
+<span class="sd">    :param Transform export_group: A transform with Helios markup.</span>
+<span class="sd">    :return: A CPG asset data class.</span>
+<span class="sd">    :rtype: CPGAsset</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">export_group</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;helios&#39;</span><span class="p">):</span>
+        <span class="c1"># find local attrs and add them to our data dict.</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">export_group</span><span class="o">.</span><span class="n">helios</span><span class="o">.</span><span class="n">getChildren</span><span class="p">():</span>
+            <span class="n">data_dict</span><span class="p">[</span><span class="n">attr</span><span class="o">.</span><span class="n">attrName</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;helios_&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">export_group</span><span class="o">.</span><span class="n">getChildren</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">):</span>
+        <span class="c1"># find and sub objects and import them into our data dict.</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;helios&#39;</span><span class="p">):</span>
+            <span class="n">cpg_asset</span> <span class="o">=</span> <span class="n">get_asset_from_export_group</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;local_asset_list&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data_dict</span><span class="p">:</span>
+                <span class="n">data_dict</span><span class="p">[</span><span class="s1">&#39;local_asset_list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">data_dict</span><span class="p">[</span><span class="s1">&#39;local_asset_list&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cpg_asset</span><span class="p">)</span>
+
+    <span class="n">asset_id</span> <span class="o">=</span> <span class="n">data_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;asset_id&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">assetlist</span><span class="o">.</span><span class="n">CPGAsset</span><span class="p">(</span><span class="n">asset_id</span><span class="p">,</span> <span class="n">data_dict</span><span class="p">)</span> <span class="k">if</span> <span class="n">data_dict</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="export_helios_asset"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_utils.export_helios_asset">[docs]</a><span class="k">def</span> <span class="nf">export_helios_asset</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">update_skn</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_source</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">register_assets</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    From a given node find all valid exportable groups and export them to their file paths.</span>
+
+<span class="sd">    :param Transform node: A node in the export hierarchy.</span>
+<span class="sd">    :param bool update_skn: If the skn file associated with this model should be updated.</span>
+<span class="sd">    :param bool save_source: If a source .ma should be saved during export.</span>
+<span class="sd">    :param bool register_assets: If the exported assets should be added to our helios asset registry.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># safety save.</span>
+    <span class="n">scene_utils</span><span class="o">.</span><span class="n">backup_scene</span><span class="p">(</span><span class="s1">&#39;helios_export&#39;</span><span class="p">)</span>
+
+    <span class="c1"># collect all potential bind roots</span>
+    <span class="n">bind_root_list</span> <span class="o">=</span> <span class="n">skin_utils</span><span class="o">.</span><span class="n">get_all_hierarchy_bind_roots</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+    <span class="n">bind_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">deletable_roots</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">bind_root</span> <span class="ow">in</span> <span class="n">bind_root_list</span><span class="p">:</span>
+        <span class="c1"># make a bind dict for asset_id lookups.</span>
+        <span class="k">if</span> <span class="n">bind_root</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;asset_id&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">bind_root</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;asset_id&#39;</span><span class="p">):</span>
+            <span class="n">bind_dict</span><span class="p">[</span><span class="n">bind_root</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;asset_id&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">bind_root</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bind_root_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># If we only have a single root also assign this as the default fallback.</span>
+                <span class="n">bind_dict</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bind_root</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bind_dict</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bind_root</span>
+
+    <span class="n">delete_root_after_export</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">export_group</span><span class="p">,</span> <span class="n">export_path</span> <span class="ow">in</span> <span class="n">find_export_groups</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">export_path</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">register_assets</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="c1"># $TODO FSchorsch we should be able to get this data earlier so we don&#39;t have to ask it every time.</span>
+        <span class="n">cpg_asset</span> <span class="o">=</span> <span class="n">get_asset_from_export_group</span><span class="p">(</span><span class="n">export_group</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cpg_asset</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">export_group</span><span class="si">}</span><span class="s1"> was unable to be converted into a CPGAsset. It will be skipped. &#39;</span>
+                                            <span class="sa">f</span><span class="s1">&#39;Re-organize scene to correct markup.&#39;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">register_assets</span><span class="p">:</span>
+            <span class="n">cpg_asset</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">commit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">exportable_node_list</span> <span class="o">=</span> <span class="n">get_exportable_meshes</span><span class="p">(</span><span class="n">export_group</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">exportable_node_list</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">node_list</span> <span class="o">=</span> <span class="n">exportable_node_list</span><span class="p">[:]</span>
+            <span class="c1"># cleanup for skinning, we&#39;ll need valid binds to generate an SK file.</span>
+            <span class="k">if</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">bind_dict</span> <span class="ow">and</span> <span class="s1">&#39;default&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">bind_dict</span><span class="p">:</span>
+                <span class="n">delete_root_after_export</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_id</span><span class="p">:</span>
+                    <span class="n">skel_path</span> <span class="o">=</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">skel_path</span>
+                    <span class="n">bind_root</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="k">if</span> <span class="n">skel_path</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">skel_path</span><span class="p">):</span>
+                        <span class="n">bind_root</span> <span class="o">=</span> <span class="n">skel_utils</span><span class="o">.</span><span class="n">import_skeleton</span><span class="p">(</span><span class="n">skel_path</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_id</span><span class="si">}</span><span class="s1"> was not found in the asset list. &#39;</span>
+                                                            <span class="sa">f</span><span class="s1">&#39;We will attempt to recover a skeleton from the SK file.&#39;</span><span class="p">)</span>
+                        <span class="n">sk_path</span> <span class="o">=</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">sk_path</span>
+                        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">sk_path</span><span class="p">):</span>
+                            <span class="n">imported_nodes</span> <span class="o">=</span> <span class="n">fbx_utils</span><span class="o">.</span><span class="n">import_fbx</span><span class="p">(</span><span class="n">sk_path</span><span class="p">)</span>
+                            <span class="n">imported_joint_list</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">imported_nodes</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">imported_joint_list</span><span class="p">:</span>
+                                <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">imported_nodes</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">imported_joint_list</span><span class="p">)))</span>
+                                <span class="n">bind_root</span> <span class="o">=</span> <span class="n">dag</span><span class="o">.</span><span class="n">get_absolute_parent</span><span class="p">(</span><span class="n">imported_joint_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unable to recover a skeleton from an SK file. &#39;</span>
+                                           <span class="sa">f</span><span class="s1">&#39;Only the SM will be exported.&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">bind_root</span><span class="p">:</span>
+                        <span class="n">deletable_roots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bind_root</span><span class="p">)</span>
+                        <span class="n">bind_dict</span><span class="p">[</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">bind_root</span>
+
+            <span class="k">if</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_id</span> <span class="ow">in</span> <span class="n">bind_dict</span><span class="p">:</span>
+                <span class="n">bind_root</span> <span class="o">=</span> <span class="n">bind_dict</span><span class="p">[</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_id</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">cpg_asset</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">skel_path</span><span class="p">):</span>
+                    <span class="c1"># Reset rotations so we don&#39;t export accidental model changes.</span>
+                    <span class="n">skel_utils</span><span class="o">.</span><span class="n">restore_skeleton_bindpose</span><span class="p">(</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">skel_path</span><span class="p">,</span> <span class="n">bind_root</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">joint_node</span> <span class="ow">in</span> <span class="n">bind_root</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">ad</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">):</span>
+                        <span class="c1"># Reset rotations so we don&#39;t export accidental model changes.</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">joint_node</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="k">pass</span>
+
+                <span class="c1"># if we neither had a bind root nor were able to import one continue. Some assets might only be static</span>
+                <span class="c1"># meshes, for instance anything working with Nanite.</span>
+                <span class="n">copy_skins_path</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">skin_path</span><span class="p">):</span>
+                    <span class="c1"># try our local skn first</span>
+                    <span class="n">copy_skins_path</span> <span class="o">=</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">skin_path</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># if we don&#39;t have a local skin path try our rig&#39;s sk.</span>
+                    <span class="k">if</span> <span class="n">cpg_asset</span><span class="p">:</span>
+                        <span class="n">copy_skins_path</span> <span class="o">=</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">sk_path</span>
+                <span class="k">if</span> <span class="n">copy_skins_path</span><span class="p">:</span>
+                    <span class="n">copy_skn_weights</span><span class="p">(</span><span class="n">bind_dict</span><span class="p">[</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_id</span><span class="p">],</span> <span class="n">node_list</span><span class="p">,</span> <span class="n">copy_skins_path</span><span class="p">)</span>
+                    <span class="n">node_list</span> <span class="o">+=</span> <span class="p">[</span><span class="n">bind_dict</span><span class="p">[</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_id</span><span class="p">]]</span>
+                    <span class="k">if</span> <span class="n">cpg_asset</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">skel_path</span><span class="p">):</span>
+                        <span class="c1"># Importing an old skel can overwrite markup so restore it. Likely a bug with FBX importing.</span>
+                        <span class="n">skel_utils</span><span class="o">.</span><span class="n">restore_skeleton_markup</span><span class="p">(</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">skel_path</span><span class="p">,</span> <span class="n">bind_dict</span><span class="p">[</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_id</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="s1">&#39;default&#39;</span> <span class="ow">in</span> <span class="n">bind_dict</span><span class="p">:</span>
+                <span class="n">bind_root</span> <span class="o">=</span> <span class="n">bind_dict</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">joint_node</span> <span class="ow">in</span> <span class="n">bind_root</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">ad</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">):</span>
+                    <span class="c1"># Reset rotations so we don&#39;t export accidental model changes.</span>
+                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">attr_utils</span><span class="o">.</span><span class="n">ROTATION_ATTRS</span><span class="p">:</span>
+                        <span class="n">joint_node</span><span class="o">.</span><span class="n">disconnectAttr</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                        <span class="n">joint_node</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+                <span class="n">node_list</span> <span class="o">+=</span> <span class="p">[</span><span class="n">bind_dict</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]]</span>
+
+        <span class="c1"># time to export, first a sk, an options skn, and a sm.</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">exportable_node_list</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># we will always have an SM, but not always an SK.</span>
+        <span class="n">sm_path</span> <span class="o">=</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">sm_path</span>
+        <span class="n">skn_path</span> <span class="o">=</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">skin_path</span>
+        <span class="n">sk_path</span> <span class="o">=</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">sk_path</span>
+        <span class="n">source_ma_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">source_path</span><span class="p">,</span> <span class="s1">&#39;_Source&#39;</span><span class="p">,</span> <span class="s1">&#39;Model&#39;</span><span class="p">,</span> <span class="s1">&#39;Maya&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">file_name</span><span class="si">}</span><span class="s1">.ma&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">bind_dict</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_id</span> <span class="ow">in</span> <span class="n">bind_dict</span> <span class="ow">or</span> <span class="s1">&#39;default&#39;</span> <span class="ow">in</span> <span class="n">bind_dict</span><span class="p">:</span>
+                <span class="c1"># only export the SK if we have an actual skeleton.</span>
+                <span class="n">fileio</span><span class="o">.</span><span class="n">touch_path</span><span class="p">(</span><span class="n">sk_path</span><span class="p">)</span>
+                <span class="n">joint_list</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">node_list</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">joint_list</span><span class="p">:</span>
+                    <span class="n">_trim_exportable_joints</span><span class="p">(</span><span class="n">dag</span><span class="o">.</span><span class="n">get_absolute_parent</span><span class="p">(</span><span class="n">joint_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">node_type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">))</span>
+                <span class="n">fbx_utils</span><span class="o">.</span><span class="n">export_fbx</span><span class="p">(</span><span class="n">sk_path</span><span class="p">,</span> <span class="n">node_list</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">update_skn</span><span class="p">:</span>
+                    <span class="n">fileio</span><span class="o">.</span><span class="n">touch_path</span><span class="p">(</span><span class="n">skn_path</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="n">sk_path</span><span class="p">,</span> <span class="n">skn_path</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">UndoChunk</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_id</span> <span class="ow">in</span> <span class="n">bind_dict</span><span class="p">:</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">bind_dict</span><span class="p">[</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_id</span><span class="p">])</span>
+            <span class="k">if</span> <span class="s1">&#39;default&#39;</span> <span class="ow">in</span> <span class="n">bind_dict</span> <span class="ow">and</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">bind_dict</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]):</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">bind_dict</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">save_source</span><span class="p">:</span>
+                <span class="n">fileio</span><span class="o">.</span><span class="n">touch_path</span><span class="p">(</span><span class="n">source_ma_path</span><span class="p">)</span>
+                <span class="n">scene_utils</span><span class="o">.</span><span class="n">save_as</span><span class="p">(</span><span class="n">source_ma_path</span><span class="p">)</span>
+            <span class="n">fileio</span><span class="o">.</span><span class="n">touch_path</span><span class="p">(</span><span class="n">sm_path</span><span class="p">)</span>
+            <span class="n">fbx_utils</span><span class="o">.</span><span class="n">export_fbx</span><span class="p">(</span><span class="n">sm_path</span><span class="p">,</span> <span class="n">exportable_node_list</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">undo</span><span class="p">()</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">exportable_node_list</span><span class="p">,</span> <span class="n">export_group</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">delete_root_after_export</span> <span class="ow">and</span> <span class="n">deletable_roots</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">deletable_roots</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">register_assets</span><span class="p">:</span>
+        <span class="n">assetlist</span><span class="o">.</span><span class="n">AssetListRegistry</span><span class="p">()</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+
+
+<span class="k">def</span> <span class="nf">_trim_exportable_joints</span><span class="p">(</span><span class="n">skel_root</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Trim null joints before exporting.</span>
+
+<span class="sd">    :param Joint skel_root: Skeletal root joint.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">deletable_joints</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">skel_root</span><span class="p">,</span> <span class="n">ad</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">)</span> <span class="k">if</span> <span class="s1">&#39;null&#39;</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">()]</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">deletable_joints</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_all_cpg_assets"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_utils.get_all_cpg_assets">[docs]</a><span class="k">def</span> <span class="nf">get_all_cpg_assets</span><span class="p">(</span><span class="n">cpg_asset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    From a Helios build structure find and return all model paths.</span>
+
+<span class="sd">    :param CPGAsset cpg_asset: The CPG Asset to search though</span>
+<span class="sd">    :return: A list of all fbx model paths used by this organization structure.</span>
+<span class="sd">    :rtype: list[CPGAsset, ...]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">return_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">cpg_asset</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">child_asset</span> <span class="ow">in</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">local_asset_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">child_asset</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to find child asset. </span><span class="si">{</span><span class="n">child_asset</span><span class="si">}</span><span class="s1"> of </span><span class="si">{</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">return_list</span> <span class="o">+=</span> <span class="n">get_all_cpg_assets</span><span class="p">(</span><span class="n">child_asset</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">return_list</span></div>
+
+
+<div class="viewcode-block" id="organize_scene_from_archetype"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_utils.organize_scene_from_archetype">[docs]</a><span class="k">def</span> <span class="nf">organize_scene_from_archetype</span><span class="p">(</span><span class="n">helios_archetype</span><span class="p">,</span> <span class="n">asset_name</span><span class="p">,</span> <span class="n">base_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">modified_base_dir</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">create_directories</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    From a Helios Archetype create the organization structure for this scene.</span>
+
+<span class="sd">    :param HeliosArchetype helios_archetype: The archetype to convert into a Helios Asset build structure</span>
+<span class="sd">    :param str asset_name: Name of the new Helios Asset build structure</span>
+<span class="sd">    :param str base_dir: The base directory this asset should be built.</span>
+<span class="sd">    :param bool modified_base_dir: If the base directory has been modified from the templates expectations.</span>
+<span class="sd">    :param bool create_directories: If the folder structure should be built out at the same time.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cpg_asset</span> <span class="o">=</span> <span class="n">helios_registry</span><span class="o">.</span><span class="n">create_new_assets_from_archetype</span><span class="p">(</span><span class="n">helios_archetype</span><span class="p">,</span> <span class="n">asset_name</span><span class="p">,</span> <span class="n">base_dir</span><span class="o">=</span><span class="n">base_dir</span><span class="p">,</span> <span class="n">modified_base_dir</span><span class="o">=</span><span class="n">modified_base_dir</span><span class="p">)</span>
+    <span class="n">import_helios_asset</span><span class="p">(</span><span class="n">cpg_asset</span><span class="p">,</span> <span class="n">organize_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">create_directories</span><span class="p">:</span>
+        <span class="n">create_folder_structure</span><span class="p">(</span><span class="n">cpg_asset</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="create_folder_structure"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_utils.create_folder_structure">[docs]</a><span class="k">def</span> <span class="nf">create_folder_structure</span><span class="p">(</span><span class="n">cpg_asset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    From the Helios Asset build structure find all model paths and make sure the working directories are available.</span>
+
+<span class="sd">    :param CPGAsset cpg_asset:  The Helios Asset to build from.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cpg_asset_list</span> <span class="o">=</span> <span class="n">get_all_cpg_assets</span><span class="p">(</span><span class="n">cpg_asset</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">cpg_asset</span> <span class="ow">in</span> <span class="n">cpg_asset_list</span><span class="p">:</span>
+        <span class="n">meshes_path</span> <span class="o">=</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">meshes_path</span>
+        <span class="n">textures_path</span> <span class="o">=</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">textures_path</span>
+        <span class="n">source_path</span> <span class="o">=</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">source_path</span>
+        <span class="k">for</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="p">[</span><span class="n">meshes_path</span><span class="p">,</span> <span class="n">textures_path</span><span class="p">,</span> <span class="n">source_path</span><span class="p">]:</span>
+            <span class="n">fileio</span><span class="o">.</span><span class="n">touch_path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="helios_rbf_cmd"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_utils.helios_rbf_cmd">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+<span class="k">def</span> <span class="nf">helios_rbf_cmd</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helios UI command for retargeting permutations.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">selection</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">selected</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">selection</span><span class="p">:</span>
+        <span class="n">dialogs</span><span class="o">.</span><span class="n">info_prompt</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;No Selection&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Please make a selection&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">operand_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">selection</span><span class="p">:</span>
+        <span class="c1"># For each object selected sort it and find our actionable groups.</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;helios_name&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">node</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">operand_dict</span><span class="p">:</span>
+                <span class="n">operand_dict</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">object_parent</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">getParent</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">object_parent</span> <span class="ow">and</span> <span class="n">object_parent</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;helios_name&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">object_parent</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">operand_dict</span><span class="p">:</span>
+                    <span class="n">operand_dict</span><span class="p">[</span><span class="n">object_parent</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">getShape</span><span class="p">():</span>
+                    <span class="n">operand_dict</span><span class="p">[</span><span class="n">object_parent</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">getChildren</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">getShape</span><span class="p">():</span>
+                            <span class="n">operand_dict</span><span class="p">[</span><span class="n">object_parent</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="n">helios_rbf</span><span class="p">(</span><span class="n">operand_dict</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="helios_rbf"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_utils.helios_rbf">[docs]</a><span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">undo_decorator</span>
+<span class="k">def</span> <span class="nf">helios_rbf</span><span class="p">(</span><span class="n">operand_dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Runs the given dict of export groups and their optional children through Helios&#39; automated RBF reprocessing.</span>
+
+<span class="sd">    :param dict operand_dict: A dictionary of export groups and optionally the objects in those export groups to be processed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">helios_archetype</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">imported_path_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">export_group</span><span class="p">,</span> <span class="n">exportable_list</span> <span class="ow">in</span> <span class="n">operand_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">cpg_asset</span> <span class="o">=</span> <span class="n">get_asset_from_export_group</span><span class="p">(</span><span class="n">export_group</span><span class="p">)</span>
+
+        <span class="c1"># find our archetype if we don&#39;t have it yet</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">helios_archetype</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">helios_archetype</span> <span class="ow">in</span> <span class="n">helios_registry</span><span class="o">.</span><span class="n">HeliosArchetypeRegistry</span><span class="p">()</span><span class="o">.</span><span class="n">NAME_REGISTRY</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">helios_archetype</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_type</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">helios_archetype</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">helios_archetype</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># find our rbf remap from the archetytpe</span>
+        <span class="n">rbf_dict</span> <span class="o">=</span> <span class="n">helios_archetype</span><span class="o">.</span><span class="n">overfill</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rbf&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">rbf_dict</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="k">for</span> <span class="n">property_name</span><span class="p">,</span> <span class="n">value_dict</span> <span class="ow">in</span> <span class="n">rbf_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># based on the rbf lookup find our remap targets</span>
+            <span class="n">attr_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cpg_asset</span><span class="p">,</span> <span class="n">property_name</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">rbf_name</span><span class="p">,</span> <span class="n">path_list</span> <span class="ow">in</span> <span class="n">value_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">rbf_name</span> <span class="o">==</span> <span class="n">attr_value</span><span class="p">:</span>
+                    <span class="c1"># get our source/target import paths</span>
+                    <span class="n">source_path</span><span class="p">,</span> <span class="n">target_path</span> <span class="o">=</span> <span class="n">value_dict</span><span class="p">[</span><span class="n">attr_value</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># get our alternate group name</span>
+                    <span class="n">alt_name</span> <span class="o">=</span> <span class="n">rbf_name</span>
+
+        <span class="c1"># get our nodes to retarget, and the organization structure they&#39;re using if we&#39;ve got sub groups.</span>
+        <span class="n">nodes_to_process</span><span class="p">,</span> <span class="n">organization_dict</span> <span class="o">=</span> <span class="n">get_exportable_meshes_organization</span><span class="p">(</span><span class="n">export_group</span><span class="p">)</span>
+        <span class="n">nodes_to_process</span> <span class="o">=</span> <span class="n">exportable_list</span> <span class="ow">or</span> <span class="n">nodes_to_process</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">nodes_to_process</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># find our alternative group</span>
+        <span class="n">export_group_parent</span> <span class="o">=</span> <span class="n">export_group</span><span class="o">.</span><span class="n">getParent</span><span class="p">()</span>
+        <span class="n">alt_group</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">export_group_parent</span><span class="o">.</span><span class="n">getChildren</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">node</span> <span class="o">!=</span> <span class="n">export_group</span><span class="p">:</span>
+                <span class="n">alt_asset</span> <span class="o">=</span> <span class="n">get_asset_from_export_group</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">alt_asset</span><span class="p">,</span> <span class="n">property_name</span><span class="p">)</span> <span class="o">==</span> <span class="n">alt_name</span><span class="p">:</span>
+                    <span class="n">alt_group</span> <span class="o">=</span> <span class="n">node</span>
+                    <span class="k">break</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">alt_group</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># grab our source and target objects. if we&#39;re doing multiples reuse them.</span>
+        <span class="k">if</span> <span class="n">source_path</span> <span class="ow">in</span> <span class="n">imported_path_dict</span><span class="p">:</span>
+            <span class="n">source_node</span> <span class="o">=</span> <span class="n">imported_path_dict</span><span class="p">[</span><span class="n">source_path</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">source_node</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">fbx_utils</span><span class="o">.</span><span class="n">import_fbx</span><span class="p">(</span><span class="n">path_utils</span><span class="o">.</span><span class="n">to_full_path</span><span class="p">(</span><span class="n">source_path</span><span class="p">)),</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">))</span>
+            <span class="n">imported_path_dict</span><span class="p">[</span><span class="n">source_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">source_node</span>
+
+        <span class="k">if</span> <span class="n">target_path</span> <span class="ow">in</span> <span class="n">imported_path_dict</span><span class="p">:</span>
+            <span class="n">target_node</span> <span class="o">=</span> <span class="n">imported_path_dict</span><span class="p">[</span><span class="n">target_path</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">target_node</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">fbx_utils</span><span class="o">.</span><span class="n">import_fbx</span><span class="p">(</span><span class="n">path_utils</span><span class="o">.</span><span class="n">to_full_path</span><span class="p">(</span><span class="n">target_path</span><span class="p">)),</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">))</span>
+            <span class="n">imported_path_dict</span><span class="p">[</span><span class="n">target_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_node</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">source_node</span><span class="p">,</span> <span class="n">target_node</span><span class="p">]):</span>
+            <span class="k">continue</span>
+
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes_to_process</span><span class="p">:</span>
+            <span class="n">attr_utils</span><span class="o">.</span><span class="n">unlock_all_attrs</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">makeIdentity</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">apply</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">rbf_return_list</span> <span class="o">=</span> <span class="n">node_util</span><span class="o">.</span><span class="n">rbf_retarget</span><span class="p">(</span><span class="n">source_node</span><span class="p">,</span> <span class="n">target_node</span><span class="p">,</span> <span class="n">nodes_to_process</span><span class="p">)</span>
+
+        <span class="c1"># organize our retargeted meshes back into our organization structure.</span>
+        <span class="k">for</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">name_list</span> <span class="ow">in</span> <span class="n">organization_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">group_name</span> <span class="o">==</span> <span class="s1">&#39;main&#39;</span><span class="p">:</span>
+                <span class="n">parent_group</span> <span class="o">=</span> <span class="n">alt_group</span>
+            <span class="k">elif</span> <span class="n">name_list</span><span class="p">:</span>
+                <span class="n">parent_group</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">group_name</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">em</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">parent_group</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="n">alt_group</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">rbf_return_list</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">naming</span><span class="o">.</span><span class="n">get_basename</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="ow">in</span> <span class="n">name_list</span><span class="p">:</span>
+                    <span class="n">node</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="n">parent_group</span><span class="p">)</span>
+
+    <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">imported_path_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

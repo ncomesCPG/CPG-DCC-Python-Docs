@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.utils.scene_utils &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.utils.scene_utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.utils.scene_utils</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module that contains functions and classes related with Maya scene</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="kn">import</span> <span class="nn">maya.cmds</span> <span class="k">as</span> <span class="nn">cmds</span>
+<span class="kn">import</span> <span class="nn">maya.mel</span> <span class="k">as</span> <span class="nn">mel</span>
+<span class="kn">import</span> <span class="nn">maya.OpenMaya</span> <span class="k">as</span> <span class="nn">om</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">maya_utils</span><span class="p">,</span> <span class="n">node_util</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">fileio</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.modifiers</span> <span class="kn">import</span> <span class="n">ma_decorators</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+<span class="n">MAX_BACKUPS</span> <span class="o">=</span> <span class="mi">10</span>
+
+
+<div class="viewcode-block" id="delete_unknown_nodes"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.scene_utils.delete_unknown_nodes">[docs]</a><span class="k">def</span> <span class="nf">delete_unknown_nodes</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find all unknown nodes in current scene and deletes them.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">unknown</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;unknown&#39;</span><span class="p">)</span>
+    <span class="n">deleted</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">unknown</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">lockNode</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">lock</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+            <span class="n">deleted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">deleted</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Deleted unknowns: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">deleted</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="delete_turtle_nodes"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.scene_utils.delete_turtle_nodes">[docs]</a><span class="k">def</span> <span class="nf">delete_turtle_nodes</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find all turtle nodes in current scene and delete them.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">plugin_list</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">pluginInfo</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pluginsInUse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">turtle_nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="n">plugin_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">plugin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Turtle&#39;</span><span class="p">:</span>
+            <span class="n">turtle_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ilrBakeLayer&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;ilrBakeLayerManager&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;ilrOptionsNode&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;ilrUIOptionsNode&#39;</span><span class="p">]</span>
+            <span class="n">turtle_nodes</span> <span class="o">=</span> <span class="n">maya_utils</span><span class="o">.</span><span class="n">delete_nodes_of_type</span><span class="p">(</span><span class="n">turtle_types</span><span class="p">)</span>
+            <span class="k">break</span>
+
+    <span class="k">if</span> <span class="n">turtle_nodes</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Removed Turtle nodes: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">turtle_nodes</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="delete_unused_plugins"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.scene_utils.delete_unused_plugins">[docs]</a><span class="k">def</span> <span class="nf">delete_unused_plugins</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Removes all nodes in current scene that belongs to unused plugins (plugins that are not loaded).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># this functionality is not available in old Maya versions</span>
+    <span class="n">list_pm</span> <span class="o">=</span> <span class="nb">dir</span><span class="p">(</span><span class="n">pm</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;unknownPlugin&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">list_pm</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">unknown_nodes</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;unknown&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">unknown_nodes</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">unused</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">unknown_plugins</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">unknownPlugin</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">list</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">unknown_plugin</span> <span class="ow">in</span> <span class="n">unknown_plugins</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">unknownPlugin</span><span class="p">(</span><span class="n">unknown_plugin</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">unused</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unknown_plugin</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">unused</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Removed unused plugins: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">unused</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="delete_garbage"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.scene_utils.delete_garbage">[docs]</a><span class="k">def</span> <span class="nf">delete_garbage</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Delete all garbage nodes from current scene.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">straight_delete_types</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">maya_utils</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">2014</span><span class="p">:</span>
+        <span class="n">straight_delete_types</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;hyperLayout&#39;</span><span class="p">,</span> <span class="s1">&#39;hyperView&#39;</span><span class="p">]</span>       <span class="c1"># Maya 2014 crashes when tyring to remove those</span>
+        <span class="k">if</span> <span class="s1">&#39;hyperGraphLayout&#39;</span> <span class="ow">in</span> <span class="n">straight_delete_types</span><span class="p">:</span>
+            <span class="n">straight_delete_types</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;hyperGraphLayout&#39;</span><span class="p">)</span>
+
+    <span class="n">deleted_nodes</span> <span class="o">=</span> <span class="n">maya_utils</span><span class="o">.</span><span class="n">delete_nodes_of_type</span><span class="p">(</span><span class="n">straight_delete_types</span><span class="p">)</span>
+    <span class="n">check_connection_node_type</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;shadingEngine&#39;</span><span class="p">,</span> <span class="s1">&#39;partition&#39;</span><span class="p">,</span> <span class="s1">&#39;objectSet&#39;</span><span class="p">]</span>
+    <span class="n">check_connection_nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">check_type</span> <span class="ow">in</span> <span class="n">check_connection_node_type</span><span class="p">:</span>
+        <span class="n">nodes_of_type</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">check_type</span><span class="p">)</span>
+        <span class="n">check_connection_nodes</span> <span class="o">+=</span> <span class="n">nodes_of_type</span>
+
+    <span class="n">garbage_nodes</span> <span class="o">=</span> <span class="n">deleted_nodes</span> <span class="k">if</span> <span class="n">deleted_nodes</span> <span class="k">else</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">nodes_to_skip</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;characterPartition&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">connection_node</span> <span class="ow">in</span> <span class="n">check_connection_nodes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">connection_node</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">connection_node</span><span class="p">))</span> <span class="ow">or</span> <span class="n">connection_node</span> <span class="ow">in</span> <span class="n">nodes_to_skip</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">node_util</span><span class="o">.</span><span class="n">is_empty</span><span class="p">(</span><span class="n">connection_node</span><span class="p">):</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">lockNode</span><span class="p">(</span><span class="n">connection_node</span><span class="p">,</span> <span class="n">lock</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">connection_node</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">connection_node</span><span class="p">):</span>
+                <span class="n">garbage_nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">connection_node</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">garbage_nodes</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Delete Garbage Nodes: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">garbage_nodes</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="delete_unused_shader_nodes"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.scene_utils.delete_unused_shader_nodes">[docs]</a><span class="k">def</span> <span class="nf">delete_unused_shader_nodes</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deletes all unused shader nodes from this scene.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">temp_cube</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Since Maya 2020 an error is thrown when running Delete Unused Nodes if the StandardSurface default shader is</span>
+        <span class="c1"># unassigned. We create a temporary object, assign the default StandardSurface material to it, then delete</span>
+        <span class="c1"># Unused and delete the sphere</span>
+        <span class="n">temp_cube</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">polyCube</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;TEMP_StandardSurface_Assignment&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">temp_standard_shader</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sets</span><span class="p">(</span> <span class="n">renderable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">noSurfaceShader</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">empty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;standardSurface1SG&#39;</span><span class="p">)</span>
+        <span class="n">standard_material</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="s1">&#39;standardSurface1&#39;</span><span class="p">)</span>
+        <span class="n">standard_material</span><span class="o">.</span><span class="n">outColor</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">temp_standard_shader</span><span class="o">.</span><span class="n">surfaceShader</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">sets</span><span class="p">(</span><span class="n">temp_standard_shader</span><span class="p">,</span> <span class="n">edit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">forceElement</span><span class="o">=</span><span class="n">temp_cube</span><span class="p">)</span>
+        <span class="n">mel</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;hyperShadePanelMenuCommand(&quot;hyperShadePanel1&quot;, &quot;deleteUnusedNodes&quot;);&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Error while deleting unused nodes: &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">temp_cube</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">temp_cube</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="delete_empty_namespaces"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.scene_utils.delete_empty_namespaces">[docs]</a><span class="k">def</span> <span class="nf">delete_empty_namespaces</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Removes all namespaces from bottom up to remove children namespaces first.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">namespace_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">ns</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">listNamespaces</span><span class="p">(</span> <span class="n">recursive</span>  <span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">internal</span> <span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">namespace_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ns</span><span class="p">)</span>
+
+    <span class="c1"># reverse iterate through the contents of the list to remove the deepest layers first</span>
+    <span class="k">for</span> <span class="n">ns</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">namespace_list</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pm</span><span class="o">.</span><span class="n">namespaceInfo</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">namespace</span><span class="p">(</span><span class="n">removeNamespace</span><span class="o">=</span><span class="n">ns</span><span class="p">,</span> <span class="n">mergeNamespaceWithRoot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="delete_empty_display_layers"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.scene_utils.delete_empty_display_layers">[docs]</a><span class="k">def</span> <span class="nf">delete_empty_display_layers</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deletes all display layers that are empty within current scene.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">empty_layer_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">default_display_layer</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="s1">&#39;defaultLayer&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="s1">&#39;defaultLayer&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">display_layer</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">DisplayLayer</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">display_layer</span> <span class="o">!=</span> <span class="n">default_display_layer</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">display_layer</span><span class="o">.</span><span class="n">listMembers</span><span class="p">():</span>
+            <span class="n">empty_layer_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">display_layer</span><span class="p">)</span>
+
+    <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">empty_layer_list</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="delete_render_layers"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.scene_utils.delete_render_layers">[docs]</a><span class="k">def</span> <span class="nf">delete_render_layers</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deletes all render layers in current scene (except default render layer).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">render_layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;renderLayer&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">RenderLayer</span><span class="p">(</span><span class="s1">&#39;defaultRenderLayer&#39;</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="n">render_layers</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">render_layers</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Delete Render Layers: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">render_layers</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="delete_orphaned_controller_tags"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.scene_utils.delete_orphaned_controller_tags">[docs]</a><span class="k">def</span> <span class="nf">delete_orphaned_controller_tags</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deletes all controller tags that are orphaned.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">controller_tags</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Controller</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">controllerObject</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()]</span>
+    <span class="k">if</span> <span class="n">controller_tags</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">controller_tags</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Delete Orphaned Controller Tags: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">controller_tags</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="delete_orphaned_group_id_nodes"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.scene_utils.delete_orphaned_group_id_nodes">[docs]</a><span class="k">def</span> <span class="nf">delete_orphaned_group_id_nodes</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deletes all group id nodes that are orphaned.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">group_id_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;groupId&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()]</span>
+    <span class="k">if</span> <span class="n">group_id_nodes</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">group_id_nodes</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Delete Orphaned Group ID Nodes: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_id_nodes</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="delete_orphaned_time_editor_tracks"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.scene_utils.delete_orphaned_time_editor_tracks">[docs]</a><span class="k">def</span> <span class="nf">delete_orphaned_time_editor_tracks</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deletes all time editor tracks that are orphaned in current scene.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">time_editor_tracks</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;timeEditorTracks&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()]</span>
+    <span class="k">if</span> <span class="n">time_editor_tracks</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">time_editor_tracks</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Delete Orphaned Time Editor Track Nodes: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time_editor_tracks</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="delete_orphaned_graph_editor_infos"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.scene_utils.delete_orphaned_graph_editor_infos">[docs]</a><span class="k">def</span> <span class="nf">delete_orphaned_graph_editor_infos</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deletes all the graph editor info nodes that are orphaned in current scene.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">graph_editor_info</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;nodeGraphEditorInfo&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()]</span>
+    <span class="k">if</span> <span class="n">graph_editor_info</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">graph_editor_info</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Delete Orphaned Graph Editor Info Nodes: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">graph_editor_info</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="delete_orphaned_reference_nodes"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.scene_utils.delete_orphaned_reference_nodes">[docs]</a><span class="k">def</span> <span class="nf">delete_orphaned_reference_nodes</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deletes all the reference nodes that are unlocked and orphaned in current scene.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">reference_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;reference&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">isLocked</span><span class="p">()]</span>
+    <span class="k">if</span> <span class="n">reference_nodes</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">reference_nodes</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Delete Orphaned Reference Nodes: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">reference_nodes</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="delete_orphaned_nodes"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.scene_utils.delete_orphaned_nodes">[docs]</a><span class="k">def</span> <span class="nf">delete_orphaned_nodes</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deletes all orphaned nodes from current scene.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">delete_orphaned_controller_tags</span><span class="p">()</span>
+    <span class="n">delete_orphaned_group_id_nodes</span><span class="p">()</span>
+    <span class="n">delete_orphaned_time_editor_tracks</span><span class="p">()</span>
+    <span class="n">delete_orphaned_graph_editor_infos</span><span class="p">()</span>
+    <span class="n">delete_orphaned_reference_nodes</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="clean_scene"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.scene_utils.clean_scene">[docs]</a><span class="k">def</span> <span class="nf">clean_scene</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cleans invalid nodes from current scene.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">delete_unknown_nodes</span><span class="p">()</span>
+    <span class="n">delete_turtle_nodes</span><span class="p">()</span>
+    <span class="n">delete_unused_plugins</span><span class="p">()</span>
+    <span class="n">delete_garbage</span><span class="p">()</span>
+    <span class="n">delete_unused_shader_nodes</span><span class="p">()</span>
+    <span class="n">delete_empty_namespaces</span><span class="p">()</span>
+    <span class="n">delete_empty_display_layers</span><span class="p">()</span>
+    <span class="n">delete_render_layers</span><span class="p">()</span>
+    <span class="n">delete_orphaned_nodes</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="backup_scene"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.scene_utils.backup_scene">[docs]</a><span class="k">def</span> <span class="nf">backup_scene</span><span class="p">(</span><span class="n">backup_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Save a copy of the scene to our backup directory on the C drive.</span>
+
+<span class="sd">    :param str backup_name: Name of the backup file. Otherwise, it&#39;ll default to &quot;cpg_backup&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">scene_name</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sceneName</span><span class="p">()</span>
+
+    <span class="n">backup_name</span> <span class="o">=</span> <span class="n">backup_name</span> <span class="ow">or</span> <span class="s1">&#39;cpg_backup&#39;</span>
+
+    <span class="n">clean_scene</span><span class="p">()</span>
+    <span class="n">backup_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;C:\export_backup&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">fileio</span><span class="o">.</span><span class="n">touch_path</span><span class="p">(</span><span class="n">backup_dir</span><span class="p">)</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">backup_dir</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">backup_dir</span><span class="p">)</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.ma&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">backup_name</span> <span class="ow">in</span> <span class="n">f</span><span class="p">]</span>
+
+    <span class="n">files</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">MAX_BACKUPS</span><span class="p">:</span>
+        <span class="n">backup_path</span> <span class="o">=</span> <span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">index</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">index</span> <span class="o">&lt;=</span> <span class="n">MAX_BACKUPS</span><span class="p">:</span>
+            <span class="n">backup_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">backup_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">backup_name</span><span class="si">}{</span><span class="n">index</span><span class="si">}</span><span class="s1">.ma&#39;</span><span class="p">)</span>
+            <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">saveAs</span><span class="p">(</span><span class="n">backup_path</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">scene_name</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">renameFile</span><span class="p">(</span><span class="n">scene_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="clean_imported_nodes"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.scene_utils.clean_imported_nodes">[docs]</a><span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">not_undoable_decorator</span>
+<span class="k">def</span> <span class="nf">clean_imported_nodes</span><span class="p">(</span><span class="n">new_nodes</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Removes anything that is not a mesh or transform from a given list of objects in Maya</span>
+
+<span class="sd">    :param list(str) new_nodes: List of nodes to clean</span>
+<span class="sd">    :return: String names of transform node(s)</span>
+<span class="sd">    :rtype: list(str)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">m_sel</span> <span class="o">=</span> <span class="n">om</span><span class="o">.</span><span class="n">MSelectionList</span><span class="p">()</span>
+    <span class="n">clean_node</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">junk_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">new_nodes</span><span class="p">):</span>
+        <span class="n">m_sel</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="n">m_obj_node</span> <span class="o">=</span> <span class="n">om</span><span class="o">.</span><span class="n">MObject</span><span class="p">()</span>
+        <span class="n">m_sel</span><span class="o">.</span><span class="n">getDependNode</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">m_obj_node</span><span class="p">)</span>
+        <span class="n">node_type</span> <span class="o">=</span> <span class="n">m_obj_node</span><span class="o">.</span><span class="n">apiTypeStr</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">node_type</span> <span class="o">==</span> <span class="s1">&#39;kTransform&#39;</span><span class="p">:</span>
+            <span class="n">clean_node</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">node_type</span> <span class="o">!=</span> <span class="s1">&#39;kMesh&#39;</span> <span class="ow">and</span> <span class="n">node_type</span> <span class="o">!=</span> <span class="s1">&#39;kTransform&#39;</span><span class="p">:</span>
+            <span class="n">junk_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+    <span class="n">pm</span><span class="o">.</span><span class="n">sets</span><span class="p">(</span><span class="s1">&#39;initialShadingGroup&#39;</span><span class="p">,</span> <span class="n">fe</span><span class="o">=</span><span class="n">clean_node</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">junk_item</span> <span class="ow">in</span> <span class="n">junk_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">cmds</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">junk_item</span><span class="p">):</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">junk_item</span><span class="p">)</span>
+    <span class="n">delete_garbage</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">clean_node</span></div>
+
+
+<div class="viewcode-block" id="save_as"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.scene_utils.save_as">[docs]</a><span class="k">def</span> <span class="nf">save_as</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Saves Maya scene into the given file path.</span>
+
+<span class="sd">    :param str file_path: file path where we want to store Maya scene file.</span>
+<span class="sd">    :return: True if the save as operation was completed successfully; False otherwise.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">saved</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">file_path</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">saved</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Saving &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+
+    <span class="n">file_type</span> <span class="o">=</span> <span class="s1">&#39;mayaAscii&#39;</span>
+    <span class="k">if</span> <span class="n">file_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.mb&#39;</span><span class="p">):</span>
+        <span class="n">file_type</span> <span class="o">=</span> <span class="s1">&#39;mayaBinary&#39;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">renameFile</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">saveFile</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">file_type</span><span class="p">)</span>
+        <span class="n">saved</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()))</span>
+        <span class="n">saved</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">saved</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Scene saved successfully into: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pm</span><span class="o">.</span><span class="n">about</span><span class="p">(</span><span class="n">batch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">confirmDialog</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Warning:</span><span class="se">\n\n</span><span class="s1">Maya was unable to save!&#39;</span><span class="p">,</span> <span class="n">button</span><span class="o">=</span><span class="s1">&#39;Confirm&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Scene not saved: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">saved</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

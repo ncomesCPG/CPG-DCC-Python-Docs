@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.utils.ma_maths &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.utils.ma_maths</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.utils.ma_maths</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module that contains functions and classes related with PyMEL API math</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">pymaths</span>
+
+
+<span class="n">X_AXIS_VECTOR</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">Y_AXIS_VECTOR</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">Z_AXIS_VECTOR</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="magnitude"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.ma_maths.magnitude">[docs]</a><span class="k">def</span> <span class="nf">magnitude</span><span class="p">(</span><span class="n">vector</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the magnitude (length) or a given vector.</span>
+
+<span class="sd">    :param tuple(float, float, float) vector: vector to return the length of.</span>
+<span class="sd">    :return: vector magnitude.</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="n">vector</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">vector</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">vector</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">length</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="offset_vector"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.ma_maths.offset_vector">[docs]</a><span class="k">def</span> <span class="nf">offset_vector</span><span class="p">(</span><span class="n">point1</span><span class="p">,</span> <span class="n">point2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the offset vector between point1 and point2.</span>
+
+<span class="sd">    :param tuple(float, float, float) point1: start point of the offset calculation.</span>
+<span class="sd">    :param tuple(float, float, float) point2: end point of the offset calculation.</span>
+<span class="sd">    :return: offset vector as a tuple.</span>
+<span class="sd">    :rtype: tuple(float, float, float)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">pnt1</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="n">point1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">point1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">point1</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">pnt2</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="n">point2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">point2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">point2</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">vec</span> <span class="o">=</span> <span class="n">pnt2</span> <span class="o">-</span> <span class="n">pnt1</span>
+
+    <span class="k">return</span> <span class="n">vec</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">vec</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">vec</span><span class="o">.</span><span class="n">z</span></div>
+
+
+<div class="viewcode-block" id="distance_between_nodes"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.ma_maths.distance_between_nodes">[docs]</a><span class="k">def</span> <span class="nf">distance_between_nodes</span><span class="p">(</span><span class="n">source_node</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_node</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the distance between 2 given nodes.</span>
+
+<span class="sd">    :param str source_node: first node to start measuring distance from. If not given, first selected node will be used.</span>
+<span class="sd">    :param str target_node: second node to end measuring distance to. If not given, second selected node will be used.</span>
+<span class="sd">    :return: distance between 2 nodes.</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">source_node</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">target_node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sel</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">sl</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;transform&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="n">source_node</span><span class="p">,</span> <span class="n">target_node</span> <span class="o">=</span> <span class="n">sel</span>
+
+    <span class="n">source_pos</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="o">*</span><span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">source_node</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">worldSpace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">translation</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="n">target_pos</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="o">*</span><span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">target_node</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">worldSpace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">translation</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">source_pos</span><span class="o">.</span><span class="n">distanceTo</span><span class="p">(</span><span class="n">target_pos</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="direction_vector_between_nodes"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.ma_maths.direction_vector_between_nodes">[docs]</a><span class="k">def</span> <span class="nf">direction_vector_between_nodes</span><span class="p">(</span><span class="n">source_node</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_node</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the direction vector between 2 given nodes</span>
+<span class="sd">    :param str source_node: first node to start getting direction. If not given, first selected node will be used.</span>
+<span class="sd">    :param str target_node: second node to end getting direction. If not given, second selected node will be used.</span>
+<span class="sd">    :return: direction vector between 2 nodes.</span>
+<span class="sd">    :rtype: pm.datatypes.Vector</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">source_node</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">target_node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sel</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">sl</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;transform&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="n">source_node</span><span class="p">,</span> <span class="n">target_node</span> <span class="o">=</span> <span class="n">sel</span>
+
+    <span class="n">source_pos</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="o">*</span><span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">source_node</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">worldSpace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">translation</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="n">target_pos</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="o">*</span><span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">target_node</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">worldSpace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">translation</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">target_pos</span> <span class="o">-</span> <span class="n">source_pos</span></div>
+
+
+<div class="viewcode-block" id="get_identity_matrix"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.ma_maths.get_identity_matrix">[docs]</a><span class="k">def</span> <span class="nf">get_identity_matrix</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns identity matrix.</span>
+
+<span class="sd">    :return: pm.datatypes.Matrix</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Matrix</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="multiply_matrix"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.ma_maths.multiply_matrix">[docs]</a><span class="k">def</span> <span class="nf">multiply_matrix</span><span class="p">(</span><span class="n">matrix4x4_list1</span><span class="p">,</span> <span class="n">matrix4x4_list2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Multiplies the two given matrices.</span>
+
+<span class="sd">    matrix1 and matrix2 are just the list of numbers of a 4x4 matrix</span>
+<span class="sd">    (like the ones returned by cmds.getAttr(&#39;transform.worldMatrix) for example.</span>
+
+<span class="sd">    :param matrix4x4_list1:</span>
+<span class="sd">    :param matrix4x4_list2:</span>
+<span class="sd">    :return: pm.datatypes.Matrix</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">mat1</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Matrix</span><span class="p">(</span><span class="n">matrix4x4_list1</span><span class="p">)</span>
+    <span class="n">mat2</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Matrix</span><span class="p">(</span><span class="n">matrix4x4_list2</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mat1</span> <span class="o">*</span> <span class="n">mat2</span></div>
+
+
+<div class="viewcode-block" id="to_euler_xyz"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.ma_maths.to_euler_xyz">[docs]</a><span class="k">def</span> <span class="nf">to_euler_xyz</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts given rotation matrix to a rotation with XYZ rotation order.</span>
+
+<span class="sd">    :param OpenMaya.MMatrix rotation_matrix: rotation matrix to convert.</span>
+<span class="sd">    :param bool degrees: whether to convert result in degrees or radians.</span>
+<span class="sd">    :return: euler rotation.</span>
+<span class="sd">    :rtype: pm.datatypes.EulerRotation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">rotation_z</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">pymaths</span><span class="o">.</span><span class="n">is_equal</span><span class="p">(</span><span class="n">rotation_z</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">0.5</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="o">-</span><span class="n">z</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="o">-</span><span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="o">-</span><span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">pymaths</span><span class="o">.</span><span class="n">is_equal</span><span class="p">(</span><span class="n">rotation_z</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">0.5</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">z</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="n">rotation_z</span><span class="p">)</span>
+        <span class="n">cos_y</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_y</span><span class="p">,</span> <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_y</span><span class="p">)</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_y</span><span class="p">,</span> <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_y</span><span class="p">)</span>
+    <span class="n">angles</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span>
+
+    <span class="k">if</span> <span class="n">degrees</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">,</span> <span class="n">angles</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">EulerRotation</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="to_euler_xzy"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.ma_maths.to_euler_xzy">[docs]</a><span class="k">def</span> <span class="nf">to_euler_xzy</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts given rotation matrix to a rotation with XZY rotation order.</span>
+
+<span class="sd">    :param pm.datatypes.Matrix rotation_matrix: rotation matrix to convert.</span>
+<span class="sd">    :param bool degrees: whether to convert result in degrees or radians.</span>
+<span class="sd">    :return: euler rotation.</span>
+<span class="sd">    :rtype: pm.datatypes.EulerRotation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">rotation_yy</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="n">rotation_yy</span><span class="p">)</span>
+    <span class="n">cos_z</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="o">-</span><span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_z</span><span class="p">,</span> <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_z</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="o">-</span><span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_z</span><span class="p">,</span> <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_z</span><span class="p">)</span>
+
+    <span class="n">angles</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span>
+
+    <span class="k">if</span> <span class="n">degrees</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">,</span> <span class="n">angles</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">EulerRotation</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="to_euler_yxz"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.ma_maths.to_euler_yxz">[docs]</a><span class="k">def</span> <span class="nf">to_euler_yxz</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts given rotation matrix to a rotation with YXZ rotation order.</span>
+
+<span class="sd">    :param pm.datatypes.Matrix rotation_matrix: rotation matrix to convert.</span>
+<span class="sd">    :param bool degrees: whether to convert result in degrees or radians.</span>
+<span class="sd">    :return: euler rotation.</span>
+<span class="sd">    :rtype: pm.datatypes.EulerRotation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">rotation_z</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="n">rotation_z</span><span class="p">)</span>
+    <span class="n">cos_x</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="n">y</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="o">-</span><span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_x</span><span class="p">,</span> <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_x</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="o">-</span><span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_x</span><span class="p">,</span> <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_x</span><span class="p">)</span>
+
+    <span class="n">angles</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span>
+
+    <span class="k">if</span> <span class="n">degrees</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">,</span> <span class="n">angles</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">EulerRotation</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="to_euler_yzx"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.ma_maths.to_euler_yzx">[docs]</a><span class="k">def</span> <span class="nf">to_euler_yzx</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts given rotation matrix to a rotation with YZX rotation order.</span>
+
+<span class="sd">    :param pm.datatypes.Matrix rotation_matrix: rotation matrix to convert.</span>
+<span class="sd">    :param bool degrees: whether to convert result in degrees or radians.</span>
+<span class="sd">    :return: euler rotation.</span>
+<span class="sd">    :rtype: pm.datatypes.EulerRotation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">rotation_yx</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="n">rotation_yx</span><span class="p">)</span>
+    <span class="n">cos_z</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_z</span><span class="p">,</span> <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_z</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_z</span><span class="p">,</span> <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_z</span><span class="p">)</span>
+
+    <span class="n">angles</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span>
+
+    <span class="k">if</span> <span class="n">degrees</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">,</span> <span class="n">angles</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">EulerRotation</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="to_euler_zxy"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.ma_maths.to_euler_zxy">[docs]</a><span class="k">def</span> <span class="nf">to_euler_zxy</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts given rotation matrix to a rotation with ZXY rotation order.</span>
+
+<span class="sd">    :param pm.datatypes.Matrix rotation_matrix: rotation matrix to convert.</span>
+<span class="sd">    :param bool degrees: whether to convert result in degrees or radians.</span>
+<span class="sd">    :return: euler rotation.</span>
+<span class="sd">    :rtype: pm.datatypes.EulerRotation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">rotation_zy</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="n">rotation_zy</span><span class="p">)</span>
+    <span class="n">cos_x</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="n">z</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_x</span><span class="p">,</span> <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_x</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_x</span><span class="p">,</span> <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_x</span><span class="p">)</span>
+
+    <span class="n">angles</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span>
+
+    <span class="k">if</span> <span class="n">degrees</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">,</span> <span class="n">angles</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">EulerRotation</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="to_euler_zyx"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.ma_maths.to_euler_zyx">[docs]</a><span class="k">def</span> <span class="nf">to_euler_zyx</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts given rotation matrix to a rotation with ZYX rotation order.</span>
+
+<span class="sd">    :param pm.datatypes.Matrix rotation_matrix: rotation matrix to convert.</span>
+<span class="sd">    :param bool degrees: whether to convert result in degrees or radians.</span>
+<span class="sd">    :return: euler rotation.</span>
+<span class="sd">    :rtype: pm.datatypes.EulerRotation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">rotation_zx</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="n">rotation_zx</span><span class="p">)</span>
+    <span class="n">cos_y</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="o">-</span><span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_y</span><span class="p">,</span> <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_y</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="o">-</span><span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_y</span><span class="p">,</span> <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos_y</span><span class="p">)</span>
+
+    <span class="n">angles</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span>
+
+    <span class="k">if</span> <span class="n">degrees</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">,</span> <span class="n">angles</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">EulerRotation</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="to_euler"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.ma_maths.to_euler">[docs]</a><span class="k">def</span> <span class="nf">to_euler</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">,</span> <span class="n">rotate_order</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts given rotation matrix to an euler rotation.</span>
+
+<span class="sd">    :param pm.datatypes.Matrix rotation_matrix: rotation matrix to convert.</span>
+<span class="sd">    :param str rotate_order: rotation order.</span>
+<span class="sd">    :param bool degrees: whether to convert result in degrees or radians.</span>
+<span class="sd">    :return: euler rotation.</span>
+<span class="sd">    :rtype: pm.datatypes.EulerRotation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">rotate_order</span> <span class="o">==</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">TransformationMatrix</span><span class="o">.</span><span class="n">kXYZ</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">to_euler_xyz</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">,</span> <span class="n">degrees</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">rotate_order</span> <span class="o">==</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">TransformationMatrix</span><span class="o">.</span><span class="n">kXZY</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">to_euler_xzy</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">,</span> <span class="n">degrees</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">rotate_order</span> <span class="o">==</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">TransformationMatrix</span><span class="o">.</span><span class="n">kYXZ</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">to_euler_yxz</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">,</span> <span class="n">degrees</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">rotate_order</span> <span class="o">==</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">TransformationMatrix</span><span class="o">.</span><span class="n">kYZX</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">to_euler_yzx</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">,</span> <span class="n">degrees</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">rotate_order</span> <span class="o">==</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">TransformationMatrix</span><span class="o">.</span><span class="n">kZXY</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">to_euler_zxy</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">,</span> <span class="n">degrees</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">to_euler_zyx</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">,</span> <span class="n">degrees</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="mirror_xy"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.ma_maths.mirror_xy">[docs]</a><span class="k">def</span> <span class="nf">mirror_xy</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mirrors given rotation matrix along XY plane.</span>
+
+<span class="sd">    :param pm.datatypes.Matrix rotation_matrix: rotation matrix to mirror.</span>
+<span class="sd">    :return: mirrored rotation matrix.</span>
+<span class="sd">    :rtype: pm.datatypes.Matrix</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">rotation_matrix</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Matrix</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">)</span>
+    <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">rotation_matrix</span></div>
+
+
+<div class="viewcode-block" id="mirror_yz"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.ma_maths.mirror_yz">[docs]</a><span class="k">def</span> <span class="nf">mirror_yz</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mirrors given rotation matrix along YZ plane.</span>
+
+<span class="sd">    :param pm.datatypes.Matrix rotation_matrix: rotation matrix to mirror.</span>
+<span class="sd">    :return: mirrored rotation matrix.</span>
+<span class="sd">    :rtype: pm.datatypes.MMatrix</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">rotation_matrix</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Matrix</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">)</span>
+    <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">rotation_matrix</span></div>
+
+
+<div class="viewcode-block" id="mirror_xz"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.ma_maths.mirror_xz">[docs]</a><span class="k">def</span> <span class="nf">mirror_xz</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mirrors given rotation matrix along XZ plane.</span>
+
+<span class="sd">    :param pm.datatypes.Matrix rotation_matrix: rotation matrix to mirror.</span>
+<span class="sd">    :return: mirrored rotation matrix.</span>
+<span class="sd">    :rtype: pm.datatypes.Matrix</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">rotation_matrix</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Matrix</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">)</span>
+    <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">rotation_matrix</span></div>
+
+
+<div class="viewcode-block" id="quaternion_dot"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.ma_maths.quaternion_dot">[docs]</a><span class="k">def</span> <span class="nf">quaternion_dot</span><span class="p">(</span><span class="n">qa</span><span class="p">,</span> <span class="n">qb</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the dot product based on given quaternions.</span>
+
+<span class="sd">    :param pm.datatypes.Quaternion qa: quaternion to calculate dot product with.</span>
+<span class="sd">    :param pm.datatypes.Quaternion qb: quaternion to calculate dot product with.</span>
+<span class="sd">    :return: quaternion dot product.</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">qa</span><span class="o">.</span><span class="n">w</span> <span class="o">*</span> <span class="n">qb</span><span class="o">.</span><span class="n">w</span> <span class="o">+</span> <span class="n">qa</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="n">qb</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">qa</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="n">qb</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">qa</span><span class="o">.</span><span class="n">z</span> <span class="o">*</span> <span class="n">qb</span><span class="o">.</span><span class="n">z</span></div>
+
+
+<div class="viewcode-block" id="slerp"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.ma_maths.slerp">[docs]</a><span class="k">def</span> <span class="nf">slerp</span><span class="p">(</span><span class="n">qa</span><span class="p">,</span> <span class="n">qb</span><span class="p">,</span> <span class="n">weight</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the spherical interpolation  between two given quaternions.</span>
+
+<span class="sd">    :param pm.datatypes.Quaternion qa: quaternion to calculate spherical interpolation with.</span>
+<span class="sd">    :param pm.datatypes.Quaternion qb: quaternion to calculate spherical interpolation with.</span>
+<span class="sd">    :param float weight: how far we want to interpolate.</span>
+<span class="sd">    :return: result of the spherical interpolation.</span>
+<span class="sd">    :rtype: pm.datatypes.MQuaternion</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">qc</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Quaternion</span><span class="p">()</span>
+    <span class="n">dot</span> <span class="o">=</span> <span class="n">quaternion_dot</span><span class="p">(</span><span class="n">qa</span><span class="p">,</span> <span class="n">qb</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dot</span> <span class="o">&gt;=</span> <span class="mf">1.0</span><span class="p">):</span>
+        <span class="n">qc</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">w</span>
+        <span class="n">qc</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">qc</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">qc</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">z</span>
+        <span class="k">return</span> <span class="n">qc</span>
+
+    <span class="n">half_theta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">dot</span><span class="p">)</span>
+    <span class="n">sin_half_theta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">dot</span> <span class="o">*</span> <span class="n">dot</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pymaths</span><span class="o">.</span><span class="n">is_equal</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">sin_half_theta</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="n">qc</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="n">qa</span><span class="o">.</span><span class="n">w</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="n">qb</span><span class="o">.</span><span class="n">w</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">qc</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">qa</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="n">qb</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">qc</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">qa</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="n">qb</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">qc</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">qa</span><span class="o">.</span><span class="n">z</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="n">qb</span><span class="o">.</span><span class="n">z</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">qc</span>
+
+    <span class="n">ratio_a</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">((</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">weight</span><span class="p">)</span> <span class="o">*</span> <span class="n">half_theta</span><span class="p">)</span> <span class="o">/</span> <span class="n">sin_half_theta</span>
+    <span class="n">ratio_b</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">weight</span> <span class="o">*</span> <span class="n">half_theta</span><span class="p">)</span> <span class="o">/</span> <span class="n">sin_half_theta</span>
+
+    <span class="n">qc</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="n">qa</span><span class="o">.</span><span class="n">w</span> <span class="o">*</span> <span class="n">ratio_a</span> <span class="o">+</span> <span class="n">qb</span><span class="o">.</span><span class="n">w</span> <span class="o">*</span> <span class="n">ratio_b</span><span class="p">)</span>
+    <span class="n">qc</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">qa</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="n">ratio_a</span> <span class="o">+</span> <span class="n">qb</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="n">ratio_b</span><span class="p">)</span>
+    <span class="n">qc</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">qa</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="n">ratio_a</span> <span class="o">+</span> <span class="n">qb</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="n">ratio_b</span><span class="p">)</span>
+    <span class="n">qc</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">qa</span><span class="o">.</span><span class="n">z</span> <span class="o">*</span> <span class="n">ratio_a</span> <span class="o">+</span> <span class="n">qb</span><span class="o">.</span><span class="n">z</span> <span class="o">*</span> <span class="n">ratio_b</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">qc</span></div>
+
+
+<div class="viewcode-block" id="look_at"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.ma_maths.look_at">[docs]</a><span class="k">def</span> <span class="nf">look_at</span><span class="p">(</span><span class="n">source_position</span><span class="p">,</span> <span class="n">aim_position</span><span class="p">,</span> <span class="n">aim_vector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">up_vector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">world_up_vector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">constrain_axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Aims one node to another node using quaternions.</span>
+
+<span class="sd">    :param pm.dt.Vector source_position: source position which acts as the eye.</span>
+<span class="sd">    :param pm.dt.Vector aim_position: target position to aim at.</span>
+<span class="sd">    :param pm.dt.Vector aim_vector: aim vector.</span>
+<span class="sd">    :param pm.dt.Vector up_vector: up vector.</span>
+<span class="sd">    :param pm.dt.Vector world_up_vector: optional world up vector.</span>
+<span class="sd">    :param pm.dt.Vector constrain_axis: axis vector to constraint the aim on. For example (0, 1, 1) will set X</span>
+<span class="sd">        rotation to 0.0.</span>
+<span class="sd">    :return: quaternion that encapsulates the aim orientation.</span>
+<span class="sd">    :rtype: pm.dt.Quaternion</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">constrain_axis</span> <span class="o">=</span> <span class="n">constrain_axis</span> <span class="ow">or</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">aim_vector</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">aim_vector</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="n">aim_vector</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="o">*</span><span class="n">aim_vector</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">up_vector</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">up_vector</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="n">up_vector</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="o">*</span><span class="n">up_vector</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">world_up_vector</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">world_up_vector</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="n">world_up_vector</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="o">*</span><span class="n">world_up_vector</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">constrain_axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">constrain_axis</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="n">constrain_axis</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="o">*</span><span class="n">constrain_axis</span><span class="p">)</span>
+
+    <span class="n">eye_aim</span> <span class="o">=</span> <span class="n">aim_vector</span> <span class="ow">or</span> <span class="n">X_AXIS_VECTOR</span>
+    <span class="n">eye_up</span> <span class="o">=</span> <span class="n">up_vector</span> <span class="ow">or</span> <span class="n">Y_AXIS_VECTOR</span>
+    <span class="n">up_axis_str</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">upAxis</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">world_up</span> <span class="o">=</span> <span class="n">world_up_vector</span> <span class="ow">or</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="n">up_axis_str</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span> <span class="k">else</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">eye_pivot_pos</span> <span class="o">=</span> <span class="n">source_position</span>
+    <span class="n">target_pivot_pos</span> <span class="o">=</span> <span class="n">aim_position</span>
+
+    <span class="n">aim_vector</span> <span class="o">=</span> <span class="n">target_pivot_pos</span> <span class="o">-</span> <span class="n">eye_pivot_pos</span>
+    <span class="n">eye_u</span> <span class="o">=</span> <span class="n">aim_vector</span><span class="o">.</span><span class="n">normal</span><span class="p">()</span>
+    <span class="n">eye_w</span> <span class="o">=</span> <span class="p">(</span><span class="n">eye_u</span> <span class="o">^</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="n">world_up</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">world_up</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">world_up</span><span class="o">.</span><span class="n">z</span><span class="p">))</span><span class="o">.</span><span class="n">normal</span><span class="p">()</span>
+    <span class="n">eye_v</span> <span class="o">=</span> <span class="n">eye_w</span> <span class="o">^</span> <span class="n">eye_u</span>
+    <span class="n">quat_u</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Quaternion</span><span class="p">(</span><span class="n">eye_aim</span><span class="p">,</span> <span class="n">eye_u</span><span class="p">)</span>
+    <span class="n">up_rotated</span> <span class="o">=</span> <span class="n">eye_up</span><span class="o">.</span><span class="n">rotateBy</span><span class="p">(</span><span class="n">quat_u</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">up_rotated</span> <span class="o">*</span> <span class="n">eye_v</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ZeroDivisionError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">eye_up</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span>
+
+    <span class="n">quat_v</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Quaternion</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">eye_u</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">eye_v</span><span class="o">.</span><span class="n">isEquivalent</span><span class="p">(</span><span class="n">up_rotated</span><span class="o">.</span><span class="n">rotateBy</span><span class="p">(</span><span class="n">quat_v</span><span class="p">),</span> <span class="mf">1.0e-5</span><span class="p">):</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">-</span> <span class="n">angle</span>
+        <span class="n">quat_v</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Quaternion</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">eye_u</span><span class="p">)</span>
+
+    <span class="n">quat_u</span> <span class="o">*=</span> <span class="n">quat_v</span>
+    <span class="n">rot</span> <span class="o">=</span> <span class="n">quat_u</span><span class="o">.</span><span class="n">asEulerRotation</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">constrain_axis</span><span class="o">.</span><span class="n">x</span><span class="p">:</span>
+        <span class="n">rot</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">constrain_axis</span><span class="o">.</span><span class="n">y</span><span class="p">:</span>
+        <span class="n">rot</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">constrain_axis</span><span class="o">.</span><span class="n">z</span><span class="p">:</span>
+        <span class="n">rot</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="k">return</span> <span class="n">rot</span><span class="o">.</span><span class="n">asQuaternion</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="even_linear_point_distribution"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.ma_maths.even_linear_point_distribution">[docs]</a><span class="k">def</span> <span class="nf">even_linear_point_distribution</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generator function which evenly distributes points along a straight line.</span>
+
+<span class="sd">    :param pm.dt.Vector start: start vector.</span>
+<span class="sd">    :param pm.dt.Vector end: end vector.</span>
+<span class="sd">    :param int count: number of points to distribute.</span>
+<span class="sd">    :return: distributed vector with the position and their distribution value.</span>
+<span class="sd">    :rtype: tuple(pm.dt.Vector, int)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">direction_vector</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span>
+    <span class="n">fraction</span> <span class="o">=</span> <span class="n">direction_vector</span><span class="o">.</span><span class="n">normal</span><span class="p">()</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="n">count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">multiplier</span> <span class="o">=</span> <span class="n">fraction</span> <span class="o">*</span> <span class="n">n</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="p">(</span><span class="n">direction_vector</span> <span class="o">*</span> <span class="n">multiplier</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">pos</span><span class="p">,</span> <span class="n">multiplier</span></div>
+
+
+<div class="viewcode-block" id="first_last_offset_linear_point_distribution"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.ma_maths.first_last_offset_linear_point_distribution">[docs]</a><span class="k">def</span> <span class="nf">first_last_offset_linear_point_distribution</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generator function which evenly distributes points along a straight line but taking into account the given offset.</span>
+
+<span class="sd">    :param pm.dt.Vector start: start vector.</span>
+<span class="sd">    :param pm.dt.Vector end: end vector.</span>
+<span class="sd">    :param int count: number of points to distribute.</span>
+<span class="sd">    :param int offset: the value to offset the first and last points, which is calculated from</span>
+<span class="sd">        the fraction(direction*(fraction*offset).</span>
+<span class="sd">    :return: distributed vector with the position and their distribution value.</span>
+<span class="sd">    :rtype: tuple(pm.dt.Vector, int)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">direction_vector</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="n">direction_vector</span><span class="o">.</span><span class="n">normal</span><span class="p">()</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
+    <span class="n">first_last_fraction</span> <span class="o">=</span> <span class="n">length</span> <span class="o">/</span> <span class="p">(</span><span class="n">count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">primary_fraction</span> <span class="o">=</span> <span class="n">length</span> <span class="o">/</span> <span class="p">(</span><span class="n">count</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">multiplier</span> <span class="o">=</span> <span class="n">first_last_fraction</span> <span class="o">*</span> <span class="n">offset</span>
+    <span class="k">yield</span> <span class="n">start</span> <span class="o">+</span> <span class="p">(</span><span class="n">direction_vector</span> <span class="o">*</span> <span class="n">multiplier</span><span class="p">),</span> <span class="n">multiplier</span>
+
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span> <span class="o">-</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="n">multiplier</span> <span class="o">=</span> <span class="n">primary_fraction</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="p">(</span><span class="n">direction_vector</span> <span class="o">*</span> <span class="n">multiplier</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">pos</span><span class="p">,</span> <span class="n">multiplier</span>
+
+    <span class="n">multiplier</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">first_last_fraction</span> <span class="o">*</span> <span class="n">offset</span>
+    <span class="k">yield</span> <span class="n">start</span> <span class="o">+</span> <span class="p">(</span><span class="n">direction_vector</span> <span class="o">*</span> <span class="n">multiplier</span><span class="p">),</span> <span class="n">multiplier</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

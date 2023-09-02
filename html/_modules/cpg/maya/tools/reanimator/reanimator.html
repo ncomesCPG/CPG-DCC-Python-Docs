@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.tools.reanimator.reanimator &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.tools.reanimator.reanimator</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.tools.reanimator.reanimator</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module that contains Test tool implementation.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="c1"># Software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.all</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">process</span>
+<span class="kn">from</span> <span class="nn">cpg.common.modifiers</span> <span class="kn">import</span> <span class="n">decorators</span>
+<span class="kn">from</span> <span class="nn">cpg.common.tools.dcctracking</span> <span class="kn">import</span> <span class="n">dcc_tracking</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">optionvars</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.animation</span> <span class="kn">import</span> <span class="n">time_utils</span><span class="p">,</span> <span class="n">baking</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.modifiers</span> <span class="kn">import</span> <span class="n">ma_decorators</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.pyqt</span> <span class="kn">import</span> <span class="n">mayawindows</span>
+
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">rig_utils</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+<span class="n">BAKE_OPTION_VARS</span> <span class="o">=</span> <span class="n">baking</span><span class="o">.</span><span class="n">CPGBakeOptionVars</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="CPGReanimatorOptionVars"><a class="viewcode-back" href="../../../../../cpg.maya.tools.reanimator.html#cpg.maya.tools.reanimator.reanimator.CPGReanimatorOptionVars">[docs]</a><span class="k">class</span> <span class="nc">CPGReanimatorOptionVars</span><span class="p">(</span><span class="n">optionvars</span><span class="o">.</span><span class="n">CPGOptionVars</span><span class="p">):</span>
+    <span class="c1"># Helios Misc</span>
+    <span class="n">CPGReanimatorTX</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;Overdiver should constrain translate X.&#39;</span><span class="p">}</span>
+    <span class="n">CPGReanimatorTY</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;Overdiver should constrain translate Y.&#39;</span><span class="p">}</span>
+    <span class="n">CPGReanimatorTZ</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;Overdiver should constrain translate Z.&#39;</span><span class="p">}</span>
+    <span class="n">CPGReanimatorRX</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;Overdiver should constrain rotate X.&#39;</span><span class="p">}</span>
+    <span class="n">CPGReanimatorRY</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;Overdiver should constrain rotate Y.&#39;</span><span class="p">}</span>
+    <span class="n">CPGReanimatorRZ</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;Overdiver should constrain rotate Z.&#39;</span><span class="p">}</span>
+    <span class="n">CPGReanimatorAppend</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;When baking animation to the rig if the animation should be baked in place, or appended after the last animated frame.&#39;</span><span class="p">}</span>
+    <span class="n">CPGReanimatorMotionEncode</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;When baking animation to the rig if the animation should try and match root motion before being applied.&#39;</span><span class="p">}</span>
+    <span class="n">CPGReanimatorStartToZero</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;When baking the rig to a skeleton if the animation should be shifted to start at frame 0.&#39;</span><span class="p">}</span></div>
+
+
+<span class="n">REANIMATOR_OPTION_VARS</span> <span class="o">=</span> <span class="n">CPGReanimatorOptionVars</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="Reanimator"><a class="viewcode-back" href="../../../../../cpg.maya.tools.reanimator.html#cpg.maya.tools.reanimator.reanimator.Reanimator">[docs]</a><span class="k">class</span> <span class="nc">Reanimator</span><span class="p">(</span><span class="n">mayawindows</span><span class="o">.</span><span class="n">CPGMayaWindow</span><span class="p">):</span>
+    <span class="n">VERSION</span> <span class="o">=</span> <span class="s1">&#39;1.0.1&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">root_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+        <span class="n">ui_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_path</span><span class="p">,</span> <span class="s1">&#39;ui&#39;</span><span class="p">,</span> <span class="s1">&#39;ReanimatorUI.ui&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Reanimator&#39;</span><span class="p">,</span>
+                         <span class="n">ui_path</span><span class="o">=</span><span class="n">ui_path</span><span class="p">,</span>
+                         <span class="n">version</span><span class="o">=</span><span class="n">Reanimator</span><span class="o">.</span><span class="n">VERSION</span><span class="p">)</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">use_frame_range_checkBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">BAKE_OPTION_VARS</span><span class="o">.</span><span class="n">CPGFrameOverride</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">start_frame_spinBox</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">BAKE_OPTION_VARS</span><span class="o">.</span><span class="n">CPGStartFrame</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">end_frame_spinBox</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">BAKE_OPTION_VARS</span><span class="o">.</span><span class="n">CPGEndFrame</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">translate_x_checkBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">REANIMATOR_OPTION_VARS</span><span class="o">.</span><span class="n">CPGReanimatorTX</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">translate_y_checkBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">REANIMATOR_OPTION_VARS</span><span class="o">.</span><span class="n">CPGReanimatorTY</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">translate_z_checkBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">REANIMATOR_OPTION_VARS</span><span class="o">.</span><span class="n">CPGReanimatorTZ</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">rotate_x_checkBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">REANIMATOR_OPTION_VARS</span><span class="o">.</span><span class="n">CPGReanimatorRX</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">rotate_y_checkBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">REANIMATOR_OPTION_VARS</span><span class="o">.</span><span class="n">CPGReanimatorRY</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">rotate_z_checkBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">REANIMATOR_OPTION_VARS</span><span class="o">.</span><span class="n">CPGReanimatorRZ</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">append_checkBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">REANIMATOR_OPTION_VARS</span><span class="o">.</span><span class="n">CPGReanimatorAppend</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">motion_encode_checkBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">REANIMATOR_OPTION_VARS</span><span class="o">.</span><span class="n">CPGReanimatorMotionEncode</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">start_at_zero_checkBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">REANIMATOR_OPTION_VARS</span><span class="o">.</span><span class="n">CPGReanimatorStartToZero</span><span class="p">)</span>
+
+        <span class="c1"># ==============================</span>
+        <span class="c1"># Signals</span>
+        <span class="c1"># ==============================</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">start_frame_spinBox</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_update_option_vars</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">end_frame_spinBox</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_update_option_vars</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">use_frame_range_checkBox</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_update_option_vars</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">bake_selected_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_bake_selected_clicked</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">mirror_rig_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_mirror_rig_clicked</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">attach_rigs_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_attach_selected_rigs_clicked</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">detach_rig_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_detach_selected_rig_clicked</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">bake_and_detach_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_bake_and_detach_selected_rig_clicked</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">add_overdriver_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_add_overdriver_clicked</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">remove_overdriver_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_remove_overdriver_clicked</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">bake_and_remover_overdriver_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_remove_and_bake_overdriver_clicked</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">bake_to_rig_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_bake_to_rig_clicked</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">bake_to_skeleton_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_bake_to_skeleton_clicked</span><span class="p">)</span>
+    
+    <span class="c1"># ==============================</span>
+    <span class="c1"># Slots</span>
+    <span class="c1"># ==============================</span>
+    
+    <span class="k">def</span> <span class="nf">_update_option_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">BAKE_OPTION_VARS</span><span class="o">.</span><span class="n">CPGFrameOverride</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">use_frame_range_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span>
+        <span class="n">BAKE_OPTION_VARS</span><span class="o">.</span><span class="n">CPGStartFrame</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">start_frame_spinBox</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+        <span class="n">BAKE_OPTION_VARS</span><span class="o">.</span><span class="n">CPGEndFrame</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">end_frame_spinBox</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+
+        <span class="n">REANIMATOR_OPTION_VARS</span><span class="o">.</span><span class="n">CPGReanimatorTX</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">translate_x_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span>
+        <span class="n">REANIMATOR_OPTION_VARS</span><span class="o">.</span><span class="n">CPGReanimatorTY</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">translate_y_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span>
+        <span class="n">REANIMATOR_OPTION_VARS</span><span class="o">.</span><span class="n">CPGReanimatorTZ</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">translate_z_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span>
+        <span class="n">REANIMATOR_OPTION_VARS</span><span class="o">.</span><span class="n">CPGReanimatorRX</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">rotate_x_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span>
+        <span class="n">REANIMATOR_OPTION_VARS</span><span class="o">.</span><span class="n">CPGReanimatorRY</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">rotate_y_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span>
+        <span class="n">REANIMATOR_OPTION_VARS</span><span class="o">.</span><span class="n">CPGReanimatorRZ</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">rotate_z_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span>
+
+        <span class="n">REANIMATOR_OPTION_VARS</span><span class="o">.</span><span class="n">CPGReanimatorAppend</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">append_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span>
+        <span class="n">REANIMATOR_OPTION_VARS</span><span class="o">.</span><span class="n">CPGReanimatorMotionEncode</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">motion_encode_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span>
+
+        <span class="n">REANIMATOR_OPTION_VARS</span><span class="o">.</span><span class="n">CPGReanimatorStartToZero</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">start_at_zero_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">_get_ui_time_range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If use frame range is selected lets peal the frame range from the UI</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_option_vars</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">BAKE_OPTION_VARS</span><span class="o">.</span><span class="n">CPGFrameOverride</span><span class="p">:</span>
+            <span class="n">start_frame</span> <span class="o">=</span> <span class="n">BAKE_OPTION_VARS</span><span class="o">.</span><span class="n">CPGStartFrame</span>
+            <span class="n">end_frame</span> <span class="o">=</span> <span class="n">BAKE_OPTION_VARS</span><span class="o">.</span><span class="n">CPGEndFrame</span>
+            <span class="k">if</span> <span class="n">end_frame</span> <span class="o">&lt;</span> <span class="n">start_frame</span><span class="p">:</span>
+                <span class="c1"># trying to be clever here? reverse the orders.</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;End frame is less than start frame, we&#39;ll reverse the order and continue.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">end_frame</span><span class="p">,</span> <span class="n">start_frame</span><span class="p">)</span> <span class="k">if</span> <span class="n">end_frame</span> <span class="o">&lt;</span> <span class="n">start_frame</span> <span class="k">else</span> <span class="p">(</span><span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_selection_decorator</span>
+    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">undo_decorator</span>
+    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_autokey_decorator</span>
+    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_current_frame_decorator</span>
+    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">_on_bake_selected_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">selection</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">selected</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">selection</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">custom_attrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">selection</span><span class="p">:</span>
+            <span class="n">custom_attrs</span> <span class="o">+=</span> <span class="n">x</span><span class="o">.</span><span class="n">listAttr</span><span class="p">(</span><span class="n">ud</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_ui_time_range</span><span class="p">()</span>
+        <span class="n">bake_range</span> <span class="o">=</span> <span class="p">[</span><span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">]</span> <span class="k">if</span> <span class="n">start_frame</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">baking</span><span class="o">.</span><span class="n">bake_objects</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="n">custom_attrs</span><span class="o">=</span><span class="n">custom_attrs</span><span class="p">,</span> <span class="n">bake_range</span><span class="o">=</span><span class="n">bake_range</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_attach_selected_rigs_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">asset_id</span> <span class="o">=</span> <span class="n">rig_utils</span><span class="o">.</span><span class="n">attach_rigs_cmd</span><span class="p">()</span>
+        <span class="c1"># dcc data</span>
+        <span class="n">dcc_tracking</span><span class="o">.</span><span class="n">ddc_tool_entry_thead</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_attach_selected_rigs_clicked</span><span class="p">,</span> <span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_detach_selected_rig_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">asset_id</span> <span class="o">=</span> <span class="n">rig_utils</span><span class="o">.</span><span class="n">detach_rig_cmd</span><span class="p">()</span>
+        <span class="c1"># dcc data</span>
+        <span class="n">dcc_tracking</span><span class="o">.</span><span class="n">ddc_tool_entry_thead</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_detach_selected_rig_clicked</span><span class="p">,</span> <span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">)</span>
+
+    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_selection_decorator</span>
+    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">undo_decorator</span>
+    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_autokey_decorator</span>
+    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_current_frame_decorator</span>
+    <span class="k">def</span> <span class="nf">_on_bake_and_detach_selected_rig_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Baking animation to rig.&#39;</span><span class="p">)</span>
+        <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_ui_time_range</span><span class="p">()</span>
+
+        <span class="n">asset_id</span> <span class="o">=</span> <span class="n">rig_utils</span><span class="o">.</span><span class="n">detach_rig_cmd</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">)</span>
+        <span class="c1"># dcc data</span>
+        <span class="n">dcc_tracking</span><span class="o">.</span><span class="n">ddc_tool_entry_thead</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_bake_and_detach_selected_rig_clicked</span><span class="p">,</span> <span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_add_overdriver_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">skip_rotate_attrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">rotate_x_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span> <span class="n">skip_rotate_attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">rotate_y_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span> <span class="n">skip_rotate_attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">rotate_z_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span> <span class="n">skip_rotate_attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">)</span>
+
+        <span class="n">skip_translate_attrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">translate_x_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span> <span class="n">skip_translate_attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">translate_y_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span> <span class="n">skip_translate_attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">translate_z_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span> <span class="n">skip_translate_attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">)</span>
+
+        <span class="n">asset_id</span> <span class="o">=</span> <span class="n">rig_utils</span><span class="o">.</span><span class="n">create_overdriver_cmd</span><span class="p">(</span><span class="n">skip_rotate_attrs</span><span class="p">,</span> <span class="n">skip_translate_attrs</span><span class="p">)</span>
+        <span class="c1"># dcc data</span>
+        <span class="n">dcc_tracking</span><span class="o">.</span><span class="n">ddc_tool_entry_thead</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_add_overdriver_clicked</span><span class="p">,</span> <span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">)</span>
+
+    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">_on_remove_overdriver_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">rig_utils</span><span class="o">.</span><span class="n">bake_overdriver_cmd</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">_on_remove_and_bake_overdriver_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_ui_time_range</span><span class="p">()</span>
+        <span class="n">rig_utils</span><span class="o">.</span><span class="n">bake_overdriver_cmd</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">)</span>
+
+    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_selection_decorator</span>
+    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">undo_decorator</span>
+    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_autokey_decorator</span>
+    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_current_frame_decorator</span>
+    <span class="k">def</span> <span class="nf">_on_bake_to_rig_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Baking animation to rig.&#39;</span><span class="p">)</span>
+        <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_ui_time_range</span><span class="p">()</span>
+        <span class="n">asset_id</span> <span class="o">=</span> <span class="n">rig_utils</span><span class="o">.</span><span class="n">animate_rig_from_skeleton_cmd</span><span class="p">(</span><span class="n">start_frame</span><span class="o">=</span><span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="o">=</span><span class="n">end_frame</span><span class="p">,</span>
+                                                  <span class="n">append</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">append_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">(),</span>
+                                                  <span class="n">motion_encode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">motion_encode_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span>
+
+        <span class="n">time_utils</span><span class="o">.</span><span class="n">reframe_visible_range</span><span class="p">()</span>
+        <span class="c1"># dcc data</span>
+        <span class="n">dcc_tracking</span><span class="o">.</span><span class="n">ddc_tool_entry_thead</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_bake_to_rig_clicked</span><span class="p">,</span> <span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">)</span>
+
+    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_selection_decorator</span>
+    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">undo_decorator</span>
+    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_autokey_decorator</span>
+    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_current_frame_decorator</span>
+    <span class="k">def</span> <span class="nf">_on_bake_to_skeleton_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Baking rig to skeleton&#39;</span><span class="p">)</span>
+        <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_ui_time_range</span><span class="p">()</span>
+        <span class="n">asset_id</span> <span class="o">=</span> <span class="n">rig_utils</span><span class="o">.</span><span class="n">bake_skeleton_from_rig_cmd</span><span class="p">(</span><span class="n">start_frame</span><span class="o">=</span><span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="o">=</span><span class="n">end_frame</span><span class="p">,</span>
+                                               <span class="n">set_to_zero</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">start_at_zero_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span>
+        <span class="c1"># dcc data</span>
+        <span class="n">dcc_tracking</span><span class="o">.</span><span class="n">ddc_tool_entry_thead</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_bake_to_skeleton_clicked</span><span class="p">,</span> <span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">)</span>
+
+    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_selection_decorator</span>
+    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">undo_decorator</span>
+    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_autokey_decorator</span>
+    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_current_frame_decorator</span>
+    <span class="k">def</span> <span class="nf">_on_mirror_rig_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Baking rig to skeleton&#39;</span><span class="p">)</span>
+        <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_ui_time_range</span><span class="p">()</span>
+        <span class="n">asset_ids</span> <span class="o">=</span> <span class="n">rig_utils</span><span class="o">.</span><span class="n">mirror_rig_cmd</span><span class="p">(</span><span class="n">start_frame</span><span class="o">=</span><span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="o">=</span><span class="n">end_frame</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">asset_ids</span><span class="p">:</span>
+            <span class="n">asset_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">asset_ids</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">asset_id</span> <span class="ow">in</span> <span class="n">asset_ids</span><span class="p">:</span>
+                <span class="c1"># dcc data</span>
+                <span class="n">dcc_tracking</span><span class="o">.</span><span class="n">ddc_tool_entry_thead</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_mirror_rig_clicked</span><span class="p">,</span> <span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

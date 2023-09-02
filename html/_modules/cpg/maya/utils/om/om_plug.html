@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.utils.om.om_plug &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.utils.om.om_plug</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.utils.om.om_plug</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module that centralizes May attribute types</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># System global imports</span>
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">maya.api.OpenMaya</span> <span class="k">as</span> <span class="nn">OpenMaya</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils.om</span> <span class="kn">import</span> <span class="n">attributetypes</span>
+
+
+<div class="viewcode-block" id="as_mplug"><a class="viewcode-back" href="../../../../../cpg.maya.utils.om.html#cpg.maya.utils.om.om_plug.as_mplug">[docs]</a><span class="k">def</span> <span class="nf">as_mplug</span><span class="p">(</span><span class="n">attribute_full_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the MPlug instance of the given attribute full name (node.attribute_name).</span>
+
+<span class="sd">    :param str attribute_full_name: full name of the Maya attribute to convert to MPlug</span>
+<span class="sd">    :return: MPlug associated to given attribute name/</span>
+<span class="sd">    :rtype: OpenMaya.MPlug</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="n">attribute_full_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+        <span class="n">sel</span> <span class="o">=</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MSelectionList</span><span class="p">()</span>
+        <span class="n">sel</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnDependencyNode</span><span class="p">(</span><span class="n">sel</span><span class="o">.</span><span class="n">getDependNode</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="n">findPlug</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">names</span><span class="p">[</span><span class="mi">1</span><span class="p">:]),</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+        <span class="n">sel</span> <span class="o">=</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MSelectionList</span><span class="p">()</span>
+        <span class="n">sel</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">attribute_full_name</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">sel</span><span class="o">.</span><span class="n">getPlug</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="serialize_plug"><a class="viewcode-back" href="../../../../../cpg.maya.utils.om.html#cpg.maya.utils.om.om_plug.serialize_plug">[docs]</a><span class="k">def</span> <span class="nf">serialize_plug</span><span class="p">(</span><span class="n">plug</span><span class="p">,</span> <span class="n">optimize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function that converts given OpenMaya.MPlug into a serialized dictionary.</span>
+
+<span class="sd">    :param om.Plug plug: plug to serialize.</span>
+<span class="sd">    :param bool optimize: If True, all the serialized data with default values will be ignored.</span>
+<span class="sd">    :return: serialized plug as a dictionary.</span>
+<span class="sd">    :rtype: dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;isDynamic&#39;</span><span class="p">:</span> <span class="n">plug</span><span class="o">.</span><span class="n">isDynamic</span><span class="p">}</span>
+    <span class="n">attr_type</span> <span class="o">=</span> <span class="n">get_plug_type</span><span class="p">(</span><span class="n">plug</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">plug</span><span class="o">.</span><span class="n">isDynamic</span><span class="p">:</span>
+
+        <span class="c1"># skip any default attribute that has not changed value.</span>
+        <span class="k">if</span> <span class="n">plug</span><span class="o">.</span><span class="n">isDefaultValue</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">plug</span><span class="o">.</span><span class="n">isCompound</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">serialize_plug</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">numChildren</span><span class="p">())]</span>
+        <span class="k">elif</span> <span class="n">plug</span><span class="o">.</span><span class="n">isArray</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+
+    <span class="k">elif</span> <span class="n">attr_type</span> <span class="o">!=</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnMessageAttribute</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">plug</span><span class="o">.</span><span class="n">isDefaultValue</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">plug</span><span class="o">.</span><span class="n">isCompound</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">plug</span><span class="o">.</span><span class="n">isArray</span><span class="p">:</span>
+                <span class="n">element</span> <span class="o">=</span> <span class="n">plug</span><span class="o">.</span><span class="n">elementByLogicalIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">data</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">serialize_plug</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">numChildren</span><span class="p">())]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">serialize_plug</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">numChildren</span><span class="p">())]</span>
+        <span class="k">elif</span> <span class="n">plug</span><span class="o">.</span><span class="n">isArray</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">plug</span><span class="o">.</span><span class="n">partialName</span><span class="p">(</span><span class="n">includeNonMandatoryIndices</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">useLongNames</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">includeInstancedIndices</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="s1">&#39;channelBox&#39;</span><span class="p">:</span> <span class="n">plug</span><span class="o">.</span><span class="n">isChannelBox</span><span class="p">,</span>
+        <span class="s1">&#39;keyable&#39;</span><span class="p">:</span> <span class="n">plug</span><span class="o">.</span><span class="n">isKeyable</span><span class="p">,</span>
+        <span class="s1">&#39;locked&#39;</span><span class="p">:</span> <span class="n">plug</span><span class="o">.</span><span class="n">isLocked</span><span class="p">,</span>
+        <span class="s1">&#39;isArray&#39;</span><span class="p">:</span> <span class="n">plug</span><span class="o">.</span><span class="n">isArray</span><span class="p">,</span>
+        <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">maya_type_to_python_type</span><span class="p">(</span><span class="n">get_plug_default</span><span class="p">(</span><span class="n">plug</span><span class="p">)),</span>
+        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">attr_type</span><span class="p">,</span>
+        <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">get_python_type_from_plug_value</span><span class="p">(</span><span class="n">plug</span><span class="p">),</span>
+        <span class="s1">&#39;isElement&#39;</span><span class="p">:</span> <span class="n">plug</span><span class="o">.</span><span class="n">isElement</span><span class="p">,</span>
+        <span class="s1">&#39;isChild&#39;</span><span class="p">:</span> <span class="n">plug</span><span class="o">.</span><span class="n">isChild</span>
+     <span class="p">})</span>
+
+    <span class="k">if</span> <span class="n">get_plug_type</span><span class="p">(</span><span class="n">plug</span><span class="p">)</span> <span class="o">==</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnkEnumAttribute</span><span class="p">:</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;enums&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_enum_names</span><span class="p">(</span><span class="n">plug</span><span class="p">)</span>
+
+    <span class="c1"># optimize attribute serialized data</span>
+    <span class="k">if</span> <span class="n">optimize</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;channelBox&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;channelBox&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;keyable&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;keyable&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;locked&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;locked&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;isArray&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;isArray&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;isElement&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;isElement&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;isChild&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;isChild&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;children&#39;</span><span class="p">,</span> <span class="nb">list</span><span class="p">()):</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;children&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;isDynamic&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;isDynamic&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;softMin&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;softMin&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;softMax&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;softMax&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="get_plug_type"><a class="viewcode-back" href="../../../../../cpg.maya.utils.om.html#cpg.maya.utils.om.om_plug.get_plug_type">[docs]</a><span class="k">def</span> <span class="nf">get_plug_type</span><span class="p">(</span><span class="n">plug</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the type of the given OpenMaya MPlug.</span>
+
+<span class="sd">    :param MPlug plug: plug we want to retrieve type and value of.</span>
+<span class="sd">    :return: MPlug type.</span>
+<span class="sd">    :rtype: str</span>
+
+<span class="sd">    ..note:: If possible Python default type will be returned.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">plug</span><span class="o">.</span><span class="n">attribute</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">hasFn</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFn</span><span class="o">.</span><span class="n">kCompoundAttribute</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnCompoundAttribute</span>
+    <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">hasFn</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFn</span><span class="o">.</span><span class="n">kNumericAttribute</span><span class="p">):</span>
+        <span class="n">n_attr</span> <span class="o">=</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericAttribute</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="n">data_type</span> <span class="o">=</span> <span class="n">n_attr</span><span class="o">.</span><span class="n">numericType</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">maya_numeric_type_to_internal_type</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">obj</span><span class="o">.</span><span class="n">hasFn</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFn</span><span class="o">.</span><span class="n">kUnitAttribute</span><span class="p">):</span>
+        <span class="n">u_attr</span> <span class="o">=</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnUnitAttribute</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="n">ut</span> <span class="o">=</span> <span class="n">u_attr</span><span class="o">.</span><span class="n">unitType</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">maya_unit_type_to_internal_type</span><span class="p">(</span><span class="n">ut</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">obj</span><span class="o">.</span><span class="n">hasFn</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFn</span><span class="o">.</span><span class="n">kTypedAttribute</span><span class="p">):</span>
+        <span class="n">t_attr</span> <span class="o">=</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnTypedAttribute</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="n">data_type</span> <span class="o">=</span> <span class="n">t_attr</span><span class="o">.</span><span class="n">attrType</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">maya_mfn_data_type_to_internal_type</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">obj</span><span class="o">.</span><span class="n">hasFn</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFn</span><span class="o">.</span><span class="n">kEnumAttribute</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnkEnumAttribute</span>
+    <span class="k">elif</span> <span class="n">obj</span><span class="o">.</span><span class="n">hasFn</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFn</span><span class="o">.</span><span class="n">kMessageAttribute</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnMessageAttribute</span>
+    <span class="k">elif</span> <span class="n">obj</span><span class="o">.</span><span class="n">hasFn</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFn</span><span class="o">.</span><span class="n">kMatrixAttribute</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnDataMatrix</span>
+
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="get_plug_default"><a class="viewcode-back" href="../../../../../cpg.maya.utils.om.html#cpg.maya.utils.om.om_plug.get_plug_default">[docs]</a><span class="k">def</span> <span class="nf">get_plug_default</span><span class="p">(</span><span class="n">plug</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the default value of the given plug.</span>
+
+<span class="sd">    :param OpenMaya.MPlug plug: plug to retrieve default value of.</span>
+<span class="sd">    :return: plug default value.</span>
+<span class="sd">    :rtype: object or None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">plug</span><span class="o">.</span><span class="n">attribute</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">hasFn</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFn</span><span class="o">.</span><span class="n">kNumericAttribute</span><span class="p">):</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericAttribute</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">numericType</span><span class="p">()</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kInvalid</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">attr</span><span class="o">.</span><span class="n">default</span>
+    <span class="k">elif</span> <span class="n">obj</span><span class="o">.</span><span class="n">hasFn</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFn</span><span class="o">.</span><span class="n">kTypedAttribute</span><span class="p">):</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnTypedAttribute</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="n">default</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">default</span>
+        <span class="k">if</span> <span class="n">default</span><span class="o">.</span><span class="n">apiType</span><span class="p">()</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFn</span><span class="o">.</span><span class="n">kInvalid</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="n">default</span><span class="o">.</span><span class="n">apiType</span><span class="p">()</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFn</span><span class="o">.</span><span class="n">kStringData</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnStringData</span><span class="p">(</span><span class="n">default</span><span class="p">)</span><span class="o">.</span><span class="n">string</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">default</span>
+    <span class="k">elif</span> <span class="n">obj</span><span class="o">.</span><span class="n">hasFn</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFn</span><span class="o">.</span><span class="n">kUnitAttribute</span><span class="p">):</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnUnitAttribute</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">attr</span><span class="o">.</span><span class="n">default</span>
+    <span class="k">elif</span> <span class="n">obj</span><span class="o">.</span><span class="n">hasFn</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFn</span><span class="o">.</span><span class="n">kMatrixAttribute</span><span class="p">):</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnMatrixAttribute</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">attr</span><span class="o">.</span><span class="n">default</span>
+    <span class="k">elif</span> <span class="n">obj</span><span class="o">.</span><span class="n">hasFn</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFn</span><span class="o">.</span><span class="n">kEnumAttribute</span><span class="p">):</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnEnumAttribute</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">attr</span><span class="o">.</span><span class="n">default</span>
+
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="get_python_type_from_plug_value"><a class="viewcode-back" href="../../../../../cpg.maya.utils.om.html#cpg.maya.utils.om.om_plug.get_python_type_from_plug_value">[docs]</a><span class="k">def</span> <span class="nf">get_python_type_from_plug_value</span><span class="p">(</span><span class="n">plug</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns Python type of the given MPlug.</span>
+
+<span class="sd">    :param OpenMaya.MPlug plug: plug whose python type we want to retrieve.</span>
+<span class="sd">    :return: Python type.</span>
+<span class="sd">    :rtype: int, float, str, list or None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">data_type</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">get_plug_type_and_value</span><span class="p">(</span><span class="n">plug</span><span class="p">)</span>
+    <span class="n">types</span> <span class="o">=</span> <span class="p">(</span><span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnDataMatrix</span><span class="p">,</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnDataFloatArray</span><span class="p">,</span>
+             <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnDataFloatArray</span><span class="p">,</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnDataDoubleArray</span><span class="p">,</span>
+             <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnDataIntArray</span><span class="p">,</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnDataPointArray</span><span class="p">,</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnDataStringArray</span><span class="p">,</span>
+             <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumeric2Double</span><span class="p">,</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumeric2Float</span><span class="p">,</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumeric2Int</span><span class="p">,</span>
+             <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumeric2Long</span><span class="p">,</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumeric2Short</span><span class="p">,</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumeric3Double</span><span class="p">,</span>
+             <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumeric3Float</span><span class="p">,</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumeric3Int</span><span class="p">,</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumeric3Long</span><span class="p">,</span>
+             <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumeric3Short</span><span class="p">,</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumeric4Double</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">data_type</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnMessageAttribute</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_type</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">dt</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data_type</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">dt</span> <span class="o">==</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnDataMatrix</span><span class="p">:</span>
+                <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="n">idx</span><span class="p">]))</span>
+            <span class="k">elif</span> <span class="n">dt</span> <span class="ow">in</span> <span class="p">(</span>
+                    <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnUnitAttributeDistance</span><span class="p">,</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnUnitAttributeAngle</span><span class="p">,</span>
+                    <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnUnitAttributeTime</span><span class="p">):</span>
+                <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="ow">in</span> <span class="p">(</span><span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnDataMatrixArray</span><span class="p">,</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnDataVectorArray</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnUnitAttributeDistance</span><span class="p">,</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnUnitAttributeAngle</span><span class="p">,</span>
+            <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnUnitAttributeTime</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="ow">in</span> <span class="n">types</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="get_enum_names"><a class="viewcode-back" href="../../../../../cpg.maya.utils.om.html#cpg.maya.utils.om.om_plug.get_enum_names">[docs]</a><span class="k">def</span> <span class="nf">get_enum_names</span><span class="p">(</span><span class="n">plug</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the plug enumeration field names.</span>
+
+<span class="sd">    :param OpenMaya.MPlug plug: MPlug to query enumeration field names from.</span>
+<span class="sd">    :return: sequence of enum names.</span>
+<span class="sd">    :rtype: list(str)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">plug</span><span class="o">.</span><span class="n">attribute</span><span class="p">()</span>
+    <span class="n">enum_fields</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">hasFn</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFn</span><span class="o">.</span><span class="n">kEnumAttribute</span><span class="p">):</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnEnumAttribute</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="n">min_value</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">getMin</span><span class="p">()</span>
+        <span class="n">max_value</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">getMax</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_value</span><span class="p">,</span> <span class="n">max_value</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">enum_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">fieldName</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+    <span class="k">return</span> <span class="n">enum_fields</span></div>
+
+
+<div class="viewcode-block" id="get_plug_type_and_value"><a class="viewcode-back" href="../../../../../cpg.maya.utils.om.html#cpg.maya.utils.om.om_plug.get_plug_type_and_value">[docs]</a><span class="k">def</span> <span class="nf">get_plug_type_and_value</span><span class="p">(</span><span class="n">plug</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the value and the type of the given OpenMaya MPlug.</span>
+
+<span class="sd">    :param MPlug plug: plug we want to retrieve type and value of.</span>
+<span class="sd">    :return: tuple containing the MPlug type and value.</span>
+<span class="sd">    :rtype: tuple(int, object)</span>
+
+<span class="sd">    ..note:: If possible Python default type will be returned.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">mobj</span> <span class="o">=</span> <span class="n">plug</span><span class="o">.</span><span class="n">attribute</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">plug</span><span class="o">.</span><span class="n">isArray</span><span class="p">:</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">plug</span><span class="o">.</span><span class="n">evaluateNumElements</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">count</span><span class="p">,</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">count</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_plug_type_and_value</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">elementByPhysicalIndex</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+            <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">if</span> <span class="n">mobj</span><span class="o">.</span><span class="n">hasFn</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFn</span><span class="o">.</span><span class="n">kNumericAttribute</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">get_numeric_type_and_value</span><span class="p">(</span><span class="n">plug</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mobj</span><span class="o">.</span><span class="n">hasFn</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFn</span><span class="o">.</span><span class="n">kTypedAttribute</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">get_typed_type_and_value</span><span class="p">(</span><span class="n">plug</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mobj</span><span class="o">.</span><span class="n">hasFn</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFn</span><span class="o">.</span><span class="n">kUnitAttribute</span><span class="p">):</span>
+        <span class="n">unit_attr</span> <span class="o">=</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnUnitAttribute</span><span class="p">(</span><span class="n">mobj</span><span class="p">)</span>
+        <span class="n">unit_type</span> <span class="o">=</span> <span class="n">unit_attr</span><span class="o">.</span><span class="n">unitType</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">unit_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnUnitAttribute</span><span class="o">.</span><span class="n">kDistance</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnUnitAttributeDistance</span><span class="p">,</span> <span class="n">plug</span><span class="o">.</span><span class="n">asMDistance</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">unit_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnUnitAttribute</span><span class="o">.</span><span class="n">kAngle</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnUnitAttributeAngle</span><span class="p">,</span> <span class="n">plug</span><span class="o">.</span><span class="n">asMAngle</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">unit_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnUnitAttribute</span><span class="o">.</span><span class="n">kTime</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnUnitAttributeTime</span><span class="p">,</span> <span class="n">plug</span><span class="o">.</span><span class="n">asMTime</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">mobj</span><span class="o">.</span><span class="n">hasFn</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFn</span><span class="o">.</span><span class="n">kEnumAttribute</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnkEnumAttribute</span><span class="p">,</span> <span class="n">plug</span><span class="o">.</span><span class="n">asInt</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">mobj</span><span class="o">.</span><span class="n">hasFn</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFn</span><span class="o">.</span><span class="n">kMessageAttribute</span><span class="p">):</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="n">plug</span><span class="o">.</span><span class="n">source</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">source</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnMessageAttribute</span><span class="p">,</span> <span class="n">source</span><span class="o">.</span><span class="n">node</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnMessageAttribute</span><span class="p">,</span> <span class="kc">None</span>
+    <span class="k">elif</span> <span class="n">mobj</span><span class="o">.</span><span class="n">hasFn</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFn</span><span class="o">.</span><span class="n">kMatrixAttribute</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnDataMatrix</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnMatrixData</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">asMObject</span><span class="p">())</span><span class="o">.</span><span class="n">matrix</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">plug</span><span class="o">.</span><span class="n">isCompound</span><span class="p">:</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">plug</span><span class="o">.</span><span class="n">numChildren</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">count</span><span class="p">,</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">count</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_plug_type_and_value</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+            <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="get_numeric_type_and_value"><a class="viewcode-back" href="../../../../../cpg.maya.utils.om.html#cpg.maya.utils.om.om_plug.get_numeric_type_and_value">[docs]</a><span class="k">def</span> <span class="nf">get_numeric_type_and_value</span><span class="p">(</span><span class="n">plug</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the numeric type and value of the given OpenMaya MPlug.</span>
+
+<span class="sd">    :param MPlug plug: plug we want to retrieve numeric type and value of.</span>
+<span class="sd">    :return: tuple containing the numeric attribute type and value.</span>
+<span class="sd">    :rtype: tuple(int, int or float)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">plug</span><span class="o">.</span><span class="n">attribute</span><span class="p">()</span>
+    <span class="n">n_attr</span> <span class="o">=</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericAttribute</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="n">data_type</span> <span class="o">=</span> <span class="n">n_attr</span><span class="o">.</span><span class="n">numericType</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kBoolean</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumericBoolean</span><span class="p">,</span> <span class="n">plug</span><span class="o">.</span><span class="n">asBool</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kByte</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumericByte</span><span class="p">,</span> <span class="n">plug</span><span class="o">.</span><span class="n">asBool</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kShort</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumericShort</span><span class="p">,</span> <span class="n">plug</span><span class="o">.</span><span class="n">asShort</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kInt</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumericInt</span><span class="p">,</span> <span class="n">plug</span><span class="o">.</span><span class="n">asInt</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kLong</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumericLong</span><span class="p">,</span> <span class="n">plug</span><span class="o">.</span><span class="n">asInt</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kDouble</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumericDouble</span><span class="p">,</span> <span class="n">plug</span><span class="o">.</span><span class="n">asDouble</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kFloat</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumericFloat</span><span class="p">,</span> <span class="n">plug</span><span class="o">.</span><span class="n">asFloat</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kAddr</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumericAddr</span><span class="p">,</span> <span class="n">plug</span><span class="o">.</span><span class="n">asAddr</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kChar</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumericChar</span><span class="p">,</span> <span class="n">plug</span><span class="o">.</span><span class="n">asChar</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k2Double</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumeric2Double</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">asMObject</span><span class="p">())</span><span class="o">.</span><span class="n">getData</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k2Float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumeric2Float</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">asMObject</span><span class="p">())</span><span class="o">.</span><span class="n">getData</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k2Int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumeric2Int</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">asMObject</span><span class="p">())</span><span class="o">.</span><span class="n">getData</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k2Long</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumeric2Long</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">asMObject</span><span class="p">())</span><span class="o">.</span><span class="n">getData</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k2Short</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumeric2Short</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">asMObject</span><span class="p">())</span><span class="o">.</span><span class="n">getData</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k3Double</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumeric3Double</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">asMObject</span><span class="p">())</span><span class="o">.</span><span class="n">getData</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k3Float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumeric3Float</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">asMObject</span><span class="p">())</span><span class="o">.</span><span class="n">getData</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k3Int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumeric3Int</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">asMObject</span><span class="p">())</span><span class="o">.</span><span class="n">getData</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k3Long</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumeric3Long</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">asMObject</span><span class="p">())</span><span class="o">.</span><span class="n">getData</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k3Short</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumeric3Short</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">asMObject</span><span class="p">())</span><span class="o">.</span><span class="n">getData</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k4Double</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnNumeric4Double</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">asMObject</span><span class="p">())</span><span class="o">.</span><span class="n">getData</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="get_typed_type_and_value"><a class="viewcode-back" href="../../../../../cpg.maya.utils.om.html#cpg.maya.utils.om.om_plug.get_typed_type_and_value">[docs]</a><span class="k">def</span> <span class="nf">get_typed_type_and_value</span><span class="p">(</span><span class="n">plug</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the typed type and value of the given OpenMaya MPlug.</span>
+
+<span class="sd">    :param MPlug plug: plug we want to retrieve typed type and value of.</span>
+<span class="sd">    :return: tuple containing the typed attribute type and value.</span>
+<span class="sd">    :rtype: tuple(int, object)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">typed_attr</span> <span class="o">=</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnTypedAttribute</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">attribute</span><span class="p">())</span>
+    <span class="n">data_type</span> <span class="o">=</span> <span class="n">typed_attr</span><span class="o">.</span><span class="n">attrType</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kInvalid</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kString</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnDataString</span><span class="p">,</span> <span class="n">plug</span><span class="o">.</span><span class="n">asString</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kNumeric</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">get_numeric_type_and_value</span><span class="p">(</span><span class="n">plug</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kMatrix</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnDataMatrix</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnMatrixData</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">asMObject</span><span class="p">())</span><span class="o">.</span><span class="n">matrix</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kFloatArray</span><span class="p">:</span>
+        <span class="c1"># TODO: MFnFloatArrayData is missing from OpenMaya 2.0</span>
+        <span class="c1"># return attributetypes.kMFnDataFloatArray, OpenMaya.MFnFloatArrayData(plug.asMObject()).array()</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnDataDoubleArray</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnDoubleArrayData</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">asMObject</span><span class="p">())</span><span class="o">.</span><span class="n">array</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kDoubleArray</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnDataDoubleArray</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnDoubleArrayData</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">asMObject</span><span class="p">())</span><span class="o">.</span><span class="n">array</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kIntArray</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnDataIntArray</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnIntArrayData</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">asMObject</span><span class="p">())</span><span class="o">.</span><span class="n">array</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kPointArray</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnDataPointArray</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnPointArrayData</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">asMObject</span><span class="p">())</span><span class="o">.</span><span class="n">array</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kVectorArray</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnDataVectorArray</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnVectorArrayData</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">asMObject</span><span class="p">())</span><span class="o">.</span><span class="n">array</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kStringArray</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnDataStringArray</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnStringArrayData</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">asMObject</span><span class="p">())</span><span class="o">.</span><span class="n">array</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kMatrixArray</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">kMFnDataMatrixArray</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnMatrixArrayData</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">asMObject</span><span class="p">())</span><span class="o">.</span><span class="n">array</span><span class="p">()</span>
+    
+    <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

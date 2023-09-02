@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.utils.optionvars &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.utils.optionvars</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.utils.optionvars</h1><div class="highlight"><pre>
+<span></span><span class="c1"># !/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module that contains Maya code related with option vars</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cpg.common.modifiers</span> <span class="kn">import</span> <span class="n">decorators</span><span class="p">,</span> <span class="n">singleton</span>
+<span class="kn">from</span> <span class="nn">cpg.common.textio</span> <span class="kn">import</span> <span class="n">jsonio</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="OptionVarsHelperRegistry"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.optionvars.OptionVarsHelperRegistry">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">add_metaclass</span><span class="p">(</span><span class="n">singleton</span><span class="o">.</span><span class="n">Singleton</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">OptionVarsHelperRegistry</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Singleton used to register OptionVarsHelper instances in an instance of &lt;DCC&gt;. Don&#39;t register directly :)</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_option_var_instances</span> <span class="o">=</span> <span class="p">{}</span>
+	
+<div class="viewcode-block" id="OptionVarsHelperRegistry.reset_all"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.optionvars.OptionVarsHelperRegistry.reset_all">[docs]</a>	<span class="k">def</span> <span class="nf">reset_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Resets all registered optionvars back to default values</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">for</span> <span class="n">option_var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_var_instances</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_option_var_instances</span><span class="p">[</span><span class="n">option_var</span><span class="p">]</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span></div>
+	
+<div class="viewcode-block" id="OptionVarsHelperRegistry.inspect_all"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.optionvars.OptionVarsHelperRegistry.inspect_all">[docs]</a>	<span class="k">def</span> <span class="nf">inspect_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Logs all the option vars currently registered &amp; active in &lt;DCC&gt;.</span>
+<span class="sd">		Checks for duplicates</span>
+<span class="sd">		:return: True/False if duplicate detected.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">all_registered_variable_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+		<span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+		
+		<span class="k">for</span> <span class="n">option_var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_var_instances</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_option_var_instances</span><span class="p">[</span><span class="n">option_var</span><span class="p">]</span><span class="o">.</span><span class="n">inspect</span><span class="p">()</span>
+			<span class="n">used_option_vars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_var_instances</span><span class="p">[</span><span class="n">option_var</span><span class="p">]</span><span class="o">.</span><span class="n">_option_var_names</span>
+			<span class="n">errors</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">var</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">used_option_vars</span> <span class="k">if</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">all_registered_variable_names</span><span class="p">])</span>
+			<span class="n">all_registered_variable_names</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">used_option_vars</span><span class="p">))</span>
+		
+		<span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
+			<span class="n">error_string</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span>
+			<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Option vars that exist between data structures:</span><span class="se">\n\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">error_string</span><span class="p">)</span>
+			<span class="k">return</span> <span class="kc">False</span>
+		<span class="k">return</span> <span class="kc">True</span></div>
+	
+<div class="viewcode-block" id="OptionVarsHelperRegistry.register_cpg_option_var"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.optionvars.OptionVarsHelperRegistry.register_cpg_option_var">[docs]</a>	<span class="k">def</span> <span class="nf">register_cpg_option_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cpg_option_var</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Register a DCCOptionVars object</span>
+<span class="sd">		:param OptionVarsHelper cpg_option_var: option var data struct to register</span>
+<span class="sd">		:return: True</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="c1"># Can&#39;t register non CPG option vars type object in this object</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cpg_option_var</span><span class="p">,</span> <span class="n">OptionVarsHelper</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Cannot register </span><span class="si">{0}</span><span class="s2">: not of type </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cpg_option_var</span><span class="p">,</span> <span class="n">OptionVarsHelper</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_option_var_instances</span><span class="p">[</span><span class="n">cpg_option_var</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpg_option_var</span>
+		<span class="k">return</span> <span class="kc">True</span></div>
+	
+	<span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Override getattr functionality for this class to default to returning instances of OptionVar structures</span>
+<span class="sd">		:param str item: attr name to get</span>
+<span class="sd">		:return: Returns the attribute</span>
+<span class="sd">		:rtype: attribute</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_var_instances</span><span class="p">:</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_var_instances</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+		<span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="OptionVarsHelper"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.optionvars.OptionVarsHelper">[docs]</a><span class="k">class</span> <span class="nc">OptionVarsHelper</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Base data structure storing, accessing &amp; resetting optionvars in DCC&#39;s</span>
+<span class="sd">	Each DCC will need an override of the _get_option_var() function for this to operate properly</span>
+
+<span class="sd">	Note - OptionVarsHelper is not a singleton and thus new instances do retain values set by other instances. This behavior</span>
+<span class="sd">	is achieved by overriding the self._get_option_var func. Reference CPGOptionVars() class for an example.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">_names_to_skip</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;reset&#39;</span><span class="p">,</span> <span class="s1">&#39;inspect&#39;</span><span class="p">,</span> <span class="s1">&#39;save_to_file&#39;</span><span class="p">,</span> <span class="s1">&#39;load_from_file&#39;</span><span class="p">]</span>
+	<span class="n">_option_var_names</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="n">_option_var_params</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="n">_option_var_defaults</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="n">_option_var_docs</span> <span class="o">=</span> <span class="p">{}</span>
+	
+	<span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+		<span class="bp">cls</span><span class="o">.</span><span class="n">_option_var_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="ow">not</span> <span class="n">a</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">a</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_names_to_skip</span><span class="p">,</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">cls</span><span class="p">)))</span>
+		<span class="bp">cls</span><span class="o">.</span><span class="n">_option_var_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_option_var_names</span><span class="p">}</span>
+		
+		<span class="k">for</span> <span class="n">option_var_name</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_option_var_names</span><span class="p">:</span>
+			<span class="n">parameters</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_option_var_params</span><span class="p">[</span><span class="n">option_var_name</span><span class="p">]</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+				<span class="k">continue</span>
+			
+			<span class="c1"># Handle names</span>
+			<span class="k">if</span> <span class="s1">&#39;name&#39;</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+				<span class="n">name</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">name</span> <span class="o">=</span> <span class="n">option_var_name</span>
+			
+			<span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;default_value&#39;</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;A default value is required for OptionVar </span><span class="si">{0}</span><span class="s2">.</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+			
+			<span class="c1"># Handle default value</span>
+			<span class="n">default_value</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;default_value&#39;</span><span class="p">]</span>
+			<span class="bp">cls</span><span class="o">.</span><span class="n">_option_var_defaults</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">default_value</span>
+			
+			<span class="c1"># Handle docstrings</span>
+			<span class="k">if</span> <span class="s1">&#39;docstring&#39;</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+				<span class="n">doc_string</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;docstring&#39;</span><span class="p">]</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">doc_string</span> <span class="o">=</span> <span class="s1">&#39;None&#39;</span>
+			<span class="bp">cls</span><span class="o">.</span><span class="n">_option_var_docs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">doc_string</span>
+			
+			<span class="c1"># Perform overrides</span>
+			<span class="n">prop</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_option_var</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">default_value</span><span class="p">,</span> <span class="n">doc_string</span><span class="p">)</span>
+			<span class="nb">setattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">prop</span><span class="p">)</span>
+		<span class="n">option_var</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">OptionVarsHelper</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+		
+		<span class="c1"># Add to registry</span>
+		<span class="n">OptionVarsHelperRegistry</span><span class="p">()</span><span class="o">.</span><span class="n">register_cpg_option_var</span><span class="p">(</span><span class="n">option_var</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">option_var</span>
+	
+	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">_get_option_var</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">default_value</span><span class="p">,</span> <span class="n">doc_string</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Method to override; create the representation of the option var here</span>
+
+<span class="sd">		Example:</span>
+<span class="sd">			Maya option var override will reference the option_var_wrapper here.</span>
+<span class="sd">			Standalone python instance will reference nothing other than creating a dictionary.</span>
+<span class="sd">		:param str name: name of the option var</span>
+<span class="sd">		:param any default_value: default value of the option var</span>
+<span class="sd">		:param str doc_string: docstring associated with the option var</span>
+<span class="sd">		:return: default value</span>
+<span class="sd">		:rtype: any</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="n">default_value</span>
+	
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="nb">super</span><span class="p">(</span><span class="n">OptionVarsHelper</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+	
+<div class="viewcode-block" id="OptionVarsHelper.reset"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.optionvars.OptionVarsHelper.reset">[docs]</a>	<span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Reset options vars to default state.</span>
+<span class="sd">		:param str name: name of optionvar to reset to default value</span>
+<span class="sd">		:return: If Success, Returns True.</span>
+<span class="sd">		:rtype: bool</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">for</span> <span class="n">option_var_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_var_names</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">name</span> <span class="ow">and</span> <span class="n">option_var_name</span> <span class="o">!=</span> <span class="n">name</span><span class="p">:</span>
+				<span class="k">continue</span>
+			<span class="n">default_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_var_defaults</span><span class="p">[</span><span class="n">option_var_name</span><span class="p">]</span>
+			<span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option_var_name</span><span class="p">,</span> <span class="n">default_value</span><span class="p">)</span>
+		<span class="k">return</span> <span class="kc">True</span></div>
+	
+<div class="viewcode-block" id="OptionVarsHelper.inspect"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.optionvars.OptionVarsHelper.inspect">[docs]</a>	<span class="k">def</span> <span class="nf">inspect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Prints options and all their values, names, docstring</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Printing option vars for: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+		<span class="k">for</span> <span class="n">option_var_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_var_names</span><span class="p">:</span>
+			<span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option_var_name</span><span class="p">,</span> <span class="s1">&#39;NO VALUE&#39;</span><span class="p">)</span>
+			<span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="si">{0}</span><span class="s1"> | </span><span class="si">{1}</span><span class="s1"> | </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">option_var_name</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span>
+													<span class="bp">self</span><span class="o">.</span><span class="n">_option_var_docs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">option_var_name</span><span class="p">,</span> <span class="s1">&#39;No docstring defined&#39;</span><span class="p">)))</span></div>
+	
+<div class="viewcode-block" id="OptionVarsHelper.save_to_file"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.optionvars.OptionVarsHelper.save_to_file">[docs]</a>	<span class="k">def</span> <span class="nf">save_to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Save option vars tracked by this class into a JSON file.</span>
+
+<span class="sd">		:param str path : Full path to the JSON file</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">json_data</span> <span class="o">=</span> <span class="p">{}</span>
+		
+		<span class="k">for</span> <span class="n">option_var_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_var_names</span><span class="p">:</span>
+			<span class="n">json_data</span><span class="p">[</span><span class="n">option_var_name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option_var_name</span><span class="p">,</span> <span class="s1">&#39;NO VALUE&#39;</span><span class="p">)</span>
+		
+		<span class="n">jsonio</span><span class="o">.</span><span class="n">write_to_json_file</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="OptionVarsHelper.load_from_file"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.optionvars.OptionVarsHelper.load_from_file">[docs]</a>	<span class="k">def</span> <span class="nf">load_from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">filter_option_vars</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Load a file containing option var settings into option vars that are tracked by this</span>
+<span class="sd">		class. Skip option var settings that aren&#39;t tracked by this class.</span>
+
+<span class="sd">		:param str path : Full path to the JSON file</span>
+<span class="sd">		:param str or list[str] filter_option_vars: Only allow loading values to the listed option vars</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="n">filter_option_vars</span><span class="p">:</span>
+			<span class="n">filter_option_vars</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">filter_option_vars</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_option_vars</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="nb">set</span><span class="p">([</span><span class="n">filter_option_vars</span><span class="p">])</span>
+		
+		<span class="n">json_data</span> <span class="o">=</span> <span class="n">jsonio</span><span class="o">.</span><span class="n">read_json_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+		
+		<span class="n">option_var_name_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_option_var_names</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">option_var_name</span><span class="p">,</span> <span class="n">option_var_value</span> <span class="ow">in</span> <span class="n">json_data</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+			<span class="k">if</span> <span class="p">(</span><span class="n">option_var_name</span> <span class="ow">in</span> <span class="n">option_var_name_set</span> <span class="ow">and</span>
+					<span class="p">(</span><span class="ow">not</span> <span class="n">filter_option_vars</span> <span class="ow">or</span> <span class="n">option_var_name</span> <span class="ow">in</span> <span class="n">filter_option_vars</span><span class="p">)):</span>
+				<span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option_var_name</span><span class="p">,</span> <span class="n">option_var_value</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="option_var_wrapper"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.optionvars.option_var_wrapper">[docs]</a><span class="k">def</span> <span class="nf">option_var_wrapper</span><span class="p">(</span><span class="n">variable_name</span><span class="p">,</span> <span class="n">default_value</span><span class="p">,</span> <span class="n">docstring</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Generates a python property object that automatically updates pm.optionVar (maya internal option var storage)</span>
+
+<span class="sd">	:param variable_name: name of the key to store</span>
+<span class="sd">	:param default_value: value of the var to store if not already set</span>
+<span class="sd">	:param docstring: docstring for the property to hold for dir/help/etc.</span>
+<span class="sd">	:return: returns the property for the optionvar</span>
+<span class="sd">	:rtype: property</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">doc</span> <span class="o">=</span> <span class="n">docstring</span>
+	
+	<span class="k">def</span> <span class="nf">fget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">if</span> <span class="n">variable_name</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">optionVar</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+			<span class="c1"># Finds the optionVar and returns the value</span>
+			<span class="n">result</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">optionVar</span><span class="p">[</span><span class="n">variable_name</span><span class="p">]</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="c1"># If it doesn&#39;t find the name in the optionVar, set name to the default value.</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">optionVar</span><span class="p">[</span><span class="n">variable_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">default_value</span>
+			<span class="n">result</span> <span class="o">=</span> <span class="n">default_value</span>
+		<span class="k">return</span> <span class="n">result</span>
+	
+	<span class="k">def</span> <span class="nf">fset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+		<span class="k">if</span> <span class="n">variable_name</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">optionVar</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">optionVar</span><span class="p">[</span><span class="n">variable_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="c1"># make sure the default value is set to something in case value fails</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">optionVar</span><span class="p">[</span><span class="n">variable_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">default_value</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">optionVar</span><span class="p">[</span><span class="n">variable_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+	
+	<span class="k">return</span> <span class="nb">property</span><span class="p">(</span><span class="n">fget</span><span class="o">=</span><span class="n">fget</span><span class="p">,</span> <span class="n">fset</span><span class="o">=</span><span class="n">fset</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="n">doc</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CPGOptionVars"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.optionvars.CPGOptionVars">[docs]</a><span class="k">class</span> <span class="nc">CPGOptionVars</span><span class="p">(</span><span class="n">OptionVarsHelper</span><span class="p">):</span>
+	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">_get_option_var</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">default_value</span><span class="p">,</span> <span class="n">doc_string</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Override: generate a option_var_wrapper object and return for DCCOptionVarRegistry tracking</span>
+<span class="sd">		:param str name: name of the option var</span>
+<span class="sd">		:param any default_value: default value of the option var</span>
+<span class="sd">		:param str doc_string: docstring associated with the option var</span>
+<span class="sd">		:return: returns the property for the optionvar</span>
+<span class="sd">		:rtype: property</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="n">option_var_wrapper</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">default_value</span><span class="p">,</span> <span class="n">docstring</span><span class="o">=</span><span class="n">doc_string</span><span class="p">)</span></div>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Example of how to use:</span>
+<span class="sd">Have a separate class that will manage your optionvars.</span>
+
+<span class="sd">class CPGRiggingOptions(CPGOptionVars):</span>
+<span class="sd">	### Example OptionVars setup ###</span>
+
+<span class="sd">	# String - OptionVar Name</span>
+<span class="sd">	CPGContentPath      = {&#39;default_value&#39;: &#39;base_head_name&#39;, &#39;docstring&#39;: &#39;Name of the base Character&#39;}</span>
+<span class="sd">	# Bool</span>
+<span class="sd">	CPGTurnOnSymmetry   = {&#39;default_value&#39;: True, &#39;docstring&#39;: &#39;Set the Symmetry selection.&#39;}</span>
+<span class="sd">	# Int\Float</span>
+<span class="sd">	CPGUISettingsTab    = {&#39;default_value&#39;: 2.358, &#39;docstring&#39;: &#39;Asset ID used to create the rig.&#39;}</span>
+<span class="sd">&quot;&quot;&quot;</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.utils.maya_utils &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.utils.maya_utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.utils.maya_utils</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Utilities for Maya</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="kn">import</span> <span class="nn">maya.mel</span> <span class="k">as</span> <span class="nn">mel</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">lists</span>
+
+
+<div class="viewcode-block" id="get_version"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.maya_utils.get_version">[docs]</a><span class="k">def</span> <span class="nf">get_version</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns version of the executed Maya, or 0 if not Maya version is found.</span>
+
+<span class="sd">    :return: version of Maya.</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">about</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="get_api_version"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.maya_utils.get_api_version">[docs]</a><span class="k">def</span> <span class="nf">get_api_version</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the Maya API version.</span>
+
+<span class="sd">    :return: version of Maya API.</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">about</span><span class="p">(</span><span class="n">api</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="get_float_version"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.maya_utils.get_float_version">[docs]</a><span class="k">def</span> <span class="nf">get_float_version</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the Maya version as a float value.</span>
+
+<span class="sd">    :return: version of Maya as float value.</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">mel</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;getApplicationVersionAsFloat&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SelectionMasks"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.maya_utils.SelectionMasks">[docs]</a><span class="k">class</span> <span class="nc">SelectionMasks</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    https://help.autodesk.com/cloudhelp/2017/ENU/Maya-Tech-Docs/CommandsPython/filterExpand.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">Handle</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">NurbsCurves</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">NurbsSurfaces</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">NurbsCurvesOnSurface</span> <span class="o">=</span> <span class="mi">11</span>
+    <span class="n">Polygon</span> <span class="o">=</span> <span class="mi">12</span>
+    <span class="n">LocatorXYZ</span> <span class="o">=</span> <span class="mi">22</span>
+    <span class="n">OrientationLocator</span> <span class="o">=</span> <span class="mi">23</span>
+    <span class="n">LocatorUV</span> <span class="o">=</span> <span class="mi">24</span>
+    <span class="n">ControlVertices</span> <span class="o">=</span> <span class="mi">28</span>
+    <span class="n">CVs</span> <span class="o">=</span> <span class="mi">28</span>
+    <span class="n">EditPoints</span> <span class="o">=</span> <span class="mi">30</span>
+    <span class="n">PolygonVertices</span> <span class="o">=</span> <span class="mi">31</span>
+    <span class="n">PolygonEdges</span> <span class="o">=</span> <span class="mi">32</span>
+    <span class="n">PolygonFace</span> <span class="o">=</span> <span class="mi">34</span>
+    <span class="n">PolygonUVs</span> <span class="o">=</span> <span class="mi">35</span>
+    <span class="n">SubdivisionMeshPoints</span> <span class="o">=</span> <span class="mi">36</span>
+    <span class="n">SubdivisionMeshEdges</span> <span class="o">=</span> <span class="mi">37</span>
+    <span class="n">SubdivisionMeshFaces</span> <span class="o">=</span> <span class="mi">38</span>
+    <span class="n">CurveParameterPoints</span> <span class="o">=</span> <span class="mi">39</span>
+    <span class="n">CurveKnot</span> <span class="o">=</span> <span class="mi">40</span>
+    <span class="n">SurfaceParameterPoints</span> <span class="o">=</span> <span class="mi">41</span>
+    <span class="n">SurfaceKnot</span> <span class="o">=</span> <span class="mi">42</span>
+    <span class="n">SurfaceRange</span> <span class="o">=</span> <span class="mi">43</span>
+    <span class="n">TrimSurfaceEdge</span> <span class="o">=</span> <span class="mi">44</span>
+    <span class="n">SurfaceIsoparms</span> <span class="o">=</span> <span class="mi">45</span>
+    <span class="n">LatticePoints</span> <span class="o">=</span> <span class="mi">46</span>
+    <span class="n">Particles</span> <span class="o">=</span> <span class="mi">47</span>
+    <span class="n">ScalePivots</span> <span class="o">=</span> <span class="mi">49</span>
+    <span class="n">RotatePivots</span> <span class="o">=</span> <span class="mi">50</span>
+    <span class="n">SelectHandles</span> <span class="o">=</span> <span class="mi">51</span>
+    <span class="n">SubdivisionSurface</span> <span class="o">=</span> <span class="mi">68</span>
+    <span class="n">PolygonVertexFace</span> <span class="o">=</span> <span class="mi">70</span>
+    <span class="n">NurbsSurfaceFace</span> <span class="o">=</span> <span class="mi">72</span>
+    <span class="n">SubdivisionMeshUVs</span> <span class="o">=</span> <span class="mi">73</span></div>
+    
+
+<div class="viewcode-block" id="delete_nodes_of_type"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.maya_utils.delete_nodes_of_type">[docs]</a><span class="k">def</span> <span class="nf">delete_nodes_of_type</span><span class="p">(</span><span class="n">node_type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Delete all nodes of the given Maya type.</span>
+
+<span class="sd">    :param str or list(str) node_type: name/s of node type/s (eg: hyperView, etc)</span>
+<span class="sd">    :return: list of delete nodes.</span>
+<span class="sd">    :rtype: list(str)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">node_type</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">force_list</span><span class="p">(</span><span class="n">node_type</span><span class="p">)</span>
+    <span class="n">deleted_nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">node_type_name</span> <span class="ow">in</span> <span class="n">node_type</span><span class="p">:</span>
+        <span class="n">nodes_to_delete</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">node_type_name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes_to_delete</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;hyperGraphLayout&#39;</span><span class="p">,):</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="n">pm</span><span class="o">.</span><span class="n">lockNode</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">lock</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+            <span class="n">deleted_nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">deleted_nodes</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

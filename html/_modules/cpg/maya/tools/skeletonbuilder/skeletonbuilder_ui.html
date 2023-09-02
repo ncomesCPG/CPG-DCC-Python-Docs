@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module that contains Helios main UI.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="c1"># PySide2 imports</span>
+<span class="kn">from</span> <span class="nn">PySide2</span> <span class="kn">import</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">QtGui</span>
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.all</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cpg.common.assetlist</span> <span class="kn">import</span> <span class="n">assetlist</span>
+<span class="kn">from</span> <span class="nn">cpg.common.modifiers</span> <span class="kn">import</span> <span class="n">decorators</span>
+<span class="kn">from</span> <span class="nn">cpg.common.paths</span> <span class="kn">import</span> <span class="n">path_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">fileio</span><span class="p">,</span> <span class="n">lists</span><span class="p">,</span> <span class="n">process</span><span class="p">,</span> <span class="n">pymaths</span>
+<span class="kn">from</span> <span class="nn">cpg.common.tools.dcctracking</span> <span class="kn">import</span> <span class="n">dcc_tracking</span>
+
+<span class="kn">from</span> <span class="nn">cpg.maya.modifiers</span> <span class="kn">import</span> <span class="n">ma_decorators</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.pyqt</span> <span class="kn">import</span> <span class="n">mayawindows</span><span class="p">,</span> <span class="n">dialogs</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">chain_markup</span><span class="p">,</span> <span class="n">rig_utils</span><span class="p">,</span> <span class="n">skel_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">dag</span><span class="p">,</span> <span class="n">naming</span>
+
+<span class="kn">from</span> <span class="nn">cpg.maya.tools.skeletonbuilder</span> <span class="kn">import</span> <span class="n">skeletonbuilder_registry</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+<span class="c1"># Common misspellings due to skeleton mirrors.</span>
+<span class="n">NAMING_ERROR_LIST</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rower&#39;</span><span class="p">,</span> <span class="s1">&#39;reg&#39;</span><span class="p">]</span>
+<span class="n">BLACKLIST_ATTRS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fragParent&#39;</span><span class="p">,</span> <span class="s1">&#39;fragRootJoint&#39;</span><span class="p">,</span> <span class="s1">&#39;noStaticAnim&#39;</span><span class="p">,</span> <span class="s1">&#39;noExport&#39;</span><span class="p">,</span> <span class="s1">&#39;SDK_Parent&#39;</span><span class="p">,</span> <span class="s1">&#39;driver_flag&#39;</span><span class="p">]</span>
+
+<span class="n">DEFAULT_COLOR</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QColor</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">NEGATIVE_COLOR</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QColor</span><span class="p">(</span><span class="s1">&#39;#521424&#39;</span><span class="p">)</span>
+<span class="n">CONFLICT_COLOR</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QColor</span><span class="p">(</span><span class="s1">&#39;#664D00&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="SkeletonBuilder"><a class="viewcode-back" href="../../../../../cpg.maya.tools.skeletonbuilder.html#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder">[docs]</a><span class="k">class</span> <span class="nc">SkeletonBuilder</span><span class="p">(</span><span class="n">mayawindows</span><span class="o">.</span><span class="n">CPGMayaWindow</span><span class="p">):</span>
+    <span class="n">VERSION</span> <span class="o">=</span> <span class="s1">&#39;1.0.0&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">root_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+        <span class="n">ui_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_path</span><span class="p">,</span> <span class="s1">&#39;ui&#39;</span><span class="p">,</span> <span class="s1">&#39;skeletonbuilderUI.ui&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Skeleton Builder&#39;</span><span class="p">,</span>
+                         <span class="n">ui_path</span><span class="o">=</span><span class="n">ui_path</span><span class="p">,</span>
+                         <span class="n">version</span><span class="o">=</span><span class="n">SkeletonBuilder</span><span class="o">.</span><span class="n">VERSION</span><span class="p">)</span>
+        
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">item_name_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root_joint</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_signals</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_treeview</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_listview</span><span class="p">()</span>
+
+<div class="viewcode-block" id="SkeletonBuilder.setup_signals"><a class="viewcode-back" href="../../../../../cpg.maya.tools.skeletonbuilder.html#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.setup_signals">[docs]</a>    <span class="k">def</span> <span class="nf">setup_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">validate_treeWidget</span><span class="o">.</span><span class="n">setColumnCount</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">validate_treeWidget</span><span class="o">.</span><span class="n">setHeaderLabels</span><span class="p">([</span><span class="s2">&quot;Name&quot;</span><span class="p">,</span> <span class="s2">&quot;Status&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">validate_treeWidget</span><span class="o">.</span><span class="n">setIndentation</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">validate_treeWidget</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select_item</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">validate_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">validate_skeleton</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">apply_markup_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">apply_markup</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">add_archetype_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_skeleton_entry</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">remove_archetype_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">remove_skeleton_entry</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">import_archetype_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">import_skeleton</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">export_skeleton_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_skeleton</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SkeletonBuilder.setup_treeview"><a class="viewcode-back" href="../../../../../cpg.maya.tools.skeletonbuilder.html#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.setup_treeview">[docs]</a>    <span class="k">def</span> <span class="nf">setup_treeview</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Setup our main treeview widget in the UI. This checks through a selected hierarchy and registers each joint to</span>
+<span class="sd">        an item in the treeview widget.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">selection</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">selected</span><span class="p">())</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">selection</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">hierarchy_root</span> <span class="o">=</span> <span class="n">dag</span><span class="o">.</span><span class="n">get_absolute_parent</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="n">node_type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hierarchy_root</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root_joint</span> <span class="o">=</span> <span class="n">hierarchy_root</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">validate_treeWidget</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">skel_hierarchy</span> <span class="o">=</span> <span class="n">chain_markup</span><span class="o">.</span><span class="n">ChainMarkup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_root_joint</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">item_name_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">joint_node</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">skel_hierarchy</span><span class="o">.</span><span class="n">joints</span><span class="p">):</span>
+            <span class="n">joint_name</span> <span class="o">=</span> <span class="s1">&#39;root&#39;</span>
+            <span class="n">parent_name</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
+                <span class="n">joint_name</span> <span class="o">=</span> <span class="n">naming</span><span class="o">.</span><span class="n">get_basename</span><span class="p">(</span><span class="n">joint_node</span><span class="p">)</span>
+                <span class="n">parent_name</span> <span class="o">=</span> <span class="n">naming</span><span class="o">.</span><span class="n">get_basename</span><span class="p">(</span><span class="n">joint_node</span><span class="o">.</span><span class="n">getParent</span><span class="p">())</span>
+
+            <span class="n">tree_item</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTreeWidgetItem</span><span class="p">([</span><span class="n">joint_name</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">parent_name</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">item_name_dict</span><span class="p">[</span><span class="n">parent_name</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">tree_item</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">validate_treeWidget</span><span class="o">.</span><span class="n">insertTopLevelItem</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tree_item</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">joint_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_name_dict</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">item_name_dict</span><span class="p">[</span><span class="n">joint_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">tree_item</span><span class="p">,</span> <span class="n">joint_node</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;rename </span><span class="si">{</span><span class="n">joint_name</span><span class="si">}</span><span class="s1"> a joint has already been registered with this name.&#39;</span><span class="p">)</span>
+                <span class="k">return</span>
+
+        <span class="n">header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">validate_treeWidget</span><span class="o">.</span><span class="n">header</span><span class="p">()</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">setSectionResizeMode</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHeaderView</span><span class="o">.</span><span class="n">ResizeToContents</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">validate_treeWidget</span><span class="o">.</span><span class="n">expandAll</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_skeleton</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SkeletonBuilder.setup_listview"><a class="viewcode-back" href="../../../../../cpg.maya.tools.skeletonbuilder.html#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.setup_listview">[docs]</a>    <span class="k">def</span> <span class="nf">setup_listview</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        From the skeleton archetype registry display all entries.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">archetype_listWidget</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="c1"># Pull our list of skeleton archetypes.</span>
+        <span class="n">skeleton_registry</span> <span class="o">=</span> <span class="n">skeletonbuilder_registry</span><span class="o">.</span><span class="n">SkeletonArchetypeRegistry</span><span class="p">()</span>
+        <span class="n">skeleton_registry</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">skel_name</span> <span class="ow">in</span> <span class="n">skeleton_registry</span><span class="o">.</span><span class="n">REGISTRY_DICT</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">archetype_listWidget</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">skel_name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SkeletonBuilder.validate_skeleton"><a class="viewcode-back" href="../../../../../cpg.maya.tools.skeletonbuilder.html#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.validate_skeleton">[docs]</a>    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">validate_skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        From our registered skeleton check for a list of common errors then in place edit the treeview items to show status</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_name_dict</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_name_dict</span><span class="p">[</span><span class="s1">&#39;root&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setup_treeview</span><span class="p">()</span>
+            <span class="k">return</span>
+
+        <span class="n">skel_hierarchy</span> <span class="o">=</span> <span class="n">chain_markup</span><span class="o">.</span><span class="n">ChainMarkup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">item_name_dict</span><span class="p">[</span><span class="s1">&#39;root&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">item_name_dict</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">skel_hierarchy</span><span class="o">.</span><span class="n">joints</span><span class="p">):</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">skel_hierarchy</span><span class="o">.</span><span class="n">root</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setup_treeview</span><span class="p">()</span>
+            <span class="k">return</span>
+
+        <span class="n">validation_markup_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1"># Make sure our root has space for the asset_id of this skel.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">skel_hierarchy</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;asset_id&#39;</span><span class="p">):</span>
+            <span class="n">skel_hierarchy</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;asset_id&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">joint_name</span><span class="p">,</span> <span class="p">(</span><span class="n">tree_item</span><span class="p">,</span> <span class="n">joint_node</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_name_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">joint_node</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">or</span> <span class="p">(</span><span class="n">joint_name</span> <span class="o">!=</span> <span class="s1">&#39;root&#39;</span> <span class="ow">and</span> <span class="n">naming</span><span class="o">.</span><span class="n">get_basename</span><span class="p">(</span><span class="n">joint_node</span><span class="p">)</span> <span class="o">!=</span> <span class="n">joint_name</span><span class="p">):</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_root_joint</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">setup_treeview</span><span class="p">()</span>
+                <span class="k">return</span>
+
+            <span class="c1"># Reset item look.</span>
+            <span class="n">tree_item</span><span class="o">.</span><span class="n">setBackgroundColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">DEFAULT_COLOR</span><span class="p">)</span>
+            <span class="n">tree_item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+            <span class="n">wrapped_joint</span> <span class="o">=</span> <span class="n">chain_markup</span><span class="o">.</span><span class="n">JointMarkup</span><span class="p">(</span><span class="n">joint_node</span><span class="p">)</span>
+            <span class="n">joint_region</span> <span class="o">=</span> <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">region</span>
+            <span class="n">joint_side</span> <span class="o">=</span> <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">side</span>
+            <span class="n">chain_twist</span> <span class="o">=</span> <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">chainTwist</span>
+            <span class="n">chain_start</span> <span class="o">=</span> <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">chainStart</span>
+            <span class="n">chain_end</span> <span class="o">=</span> <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">chainEnd</span>
+
+            <span class="n">error_str</span> <span class="o">=</span> <span class="n">tree_item</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">error_color</span> <span class="o">=</span> <span class="n">DEFAULT_COLOR</span>
+
+            <span class="c1"># Purge attrs that fuck with other systems.</span>
+            <span class="k">for</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="n">BLACKLIST_ATTRS</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">joint_node</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="n">attr_name</span><span class="p">):</span>
+                    <span class="n">pm</span><span class="o">.</span><span class="n">deleteAttr</span><span class="p">(</span><span class="n">joint_node</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="n">attr_name</span><span class="p">)</span>
+
+            <span class="c1"># Check for missing markup</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">joint_region</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">joint_side</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;Missing Markup&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">error_str</span><span class="p">:</span>
+                    <span class="n">error_str</span> <span class="o">+=</span> <span class="s1">&#39;Missing Markup. &#39;</span>
+                <span class="n">tree_item</span><span class="o">.</span><span class="n">setBackground</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">NEGATIVE_COLOR</span><span class="p">)</span>
+                <span class="n">tree_item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">error_str</span><span class="p">)</span>
+                <span class="c1"># Hit the next joint we can&#39;t do any other lookups if we&#39;re missing markup.</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">joint_region</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">validation_markup_dict</span><span class="p">:</span>
+                <span class="n">validation_markup_dict</span><span class="p">[</span><span class="n">joint_region</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="k">if</span> <span class="n">joint_side</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">validation_markup_dict</span><span class="p">[</span><span class="n">joint_region</span><span class="p">]:</span>
+                <span class="n">validation_markup_dict</span><span class="p">[</span><span class="n">joint_region</span><span class="p">][</span><span class="n">joint_side</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;joints&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+
+            <span class="c1"># Check for chain start</span>
+            <span class="n">chain_dict</span> <span class="o">=</span> <span class="n">validation_markup_dict</span><span class="p">[</span><span class="n">joint_region</span><span class="p">][</span><span class="n">joint_side</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">chain_start</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;chain_start&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chain_dict</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">chain_start</span> <span class="o">==</span> <span class="n">joint_region</span><span class="p">:</span>
+                        <span class="n">chain_dict</span><span class="p">[</span><span class="s1">&#39;chain_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">joint_name</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">error_str</span> <span class="o">+=</span> <span class="s1">&#39;Region Mismatch. &#39;</span>
+                        <span class="n">error_color</span> <span class="o">=</span> <span class="n">NEGATIVE_COLOR</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">error_str</span> <span class="o">+=</span> <span class="s1">&#39;Duplicate Start. &#39;</span>
+                    <span class="n">error_color</span> <span class="o">=</span> <span class="n">NEGATIVE_COLOR</span>
+                    <span class="n">conflict_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_name_dict</span><span class="p">[</span><span class="n">chain_dict</span><span class="p">[</span><span class="s1">&#39;chain_start&#39;</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">conflict_text</span> <span class="o">=</span> <span class="n">conflict_item</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">conflict_text</span> <span class="ow">and</span> <span class="s1">&#39;Duplicate Start. &#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">conflict_text</span><span class="p">:</span>
+                        <span class="n">conflict_item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">conflict_text</span><span class="si">}</span><span class="s1">Duplicate Start. &#39;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">conflict_item</span><span class="o">.</span><span class="n">setBackground</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">NEGATIVE_COLOR</span><span class="p">)</span>
+                        <span class="n">conflict_item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Duplicate Start. &#39;</span><span class="p">)</span>
+
+
+            <span class="c1"># Check for chain end</span>
+            <span class="k">if</span> <span class="n">chain_end</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">chain_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;chain_start&#39;</span><span class="p">):</span>
+                    <span class="n">error_str</span> <span class="o">+=</span> <span class="s1">&#39;No Region Start. &#39;</span>
+                    <span class="n">error_color</span> <span class="o">=</span> <span class="n">NEGATIVE_COLOR</span>
+                <span class="k">elif</span> <span class="n">chain_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;chain_end&#39;</span><span class="p">):</span>
+                    <span class="n">error_str</span> <span class="o">+=</span> <span class="s1">&#39;Duplicate End. &#39;</span>
+                    <span class="n">error_color</span> <span class="o">=</span> <span class="n">NEGATIVE_COLOR</span>
+                    <span class="n">conflict_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_name_dict</span><span class="p">[</span><span class="n">chain_dict</span><span class="p">[</span><span class="s1">&#39;chain_end&#39;</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">conflict_text</span> <span class="o">=</span> <span class="n">conflict_item</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">conflict_text</span> <span class="ow">and</span> <span class="s1">&#39;Duplicate End. &#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">conflict_text</span><span class="p">:</span>
+                        <span class="n">conflict_item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">conflict_text</span><span class="si">}</span><span class="s1">Duplicate End. &#39;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">conflict_item</span><span class="o">.</span><span class="n">setBackground</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">NEGATIVE_COLOR</span><span class="p">)</span>
+                        <span class="n">conflict_item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Duplicate End. &#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">chain_end</span> <span class="o">==</span> <span class="n">joint_region</span> <span class="ow">and</span> <span class="s1">&#39;chain_end&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chain_dict</span><span class="p">:</span>
+                        <span class="n">chain_dict</span><span class="p">[</span><span class="s1">&#39;chain_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">joint_name</span>
+                    <span class="k">elif</span> <span class="n">chain_end</span> <span class="ow">in</span> <span class="n">validation_markup_dict</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="s1">&#39;chain_end&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">validation_markup_dict</span><span class="p">[</span><span class="n">chain_end</span><span class="p">][</span><span class="n">joint_side</span><span class="p">]:</span>
+                            <span class="n">validation_markup_dict</span><span class="p">[</span><span class="n">chain_end</span><span class="p">][</span><span class="n">joint_side</span><span class="p">][</span><span class="s1">&#39;chain_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">joint_name</span>
+
+            <span class="c1"># Check if joint has a registered chain start.</span>
+            <span class="n">chain_start_joint</span> <span class="o">=</span> <span class="n">skel_hierarchy</span><span class="o">.</span><span class="n">skeleton_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">chain_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;chain_start&#39;</span><span class="p">))</span>
+            <span class="n">all_parents_list</span> <span class="o">=</span> <span class="n">dag</span><span class="o">.</span><span class="n">get_all_parents</span><span class="p">(</span><span class="n">joint_node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">)</span>
+            <span class="n">joint_parent</span> <span class="o">=</span> <span class="n">joint_node</span><span class="o">.</span><span class="n">getParent</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">chain_start_joint</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">chain_twist</span><span class="p">:</span>
+                <span class="n">error_str</span> <span class="o">+=</span> <span class="s1">&#39;Invalid Chain. &#39;</span>
+                <span class="n">error_color</span> <span class="o">=</span> <span class="n">NEGATIVE_COLOR</span>
+
+            <span class="k">if</span> <span class="n">chain_twist</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">chain_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;parent&#39;</span><span class="p">):</span>
+                    <span class="n">chain_dict</span><span class="p">[</span><span class="s1">&#39;parent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">joint_parent</span>
+
+            <span class="c1"># check if we&#39;re animation exportable, but our parent is not.</span>
+            <span class="k">if</span> <span class="n">joint_parent</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">joint_node</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;animationExport&#39;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">joint_parent</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;animationExport&#39;</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">joint_node</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;animationExport&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">joint_parent</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;animationExport&#39;</span><span class="p">):</span>
+                            <span class="n">error_str</span> <span class="o">+=</span> <span class="s1">&#39;Parent not animation exportable. &#39;</span>
+                            <span class="n">error_color</span> <span class="o">=</span> <span class="n">CONFLICT_COLOR</span>
+
+                <span class="c1"># check if we&#39;re skel exportable, but our parent is not.</span>
+                <span class="k">if</span> <span class="n">joint_node</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;skExport&#39;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">joint_parent</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;skExport&#39;</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">joint_node</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;skExport&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">joint_parent</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;skExport&#39;</span><span class="p">):</span>
+                            <span class="n">error_str</span> <span class="o">+=</span> <span class="s1">&#39;Parent not skel exportable. &#39;</span>
+                            <span class="n">error_color</span> <span class="o">=</span> <span class="n">NEGATIVE_COLOR</span>
+
+            <span class="c1"># Check if chain start is in the parent structure.</span>
+            <span class="c1"># Or if we&#39;ve a chain twist joint with same markup but different parent.</span>
+            <span class="c1"># If not we&#39;ve duplicate markup with non shared parents.</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">chain_start_joint</span> <span class="ow">and</span> <span class="n">joint_node</span> <span class="o">!=</span> <span class="n">chain_start_joint</span> <span class="ow">and</span> <span class="n">chain_start_joint</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">all_parents_list</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">chain_twist</span> <span class="ow">and</span> <span class="n">joint_parent</span> <span class="o">!=</span> <span class="n">chain_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;parent&#39;</span><span class="p">))</span> <span class="ow">and</span> <span class="s1">&#39;leaf&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">joint_name</span><span class="p">:</span>
+                <span class="n">error_str</span> <span class="o">+=</span> <span class="s1">&#39;Duplicate Markup. &#39;</span>
+                <span class="n">error_color</span> <span class="o">=</span> <span class="n">NEGATIVE_COLOR</span>
+                <span class="k">for</span> <span class="n">conflict_joint_name</span> <span class="ow">in</span> <span class="n">chain_dict</span><span class="p">[</span><span class="s1">&#39;joints&#39;</span><span class="p">]:</span>
+                    <span class="n">conflict_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_name_dict</span><span class="p">[</span><span class="n">conflict_joint_name</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">conflict_text</span> <span class="o">=</span> <span class="n">conflict_item</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">conflict_text</span> <span class="ow">and</span> <span class="s1">&#39;Duplicate Markup. &#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">conflict_text</span><span class="p">:</span>
+                        <span class="n">conflict_item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">conflict_text</span><span class="si">}</span><span class="s1">Duplicate Markup. &#39;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">conflict_item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Duplicate Markup. &#39;</span><span class="p">)</span>
+                    <span class="n">conflict_item</span><span class="o">.</span><span class="n">setBackground</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">NEGATIVE_COLOR</span><span class="p">)</span>
+
+
+            <span class="c1"># Check Mirror</span>
+            <span class="n">rev_joint_name</span> <span class="o">=</span> <span class="n">joint_name</span>
+            <span class="k">if</span> <span class="s1">&#39;_l_&#39;</span> <span class="ow">in</span> <span class="n">joint_name</span><span class="p">:</span>
+                <span class="n">rev_joint_name</span> <span class="o">=</span> <span class="n">joint_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_l_&#39;</span><span class="p">,</span> <span class="s1">&#39;_r_&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">joint_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;_l&#39;</span><span class="p">):</span>
+                <span class="n">rev_joint_name</span> <span class="o">=</span> <span class="n">joint_name</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_r&#39;</span>
+            <span class="k">elif</span> <span class="s1">&#39;_r_&#39;</span> <span class="ow">in</span> <span class="n">joint_name</span><span class="p">:</span>
+                <span class="n">rev_joint_name</span> <span class="o">=</span> <span class="n">joint_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_r_&#39;</span><span class="p">,</span> <span class="s1">&#39;_l_&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">joint_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;_r&#39;</span><span class="p">):</span>
+                <span class="n">rev_joint_name</span> <span class="o">=</span> <span class="n">joint_name</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_l&#39;</span>
+
+            <span class="k">if</span> <span class="n">rev_joint_name</span> <span class="o">!=</span> <span class="n">joint_name</span><span class="p">:</span>
+                <span class="n">rev_joint</span> <span class="o">=</span> <span class="n">skel_hierarchy</span><span class="o">.</span><span class="n">skeleton_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rev_joint_name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">rev_joint</span><span class="p">:</span>
+                    <span class="n">joint_distance</span> <span class="o">=</span> <span class="n">pymaths</span><span class="o">.</span><span class="n">find_vector_length</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">joint_node</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+                    <span class="n">rev_joint_distance</span> <span class="o">=</span> <span class="n">pymaths</span><span class="o">.</span><span class="n">find_vector_length</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">rev_joint</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">abs</span><span class="p">(</span><span class="n">joint_distance</span> <span class="o">-</span> <span class="n">rev_joint_distance</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">.01</span><span class="p">:</span>
+                        <span class="n">error_str</span> <span class="o">+=</span> <span class="s1">&#39;Not Mirrored. &#39;</span>
+                        <span class="k">if</span> <span class="n">error_color</span> <span class="o">!=</span> <span class="n">NEGATIVE_COLOR</span><span class="p">:</span>
+                            <span class="n">error_color</span> <span class="o">=</span> <span class="n">CONFLICT_COLOR</span>
+
+                        <span class="k">if</span> <span class="n">rev_joint_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_name_dict</span><span class="p">:</span>
+                            <span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_root_joint</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">setup_treeview</span><span class="p">()</span>
+                            <span class="k">return</span>
+
+                        <span class="n">conflict_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_name_dict</span><span class="p">[</span><span class="n">rev_joint_name</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">conflict_text</span> <span class="o">=</span> <span class="n">conflict_item</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">conflict_text</span> <span class="ow">and</span> <span class="s1">&#39;Not Mirrored. &#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">conflict_text</span><span class="p">:</span>
+                            <span class="n">conflict_item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">conflict_text</span><span class="si">}</span><span class="s1">Not Mirrored. &#39;</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">conflict_item</span><span class="o">.</span><span class="n">setBackground</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">CONFLICT_COLOR</span><span class="p">)</span>
+                            <span class="n">conflict_item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Not Mirrored. &#39;</span><span class="p">)</span>
+
+            <span class="c1"># Check for naming errors</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="kc">True</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">joint_name</span> <span class="k">else</span> <span class="kc">False</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">NAMING_ERROR_LIST</span><span class="p">):</span>
+                <span class="n">error_str</span> <span class="o">+=</span> <span class="s1">&#39;Check Name. &#39;</span>
+                <span class="k">if</span> <span class="n">error_color</span> <span class="o">!=</span> <span class="n">NEGATIVE_COLOR</span><span class="p">:</span>
+                    <span class="n">error_color</span> <span class="o">=</span> <span class="n">CONFLICT_COLOR</span>
+
+            <span class="n">chain_dict</span><span class="p">[</span><span class="s1">&#39;joints&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">joint_name</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">error_str</span><span class="p">:</span>
+                <span class="c1"># Apply all errors found and markup with color.</span>
+                <span class="n">tree_item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">error_str</span><span class="p">)</span>
+                <span class="n">tree_item</span><span class="o">.</span><span class="n">setBackgroundColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">error_color</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">joint_region</span><span class="p">,</span> <span class="n">side_dict</span> <span class="ow">in</span> <span class="n">validation_markup_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Check back over all entries if any are missing a chain end or a chain start that entire chain is invalid.</span>
+            <span class="c1"># We should have already caught all chain starts, but this gets us our chain ends as well.</span>
+            <span class="k">for</span> <span class="n">joint_side</span><span class="p">,</span> <span class="n">data_dict</span> <span class="ow">in</span> <span class="n">side_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">data_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;parent&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="p">(</span><span class="n">data_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;chain_end&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">data_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;chain_start&#39;</span><span class="p">))):</span>
+                    <span class="k">for</span> <span class="n">joint_name</span> <span class="ow">in</span> <span class="n">data_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;joints&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+                        <span class="n">tree_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_name_dict</span><span class="p">[</span><span class="n">joint_name</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">tree_item</span><span class="o">.</span><span class="n">setBackgroundColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">NEGATIVE_COLOR</span><span class="p">)</span>
+                        <span class="n">conflict_text</span> <span class="o">=</span> <span class="n">tree_item</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">conflict_text</span> <span class="ow">and</span> <span class="s1">&#39;Invalid Chain. &#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">conflict_text</span><span class="p">:</span>
+                            <span class="n">tree_item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">conflict_text</span><span class="si">}</span><span class="s1">Invalid Chain. &#39;</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">tree_item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Invalid Chain. &#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SkeletonBuilder.select_item"><a class="viewcode-back" href="../../../../../cpg.maya.tools.skeletonbuilder.html#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.select_item">[docs]</a>    <span class="k">def</span> <span class="nf">select_item</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Select the joint represented by an entry in the treewidget.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tree_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">validate_treeWidget</span><span class="o">.</span><span class="n">selectedItems</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">joint_name</span> <span class="o">=</span> <span class="n">tree_item</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">joint_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_name_dict</span><span class="p">[</span><span class="n">joint_name</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">joint_node</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SkeletonBuilder.apply_markup"><a class="viewcode-back" href="../../../../../cpg.maya.tools.skeletonbuilder.html#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.apply_markup">[docs]</a>    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_selection_decorator</span>
+    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">apply_markup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply markup to the selected joints represented by the treewidget.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">skel_region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">region_label_lineEdit</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+        <span class="n">skel_side</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">side_label_lineEdit</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;region:</span><span class="si">{</span><span class="n">skel_region</span><span class="si">}</span><span class="s1">, side:</span><span class="si">{</span><span class="n">skel_side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">node_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">skel_region</span> <span class="ow">or</span> <span class="n">skel_side</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">validate_treeWidget</span><span class="o">.</span><span class="n">selectedItems</span><span class="p">():</span>
+                <span class="n">node_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">item_name_dict</span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">0</span><span class="p">)][</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">apply_markup_cmd</span><span class="p">(</span><span class="n">node_list</span><span class="p">,</span> <span class="n">skel_region</span><span class="p">,</span> <span class="n">skel_side</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">is_twist_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">(),</span>
+                                                                <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">exportable_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">(),</span>
+                                                                <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">animatable_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span>
+
+        <span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_root_joint</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_skeleton</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SkeletonBuilder.import_skeleton"><a class="viewcode-back" href="../../../../../cpg.maya.tools.skeletonbuilder.html#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.import_skeleton">[docs]</a>    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">import_skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        From the selected skeleton entry import merge that skeleton.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">selected_skel</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">archetype_listWidget</span><span class="o">.</span><span class="n">selectedItems</span><span class="p">())</span>
+        <span class="n">skel_name</span> <span class="o">=</span> <span class="n">selected_skel</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+        <span class="n">skeleton_registry</span> <span class="o">=</span> <span class="n">skeletonbuilder_registry</span><span class="o">.</span><span class="n">SkeletonArchetypeRegistry</span><span class="p">()</span>
+        <span class="n">skel_entry</span> <span class="o">=</span> <span class="n">skeleton_registry</span><span class="o">.</span><span class="n">get_entry</span><span class="p">(</span><span class="n">skel_name</span><span class="p">)</span>
+
+        <span class="n">skel_path</span> <span class="o">=</span> <span class="n">skel_entry</span><span class="o">.</span><span class="n">skel_path</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">skel_path</span><span class="p">):</span>
+            <span class="n">dialogs</span><span class="o">.</span><span class="n">info_prompt</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Missing File&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">skel_path</span><span class="si">}</span><span class="s1"> was not found on disk, verify the file exists.&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">skel_path</span><span class="si">}</span><span class="s1"> was not found on disk, verify the file exists.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">root_joint</span> <span class="o">=</span> <span class="n">skel_utils</span><span class="o">.</span><span class="n">import_merge_skeleton</span><span class="p">(</span><span class="n">skel_path</span><span class="p">,</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">selected</span><span class="p">()))</span></div>
+
+<div class="viewcode-block" id="SkeletonBuilder.export_skeleton"><a class="viewcode-back" href="../../../../../cpg.maya.tools.skeletonbuilder.html#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.export_skeleton">[docs]</a>    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_selection_decorator</span>
+    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">export_skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        From the registered skeleton check the asset_id and export to the associated .skl file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_joint</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">dialogs</span><span class="o">.</span><span class="n">info_prompt</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Reload Skeleton&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Validate a new skeleton, the registered root was not found.&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Validate a new skeleton, the registered root was not found.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_root_joint</span><span class="p">)</span>
+        <span class="n">asset_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_joint</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;asset_id&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">asset_id</span><span class="p">:</span>
+            <span class="n">dialogs</span><span class="o">.</span><span class="n">info_prompt</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Set Asset ID&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Set a valid Asset ID. The current Asset ID is empty.&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Set a valid Asset ID. The current Asset ID is empty.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">asset_id</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.skl&#39;</span><span class="p">):</span>
+            <span class="n">skel_path</span> <span class="o">=</span> <span class="n">path_utils</span><span class="o">.</span><span class="n">to_full_path</span><span class="p">(</span><span class="n">asset_id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">skel_path</span> <span class="o">=</span> <span class="n">rig_utils</span><span class="o">.</span><span class="n">get_asset_skeleton</span><span class="p">(</span><span class="n">asset_id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">skel_path</span><span class="p">:</span>
+                <span class="n">dialogs</span><span class="o">.</span><span class="n">info_prompt</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Lookup Failed&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Verify Asset ID &quot;</span><span class="si">{</span><span class="n">asset_id</span><span class="si">}</span><span class="s1">&quot; is registered, we were unable to lookup the skel path.&#39;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Verify Asset ID &quot;</span><span class="si">{</span><span class="n">asset_id</span><span class="si">}</span><span class="s1">&quot; is registered, we were unable to lookup the skel path.&#39;</span><span class="p">)</span>
+                <span class="k">return</span>
+
+        <span class="n">fileio</span><span class="o">.</span><span class="n">touch_path</span><span class="p">(</span><span class="n">skel_path</span><span class="p">)</span>
+        <span class="n">skel_utils</span><span class="o">.</span><span class="n">export_skeleton</span><span class="p">(</span><span class="n">skel_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_joint</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SkeletonBuilder.add_skeleton_entry"><a class="viewcode-back" href="../../../../../cpg.maya.tools.skeletonbuilder.html#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.add_skeleton_entry">[docs]</a>    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">add_skeleton_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a new entry to ther skeleton archetype registry</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_joint</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">dialogs</span><span class="o">.</span><span class="n">info_prompt</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Reload Skeleton&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Validate a new skeleton, the registered root was not found.&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Validate a new skeleton, the registered root was not found.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">asset_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_joint</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;asset_id&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">asset_id</span><span class="p">:</span>
+            <span class="n">dialogs</span><span class="o">.</span><span class="n">info_prompt</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Set Asset ID&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Set a valid Asset ID. The current Asset ID is empty.&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Set a valid Asset ID. The current Asset ID is empty.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">cpg_asset</span> <span class="o">=</span> <span class="n">assetlist</span><span class="o">.</span><span class="n">get_asset_by_id</span><span class="p">(</span><span class="n">asset_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cpg_asset</span><span class="p">:</span>
+            <span class="n">dialogs</span><span class="o">.</span><span class="n">info_prompt</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Lookup Failed&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Verify Asset ID &quot;</span><span class="si">{</span><span class="n">asset_id</span><span class="si">}</span><span class="s1">&quot; is registered, we were unable to lookup the skel path.&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Verify Asset ID &quot;</span><span class="si">{</span><span class="n">asset_id</span><span class="si">}</span><span class="s1">&quot; is registered, we were unable to lookup the skel path.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">skel_name</span> <span class="o">=</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_name</span>
+        <span class="n">skel_path</span> <span class="o">=</span> <span class="n">rig_utils</span><span class="o">.</span><span class="n">get_asset_skeleton</span><span class="p">(</span><span class="n">asset_id</span><span class="p">)</span>
+        <span class="n">skeleton_registry</span> <span class="o">=</span> <span class="n">skeletonbuilder_registry</span><span class="o">.</span><span class="n">SkeletonArchetypeRegistry</span><span class="p">()</span>
+        <span class="n">skeleton_registry</span><span class="o">.</span><span class="n">register_archetype</span><span class="p">(</span><span class="n">skeletonbuilder_registry</span><span class="o">.</span><span class="n">SkeletonArchetype</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">skel_name</span><span class="p">,</span> <span class="s1">&#39;skel_path&#39;</span><span class="p">:</span> <span class="n">skel_path</span><span class="p">}),</span> <span class="n">commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_listview</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SkeletonBuilder.remove_skeleton_entry"><a class="viewcode-back" href="../../../../../cpg.maya.tools.skeletonbuilder.html#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.remove_skeleton_entry">[docs]</a>    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">remove_skeleton_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        From the selected skeleton entry remove it from the registry.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">selected_skel</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">archetype_listWidget</span><span class="o">.</span><span class="n">selectedItems</span><span class="p">())</span>
+        <span class="n">skel_name</span> <span class="o">=</span> <span class="n">selected_skel</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+        <span class="n">skeleton_registry</span> <span class="o">=</span> <span class="n">skeletonbuilder_registry</span><span class="o">.</span><span class="n">SkeletonArchetypeRegistry</span><span class="p">()</span>
+        <span class="n">skeleton_registry</span><span class="o">.</span><span class="n">remove_entry</span><span class="p">(</span><span class="n">skel_name</span><span class="p">,</span> <span class="n">commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_listview</span><span class="p">()</span></div></div>
+
+
+
+<div class="viewcode-block" id="apply_markup_cmd"><a class="viewcode-back" href="../../../../../cpg.maya.tools.skeletonbuilder.html#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.apply_markup_cmd">[docs]</a><span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_selection_decorator</span>
+<span class="k">def</span> <span class="nf">apply_markup_cmd</span><span class="p">(</span><span class="n">node_list</span><span class="p">,</span> <span class="n">skel_region</span><span class="p">,</span> <span class="n">skel_side</span><span class="p">,</span> <span class="n">is_twist</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sk_exportable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">animatable</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    From a list of ORDERED joints, apply Frag markup for us to traverse the skeleton.</span>
+
+<span class="sd">    :param list[Joint] node_list: A list of joint nodes in hierarchical order.</span>
+<span class="sd">    :param str skel_region: The name of the skeletal region. IE: &quot;leg&quot;, &quot;arm&quot;</span>
+<span class="sd">    :param str skel_side: The name of the skeleton side. IE: &quot;right&quot;, &quot;left&quot;, &quot;center&quot;</span>
+<span class="sd">    :param bool is_twist: If this joint should be marked up as a twist joint.</span>
+<span class="sd">    :param bool sk_exportable: If this joint should be exported as part of the SK.</span>
+<span class="sd">    :param bool animatable: If this joint should be marked up for animation export.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">node_list</span> <span class="o">=</span> <span class="n">node_list</span> <span class="ow">or</span> <span class="n">pm</span><span class="o">.</span><span class="n">selected</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">node_list</span><span class="p">):</span>
+        <span class="n">wrapped_joint</span> <span class="o">=</span> <span class="n">chain_markup</span><span class="o">.</span><span class="n">JointMarkup</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">is_sk_export</span> <span class="o">=</span> <span class="n">sk_exportable</span>
+        <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">is_animation_export</span> <span class="o">=</span> <span class="n">animatable</span>
+
+        <span class="k">if</span> <span class="s1">&#39;null&#39;</span> <span class="ow">in</span> <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+            <span class="c1"># Null joints can neither have animation nor should they be exported.</span>
+            <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">is_sk_export</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">is_animation_export</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
+            <span class="c1"># If our joint has a chain start that matches the region markup we&#39;re using, but is not</span>
+            <span class="c1"># the first joint, delete that markup</span>
+            <span class="k">if</span> <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">chainStart</span> <span class="o">==</span> <span class="n">skel_region</span><span class="p">:</span>
+                <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">chainStart</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">is_twist</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">skel_region</span><span class="p">:</span>
+                <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">chainTwist</span> <span class="o">=</span> <span class="n">skel_region</span>
+            <span class="c1"># Twist joints cannot accept animation, but they should be part of the primary skeleton.</span>
+            <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">is_sk_export</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">is_animation_export</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">index</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_twist</span><span class="p">:</span>
+            <span class="c1"># Only the first joint should get chainStart markup</span>
+            <span class="k">if</span> <span class="n">skel_region</span><span class="p">:</span>
+                <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">chainStart</span> <span class="o">=</span> <span class="n">skel_region</span>
+
+        <span class="k">if</span> <span class="n">skel_side</span><span class="p">:</span>
+            <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">side</span> <span class="o">=</span> <span class="n">skel_side</span>
+
+        <span class="k">if</span> <span class="n">skel_region</span><span class="p">:</span>
+            <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">region</span> <span class="o">=</span> <span class="n">skel_region</span>
+
+        <span class="k">if</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">node_list</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_twist</span><span class="p">:</span>
+            <span class="c1"># Only the last joint should get chainEnd markup</span>
+            <span class="k">if</span> <span class="n">skel_region</span><span class="p">:</span>
+                <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">chainEnd</span> <span class="o">=</span> <span class="n">skel_region</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If we have a joint that is not the last joint, and it has chainEnd markup</span>
+            <span class="c1"># delete that attribute.</span>
+            <span class="k">if</span> <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">chainEnd</span> <span class="o">==</span> <span class="n">skel_region</span><span class="p">:</span>
+                <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">chainEnd</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

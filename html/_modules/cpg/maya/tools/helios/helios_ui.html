@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.tools.helios.helios_ui &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.tools.helios.helios_ui</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.tools.helios.helios_ui</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module that contains Helios main UI.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="c1"># PySide2 imports</span>
+<span class="kn">from</span> <span class="nn">PySide2.QtWidgets</span> <span class="kn">import</span> <span class="n">QFileDialog</span>
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.all</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cpg.common.assetlist</span> <span class="kn">import</span> <span class="n">assetlist</span>
+<span class="kn">from</span> <span class="nn">cpg.common.paths</span> <span class="kn">import</span> <span class="n">paths</span> <span class="k">as</span> <span class="n">paths</span><span class="p">,</span> <span class="n">path_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.common.pyqt</span> <span class="kn">import</span> <span class="n">messages</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">lists</span>
+<span class="kn">from</span> <span class="nn">cpg.common.modifiers</span> <span class="kn">import</span> <span class="n">decorators</span>
+<span class="kn">from</span> <span class="nn">cpg.common.tools.dcctracking</span> <span class="kn">import</span> <span class="n">dcc_tracking</span>
+
+<span class="kn">from</span> <span class="nn">cpg.maya.tools.helios</span> <span class="kn">import</span> <span class="n">helios_registry</span><span class="p">,</span> <span class="n">helios_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">dag</span> <span class="k">as</span> <span class="n">dag_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">skel_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging.flags</span> <span class="kn">import</span> <span class="n">frag_flag</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.pyqt</span> <span class="kn">import</span> <span class="n">mayawindows</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<span class="n">WIZARD_LIST</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Albus&#39;</span><span class="p">,</span> <span class="s1">&#39;Bigby&#39;</span><span class="p">,</span> <span class="s1">&#39;Strange&#39;</span><span class="p">,</span> <span class="s1">&#39;Elminster&#39;</span><span class="p">,</span> <span class="s1">&#39;Gandalf&#39;</span><span class="p">,</span> <span class="s1">&#39;Glinda&#39;</span><span class="p">,</span> <span class="s1">&#39;Howl&#39;</span><span class="p">,</span> <span class="s1">&#39;Jareth&#39;</span><span class="p">,</span> <span class="s1">&#39;Merlin&#39;</span><span class="p">,</span> <span class="s1">&#39;Frank&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;Mordenkainen&#39;</span><span class="p">,</span> <span class="s1">&#39;Puck&#39;</span><span class="p">,</span> <span class="s1">&#39;Raistlin&#39;</span><span class="p">,</span> <span class="s1">&#39;Rasputin&#39;</span><span class="p">,</span> <span class="s1">&#39;Ravenna&#39;</span><span class="p">,</span> <span class="s1">&#39;Sauron&#39;</span><span class="p">,</span> <span class="s1">&#39;Tim&#39;</span><span class="p">,</span> <span class="s1">&#39;Vecna&#39;</span><span class="p">,</span> <span class="s1">&#39;Vivi&#39;</span><span class="p">,</span> <span class="s1">&#39;Zatanna&#39;</span><span class="p">]</span>
+
+<span class="n">WIZARD</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="n">CURRENT_RELEASE_LIST</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">paths</span><span class="o">.</span><span class="n">get_asset_list_path</span><span class="p">(),</span> <span class="s1">&#39;release_list.yaml&#39;</span><span class="p">)</span>
+<span class="n">HELIOS_OPTION_VARS</span> <span class="o">=</span> <span class="n">helios_utils</span><span class="o">.</span><span class="n">HELIOS_OPTION_VARS</span>
+
+
+<div class="viewcode-block" id="Helios"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_ui.Helios">[docs]</a><span class="k">class</span> <span class="nc">Helios</span><span class="p">(</span><span class="n">mayawindows</span><span class="o">.</span><span class="n">CPGMayaWindow</span><span class="p">):</span>
+    <span class="n">VERSION</span> <span class="o">=</span> <span class="s1">&#39;1.0.1&#39;</span>
+    
+    <span class="n">APPAREL_SLOTS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">,</span> <span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="s1">&#39;legs&#39;</span><span class="p">,</span> <span class="s1">&#39;shoes&#39;</span><span class="p">,</span> <span class="s1">&#39;backpack&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">root_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+        <span class="n">ui_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_path</span><span class="p">,</span> <span class="s1">&#39;ui&#39;</span><span class="p">,</span> <span class="s1">&#39;heliosUI.ui&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Helios&#39;</span><span class="p">,</span>
+                            <span class="n">ui_path</span><span class="o">=</span><span class="n">ui_path</span><span class="p">,</span>
+                            <span class="n">version</span><span class="o">=</span><span class="n">Helios</span><span class="o">.</span><span class="n">VERSION</span><span class="p">)</span>
+
+        <span class="n">hardware_globals_node</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">HardwareRenderingGlobals</span><span class="p">))</span>
+        <span class="n">hardware_globals_node</span><span class="o">.</span><span class="n">transparencyAlgorithm</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_signals</span><span class="p">()</span>
+
+    <span class="c1"># =================================================================================================================</span>
+    <span class="c1"># OVERRIDES</span>
+    <span class="c1"># =================================================================================================================</span>
+
+<div class="viewcode-block" id="Helios.setup_signals"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_ui.Helios.setup_signals">[docs]</a>    <span class="k">def</span> <span class="nf">setup_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_lists</span><span class="p">()</span>
+
+        <span class="c1"># restore UI</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">performance_materials_checkBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">HELIOS_OPTION_VARS</span><span class="o">.</span><span class="n">CPGPerfMaterials</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">with_skinning_checkBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">HELIOS_OPTION_VARS</span><span class="o">.</span><span class="n">CPGWithSkinning</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">to_selected_checkBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">HELIOS_OPTION_VARS</span><span class="o">.</span><span class="n">CPGToSelected</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">save_source_ma_checkBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">HELIOS_OPTION_VARS</span><span class="o">.</span><span class="n">CPGExportSourceMa</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">update_skn_checkBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">HELIOS_OPTION_VARS</span><span class="o">.</span><span class="n">CPGExportSkn</span><span class="p">)</span>
+
+        <span class="n">tab_order</span> <span class="o">=</span> <span class="n">HELIOS_OPTION_VARS</span><span class="o">.</span><span class="n">CPGLastOpenTab</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Don&#39;t do a blind &quot;if&quot; test, the value can be 0 which gets you got.</span>
+            <span class="k">if</span> <span class="n">tab_order</span> <span class="o">!=</span> <span class="p">[]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">import_tabWidget</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">tab_order</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">tab_order</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">apparel_tabWidget</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">tab_order</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;There was an error recovering the last open tab, resetting to default open.&#39;</span><span class="p">)</span>
+            <span class="n">HELIOS_OPTION_VARS</span><span class="o">.</span><span class="n">CPGLastOpenTab</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">import_tabWidget</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">filter_lineEdit</span><span class="o">.</span><span class="n">textChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_filter_lists</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">remove_entry_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">remove_entry</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">import_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">import_selected</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">export_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_selected</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">wizard_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">summon_the_wizard</span><span class="p">)</span></div>
+        
+    <span class="c1"># =================================================================================================================</span>
+    <span class="c1"># Initialization</span>
+    <span class="c1"># =================================================================================================================</span>
+
+    <span class="k">def</span> <span class="nf">_initialize_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># $TODO FSchorsch there might be a better way to register all of these lists automatically from the archetype registry</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">APPAREL_PARTS_DICT</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">APPAREL_COLLECTIONS_DICT</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">CHARACTER_DICT</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">PROPS_DICT</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">REFERENCE_DICT</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">asset_registry</span> <span class="o">=</span> <span class="n">assetlist</span><span class="o">.</span><span class="n">AssetListRegistry</span><span class="p">()</span>
+        <span class="n">asset_registry</span><span class="o">.</span><span class="n">reload</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">asset_id</span><span class="p">,</span> <span class="n">cpg_asset</span> <span class="ow">in</span> <span class="n">asset_registry</span><span class="o">.</span><span class="n">ASSET_ID_DICT</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_type</span> <span class="o">==</span> <span class="s1">&#39;collection&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">APPAREL_COLLECTIONS_DICT</span><span class="p">[</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpg_asset</span>
+            <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">in</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">APPAREL_SLOTS</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">APPAREL_PARTS_DICT</span><span class="p">[</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpg_asset</span>
+            <span class="k">elif</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_subtype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;enemies&#39;</span><span class="p">,</span> <span class="s1">&#39;npc&#39;</span><span class="p">,</span> <span class="s1">&#39;player&#39;</span><span class="p">,</span> <span class="s1">&#39;attachment&#39;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">CHARACTER_DICT</span><span class="p">[</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpg_asset</span>
+            <span class="k">elif</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_subtype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;prop&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">PROPS_DICT</span><span class="p">[</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpg_asset</span>
+            <span class="k">elif</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_subtype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;reference&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">REFERENCE_DICT</span><span class="p">[</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpg_asset</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filter_lists</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_filter_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">filter_string_raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">filter_lineEdit</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+        <span class="n">required_str_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">excluded_str_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">filter_string</span> <span class="ow">in</span> <span class="n">filter_string_raw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">filter_string</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">filter_string</span> <span class="o">!=</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
+                    <span class="n">excluded_str_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filter_string</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">required_str_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filter_string</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;required: </span><span class="si">{</span><span class="n">required_str_list</span><span class="si">}</span><span class="s1"> </span><span class="se">\n</span><span class="s1">excluded: </span><span class="si">{</span><span class="n">excluded_str_list</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">ui_dict_pairs</span> <span class="o">=</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">APPAREL_PARTS_DICT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">apparel_parts_listWidget</span><span class="p">),</span>
+                        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">APPAREL_COLLECTIONS_DICT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">apparel_collections_listWidget</span><span class="p">),</span>
+                        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CHARACTER_DICT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">characters_listWidget</span><span class="p">),</span>
+                        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PROPS_DICT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">props_listWidget</span><span class="p">),</span>
+                        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">REFERENCE_DICT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">reference_listWidget</span><span class="p">)</span>
+                       <span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">asset_dict</span><span class="p">,</span> <span class="n">ui_element</span> <span class="ow">in</span> <span class="n">ui_dict_pairs</span><span class="p">:</span>
+            <span class="n">ui_element</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">asset_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">asset_dict</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">required_str_list</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">x</span> <span class="ow">in</span> <span class="n">asset_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">required_str_list</span><span class="p">):</span>
+                    <span class="c1"># if we don&#39;t find all our expected filters in the name</span>
+                    <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="n">excluded_str_list</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">in</span> <span class="n">asset_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">excluded_str_list</span><span class="p">):</span>
+                    <span class="c1"># if we find any of our exclusions in the name</span>
+                    <span class="k">continue</span>
+
+                <span class="n">ui_element</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">asset_name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_find_active_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">active_list</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">asset_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">active_tab</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">import_tabWidget</span><span class="o">.</span><span class="n">currentIndex</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">active_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">characters_listWidget</span>
+            <span class="n">asset_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CHARACTER_DICT</span>
+            <span class="n">active_tab</span> <span class="o">+=</span> <span class="s1">&#39;0&#39;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">import_tabWidget</span><span class="o">.</span><span class="n">currentIndex</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">active_tab</span> <span class="o">+=</span> <span class="s1">&#39;1&#39;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">apparel_tabWidget</span><span class="o">.</span><span class="n">currentIndex</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">active_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">apparel_collections_listWidget</span>
+                <span class="n">asset_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">APPAREL_COLLECTIONS_DICT</span>
+                <span class="n">active_tab</span> <span class="o">+=</span> <span class="s1">&#39;0&#39;</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">apparel_tabWidget</span><span class="o">.</span><span class="n">currentIndex</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">active_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">apparel_parts_listWidget</span>
+                <span class="n">asset_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">APPAREL_PARTS_DICT</span>
+                <span class="n">active_tab</span> <span class="o">+=</span> <span class="s1">&#39;1&#39;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">import_tabWidget</span><span class="o">.</span><span class="n">currentIndex</span><span class="p">()</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">active_tab</span> <span class="o">+=</span> <span class="s1">&#39;2&#39;</span>
+            <span class="n">active_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">props_listWidget</span>
+            <span class="n">asset_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PROPS_DICT</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">import_tabWidget</span><span class="o">.</span><span class="n">currentIndex</span><span class="p">()</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">active_tab</span> <span class="o">+=</span> <span class="s1">&#39;3&#39;</span>
+            <span class="n">active_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">reference_listWidget</span>
+            <span class="n">asset_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">REFERENCE_DICT</span>
+
+        <span class="n">HELIOS_OPTION_VARS</span><span class="o">.</span><span class="n">CPGLastOpenTab</span> <span class="o">=</span> <span class="n">active_tab</span>
+        <span class="k">return</span> <span class="n">active_list</span><span class="p">,</span> <span class="n">asset_dict</span>
+
+<div class="viewcode-block" id="Helios.remove_entry"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_ui.Helios.remove_entry">[docs]</a>    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">remove_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">active_list</span><span class="p">,</span> <span class="n">asset_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_active_list</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">active_list</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">selected_items</span> <span class="o">=</span> <span class="n">active_list</span><span class="o">.</span><span class="n">selectedItems</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">selected_items</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">selected_items</span><span class="p">:</span>
+            <span class="n">asset_name</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+            <span class="n">cpg_asset</span> <span class="o">=</span> <span class="n">asset_dict</span><span class="p">[</span><span class="n">asset_name</span><span class="p">]</span>
+
+            <span class="n">assetlist</span><span class="o">.</span><span class="n">AssetListRegistry</span><span class="p">()</span><span class="o">.</span><span class="n">remove_entry</span><span class="p">(</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_id</span><span class="p">)</span>
+
+        <span class="n">assetlist</span><span class="o">.</span><span class="n">AssetListRegistry</span><span class="p">()</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">assetlist</span><span class="o">.</span><span class="n">AssetListRegistry</span><span class="p">()</span><span class="o">.</span><span class="n">reload</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_lists</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Helios.import_selected"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_ui.Helios.import_selected">[docs]</a>    <span class="k">def</span> <span class="nf">import_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">active_list</span><span class="p">,</span> <span class="n">asset_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_active_list</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">active_list</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Save UI settings</span>
+        <span class="n">HELIOS_OPTION_VARS</span><span class="o">.</span><span class="n">CPGPerfMaterials</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">performance_materials_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
+
+        <span class="n">HELIOS_OPTION_VARS</span><span class="o">.</span><span class="n">CPGWithSkinning</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">update_skn_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
+        <span class="n">HELIOS_OPTION_VARS</span><span class="o">.</span><span class="n">CPGToSelected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">to_selected_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
+        <span class="n">HELIOS_OPTION_VARS</span><span class="o">.</span><span class="n">CPGWithFullSkeleton</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">with_full_skeleton_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
+
+        <span class="n">import_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">active_list</span><span class="o">.</span><span class="n">selectedItems</span><span class="p">():</span>
+            <span class="n">asset_name</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+            <span class="n">import_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">asset_dict</span><span class="p">[</span><span class="n">asset_name</span><span class="p">])</span>
+
+        <span class="n">bind_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">to_selected_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+            <span class="n">selection</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">selected</span><span class="p">()</span>
+            <span class="n">selected_joints</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">frag_flag</span><span class="o">.</span><span class="n">is_flag_node</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+            <span class="n">bind_root_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">joint_node</span> <span class="ow">in</span> <span class="n">selected_joints</span><span class="p">:</span>
+                <span class="n">bind_root</span> <span class="o">=</span> <span class="n">dag_utils</span><span class="o">.</span><span class="n">get_absolute_parent</span><span class="p">(</span><span class="n">joint_node</span><span class="p">,</span> <span class="n">node_type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">bind_root</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">bind_root_list</span><span class="p">:</span>
+                    <span class="n">bind_root_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bind_root</span><span class="p">)</span>
+                <span class="c1"># need markup on root joint for where skel came from</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">selection</span><span class="p">:</span>
+                <span class="n">bind_root_list</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="s1">&#39;|*&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">)</span>
+                <span class="c1"># need markup on root joint for where skel came from</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">bind_dict</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">selection</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">bind_root_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">bind_dict</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bind_root_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">bind_root</span> <span class="ow">in</span> <span class="n">bind_root_list</span><span class="p">:</span>
+                    <span class="c1"># make a bind dict for asset_id lookups.</span>
+                    <span class="k">if</span> <span class="n">bind_root</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;asset_id&#39;</span><span class="p">):</span>
+                        <span class="n">bind_dict</span><span class="p">[</span><span class="n">bind_root</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;asset_id&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">bind_root</span>
+
+        <span class="k">for</span> <span class="n">cpg_asset</span> <span class="ow">in</span> <span class="n">import_list</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">skel_root_dict</span> <span class="o">=</span> <span class="n">helios_utils</span><span class="o">.</span><span class="n">import_helios_asset</span><span class="p">(</span><span class="n">cpg_asset</span><span class="p">,</span>
+                                                                 <span class="n">with_skinning</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">with_skinning_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">(),</span>
+                                                                 <span class="n">skel_root_dict</span><span class="o">=</span><span class="n">bind_dict</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">with_full_skeleton_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+                <span class="n">bind_root</span> <span class="o">=</span> <span class="n">skel_root_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">skel_path</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">bind_root</span><span class="p">:</span>
+                    <span class="n">bind_root</span> <span class="o">=</span> <span class="n">skel_root_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">bind_root</span><span class="p">:</span>
+                    <span class="n">skel_path</span> <span class="o">=</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">skel_path</span>
+                    <span class="n">skel_utils</span><span class="o">.</span><span class="n">import_merge_skeleton</span><span class="p">(</span><span class="n">skel_path</span><span class="p">,</span> <span class="n">bind_root</span><span class="p">)</span>
+            <span class="c1"># dcc data</span>
+            <span class="n">dcc_tracking</span><span class="o">.</span><span class="n">ddc_tool_entry_thead</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">import_selected</span><span class="p">,</span>
+                                              <span class="n">asset_id</span><span class="o">=</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_id</span><span class="p">,</span>
+                                              <span class="n">asset_name</span><span class="o">=</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">asset_name</span><span class="p">,</span>
+                                              <span class="n">checkboxes</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">update_skn_checkBox</span><span class="p">,</span>
+                                                          <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">to_selected_checkBox</span><span class="p">,</span>
+                                                          <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">with_full_skeleton_checkBox</span><span class="p">,</span>
+                                                          <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">performance_materials_checkBox</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Helios.export_selected"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_ui.Helios.export_selected">[docs]</a>    <span class="k">def</span> <span class="nf">export_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">selection</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">selected</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">selection</span><span class="p">:</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">error_message</span><span class="p">(</span><span class="s1">&#39;Failed to find.&#39;</span><span class="p">,</span> <span class="s1">&#39;Please select an organization group.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Save UI settings</span>
+        <span class="n">HELIOS_OPTION_VARS</span><span class="o">.</span><span class="n">CPGExportSourceMa</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">save_source_ma_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
+        <span class="n">HELIOS_OPTION_VARS</span><span class="o">.</span><span class="n">CPGExportSkn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">update_skn_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
+
+        <span class="n">helios_export_group_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">selection</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;helios&#39;</span><span class="p">)]</span>
+
+        <span class="n">helios_export_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">export_group</span> <span class="ow">in</span> <span class="n">helios_export_group_list</span><span class="p">:</span>
+            <span class="c1"># don&#39;t allow any children of a selected export group, use the parent only.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">export_group</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">ad</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">helios_export_group_list</span><span class="p">):</span>
+                <span class="n">helios_export_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">export_group</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">export_group</span> <span class="ow">in</span> <span class="n">helios_export_list</span><span class="p">:</span>
+            <span class="n">helios_utils</span><span class="o">.</span><span class="n">export_helios_asset</span><span class="p">(</span><span class="n">export_group</span><span class="p">,</span>
+                                             <span class="n">update_skn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">update_skn_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">(),</span>
+                                             <span class="n">save_source</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">save_source_ma_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span>
+            
+            <span class="c1"># dcc data</span>
+            <span class="n">checkboxes</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">update_skn_checkBox</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">save_source_ma_checkBox</span><span class="p">]</span>
+            <span class="n">dcc_tracking</span><span class="o">.</span><span class="n">ddc_tool_entry_thead</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">export_selected</span><span class="p">,</span>
+                                              <span class="n">asset_id</span><span class="o">=</span><span class="n">export_group</span><span class="o">.</span><span class="n">helios_asset_id</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+                                              <span class="n">asset_name</span><span class="o">=</span><span class="n">export_group</span><span class="o">.</span><span class="n">helios_name</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+                                              <span class="n">checkboxes</span><span class="o">=</span><span class="n">checkboxes</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_lists</span><span class="p">()</span></div></div>
+
+
+
+<div class="viewcode-block" id="summon_the_wizard"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_ui.summon_the_wizard">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+<span class="k">def</span> <span class="nf">summon_the_wizard</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">WIZARD</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">WIZARD</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="n">WIZARD</span> <span class="o">=</span> <span class="n">Wizard</span><span class="p">()</span>
+    <span class="n">WIZARD</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Wizard"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_ui.Wizard">[docs]</a><span class="k">class</span> <span class="nc">Wizard</span><span class="p">(</span><span class="n">mayawindows</span><span class="o">.</span><span class="n">CPGMayaWindow</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">root_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+        <span class="n">ui_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_path</span><span class="p">,</span> <span class="s1">&#39;ui&#39;</span><span class="p">,</span> <span class="s1">&#39;WizardUI.ui&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;HeliosWizard&#39;</span><span class="p">,</span>
+                            <span class="n">ui_path</span><span class="o">=</span><span class="n">ui_path</span><span class="p">,</span>
+                            <span class="n">version</span><span class="o">=</span><span class="n">Helios</span><span class="o">.</span><span class="n">VERSION</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">WIZARD_LIST</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_signals</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_lists</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preview_export_path</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">create_now_checkBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">HELIOS_OPTION_VARS</span><span class="o">.</span><span class="n">CPGCreateFolders</span><span class="p">)</span>
+    <span class="c1"># =================================================================================================================</span>
+    <span class="c1"># OVERRIDES</span>
+    <span class="c1"># =================================================================================================================</span>
+
+<div class="viewcode-block" id="Wizard.setup_signals"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_ui.Wizard.setup_signals">[docs]</a>    <span class="k">def</span> <span class="nf">setup_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">asset_select_comboBox</span><span class="o">.</span><span class="n">currentIndexChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">preview_export_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">name_lineEdit</span><span class="o">.</span><span class="n">textChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">preview_export_path</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">organize_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">organize_scene</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">export_dir_browse_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">browse_export_directory</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_initialize_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">helios_archetype_registry</span> <span class="o">=</span> <span class="n">helios_registry</span><span class="o">.</span><span class="n">HeliosArchetypeRegistry</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">archetype_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">helios_archetype_registry</span><span class="o">.</span><span class="n">NAME_REGISTRY</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">asset_select_comboBox</span><span class="o">.</span><span class="n">insertItems</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">archetype_list</span><span class="p">)</span>
+        <span class="n">previous_asset</span> <span class="o">=</span> <span class="n">HELIOS_OPTION_VARS</span><span class="o">.</span><span class="n">CPGLastAssetType</span>
+        <span class="k">if</span> <span class="n">previous_asset</span> <span class="ow">in</span> <span class="n">archetype_list</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">asset_select_comboBox</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">archetype_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">previous_asset</span><span class="p">))</span>
+    
+    <span class="k">def</span> <span class="nf">_format_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Conform our name to our naming conventions.</span>
+<span class="sd">        </span>
+<span class="sd">        :param str string_name: The original string name.</span>
+<span class="sd">        :return: The formatted string name.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">string_name</span> <span class="o">=</span> <span class="n">string_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+        <span class="n">split_name</span> <span class="o">=</span> <span class="n">string_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">split_name</span><span class="p">])</span>
+
+<div class="viewcode-block" id="Wizard.browse_export_directory"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_ui.Wizard.browse_export_directory">[docs]</a>    <span class="k">def</span> <span class="nf">browse_export_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find an override directory and use that instead of the automatically generated field.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">helios_archetype_registry</span> <span class="o">=</span> <span class="n">helios_registry</span><span class="o">.</span><span class="n">HeliosArchetypeRegistry</span><span class="p">()</span>
+        <span class="n">selected_archetype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">asset_select_comboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+        <span class="n">helios_archetype</span> <span class="o">=</span> <span class="n">helios_archetype_registry</span><span class="o">.</span><span class="n">NAME_REGISTRY</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">selected_archetype</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">start_path</span> <span class="o">=</span> <span class="n">path_utils</span><span class="o">.</span><span class="n">to_full_path</span><span class="p">(</span><span class="n">helios_archetype</span><span class="o">.</span><span class="n">base_dir</span><span class="p">)</span>
+
+        <span class="n">found_path</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getExistingDirectory</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;Select Directory&#39;</span><span class="p">,</span> <span class="n">start_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">found_path</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">export_dir_lineEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">path_utils</span><span class="o">.</span><span class="n">to_relative_path</span><span class="p">(</span><span class="n">found_path</span><span class="p">))</span></div>
+    
+<div class="viewcode-block" id="Wizard.preview_export_path"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_ui.Wizard.preview_export_path">[docs]</a>    <span class="k">def</span> <span class="nf">preview_export_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This updates the export preview path whenever one of the re-requisites is updated.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># $HACK FSchorsch should really come up with a better way to identify this</span>
+        <span class="c1">#print(self.ui.asset_select_comboBox.currentText())</span>
+        <span class="c1">#print(self.ui.release_comboBox.currentText())</span>
+        <span class="c1">#print(self.ui.name_lineEdit.text())</span>
+
+        <span class="n">helios_archetype_registry</span> <span class="o">=</span> <span class="n">helios_registry</span><span class="o">.</span><span class="n">HeliosArchetypeRegistry</span><span class="p">()</span>
+        <span class="n">selected_archetype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">asset_select_comboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+        <span class="n">helios_archetype</span> <span class="o">=</span> <span class="n">helios_archetype_registry</span><span class="o">.</span><span class="n">NAME_REGISTRY</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">selected_archetype</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">helios_archetype</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">export_path</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">helios_archetype</span><span class="p">:</span>
+            <span class="n">export_path</span> <span class="o">+=</span> <span class="n">helios_archetype</span><span class="o">.</span><span class="n">base_dir</span>
+
+        <span class="n">asset_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">name_lineEdit</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">asset_name</span><span class="p">:</span>
+            <span class="n">export_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">export_path</span><span class="p">,</span> <span class="n">asset_name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">export_dir_lineEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">export_dir_lineEdit</span><span class="o">.</span><span class="n">setPlaceholderText</span><span class="p">(</span><span class="s1">&#39;A name must be picked for this asset.&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;A name must be picked for this asset.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">export_dir_lineEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">export_path</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Wizard.organize_scene"><a class="viewcode-back" href="../../../../../cpg.maya.tools.helios.html#cpg.maya.tools.helios.helios_ui.Wizard.organize_scene">[docs]</a>    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">organize_scene</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        From the selected archetype and name generate the new Helios Asset build structure for the scene</span>
+<span class="sd">        and optionally build out the working folder structure.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">asset_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">name_lineEdit</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">asset_name</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">asset_name</span><span class="si">}</span><span class="s1"> is not a valid asset name&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">original_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">export_dir_lineEdit</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">original_path</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">original_path</span><span class="si">}</span><span class="s1"> is not a valid export directory&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Save UI settings</span>
+        <span class="n">HELIOS_OPTION_VARS</span><span class="o">.</span><span class="n">CPGLastAssetType</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">asset_select_comboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+        <span class="n">HELIOS_OPTION_VARS</span><span class="o">.</span><span class="n">CPGCreateFolders</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">create_now_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
+
+        <span class="n">helios_archetype_registry</span> <span class="o">=</span> <span class="n">helios_registry</span><span class="o">.</span><span class="n">HeliosArchetypeRegistry</span><span class="p">()</span>
+        <span class="n">selected_archetype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">asset_select_comboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+        <span class="n">helios_archetype</span> <span class="o">=</span> <span class="n">helios_archetype_registry</span><span class="o">.</span><span class="n">NAME_REGISTRY</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">selected_archetype</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">base_dir</span><span class="p">,</span> <span class="n">dir_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">original_path</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">dir_name</span> <span class="o">==</span> <span class="n">asset_name</span><span class="p">:</span>
+            <span class="n">modified_base_dir</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">modified_base_dir</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">base_dir</span> <span class="o">=</span> <span class="n">original_path</span>
+        <span class="n">helios_utils</span><span class="o">.</span><span class="n">organize_scene_from_archetype</span><span class="p">(</span><span class="n">helios_archetype</span><span class="p">,</span> <span class="n">asset_name</span><span class="p">,</span> <span class="n">base_dir</span><span class="p">,</span> <span class="n">modified_base_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">create_now_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span></div></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

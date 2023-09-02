@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.tools.faceskinning.face_skinning_tool &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.tools.faceskinning.face_skinning_tool</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.tools.faceskinning.face_skinning_tool</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Face Skinning Tool</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># python imports</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">maya.cmds</span> <span class="k">as</span> <span class="nn">cmds</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="kn">import</span> <span class="nn">maya.mel</span> <span class="k">as</span> <span class="nn">mel</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common.tools.dcctracking</span> <span class="kn">import</span> <span class="n">dcc_tracking</span>
+<span class="kn">from</span> <span class="nn">cpg.common.modifiers</span> <span class="kn">import</span> <span class="n">decorators</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">process</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+
+<span class="kn">from</span> <span class="nn">cpg.maya.pyqt</span> <span class="kn">import</span> <span class="n">mayawindows</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.modeling</span> <span class="kn">import</span> <span class="n">vert_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">mesh_markup_rig</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.face.face_utils</span> <span class="kn">import</span> <span class="n">face_skinning</span><span class="p">,</span> <span class="n">face_util</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="FaceSkinning"><a class="viewcode-back" href="../../../../../cpg.maya.tools.faceskinning.html#cpg.maya.tools.faceskinning.face_skinning_tool.FaceSkinning">[docs]</a><span class="k">class</span> <span class="nc">FaceSkinning</span><span class="p">(</span><span class="n">mayawindows</span><span class="o">.</span><span class="n">CPGMayaWindow</span><span class="p">):</span>
+
+    <span class="n">VERSION</span> <span class="o">=</span> <span class="s1">&#39;1.0.0&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">root_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+        <span class="n">ui_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_path</span><span class="p">,</span> <span class="s1">&#39;ui&#39;</span><span class="p">,</span> <span class="s1">&#39;face_skinning_ui.ui&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Face Skinning&#39;</span><span class="p">,</span>
+                         <span class="n">ui_path</span><span class="o">=</span><span class="n">ui_path</span><span class="p">,</span>
+                         <span class="n">version</span><span class="o">=</span><span class="n">FaceSkinning</span><span class="o">.</span><span class="n">VERSION</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_path_relative</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># dcc data</span>
+        <span class="n">process</span><span class="o">.</span><span class="n">cpu_threading</span><span class="p">(</span><span class="n">dcc_tracking</span><span class="o">.</span><span class="n">ddc_tool_entry</span><span class="p">(</span><span class="n">Summoner</span><span class="p">))</span>
+
+        <span class="c1"># ==============================</span>
+        <span class="c1"># Signals</span>
+        <span class="c1"># ==============================</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">copy_weightsButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_copy_weights_button_clicked</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">mirror_weightsButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_mirror_weights_button_clicked</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">select_verticesButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_select_vertices_button_clicked</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">smooth_weightsButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_smooth_weights_button_clicked</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">toggle_visButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_toggle_vis_button_clicked</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">skin_to_headButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_skin_to_head_clicked</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">loadButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_load_data_button_clicked</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">mirror_selectionButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_mirror_selection_button_clicked</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">copy_paste_weightsButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_copy_paste_vertex_weights_clicked</span><span class="p">)</span>
+        
+    <span class="c1"># ==============================</span>
+    <span class="c1"># Slots</span>
+    <span class="c1"># ==============================</span>
+    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">_on_load_data_button_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets up region combo box</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">face_data</span> <span class="o">=</span> <span class="n">face_util</span><span class="o">.</span><span class="n">get_common_face_region_data</span><span class="p">(</span><span class="s1">&#39;head_mesh&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">face_data</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">region_vertex_data</span> <span class="o">=</span> <span class="n">face_data</span><span class="o">.</span><span class="n">get_vertex_default_regions</span><span class="p">()</span>
+        <span class="n">regions_list</span> <span class="o">=</span> <span class="n">region_vertex_data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">each_region</span> <span class="ow">in</span> <span class="n">regions_list</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">regionsBox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">each_region</span><span class="p">)</span>
+
+    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">_on_copy_weights_button_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copies weights from head mesh and applies them to another mesh</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">markup</span> <span class="o">=</span> <span class="n">mesh_markup_rig</span><span class="o">.</span><span class="n">RigMeshMarkup</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+        <span class="n">face_data</span> <span class="o">=</span> <span class="n">face_util</span><span class="o">.</span><span class="n">get_common_face_region_data</span><span class="p">(</span><span class="s1">&#39;head_mesh&#39;</span><span class="p">)</span>
+        <span class="n">face_mesh</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">markup</span><span class="o">.</span><span class="n">get_mesh_list_in_region</span><span class="p">(</span><span class="s1">&#39;head_mesh&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">face_mesh</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">obj_to_skin</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">sl</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">obj_to_skin</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">face_skinning</span><span class="o">.</span><span class="n">copy_weights_from_head</span><span class="p">(</span><span class="n">face_mesh</span><span class="p">,</span> <span class="n">face_data</span><span class="p">,</span> <span class="n">obj_to_skin</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">obj_to_skin</span><span class="p">)</span>
+
+    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">_on_mirror_weights_button_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Mirrors vertex weights</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">vertex_selection</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">sl</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">vertex_selection</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">markup</span> <span class="o">=</span> <span class="n">mesh_markup_rig</span><span class="o">.</span><span class="n">RigMeshMarkup</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+        <span class="n">face_data</span> <span class="o">=</span> <span class="n">face_util</span><span class="o">.</span><span class="n">get_common_face_region_data</span><span class="p">(</span><span class="s1">&#39;head_mesh&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">face_data</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">face_mesh</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">markup</span><span class="o">.</span><span class="n">get_mesh_list_in_region</span><span class="p">(</span><span class="s1">&#39;head_mesh&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">face_mesh</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">face_skinning</span><span class="o">.</span><span class="n">mirror_face_weights</span><span class="p">(</span><span class="n">vertex_selection</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">face_mesh</span><span class="p">),</span> <span class="n">face_data</span><span class="p">)</span>
+
+    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">_on_select_vertices_button_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Selects vertices in a particular region</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">face_data</span> <span class="o">=</span> <span class="n">face_util</span><span class="o">.</span><span class="n">get_common_face_region_data</span><span class="p">(</span><span class="s1">&#39;head_mesh&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">face_data</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">markup</span> <span class="o">=</span> <span class="n">mesh_markup_rig</span><span class="o">.</span><span class="n">RigMeshMarkup</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+        <span class="n">region_vertex_data</span> <span class="o">=</span> <span class="n">face_data</span><span class="o">.</span><span class="n">get_vertex_default_regions</span><span class="p">()</span>
+        <span class="n">skinned_head</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">markup</span><span class="o">.</span><span class="n">get_mesh_list_in_region</span><span class="p">(</span><span class="s1">&#39;head_mesh&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">skinned_head</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">regionsBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+
+        <span class="n">keep_previous_sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">keep_prev_selBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
+        <span class="n">current_selection</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">sl</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="nb">eval</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;region_vertex_data.select_</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;(skinned_head)&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">keep_previous_sel</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">current_selection</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">_on_smooth_weights_button_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Smooths selected vertex weights (Note: this works for now but will be updated)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tolerance_slider_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">smooth_toleranceSlider</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="n">tolerance_value</span> <span class="o">=</span> <span class="n">tolerance_slider_value</span> <span class="o">*</span> <span class="mf">0.1</span>
+
+        <span class="n">selected_verts</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">sl</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">selected_verts</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">selected_verts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pm</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">MeshVertex</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="n">obj_to_skin</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">selected_verts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.vtx&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">obj_clus</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="n">obj_to_skin</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;skinCluster&#39;</span><span class="p">)</span>
+
+        <span class="n">pm</span><span class="o">.</span><span class="n">skinCluster</span><span class="p">(</span><span class="n">obj_clus</span><span class="p">,</span> <span class="n">edit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">smoothWeights</span><span class="o">=</span><span class="n">tolerance_value</span><span class="p">)</span>
+
+    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">_on_toggle_vis_button_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Toggle visibility of blendshape and skinned mesh</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">markup</span> <span class="o">=</span> <span class="n">mesh_markup_rig</span><span class="o">.</span><span class="n">RigMeshMarkup</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+
+        <span class="n">skinned_head</span> <span class="o">=</span> <span class="n">markup</span><span class="o">.</span><span class="n">get_mesh_list_in_region</span><span class="p">(</span><span class="s1">&#39;head_mesh&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">blend_head</span> <span class="o">=</span> <span class="n">markup</span><span class="o">.</span><span class="n">get_mesh_list_in_region</span><span class="p">(</span><span class="s1">&#39;head_blendshape&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">skinned_mouth</span> <span class="o">=</span> <span class="n">markup</span><span class="o">.</span><span class="n">get_mesh_list_in_region</span><span class="p">(</span><span class="s1">&#39;mouth_mesh&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">blend_mouth</span> <span class="o">=</span> <span class="n">markup</span><span class="o">.</span><span class="n">get_mesh_list_in_region</span><span class="p">(</span><span class="s1">&#39;mouth_blendshape&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">skinned_head</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Head mesh not found.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">blend_head</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Head blendshape mesh not found.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">skinned_head_vis</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">skinned_head</span><span class="si">}</span><span class="s1">.visibility&#39;</span><span class="p">)</span>
+        <span class="n">blend_head_vis</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">blend_head</span><span class="si">}</span><span class="s1">.visibility&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">skinned_head_vis</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">skinned_head</span><span class="si">}</span><span class="s1">.visibility&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">blend_head</span><span class="si">}</span><span class="s1">.visibility&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Blendshape head now visible&#39;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">blend_head_vis</span> <span class="ow">or</span> <span class="n">skinned_head_vis</span> <span class="ow">and</span> <span class="n">blend_head_vis</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">blend_head</span><span class="si">}</span><span class="s1">.visibility&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">skinned_head</span><span class="si">}</span><span class="s1">.visibility&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Skinned head now visible&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">skinned_mouth</span> <span class="ow">and</span> <span class="n">blend_mouth</span><span class="p">:</span>
+            <span class="n">skinned_mouth_vis</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">skinned_mouth</span><span class="si">}</span><span class="s1">.visibility&#39;</span><span class="p">)</span>
+            <span class="n">blend_mouth_vis</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">blend_mouth</span><span class="si">}</span><span class="s1">.visibility&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">skinned_mouth_vis</span><span class="p">:</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">skinned_mouth</span><span class="si">}</span><span class="s1">.visibility&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">blend_mouth</span><span class="si">}</span><span class="s1">.visibility&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">blend_mouth_vis</span> <span class="ow">or</span> <span class="n">skinned_mouth_vis</span> <span class="ow">and</span> <span class="n">blend_head_vis</span><span class="p">:</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">blend_mouth</span><span class="si">}</span><span class="s1">.visibility&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">skinned_mouth</span><span class="si">}</span><span class="s1">.visibility&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">_on_skin_to_head_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Hard skins selection to head</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">check_for_root</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="s1">&#39;root&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">check_for_root</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">root_joint</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="s1">&#39;root&#39;</span><span class="p">)</span>
+        <span class="n">selected_objs</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">sl</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">face_skinning</span><span class="o">.</span><span class="n">skin_to_head_joint</span><span class="p">(</span><span class="n">selected_objs</span><span class="p">,</span> <span class="n">root_joint</span><span class="p">)</span>
+
+    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">_on_mirror_selection_button_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Mirrors selection based on vertex data</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vertex_selection</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">sl</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">markup</span> <span class="o">=</span> <span class="n">mesh_markup_rig</span><span class="o">.</span><span class="n">RigMeshMarkup</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+        <span class="n">face_data</span> <span class="o">=</span> <span class="n">face_util</span><span class="o">.</span><span class="n">get_common_face_region_data</span><span class="p">(</span><span class="s1">&#39;head_mesh&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">face_data</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">face_mesh</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">markup</span><span class="o">.</span><span class="n">get_mesh_list_in_region</span><span class="p">(</span><span class="s1">&#39;head_mesh&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">face_mesh</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">mirror_data</span> <span class="o">=</span> <span class="n">face_data</span><span class="o">.</span><span class="n">get_mirror_data</span><span class="p">()</span>
+        <span class="n">vert_mirror_data</span> <span class="o">=</span> <span class="n">mirror_data</span><span class="o">.</span><span class="n">mirror_map</span>
+        <span class="n">keep_previous_sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">keep_prev_selBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">keep_previous_sel</span><span class="p">:</span>
+            <span class="n">cmds</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">vertex</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vertex_selection</span><span class="p">):</span>
+            <span class="n">vertex_number</span> <span class="o">=</span> <span class="n">vert_utils</span><span class="o">.</span><span class="n">get_vertices_as_numbers</span><span class="p">(</span><span class="n">vertex</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">mir</span> <span class="o">=</span> <span class="n">vert_mirror_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">vertex_number</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">mir</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mirror_vert_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">face_mesh</span><span class="si">}</span><span class="s1">.vtx[</span><span class="si">{</span><span class="n">mir</span><span class="si">}</span><span class="s1">]&#39;</span>
+                <span class="n">cmds</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">mirror_vert_name</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">_copy_paste_vertex_weights_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copies first selected vertex weight and pastes onto rest of selection</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verts</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">fl</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">os</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">verts</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">cmds</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">verts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">mel</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;artAttrSkinWeightCopy&#39;</span><span class="p">)</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">verts</span><span class="p">)</span>
+        <span class="n">mel</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;artAttrSkinWeightPaste&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.utils.dag &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.utils.dag</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.utils.dag</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Parameter data for working with the facial rigs.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># System global imports</span>
+
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="kn">import</span> <span class="nn">maya.mel</span> <span class="k">as</span> <span class="nn">mel</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">lists</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">naming</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="get_between_nodes"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.dag.get_between_nodes">[docs]</a><span class="k">def</span> <span class="nf">get_between_nodes</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">,</span> <span class="n">node_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns in between nodes between the first and last.</span>
+
+<span class="sd">    :param pm.nt.DagNode first: Start node to trace between nodes.</span>
+<span class="sd">    :param pm.nt.DagNode last: End node to trace between nodes.</span>
+<span class="sd">    :param pm.nt.PyNode node_type: Node type to return.</span>
+<span class="sd">    :return: Returns a list of the first, last, and in between joints.</span>
+<span class="sd">    :rtype: list(pm.nt.DagNode)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">DagNode</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">last</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">DagNode</span><span class="p">):</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">first</span><span class="p">)</span>
+        <span class="n">last</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">last</span><span class="p">)</span>
+
+    <span class="n">node_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">node_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">last</span><span class="p">)</span>
+    <span class="n">current_node</span> <span class="o">=</span> <span class="n">last</span>
+    <span class="k">while</span> <span class="n">first</span> <span class="o">!=</span> <span class="n">current_node</span><span class="p">:</span>
+        <span class="n">current_node</span> <span class="o">=</span> <span class="n">current_node</span><span class="o">.</span><span class="n">getParent</span><span class="p">()</span> <span class="k">if</span> <span class="n">current_node</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">current_node</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> is not in the hierarchy of </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">))</span>
+        <span class="n">node_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_node</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">node_type</span><span class="p">:</span>
+        <span class="n">node_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">node_list</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">node_type</span><span class="p">)]</span>
+
+    <span class="n">node_list</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">node_list</span></div>
+
+
+<div class="viewcode-block" id="parent_shape_node"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.dag.parent_shape_node">[docs]</a><span class="k">def</span> <span class="nf">parent_shape_node</span><span class="p">(</span><span class="n">from_objs</span><span class="p">,</span>
+                      <span class="n">to_obj</span><span class="p">,</span>
+                      <span class="n">maintain_offset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                      <span class="n">freeze_transform</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                      <span class="n">delete_original</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                      <span class="n">swap_names</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    parents the shape node on from_object to to_object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">from_objs</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">from_objs</span> <span class="o">=</span> <span class="p">[</span><span class="n">from_objs</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">freeze_transform</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">from_objs</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">makeIdentity</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">apply</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">maintain_offset</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">from_objs</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">to_obj</span><span class="p">)</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">makeIdentity</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">apply</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">swap_names</span> <span class="ow">and</span> <span class="n">to_obj</span><span class="o">.</span><span class="n">getShapes</span><span class="p">():</span>
+        <span class="n">to_object_name</span> <span class="o">=</span> <span class="n">naming</span><span class="o">.</span><span class="n">get_basename</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">to_obj</span><span class="o">.</span><span class="n">getShapes</span><span class="p">()[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">from_objs</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">getShapes</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">to_object_name</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">replace</span><span class="p">:</span>
+        <span class="n">old_shapes</span> <span class="o">=</span> <span class="n">to_obj</span><span class="o">.</span><span class="n">getShapes</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">old_shapes</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">old_shapes</span><span class="p">)</span>
+
+    <span class="n">new_shape</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">from_objs</span><span class="p">:</span>
+        <span class="n">new_shape</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">getShapes</span><span class="p">(),</span> <span class="n">to_obj</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># gets around double namespaces.</span>
+        <span class="n">shape_name</span> <span class="o">=</span> <span class="n">naming</span><span class="o">.</span><span class="n">get_basename</span><span class="p">(</span><span class="n">to_obj</span><span class="o">.</span><span class="n">getShapes</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">shape</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">to_obj</span><span class="o">.</span><span class="n">getShapes</span><span class="p">()):</span>
+            <span class="n">shape</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">shape_name</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">shape</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">shape_name</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">delete_original</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">from_objs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">new_shape</span></div>
+
+
+<div class="viewcode-block" id="get_all_parents"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.dag.get_all_parents">[docs]</a><span class="k">def</span> <span class="nf">get_all_parents</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">node_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a list of every parent from the given node to the scene root.</span>
+<span class="sd">    If a node type is passed it will give the highest parent of that node type.</span>
+
+<span class="sd">    For instance if a skeleton is inside a group and one of the child joints is the obj.</span>
+<span class="sd">    If you filter for Joints instead of returning the group as one of the parents</span>
+<span class="sd">    it will only return to the root joint of the skeletal hierarchy.</span>
+
+<span class="sd">    :param pm.nt.DagNode obj: The starting node to check for parents.</span>
+<span class="sd">    :param nodetype node_type: The filtering node type we want to check for</span>
+<span class="sd">    :return: Returns a list of every parent from the given node to the scene root.</span>
+<span class="sd">    :rtype: list(pm.nt.DagNode)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">getParent</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">parent</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">node_type</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">node_type</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">parent</span><span class="p">]</span> <span class="o">+</span> <span class="n">get_all_parents</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">getParent</span><span class="p">(),</span> <span class="n">node_type</span><span class="o">=</span><span class="n">node_type</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="get_absolute_parent"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.dag.get_absolute_parent">[docs]</a><span class="k">def</span> <span class="nf">get_absolute_parent</span><span class="p">(</span><span class="n">obj_node</span><span class="p">,</span> <span class="n">node_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the most toplevel parent from a given node</span>
+
+<span class="sd">    :param Transform obj_node: The transform to search from.</span>
+<span class="sd">    :param Nodetype node_type: A pymel nodetype</span>
+<span class="sd">    :param bool inclusive: If the current object should be included. If no parents are found it will return itself.</span>
+<span class="sd">    :return: The top level transform object, or if inclusive itself.</span>
+<span class="sd">    :rtype: Transform</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj_node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">last_parent</span> <span class="o">=</span> <span class="n">obj_node</span> <span class="k">if</span> <span class="n">inclusive</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="n">found_parent</span> <span class="o">=</span> <span class="n">obj_node</span><span class="o">.</span><span class="n">getParent</span><span class="p">()</span>
+    <span class="k">while</span> <span class="n">found_parent</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">node_type</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">found_parent</span><span class="p">,</span> <span class="n">node_type</span><span class="p">):</span>
+            <span class="n">found_parent</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">last_parent</span> <span class="o">=</span> <span class="n">found_parent</span>
+            <span class="n">found_parent</span> <span class="o">=</span> <span class="n">found_parent</span><span class="o">.</span><span class="n">getParent</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">last_parent</span></div>
+
+
+<div class="viewcode-block" id="get_absolute_child"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.dag.get_absolute_child">[docs]</a><span class="k">def</span> <span class="nf">get_absolute_child</span><span class="p">(</span><span class="n">start_node</span><span class="p">,</span> <span class="n">node_type</span><span class="p">,</span> <span class="n">inclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper for _get_deepest_child used to return only the found node.</span>
+
+<span class="sd">    :param Transform start_node:</span>
+<span class="sd">    :param class node_type: PyNode class of the type to filter by.</span>
+<span class="sd">    :param bool inclusive: If there are no children the starting node should be returned.</span>
+<span class="sd">    :return: The lowest found child or itself (inclusive.</span>
+<span class="sd">    :rtype: Transform</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">deepest_child</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_get_deepest_child</span><span class="p">(</span><span class="n">start_node</span><span class="p">,</span> <span class="n">node_type</span><span class="o">=</span><span class="n">node_type</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">inclusive</span> <span class="ow">and</span> <span class="n">deepest_child</span> <span class="o">==</span> <span class="n">start_node</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">deepest_child</span></div>
+
+
+<span class="k">def</span> <span class="nf">_get_deepest_child</span><span class="p">(</span><span class="n">start_node</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">node_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check child depth and return the lowest found node.</span>
+
+<span class="sd">    :param Transform start_node: The node to find the deepest child of.</span>
+<span class="sd">    :param int depth: Current depth level</span>
+<span class="sd">    :param class node_type: Filter type. EG: pm.nt.Joint</span>
+<span class="sd">    :return: The lowest found child and their depth level</span>
+<span class="sd">    :rtype: Transform, int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">start_node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="n">found_children</span> <span class="o">=</span> <span class="n">start_node</span><span class="o">.</span><span class="n">getChildren</span><span class="p">()</span>
+
+    <span class="n">deepest_child</span> <span class="o">=</span> <span class="n">start_node</span>
+    <span class="n">deepest_depth</span> <span class="o">=</span> <span class="n">depth</span>
+    <span class="k">for</span> <span class="n">child_node</span> <span class="ow">in</span> <span class="n">found_children</span><span class="p">:</span>
+        <span class="n">child_node</span><span class="p">,</span> <span class="n">child_depth</span> <span class="o">=</span> <span class="n">_get_deepest_child</span><span class="p">(</span><span class="n">child_node</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">node_type</span><span class="o">=</span><span class="n">node_type</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">node_type</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">child_node</span><span class="p">,</span> <span class="n">node_type</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">child_depth</span> <span class="o">&gt;</span> <span class="n">deepest_depth</span><span class="p">:</span>
+            <span class="n">deepest_child</span> <span class="o">=</span> <span class="n">child_node</span>
+            <span class="n">deepest_depth</span> <span class="o">=</span> <span class="n">child_depth</span>
+    <span class="k">return</span> <span class="n">deepest_child</span><span class="p">,</span> <span class="n">deepest_depth</span>
+
+
+<div class="viewcode-block" id="get_children_in_order"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.dag.get_children_in_order">[docs]</a><span class="k">def</span> <span class="nf">get_children_in_order</span><span class="p">(</span><span class="n">start_node</span><span class="p">,</span> <span class="n">node_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Recursively get children to preserve order.</span>
+
+<span class="sd">    :param Transform start_node: The starting DAG node to traverse the hierarchy.</span>
+<span class="sd">    :param PyNode node_type: The PyNode class to filter by.</span>
+<span class="sd">    :param bool start: If this is the first run of the loop. It&#39;ll include the root otherwise it&#39;ll skip it.</span>
+<span class="sd">    :return: The list of children nodes in their DAG order.</span>
+<span class="sd">    :rtype: list[Transform]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">start_node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">start_node</span><span class="si">}</span><span class="s1"> is not a Transform&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">found_children</span> <span class="o">=</span> <span class="n">start_node</span><span class="o">.</span><span class="n">getChildren</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">node_type</span><span class="p">)</span> <span class="k">if</span> <span class="n">node_type</span> <span class="k">else</span> <span class="n">start_node</span><span class="o">.</span><span class="n">getChildren</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">)</span>
+    <span class="n">ordered_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">start_node</span><span class="p">]</span> <span class="o">+</span> <span class="n">found_children</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">start</span> <span class="k">else</span> <span class="n">found_children</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">child_node</span> <span class="ow">in</span> <span class="n">found_children</span><span class="p">:</span>
+        <span class="n">child_list</span> <span class="o">=</span> <span class="n">get_children_in_order</span><span class="p">(</span><span class="n">child_node</span><span class="p">,</span> <span class="n">node_type</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">ordered_list</span> <span class="o">+=</span> <span class="n">child_list</span>
+
+    <span class="k">return</span> <span class="n">ordered_list</span></div>
+
+
+<div class="viewcode-block" id="get_node_color_data"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.dag.get_node_color_data">[docs]</a><span class="k">def</span> <span class="nf">get_node_color_data</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the color data in the given Maya node.</span>
+<span class="sd">    &gt;&gt;&gt; get_node_color_data(&#39;nurbsCircleShape1&#39;)</span>
+<span class="sd">    {&#39;overrideEnabled&#39;: True, &#39;overrideColorRGB&#39;: [0.4, 0.07, 0.07, &#39;overrideRGBColors&#39;: True,</span>
+<span class="sd">    &#39;useOutlinerColor&#39;: False, &#39;outlinerColor&#39;: [0.0, 0.0, 0.0]}</span>
+
+<span class="sd">    :param str or pm.PyNode node: Maya we want to retrieve color of.</span>
+<span class="sd">    :return: dictionary contianing all Maya color related color.</span>
+<span class="sd">    :rtype: dict</span>
+
+<span class="sd">    ..note:: colos are returned as a list of flota values in 0.0 to 1.0 range.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+    <span class="n">enabled</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="s1">&#39;overrideEnabled&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">use_outliner</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="s1">&#39;useOutlinerColor&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">outliner_color</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="s1">&#39;outlinerColor&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">override_rgb_colors</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="s1">&#39;overrideRGBColors&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">override_color</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="s1">&#39;overrideColor&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+    <span class="n">override_rgb</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">override_rgb_colors</span><span class="p">:</span>
+        <span class="n">override_rgb</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="s1">&#39;overrideColorRGB&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;overrideColor&#39;</span><span class="p">:</span> <span class="n">override_color</span><span class="p">,</span>
+        <span class="s1">&#39;overrideEnabled&#39;</span><span class="p">:</span> <span class="n">enabled</span><span class="p">,</span>
+        <span class="s1">&#39;overrideColorRGB&#39;</span><span class="p">:</span> <span class="n">override_rgb</span><span class="p">,</span>
+        <span class="s1">&#39;overrideRGBColors&#39;</span><span class="p">:</span> <span class="n">override_rgb_colors</span><span class="p">,</span>
+        <span class="s1">&#39;useOutlinerColor&#39;</span><span class="p">:</span> <span class="n">use_outliner</span><span class="p">,</span>
+        <span class="s1">&#39;outlinerColor&#39;</span><span class="p">:</span> <span class="n">outliner_color</span>
+    <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="set_node_color"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.dag.set_node_color">[docs]</a><span class="k">def</span> <span class="nf">set_node_color</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">outliner_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_outliner_color</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets the given Maya object override color. PyNode can represent an object or a shape.</span>
+
+<span class="sd">    :param pm.PyNode or str or list(MObject) or list(str) node: PyMEL node we want to change color of.</span>
+<span class="sd">    :param pm.Color or tuple(float, float, float) color: RGB color to set in 0 to 1 range.</span>
+<span class="sd">    :param  pm.Color or tuple(float, float, float) or None outliner_color: RGB color to set to outliner</span>
+<span class="sd">        item in 0 to 1 range.</span>
+<span class="sd">    :param bool use_outliner_color: whether or not to apply outliner color.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">nodes</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">force_list</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+    <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">mobj</span><span class="p">)</span> <span class="k">for</span> <span class="n">mobj</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">color_attr</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="s1">&#39;overrideColor&#39;</span><span class="p">)</span>
+            <span class="n">enabled</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="s1">&#39;overrideEnabled&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">enabled</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+                <span class="n">enabled</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">color_attr</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">color_attr</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="s1">&#39;overrideColorRGB&#39;</span><span class="p">)</span>
+            <span class="n">enabled</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="s1">&#39;overrideEnabled&#39;</span><span class="p">)</span>
+            <span class="n">override_rgb_colors</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="s1">&#39;overrideRGBColors&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">enabled</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+                <span class="n">enabled</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">override_rgb_colors</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+                <span class="n">override_rgb_colors</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">color_attr</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">outliner_color</span><span class="p">:</span>
+            <span class="n">use_outliner_attr</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="s1">&#39;useOutlinerColor&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">use_outliner_color</span><span class="p">:</span>
+                <span class="n">use_outliner_attr</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="s1">&#39;outlinerColor&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">outliner_color</span><span class="p">)</span>
+
+    <span class="c1"># refresh outliner of outliner color has changed</span>
+    <span class="k">if</span> <span class="n">outliner_color</span><span class="p">:</span>
+        <span class="n">mel</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;AEdagNodeCommonRefreshOutliners();&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

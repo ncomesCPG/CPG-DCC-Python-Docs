@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.utils.constraint &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.utils.constraint</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.utils.constraint</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Utility functions for interacting with Maya Joints</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># System global imports</span>
+
+<span class="c1"># python imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">lists</span>
+
+
+<div class="viewcode-block" id="constraint_safe_attrs"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.constraint.constraint_safe_attrs">[docs]</a><span class="k">def</span> <span class="nf">constraint_safe_attrs</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">attr_prefix</span><span class="p">,</span> <span class="n">skip_list</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Verifies which axis for a given transform type are safe to connect to.</span>
+<span class="sd">    :param Transform node:</span>
+<span class="sd">    :param str attr_prefix: &#39;t&#39;, &#39;r&#39;, &#39;s&#39; A string representing (t)ranslation, (r)otation, (s)cale</span>
+<span class="sd">    :param list[str] skip_list: A list of the string names of attributes to be skipped. (&#39;x&#39;, &#39;y&#39;, &#39;z&#39;)</span>
+<span class="sd">    :return: A list of strings either the axis, or &#39;none&#39; if &#39;none&#39; it is safe to constrain</span>
+<span class="sd">    :rtype list[str]:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">safe_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">axis</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]):</span>
+        <span class="c1"># for each exist</span>
+        <span class="k">if</span> <span class="n">skip_list</span> <span class="ow">and</span> <span class="n">axis</span> <span class="ow">in</span> <span class="n">skip_list</span><span class="p">:</span>
+            <span class="c1"># if we&#39;re skipping it mark it as so.</span>
+            <span class="n">safe_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">attr_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attr_prefix</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+        <span class="n">node_attr</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">attr_str</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">node_attr</span><span class="o">.</span><span class="n">isSettable</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">node_attr</span><span class="o">.</span><span class="n">isLocked</span><span class="p">():</span>
+            <span class="n">attr_connections</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">node_attr</span><span class="o">.</span><span class="n">listConnections</span><span class="p">())</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">attr_connections</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr_connections</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimCurve</span><span class="p">):</span>
+                <span class="c1"># if we can set the value, and it&#39;s not locked, we can constrain it.</span>
+                <span class="n">safe_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;none&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">safe_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">safe_list</span></div>
+
+
+<div class="viewcode-block" id="parent_constraint_safe"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.constraint.parent_constraint_safe">[docs]</a><span class="k">def</span> <span class="nf">parent_constraint_safe</span><span class="p">(</span><span class="n">source_node</span><span class="p">,</span> <span class="n">driven_node</span><span class="p">,</span> <span class="n">skip_rotate_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skip_translate_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a parent constraint between objects keeping in check locked or unsettable attrs.</span>
+
+<span class="sd">    :param Transform source_node: The node that will dictate the movement of the constraint.</span>
+<span class="sd">    :param Transform driven_node: The node that will follow the movement of another.</span>
+<span class="sd">    :param list[str] skip_rotate_attrs: A list of the string names of attributes to be skipped from the rotation group. (&#39;x&#39;, &#39;y&#39;, &#39;z&#39;)</span>
+<span class="sd">    :param list[str] skip_translate_attrs: A list of the string names of attributes to be skipped from the translation group. (&#39;x&#39;, &#39;y&#39;, &#39;z&#39;)</span>
+<span class="sd">    :return: Returns the created parent constraint or None on failure.</span>
+<span class="sd">    :rtype ParentConstraint|None:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">source_node</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">driven_node</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">stc</span> <span class="o">=</span> <span class="n">constraint_safe_attrs</span><span class="p">(</span><span class="n">driven_node</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="n">skip_translate_attrs</span><span class="p">)</span>
+    <span class="n">src</span> <span class="o">=</span> <span class="n">constraint_safe_attrs</span><span class="p">(</span><span class="n">driven_node</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">skip_rotate_attrs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="s1">&#39;none&#39;</span> <span class="ow">in</span> <span class="n">safe_list</span> <span class="k">for</span> <span class="n">safe_list</span> <span class="ow">in</span> <span class="p">[</span><span class="n">stc</span><span class="p">,</span> <span class="n">src</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">parentConstraint</span><span class="p">(</span><span class="n">source_node</span><span class="p">,</span> <span class="n">driven_node</span><span class="p">,</span> <span class="n">skipTranslate</span><span class="o">=</span><span class="n">stc</span><span class="p">,</span> <span class="n">skipRotate</span><span class="o">=</span><span class="n">src</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="point_constraint_safe"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.constraint.point_constraint_safe">[docs]</a><span class="k">def</span> <span class="nf">point_constraint_safe</span><span class="p">(</span><span class="n">source_node</span><span class="p">,</span> <span class="n">driven_node</span><span class="p">,</span> <span class="n">skip_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a point constraint between objects keeping in check locked or unsettable attrs.</span>
+
+<span class="sd">    :param Transform source_node: The node that will dictate the movement of the constraint.</span>
+<span class="sd">    :param Transform driven_node: The node that will follow the movement of another.</span>
+<span class="sd">    :param list[str] skip_attrs: A list of the string names of attributes to be skipped. (&#39;x&#39;, &#39;y&#39;, &#39;z&#39;)</span>
+<span class="sd">    :return: Returns the created point constraint or None on failure.</span>
+<span class="sd">    :rtype PointConstraint|None:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">source_node</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">driven_node</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">stc</span> <span class="o">=</span> <span class="n">constraint_safe_attrs</span><span class="p">(</span><span class="n">driven_node</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="n">skip_attrs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;none&#39;</span> <span class="ow">in</span> <span class="n">stc</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">pointConstraint</span><span class="p">(</span><span class="n">source_node</span><span class="p">,</span> <span class="n">driven_node</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="n">stc</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="orient_constraint_safe"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.constraint.orient_constraint_safe">[docs]</a><span class="k">def</span> <span class="nf">orient_constraint_safe</span><span class="p">(</span><span class="n">source_node</span><span class="p">,</span> <span class="n">driven_node</span><span class="p">,</span> <span class="n">skip_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create an orient constraint between objects keeping in check locked or unsettable attrs.</span>
+
+<span class="sd">    :param Transform source_node: The node that will dictate the movement of the constraint.</span>
+<span class="sd">    :param Transform driven_node: The node that will follow the movement of another.</span>
+<span class="sd">    :param list[str] skip_attrs: A list of the string names of attributes to be skipped. (&#39;x&#39;, &#39;y&#39;, &#39;z&#39;)</span>
+<span class="sd">    :return: Returns the created orient constraint or None on failure.</span>
+<span class="sd">    :rtype OrientConstraint|None:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">source_node</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">driven_node</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">src</span> <span class="o">=</span> <span class="n">constraint_safe_attrs</span><span class="p">(</span><span class="n">driven_node</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">skip_attrs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;none&#39;</span> <span class="ow">in</span> <span class="n">src</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">orientConstraint</span><span class="p">(</span><span class="n">source_node</span><span class="p">,</span> <span class="n">driven_node</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="n">src</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="scale_constraint_safe"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.constraint.scale_constraint_safe">[docs]</a><span class="k">def</span> <span class="nf">scale_constraint_safe</span><span class="p">(</span><span class="n">source_node</span><span class="p">,</span> <span class="n">driven_node</span><span class="p">,</span> <span class="n">skip_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a scale constraint between objects keeping in check locked or unsettable attrs.</span>
+
+<span class="sd">    :param Transform source_node: The node that will dictate the movement of the constraint.</span>
+<span class="sd">    :param Transform driven_node: The node that will follow the movement of another.</span>
+<span class="sd">    :param Bool mo: If the offset to the source node should be maintained.</span>
+<span class="sd">    :param list[str] skip_attrs: A list of the string names of attributes to be skipped. (&#39;x&#39;, &#39;y&#39;, &#39;z&#39;)</span>
+<span class="sd">    :return: Returns the created scale constraint or None on failure.</span>
+<span class="sd">    :rtype ScaleConstraint|None:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">source_node</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">driven_node</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">ssc</span> <span class="o">=</span> <span class="n">constraint_safe_attrs</span><span class="p">(</span><span class="n">driven_node</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="n">skip_attrs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;none&#39;</span> <span class="ow">in</span> <span class="n">ssc</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">scaleConstraint</span><span class="p">(</span><span class="n">source_node</span><span class="p">,</span> <span class="n">driven_node</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="n">ssc</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_constraint_targets"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.constraint.get_constraint_targets">[docs]</a><span class="k">def</span> <span class="nf">get_constraint_targets</span><span class="p">(</span><span class="n">constraint</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the transforms that are influencing the constraint.</span>
+
+<span class="sd">    :param pm.PyNode constraint: constraint node to get targets of.</span>
+<span class="sd">    :return: transform nodes affecting the constraint.</span>
+<span class="sd">    :rtype: list(pm.PyNode)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">transforms</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">constraint</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;transform&#39;</span><span class="p">)))</span>
+    <span class="n">transforms</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">transforms</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pm</span><span class="o">.</span><span class="n">nodeType</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;transform&#39;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">transforms</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

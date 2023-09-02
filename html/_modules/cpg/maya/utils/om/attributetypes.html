@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.utils.om.attributetypes &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.utils.om.attributetypes</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.utils.om.attributetypes</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module that centralizes May attribute types</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># System global imports</span>
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">maya.api.OpenMaya</span> <span class="k">as</span> <span class="nn">OpenMaya</span>
+<span class="c1"># CPG python imports</span>
+
+
+<span class="n">kMFnNumericBoolean</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">kMFnNumericShort</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">kMFnNumericInt</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">kMFnNumericLong</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">kMFnNumericByte</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">kMFnNumericFloat</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">kMFnNumericDouble</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">kMFnNumericAddr</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">kMFnNumericChar</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">kMFnUnitAttributeDistance</span> <span class="o">=</span> <span class="mi">9</span>
+<span class="n">kMFnUnitAttributeAngle</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">kMFnUnitAttributeTime</span> <span class="o">=</span> <span class="mi">11</span>
+<span class="n">kMFnkEnumAttribute</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">kMFnDataString</span> <span class="o">=</span> <span class="mi">13</span>
+<span class="n">kMFnDataMatrix</span> <span class="o">=</span> <span class="mi">14</span>
+<span class="n">kMFnDataFloatArray</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="n">kMFnDataDoubleArray</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">kMFnDataIntArray</span> <span class="o">=</span> <span class="mi">17</span>
+<span class="n">kMFnDataPointArray</span> <span class="o">=</span> <span class="mi">18</span>
+<span class="n">kMFnDataVectorArray</span> <span class="o">=</span> <span class="mi">19</span>
+<span class="n">kMFnDataStringArray</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">kMFnDataMatrixArray</span> <span class="o">=</span> <span class="mi">21</span>
+<span class="n">kMFnCompoundAttribute</span> <span class="o">=</span> <span class="mi">22</span>
+<span class="n">kMFnNumericInt64</span> <span class="o">=</span> <span class="mi">23</span>
+<span class="n">kMFnNumericLast</span> <span class="o">=</span> <span class="mi">24</span>
+<span class="n">kMFnNumeric2Double</span> <span class="o">=</span> <span class="mi">25</span>
+<span class="n">kMFnNumeric2Float</span> <span class="o">=</span> <span class="mi">26</span>
+<span class="n">kMFnNumeric2Int</span> <span class="o">=</span> <span class="mi">27</span>
+<span class="n">kMFnNumeric2Long</span> <span class="o">=</span> <span class="mi">28</span>
+<span class="n">kMFnNumeric2Short</span> <span class="o">=</span> <span class="mi">29</span>
+<span class="n">kMFnNumeric3Double</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">kMFnNumeric3Float</span> <span class="o">=</span> <span class="mi">31</span>
+<span class="n">kMFnNumeric3Int</span> <span class="o">=</span> <span class="mi">32</span>
+<span class="n">kMFnNumeric3Long</span> <span class="o">=</span> <span class="mi">33</span>
+<span class="n">kMFnNumeric3Short</span> <span class="o">=</span> <span class="mi">34</span>
+<span class="n">kMFnNumeric4Double</span> <span class="o">=</span> <span class="mi">35</span>
+<span class="n">kMFnMessageAttribute</span> <span class="o">=</span> <span class="mi">36</span>
+
+<span class="n">MAYA_NUMERIC_MULTI_TYPES</span> <span class="o">=</span> <span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k2Double</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k2Float</span><span class="p">,</span>
+                            <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k2Int</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k2Long</span><span class="p">,</span>
+                            <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k2Short</span><span class="p">,</span>  <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k3Double</span><span class="p">,</span>
+                            <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k3Float</span><span class="p">,</span>  <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k3Int</span><span class="p">,</span>
+                            <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k3Long</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k3Short</span><span class="p">,</span>
+                            <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k4Double</span><span class="p">)</span>
+
+<span class="n">_MAYA_TYPE_FROM_TYPE</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">kMFnNumericBoolean</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kBoolean</span><span class="p">),</span>
+    <span class="n">kMFnNumericByte</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kByte</span><span class="p">),</span>
+    <span class="n">kMFnNumericShort</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kShort</span><span class="p">),</span>
+    <span class="n">kMFnNumericInt</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kInt</span><span class="p">),</span>
+    <span class="n">kMFnNumericLong</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kLong</span><span class="p">),</span>
+    <span class="n">kMFnNumericDouble</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kDouble</span><span class="p">),</span>
+    <span class="n">kMFnNumericFloat</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kFloat</span><span class="p">),</span>
+    <span class="n">kMFnNumericAddr</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kAddr</span><span class="p">),</span>
+    <span class="n">kMFnNumericChar</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kChar</span><span class="p">),</span>
+    <span class="n">kMFnNumeric2Double</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k2Double</span><span class="p">),</span>
+    <span class="n">kMFnNumeric2Float</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k2Float</span><span class="p">),</span>
+    <span class="n">kMFnNumeric2Int</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k2Int</span><span class="p">),</span>
+    <span class="n">kMFnNumeric2Long</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k2Long</span><span class="p">),</span>
+    <span class="n">kMFnNumeric2Short</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k2Short</span><span class="p">),</span>
+    <span class="n">kMFnNumeric3Double</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k3Double</span><span class="p">),</span>
+    <span class="n">kMFnNumeric3Float</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k3Float</span><span class="p">),</span>
+    <span class="n">kMFnNumeric3Int</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k3Int</span><span class="p">),</span>
+    <span class="n">kMFnNumeric3Long</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k3Long</span><span class="p">),</span>
+    <span class="n">kMFnNumeric3Short</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k3Short</span><span class="p">),</span>
+    <span class="n">kMFnNumeric4Double</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k4Double</span><span class="p">),</span>
+    <span class="n">kMFnUnitAttributeDistance</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnUnitAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnUnitAttribute</span><span class="o">.</span><span class="n">kDistance</span><span class="p">),</span>
+    <span class="n">kMFnUnitAttributeAngle</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnUnitAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnUnitAttribute</span><span class="o">.</span><span class="n">kAngle</span><span class="p">),</span>
+    <span class="n">kMFnUnitAttributeTime</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnUnitAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnUnitAttribute</span><span class="o">.</span><span class="n">kTime</span><span class="p">),</span>
+    <span class="n">kMFnkEnumAttribute</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnEnumAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFn</span><span class="o">.</span><span class="n">kEnumAttribute</span><span class="p">),</span>
+    <span class="n">kMFnDataString</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnTypedAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kString</span><span class="p">),</span>
+    <span class="n">kMFnDataMatrix</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnTypedAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kMatrix</span><span class="p">),</span>
+    <span class="n">kMFnDataFloatArray</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnTypedAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kFloatArray</span><span class="p">),</span>
+    <span class="n">kMFnDataDoubleArray</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnTypedAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kDoubleArray</span><span class="p">),</span>
+    <span class="n">kMFnDataIntArray</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnTypedAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kIntArray</span><span class="p">),</span>
+    <span class="n">kMFnDataPointArray</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnTypedAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kPointArray</span><span class="p">),</span>
+    <span class="n">kMFnDataVectorArray</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnTypedAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kVectorArray</span><span class="p">),</span>
+    <span class="n">kMFnDataStringArray</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnTypedAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kStringArray</span><span class="p">),</span>
+    <span class="n">kMFnDataMatrixArray</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnTypedAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kMatrixArray</span><span class="p">),</span>
+    <span class="n">kMFnMessageAttribute</span><span class="o">=</span><span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnMessageAttribute</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFn</span><span class="o">.</span><span class="n">kMessageAttribute</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">_TYPE_TO_STRING</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">kMFnNumericBoolean</span><span class="p">:</span> <span class="s1">&#39;kMFnNumericBoolean&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumericByte</span><span class="p">:</span> <span class="s1">&#39;kMFnNumericByte&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumericShort</span><span class="p">:</span> <span class="s1">&#39;kMFnNumericShort&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumericInt</span><span class="p">:</span> <span class="s1">&#39;kMFnNumericInt&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumericLong</span><span class="p">:</span> <span class="s1">&#39;kMFnNumericLong&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumericDouble</span><span class="p">:</span> <span class="s1">&#39;kMFnNumericDouble&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumericFloat</span><span class="p">:</span> <span class="s1">&#39;kMFnNumericFloat&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumericAddr</span><span class="p">:</span> <span class="s1">&#39;kMFnNumericAddr&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumericChar</span><span class="p">:</span> <span class="s1">&#39;kMFnNumericChar&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumeric2Double</span><span class="p">:</span> <span class="s1">&#39;kMFnNumeric2Double&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumeric2Float</span><span class="p">:</span> <span class="s1">&#39;kMFnNumeric2Float&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumeric2Int</span><span class="p">:</span> <span class="s1">&#39;kMFnNumeric2Int&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumeric2Long</span><span class="p">:</span> <span class="s1">&#39;kMFnNumeric2Long&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumeric2Short</span><span class="p">:</span> <span class="s1">&#39;kMFnNumeric2Short&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumeric3Double</span><span class="p">:</span> <span class="s1">&#39;kMFnNumeric3Double&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumeric3Float</span><span class="p">:</span> <span class="s1">&#39;kMFnNumeric3Float&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumeric3Int</span><span class="p">:</span> <span class="s1">&#39;kMFnNumeric3Int&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumeric3Long</span><span class="p">:</span> <span class="s1">&#39;kMFnNumeric3Long&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumeric3Short</span><span class="p">:</span> <span class="s1">&#39;kMFnNumeric3Short&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumeric4Double</span><span class="p">:</span> <span class="s1">&#39;kMFnNumeric4Double&#39;</span><span class="p">,</span>
+    <span class="n">kMFnUnitAttributeDistance</span><span class="p">:</span> <span class="s1">&#39;kMFnUnitAttributeDistance&#39;</span><span class="p">,</span>
+    <span class="n">kMFnUnitAttributeAngle</span><span class="p">:</span> <span class="s1">&#39;kMFnUnitAttributeAngle&#39;</span><span class="p">,</span>
+    <span class="n">kMFnUnitAttributeTime</span><span class="p">:</span> <span class="s1">&#39;kMFnUnitAttributeTime&#39;</span><span class="p">,</span>
+    <span class="n">kMFnkEnumAttribute</span><span class="p">:</span> <span class="s1">&#39;kMFnkEnumAttribute&#39;</span><span class="p">,</span>
+    <span class="n">kMFnDataString</span><span class="p">:</span> <span class="s1">&#39;kMFnDataString&#39;</span><span class="p">,</span>
+    <span class="n">kMFnDataMatrix</span><span class="p">:</span> <span class="s1">&#39;kMFnDataMatrix&#39;</span><span class="p">,</span>
+    <span class="n">kMFnDataFloatArray</span><span class="p">:</span> <span class="s1">&#39;kMFnDataFloatArray&#39;</span><span class="p">,</span>
+    <span class="n">kMFnDataDoubleArray</span><span class="p">:</span> <span class="s1">&#39;kMFnDataDoubleArray&#39;</span><span class="p">,</span>
+    <span class="n">kMFnDataIntArray</span><span class="p">:</span> <span class="s1">&#39;kMFnDataIntArray&#39;</span><span class="p">,</span>
+    <span class="n">kMFnDataPointArray</span><span class="p">:</span> <span class="s1">&#39;kMFnDataPointArray&#39;</span><span class="p">,</span>
+    <span class="n">kMFnDataVectorArray</span><span class="p">:</span> <span class="s1">&#39;kMFnDataVectorArray&#39;</span><span class="p">,</span>
+    <span class="n">kMFnDataStringArray</span><span class="p">:</span> <span class="s1">&#39;kMFnDataStringArray&#39;</span><span class="p">,</span>
+    <span class="n">kMFnDataMatrixArray</span><span class="p">:</span> <span class="s1">&#39;kMFnDataMatrixArray&#39;</span><span class="p">,</span>
+    <span class="n">kMFnMessageAttribute</span><span class="p">:</span> <span class="s1">&#39;kMFnMessageAttribute&#39;</span><span class="p">,</span>
+    <span class="n">kMFnCompoundAttribute</span><span class="p">:</span> <span class="s1">&#39;kMFnCompoundAttribute&#39;</span>
+<span class="p">}</span>
+
+<span class="n">_PM_TYPE_TO_TYPE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;bool&#39;</span><span class="p">:</span> <span class="n">kMFnNumericBoolean</span><span class="p">,</span>
+    <span class="s1">&#39;short&#39;</span><span class="p">:</span> <span class="n">kMFnNumericShort</span><span class="p">,</span>
+    <span class="s1">&#39;long&#39;</span><span class="p">:</span> <span class="n">kMFnNumericLong</span><span class="p">,</span>
+    <span class="s1">&#39;byte&#39;</span><span class="p">:</span> <span class="n">kMFnNumericByte</span><span class="p">,</span>
+    <span class="s1">&#39;float&#39;</span><span class="p">:</span> <span class="n">kMFnNumericFloat</span><span class="p">,</span>
+    <span class="s1">&#39;double&#39;</span><span class="p">:</span> <span class="n">kMFnNumericDouble</span><span class="p">,</span>
+    <span class="s1">&#39;char&#39;</span><span class="p">:</span> <span class="n">kMFnNumericChar</span><span class="p">,</span>
+    <span class="s1">&#39;angle&#39;</span><span class="p">:</span> <span class="n">kMFnUnitAttributeAngle</span><span class="p">,</span>
+    <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">kMFnUnitAttributeTime</span><span class="p">,</span>
+    <span class="s1">&#39;enum&#39;</span><span class="p">:</span> <span class="n">kMFnkEnumAttribute</span><span class="p">,</span>
+    <span class="s1">&#39;string&#39;</span><span class="p">:</span> <span class="n">kMFnDataString</span><span class="p">,</span>
+    <span class="s1">&#39;matrix&#39;</span><span class="p">:</span> <span class="n">kMFnDataMatrix</span><span class="p">,</span>
+    <span class="s1">&#39;fltMatrix&#39;</span><span class="p">:</span> <span class="n">kMFnDataFloatArray</span><span class="p">,</span>
+    <span class="s1">&#39;compound&#39;</span><span class="p">:</span> <span class="n">kMFnCompoundAttribute</span><span class="p">,</span>
+    <span class="s1">&#39;short2&#39;</span><span class="p">:</span> <span class="n">kMFnNumeric2Short</span><span class="p">,</span>
+    <span class="s1">&#39;short3&#39;</span><span class="p">:</span> <span class="n">kMFnNumeric3Short</span><span class="p">,</span>
+    <span class="s1">&#39;long2&#39;</span><span class="p">:</span> <span class="n">kMFnNumeric2Long</span><span class="p">,</span>
+    <span class="s1">&#39;long3&#39;</span><span class="p">:</span> <span class="n">kMFnNumeric3Long</span><span class="p">,</span>
+    <span class="s1">&#39;float2&#39;</span><span class="p">:</span> <span class="n">kMFnNumeric2Float</span><span class="p">,</span>
+    <span class="s1">&#39;float3&#39;</span><span class="p">:</span> <span class="n">kMFnNumeric3Float</span><span class="p">,</span>
+    <span class="s1">&#39;double2&#39;</span><span class="p">:</span> <span class="n">kMFnNumeric2Double</span><span class="p">,</span>
+    <span class="s1">&#39;double3&#39;</span><span class="p">:</span> <span class="n">kMFnNumeric3Double</span><span class="p">,</span>
+    <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">kMFnMessageAttribute</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">_MAYA_NUMERIC_TYPE_TO_INTERNAL_TYPE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kBoolean</span><span class="p">:</span> <span class="n">kMFnNumericBoolean</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kByte</span><span class="p">:</span> <span class="n">kMFnNumericByte</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kShort</span><span class="p">:</span> <span class="n">kMFnNumericShort</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kInt</span><span class="p">:</span> <span class="n">kMFnNumericInt</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kLong</span><span class="p">:</span> <span class="n">kMFnNumericLong</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kDouble</span><span class="p">:</span> <span class="n">kMFnNumericDouble</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kFloat</span><span class="p">:</span> <span class="n">kMFnNumericFloat</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kAddr</span><span class="p">:</span> <span class="n">kMFnNumericAddr</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">kChar</span><span class="p">:</span> <span class="n">kMFnNumericChar</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k2Double</span><span class="p">:</span> <span class="n">kMFnNumeric2Double</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k2Float</span><span class="p">:</span> <span class="n">kMFnNumeric2Float</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k2Int</span><span class="p">:</span> <span class="n">kMFnNumeric2Int</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k2Long</span><span class="p">:</span> <span class="n">kMFnNumeric2Long</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k2Short</span><span class="p">:</span> <span class="n">kMFnNumeric2Short</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k3Double</span><span class="p">:</span> <span class="n">kMFnNumeric3Double</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k3Float</span><span class="p">:</span> <span class="n">kMFnNumeric3Float</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k3Int</span><span class="p">:</span> <span class="n">kMFnNumeric3Int</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k3Long</span><span class="p">:</span> <span class="n">kMFnNumeric3Long</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k3Short</span><span class="p">:</span> <span class="n">kMFnNumeric3Short</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnNumericData</span><span class="o">.</span><span class="n">k4Double</span><span class="p">:</span> <span class="n">kMFnNumeric4Double</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">_MAYA_UNIT_TYPE_TO_INTERNAL_TYPE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnUnitAttribute</span><span class="o">.</span><span class="n">kDistance</span><span class="p">:</span> <span class="n">kMFnUnitAttributeDistance</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnUnitAttribute</span><span class="o">.</span><span class="n">kAngle</span><span class="p">:</span> <span class="n">kMFnUnitAttributeAngle</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnUnitAttribute</span><span class="o">.</span><span class="n">kTime</span><span class="p">:</span> <span class="n">kMFnUnitAttributeTime</span>
+<span class="p">}</span>
+
+<span class="n">_MAYA_MFNDATA_TYPE_TO_INTERNAL_TYPE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kString</span><span class="p">:</span> <span class="n">kMFnDataString</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kMatrix</span><span class="p">:</span> <span class="n">kMFnDataMatrix</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kFloatArray</span><span class="p">:</span> <span class="n">kMFnDataFloatArray</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kDoubleArray</span><span class="p">:</span> <span class="n">kMFnDataDoubleArray</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kIntArray</span><span class="p">:</span> <span class="n">kMFnDataIntArray</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kPointArray</span><span class="p">:</span> <span class="n">kMFnDataPointArray</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kVectorArray</span><span class="p">:</span> <span class="n">kMFnDataVectorArray</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kStringArray</span><span class="p">:</span> <span class="n">kMFnDataStringArray</span><span class="p">,</span>
+    <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MFnData</span><span class="o">.</span><span class="n">kMatrixArray</span><span class="p">:</span> <span class="n">kMFnDataMatrixArray</span>
+<span class="p">}</span>
+
+<span class="n">_OM_TYPE_TO_PM_TYPE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">kMFnNumericBoolean</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumericShort</span><span class="p">:</span> <span class="s1">&#39;short&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumericLong</span><span class="p">:</span> <span class="s1">&#39;long&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumericByte</span><span class="p">:</span> <span class="s1">&#39;byte&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumericFloat</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumericDouble</span><span class="p">:</span> <span class="s1">&#39;double&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumericChar</span><span class="p">:</span> <span class="s1">&#39;char&#39;</span><span class="p">,</span>
+    <span class="n">kMFnUnitAttributeAngle</span><span class="p">:</span> <span class="s1">&#39;angle&#39;</span><span class="p">,</span>
+    <span class="n">kMFnUnitAttributeTime</span><span class="p">:</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span>
+    <span class="n">kMFnkEnumAttribute</span><span class="p">:</span> <span class="s1">&#39;enum&#39;</span><span class="p">,</span>
+    <span class="n">kMFnDataString</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
+    <span class="n">kMFnDataMatrix</span><span class="p">:</span> <span class="s1">&#39;matrix&#39;</span><span class="p">,</span>
+    <span class="n">kMFnDataFloatArray</span><span class="p">:</span> <span class="s1">&#39;fltMatrix&#39;</span><span class="p">,</span>
+    <span class="n">kMFnCompoundAttribute</span><span class="p">:</span> <span class="s1">&#39;compound&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumeric2Short</span><span class="p">:</span> <span class="s1">&#39;short2&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumeric3Short</span><span class="p">:</span> <span class="s1">&#39;short3&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumeric2Long</span><span class="p">:</span> <span class="s1">&#39;long2&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumeric3Long</span><span class="p">:</span> <span class="s1">&#39;long3&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumeric2Float</span><span class="p">:</span> <span class="s1">&#39;float2&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumeric3Float</span><span class="p">:</span> <span class="s1">&#39;float3&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumeric2Double</span><span class="p">:</span> <span class="s1">&#39;double2&#39;</span><span class="p">,</span>
+    <span class="n">kMFnNumeric3Double</span><span class="p">:</span> <span class="s1">&#39;double3&#39;</span><span class="p">,</span>
+    <span class="n">kMFnMessageAttribute</span><span class="p">:</span> <span class="s1">&#39;message&#39;</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="api_type_to_string"><a class="viewcode-back" href="../../../../../cpg.maya.utils.om.html#cpg.maya.utils.om.attributetypes.api_type_to_string">[docs]</a><span class="k">def</span> <span class="nf">api_type_to_string</span><span class="p">(</span><span class="n">api_attribute_type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Coverts given integer Maya OpenMaya API attribute type as a string.</span>
+
+<span class="sd">    :param int api_attribute_type: Maya OpenMaya API attribute type as an integer value.</span>
+<span class="sd">    :return: Maya Openmaya API attribute type as a string.</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">_TYPE_TO_STRING</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">api_attribute_type</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="maya_type_from_api_type"><a class="viewcode-back" href="../../../../../cpg.maya.utils.om.html#cpg.maya.utils.om.attributetypes.maya_type_from_api_type">[docs]</a><span class="k">def</span> <span class="nf">maya_type_from_api_type</span><span class="p">(</span><span class="n">api_type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns maya.cmds API type from the given Maya OpenMaya API type.</span>
+<span class="sd">    :param int api_type: Maya OpenMaya API attribute type as an integer value.</span>
+<span class="sd">    :return: maya.cmds API type.</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">type_conversion</span> <span class="o">=</span> <span class="n">_MAYA_TYPE_FROM_TYPE</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">api_type</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">type_conversion</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">type_conversion</span></div>
+
+
+<div class="viewcode-block" id="api_type_from_pymel_type"><a class="viewcode-back" href="../../../../../cpg.maya.utils.om.html#cpg.maya.utils.om.attributetypes.api_type_from_pymel_type">[docs]</a><span class="k">def</span> <span class="nf">api_type_from_pymel_type</span><span class="p">(</span><span class="n">pymel_type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns OpenMaya API type from PyMEL type.</span>
+
+<span class="sd">    :param str pymel_type: PyMEL attribute type.</span>
+<span class="sd">    :return: OpenMaya type.</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">type_conversion</span> <span class="o">=</span> <span class="n">_PM_TYPE_TO_TYPE</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pymel_type</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">type_conversion</span></div>
+
+
+<div class="viewcode-block" id="maya_numeric_type_to_internal_type"><a class="viewcode-back" href="../../../../../cpg.maya.utils.om.html#cpg.maya.utils.om.attributetypes.maya_numeric_type_to_internal_type">[docs]</a><span class="k">def</span> <span class="nf">maya_numeric_type_to_internal_type</span><span class="p">(</span><span class="n">numeric_type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the CPG internal attribute type for the given Maya numeric type.</span>
+
+<span class="sd">    :param OpenMaya.MFnNumericData numeric_type: Maya numeric attribute type.</span>
+<span class="sd">    :return: internal attribute type.</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">_MAYA_NUMERIC_TYPE_TO_INTERNAL_TYPE</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">numeric_type</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="maya_unit_type_to_internal_type"><a class="viewcode-back" href="../../../../../cpg.maya.utils.om.html#cpg.maya.utils.om.attributetypes.maya_unit_type_to_internal_type">[docs]</a><span class="k">def</span> <span class="nf">maya_unit_type_to_internal_type</span><span class="p">(</span><span class="n">typed_type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the CPG internal attribute type for the given Maya typed type.</span>
+
+<span class="sd">    :param OpenMaya.MFnUnitAttribute typed_type: Maya typed attribute type.</span>
+<span class="sd">    :return: internal attribute type.</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">_MAYA_TYPE_FROM_TYPE</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">typed_type</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="maya_mfn_data_type_to_internal_type"><a class="viewcode-back" href="../../../../../cpg.maya.utils.om.html#cpg.maya.utils.om.attributetypes.maya_mfn_data_type_to_internal_type">[docs]</a><span class="k">def</span> <span class="nf">maya_mfn_data_type_to_internal_type</span><span class="p">(</span><span class="n">data_type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the CPG internal attribute type for the given Maya data type.</span>
+
+<span class="sd">    :param OpenMaya.MFnData data_type: Maya data attribute type.</span>
+<span class="sd">    :return: internal attribute type.</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">_MAYA_MFNDATA_TYPE_TO_INTERNAL_TYPE</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="maya_type_to_python_type"><a class="viewcode-back" href="../../../../../cpg.maya.utils.om.html#cpg.maya.utils.om.attributetypes.maya_type_to_python_type">[docs]</a><span class="k">def</span> <span class="nf">maya_type_to_python_type</span><span class="p">(</span><span class="n">maya_type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the Python type for the given Maya type.</span>
+
+<span class="sd">    :param object maya_type: Maya attribute type.</span>
+<span class="sd">    :return: Python type.</span>
+<span class="sd">    :rtype: int, float, string, list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">maya_type</span><span class="p">,</span> <span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MDistance</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MTime</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MAngle</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="n">maya_type</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">maya_type</span><span class="p">,</span> <span class="p">(</span><span class="n">OpenMaya</span><span class="o">.</span><span class="n">MMatrix</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MVector</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MPoint</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MQuaternion</span><span class="p">,</span>
+                                <span class="n">OpenMaya</span><span class="o">.</span><span class="n">MEulerRotation</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">maya_type</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">maya_type</span></div>
+
+
+<div class="viewcode-block" id="om_type_to_pymel_type"><a class="viewcode-back" href="../../../../../cpg.maya.utils.om.html#cpg.maya.utils.om.attributetypes.om_type_to_pymel_type">[docs]</a><span class="k">def</span> <span class="nf">om_type_to_pymel_type</span><span class="p">(</span><span class="n">om_type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns PyMEL type from given OpenMaya type.</span>
+
+<span class="sd">    :param int om_type: OpenMaya attribute type.</span>
+<span class="sd">    :return: PyMEL type.</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">type_conversion</span> <span class="o">=</span> <span class="n">_OM_TYPE_TO_PM_TYPE</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">om_type</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">type_conversion</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

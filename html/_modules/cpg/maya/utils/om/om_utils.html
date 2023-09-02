@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.utils.om.om_utils &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.utils.om.om_utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.utils.om.om_utils</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Open Maya Utilities.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+<span class="c1"># python imports</span>
+
+<span class="kn">import</span> <span class="nn">maya.api.OpenMaya</span> <span class="k">as</span> <span class="nn">om2</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="c1"># CPG python imports</span>
+
+
+<div class="viewcode-block" id="pynode_to_om2_mobject_mdag_path"><a class="viewcode-back" href="../../../../../cpg.maya.utils.om.html#cpg.maya.utils.om.om_utils.pynode_to_om2_mobject_mdag_path">[docs]</a><span class="k">def</span> <span class="nf">pynode_to_om2_mobject_mdag_path</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Convert a pynode into a MDagPath and MObject</span>
+
+<span class="sd">	:param PyNode node: The PyNode to be converted.</span>
+<span class="sd">	:return: The om equivalent objects.</span>
+<span class="sd">	:rtype MDagPath, MObject:</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">DagNode</span><span class="p">):</span>
+		<span class="n">sel</span> <span class="o">=</span> <span class="n">om2</span><span class="o">.</span><span class="n">MSelectionList</span><span class="p">()</span>
+		<span class="n">sel</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">longName</span><span class="p">())</span>
+		<span class="k">return</span> <span class="n">sel</span><span class="o">.</span><span class="n">getComponent</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Node type is not a DagNode. </span><span class="si">{0}</span><span class="s1">, </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">node</span><span class="p">)))</span>
+		<span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="get_closest_joint_to_vertex"><a class="viewcode-back" href="../../../../../cpg.maya.utils.om.html#cpg.maya.utils.om.om_utils.get_closest_joint_to_vertex">[docs]</a><span class="k">def</span> <span class="nf">get_closest_joint_to_vertex</span><span class="p">(</span><span class="n">vertex</span><span class="p">,</span> <span class="n">mesh_name</span><span class="p">,</span> <span class="n">joint_list</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Gets the closest joint to a provided vertex index.</span>
+
+<span class="sd">	:param int vertex: Vertex index</span>
+<span class="sd">	:param str mesh_name: Name of the mesh</span>
+<span class="sd">	:param list(str) joint_list: List of names of joints to be considered</span>
+<span class="sd">	:return: The name of the closest joint</span>
+<span class="sd">	:rtype: str</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">closest_joint</span> <span class="o">=</span> <span class="kc">None</span>
+	<span class="n">closest_distance</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+
+	<span class="c1"># Create an empty MSelectionList. This is a wrapper for a list of MObjects (base class for nodes)</span>
+	<span class="n">selection_list</span> <span class="o">=</span> <span class="n">om2</span><span class="o">.</span><span class="n">MSelectionList</span><span class="p">()</span>
+	<span class="c1"># Add specified node to MSelectionList. You can pass add() MObject or short/long names of nodes</span>
+	<span class="c1"># and it will create an MObject for it if found</span>
+	<span class="n">selection_list</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">mesh_name</span><span class="p">)</span>
+	<span class="c1"># getDagPath works by providing it an index to the list above then a reference to the DAG path is</span>
+	<span class="c1"># stored along with the MObject for the node</span>
+	<span class="n">dag_path</span> <span class="o">=</span> <span class="n">selection_list</span><span class="o">.</span><span class="n">getDagPath</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+	<span class="c1"># Create MFnMesh to work with mesh</span>
+	<span class="n">mfn_mesh</span> <span class="o">=</span> <span class="n">om2</span><span class="o">.</span><span class="n">MFnMesh</span><span class="p">(</span><span class="n">dag_path</span><span class="p">)</span>
+	<span class="c1"># getPoint uses the vertex index and creates and stores an MPoint which we can get the coordinates</span>
+	<span class="c1"># of the vertex off later</span>
+	<span class="n">point</span> <span class="o">=</span> <span class="n">mfn_mesh</span><span class="o">.</span><span class="n">getPoint</span><span class="p">(</span><span class="n">vertex</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="n">om2</span><span class="o">.</span><span class="n">MSpace</span><span class="o">.</span><span class="n">kWorld</span><span class="p">)</span>
+
+	<span class="k">for</span> <span class="n">jnt</span> <span class="ow">in</span> <span class="n">joint_list</span><span class="p">:</span>
+		<span class="c1"># Make sure selection list is empty</span>
+		<span class="n">selection_list</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+		<span class="c1"># Add the joint object to the selection list</span>
+		<span class="n">selection_list</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">jnt</span><span class="p">)</span>
+
+		<span class="c1"># Create MDagPath for joint</span>
+		<span class="n">dag_path</span> <span class="o">=</span> <span class="n">selection_list</span><span class="o">.</span><span class="n">getDagPath</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+		<span class="c1"># Create MFnTransform to get translation from joint</span>
+		<span class="n">jnt_fn</span> <span class="o">=</span> <span class="n">om2</span><span class="o">.</span><span class="n">MFnTransform</span><span class="p">(</span><span class="n">dag_path</span><span class="p">)</span>
+		<span class="n">jnt_pos</span> <span class="o">=</span> <span class="n">jnt_fn</span><span class="o">.</span><span class="n">translation</span><span class="p">(</span><span class="n">om2</span><span class="o">.</span><span class="n">MSpace</span><span class="o">.</span><span class="n">kWorld</span><span class="p">)</span>
+
+		<span class="c1"># Create MVector obj at vertex position</span>
+		<span class="n">vertex_pos</span> <span class="o">=</span> <span class="n">om2</span><span class="o">.</span><span class="n">MVector</span><span class="p">(</span><span class="n">point</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">point</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">point</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+
+		<span class="c1"># Subtract joint and vertex vector components to get distance vector</span>
+		<span class="n">distance_vector</span> <span class="o">=</span> <span class="n">vertex_pos</span> <span class="o">-</span> <span class="n">jnt_pos</span>
+		<span class="c1"># Use MVector length to get distance</span>
+		<span class="n">distance</span> <span class="o">=</span> <span class="n">distance_vector</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
+
+		<span class="c1"># Check distance to see if closest</span>
+		<span class="k">if</span> <span class="n">distance</span> <span class="o">&lt;</span> <span class="n">closest_distance</span><span class="p">:</span>
+			<span class="n">closest_distance</span> <span class="o">=</span> <span class="n">distance</span>
+			<span class="n">closest_joint</span> <span class="o">=</span> <span class="n">jnt</span>
+
+	<span class="k">return</span> <span class="n">closest_joint</span></div>
+
+
+<div class="viewcode-block" id="get_adjacent_vertices"><a class="viewcode-back" href="../../../../../cpg.maya.utils.om.html#cpg.maya.utils.om.om_utils.get_adjacent_vertices">[docs]</a><span class="k">def</span> <span class="nf">get_adjacent_vertices</span><span class="p">(</span><span class="n">vertex</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Gets adjacent vertex indices for specified vertex index</span>
+
+<span class="sd">	:param str vertex: Vertex return adjacent vertex indices for</span>
+<span class="sd">	:return: Adjacent vertex indices</span>
+<span class="sd">	:rtype: list(int)</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="c1"># Create an MSelectionList and add the vertex to it</span>
+	<span class="n">selection_list</span> <span class="o">=</span> <span class="n">om2</span><span class="o">.</span><span class="n">MSelectionList</span><span class="p">()</span>
+	<span class="n">selection_list</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">vertex</span><span class="p">)</span>
+
+	<span class="c1"># Create an MFnMesh object from the selected mesh and get the DAG path and MObject for the component</span>
+	<span class="n">dag_path</span><span class="p">,</span> <span class="n">component</span> <span class="o">=</span> <span class="n">selection_list</span><span class="o">.</span><span class="n">getComponent</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+	<span class="c1"># Get the adjacent vertices using MItMeshVertex. This is an iterator for vertices so if we don&#39;t provide</span>
+	<span class="c1"># it a component it will go over all vertices on specified surface</span>
+	<span class="n">vertex_iter</span> <span class="o">=</span> <span class="n">om2</span><span class="o">.</span><span class="n">MItMeshVertex</span><span class="p">(</span><span class="n">dag_path</span><span class="p">,</span> <span class="n">component</span><span class="p">)</span>
+	<span class="n">adjacent_vertices</span> <span class="o">=</span> <span class="p">[]</span>
+
+	<span class="k">while</span> <span class="ow">not</span> <span class="n">vertex_iter</span><span class="o">.</span><span class="n">isDone</span><span class="p">():</span>
+		<span class="c1"># Get indices of vertices around our vertex</span>
+		<span class="n">connected_vertices</span> <span class="o">=</span> <span class="n">vertex_iter</span><span class="o">.</span><span class="n">getConnectedVertices</span><span class="p">()</span>
+		<span class="n">adjacent_vertices</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">connected_vertices</span><span class="p">)</span>
+		<span class="n">vertex_iter</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+
+	<span class="k">return</span> <span class="n">adjacent_vertices</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

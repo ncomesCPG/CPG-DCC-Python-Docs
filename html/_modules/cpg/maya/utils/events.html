@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.utils.events &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.utils.events</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.utils.events</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">purpose: managing maya internal events. Allows to connect listeners to special events.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="c1"># Software specific imports</span>
+<span class="kn">import</span> <span class="nn">maya.OpenMaya</span> <span class="k">as</span> <span class="nn">om</span>
+<span class="kn">import</span> <span class="nn">maya.OpenMayaAnim</span> <span class="k">as</span> <span class="nn">OpenMayaAnim</span>
+
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cpg.common.modifiers</span> <span class="kn">import</span> <span class="n">decorators</span><span class="p">,</span> <span class="n">singleton</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.modifiers</span> <span class="kn">import</span> <span class="n">ma_decorators</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="EventsRegister"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">add_metaclass</span><span class="p">(</span><span class="n">singleton</span><span class="o">.</span><span class="n">Singleton</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">EventsRegister</span><span class="p">:</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	This static class lets perform script callbacks during events that arent available in the scriptJob events.</span>
+<span class="sd">	To use it, you register a command with a unique ID. This will keep the callback ID for the command so you can</span>
+<span class="sd">	unregister it by that name later.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">paused_events</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">m_anim_message</span> <span class="o">=</span> <span class="n">OpenMayaAnim</span><span class="o">.</span><span class="n">MAnimMessage</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">m_event_message</span> <span class="o">=</span> <span class="n">om</span><span class="o">.</span><span class="n">MEventMessage</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">m_scene_message</span> <span class="o">=</span> <span class="n">om</span><span class="o">.</span><span class="n">MSceneMessage</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">m_model_message</span> <span class="o">=</span> <span class="n">om</span><span class="o">.</span><span class="n">MModelMessage</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">m_dag_message</span> <span class="o">=</span> <span class="n">om</span><span class="o">.</span><span class="n">MDagMessage</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">m_dg_message</span> <span class="o">=</span> <span class="n">om</span><span class="o">.</span><span class="n">MDGMessage</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">m_node_message</span> <span class="o">=</span> <span class="n">om</span><span class="o">.</span><span class="n">MNodeMessage</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">m_user_event_message</span> <span class="o">=</span> <span class="n">om</span><span class="o">.</span><span class="n">MUserEventMessage</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">dag_message_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;kParentAdded&#39;</span><span class="p">,</span> <span class="s1">&#39;kParentRemoved&#39;</span><span class="p">,</span> <span class="s1">&#39;kChildAdded&#39;</span><span class="p">,</span> <span class="s1">&#39;kChildRemoved&#39;</span><span class="p">,</span> <span class="s1">&#39;kChildReordered&#39;</span><span class="p">,</span>
+									<span class="s1">&#39;kInstanceAdded&#39;</span><span class="p">,</span> <span class="s1">&#39;kInstanceRemoved&#39;</span><span class="p">]</span>
+	
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">parent_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent_id</span>
+	
+	<span class="nd">@parent_id</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">parent_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_parent_id</span> <span class="o">=</span> <span class="n">value</span>
+	
+	
+	<span class="c1"># user defined events</span>
+<div class="viewcode-block" id="EventsRegister.register_user_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_user_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_user_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">):</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_user_event_message</span><span class="o">.</span><span class="n">isUserEvent</span><span class="p">(</span><span class="n">callback_id</span><span class="p">):</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">m_user_event_message</span><span class="o">.</span><span class="n">registerUserEvent</span><span class="p">(</span><span class="n">callback_id</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.add_user_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.add_user_event">[docs]</a>	<span class="k">def</span> <span class="nf">add_user_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_user_event_message</span><span class="o">.</span><span class="n">isUserEvent</span><span class="p">(</span><span class="n">callback_id</span><span class="p">):</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">unregister_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_user_event_message</span><span class="o">.</span><span class="n">addUserEventCallback</span><span class="p">(</span><span class="n">callback_id</span><span class="p">,</span>
+																					<span class="bp">self</span><span class="o">.</span><span class="n">_wrap_event_function</span><span class="p">(</span><span class="n">function</span><span class="p">))</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.post_user_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.post_user_event">[docs]</a>	<span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">undo_decorator</span>
+	<span class="k">def</span> <span class="nf">post_user_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_user_event_message</span><span class="o">.</span><span class="n">isUserEvent</span><span class="p">(</span><span class="n">callback_id</span><span class="p">):</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">m_user_event_message</span><span class="o">.</span><span class="n">postUserEvent</span><span class="p">(</span><span class="n">callback_id</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+		<span class="k">return</span></div>
+	
+	<span class="c1"># end user defined</span>
+	
+<div class="viewcode-block" id="EventsRegister.register_before_save_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_before_save_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_before_save_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API scene save event which fires when the scene attempts to save.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later</span>
+<span class="sd">		function:	  Callback when event fires. Form: def function(extra_data)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">register_scene_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_scene_message</span><span class="o">.</span><span class="n">kBeforeSave</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_before_save_check_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_before_save_check_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_before_save_check_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API scene save event which fires when the scene attempts to save. It allows you to cancel</span>
+<span class="sd">		the save when the event is fired.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later</span>
+<span class="sd">		function:	  Callback when event fires. Form: def function(do_save, extra_data)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">register_scene_check_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_scene_message</span><span class="o">.</span><span class="n">kBeforeSaveCheck</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_before_new_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_before_new_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_before_new_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API scene new event which fires when a new scene attempts to be created.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later</span>
+<span class="sd">		function:	  Callback when event fires. Form: def function(extra_data)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">register_scene_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_scene_message</span><span class="o">.</span><span class="n">kBeforeNew</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_before_new_check_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_before_new_check_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_before_new_check_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API scene new event which fires when a new scene attempts to be created. It allows you to</span>
+<span class="sd">		cancel the new when the event is fired.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later</span>
+<span class="sd">		function:	  Callback when event fires. Form: def function(do_new, extra_data)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">register_scene_check_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_scene_message</span><span class="o">.</span><span class="n">kBeforeNewCheck</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_after_new_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_after_new_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_after_new_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API scene new event which fires after a new scene has been created.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later</span>
+<span class="sd">		function:	  Callback when event fires. Form: def function(extra_data)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">register_scene_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_scene_message</span><span class="o">.</span><span class="n">kAfterNew</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_before_open_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_before_open_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_before_open_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API scene open event which fires when a scene attempts to be opened.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later</span>
+<span class="sd">		function:	  Callback when event fires. Form: def function(extra_data)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">register_scene_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_scene_message</span><span class="o">.</span><span class="n">kBeforeOpen</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_before_open_check_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_before_open_check_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_before_open_check_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API scene open event which fires when a scene attempts to be opened. It allows you to cancel</span>
+<span class="sd">		the open when the event is fired.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later</span>
+<span class="sd">		function:	  Callback when event fires. Form: def function(do_open, extra_data)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">register_scene_check_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_scene_message</span><span class="o">.</span><span class="n">kBeforeOpenCheck</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_after_open_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_after_open_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_after_open_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API scene open event which fires after a scene is opened.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later</span>
+<span class="sd">		function:	  Callback when event fires. Form: def function(extra_data)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">register_scene_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_scene_message</span><span class="o">.</span><span class="n">kAfterOpen</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_before_import_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_before_import_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_before_import_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API scene open event which fires before a scene is imported.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later</span>
+<span class="sd">		function:	  Callback when event fires. Form: def function(extra_data)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">register_scene_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_scene_message</span><span class="o">.</span><span class="n">kBeforeImport</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_after_import_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_after_import_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_after_import_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API scene open event which fires after a scene is imported.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later</span>
+<span class="sd">		function:	  Callback when event fires. Form: def function(extra_data)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">register_scene_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_scene_message</span><span class="o">.</span><span class="n">kAfterImport</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_maya_exiting_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_maya_exiting_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_maya_exiting_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API scene open event which fires when Maya is exiting.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later</span>
+<span class="sd">		function:	  Callback when event fires. Form: def function(extra_data)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">register_scene_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_scene_message</span><span class="o">.</span><span class="n">kMayaExiting</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_scene_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_scene_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_scene_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">message_type</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API scene event of the given message type.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later.</span>
+<span class="sd">		message_type: The type of message that the event should be registered for (see below)</span>
+<span class="sd">		function: 	  Callback when event fires. Form: function(do_action, extra_data)</span>
+
+<span class="sd">		Message types (prefix with self.m_scene_message.)</span>
+<span class="sd">			kSceneUpdate 	Called after any operation that changes which files are loaded.</span>
+<span class="sd">			kBeforeNew 	Called before a File &gt; New operation.</span>
+<span class="sd">			kAfterNew 	Called after a File &gt; New operation.</span>
+<span class="sd">			kBeforeImport 	Called before a File &gt; Import operation.</span>
+<span class="sd">			kAfterImport 	Called after a File &gt; Import operation.</span>
+<span class="sd">			kBeforeOpen 	Called before a File &gt; Open operation.</span>
+<span class="sd">			kAfterOpen 	Called after a File &gt; Open operation.</span>
+<span class="sd">			kBeforeExport 	Called before a File &gt; Export operation.</span>
+<span class="sd">			kAfterExport 	Called after a File &gt; Export operation.</span>
+<span class="sd">			kBeforeSave 	Called before a File &gt; Save (or SaveAs) operation.</span>
+<span class="sd">			kAfterSave 	Called after a File &gt; Save (or SaveAs) operation.</span>
+<span class="sd">			kBeforeReference 	Called before a File &gt; Reference operation.</span>
+<span class="sd">			kAfterReference 	Called after a File &gt; Reference operation.</span>
+<span class="sd">			kBeforeRemoveReference 	Called before a File &gt; RemoveReference operation.</span>
+<span class="sd">			kAfterRemoveReference 	Called after a File &gt; RemoveReference operation.</span>
+<span class="sd">			kBeforeImportReference 	Called before a File &gt; ImportReference operation.</span>
+<span class="sd">			kAfterImportReference 	Called after a File &gt; ImportReference operation.</span>
+<span class="sd">			kBeforeExportReference 	Called before a File &gt; ExportReference operation.</span>
+<span class="sd">			kAfterExportReference 	Called after a File &gt; ExportReference operation.</span>
+<span class="sd">			kBeforeUnloadReference 	Called before a File &gt; UnloadReference operation.</span>
+<span class="sd">			kAfterUnloadReference 	Called after a File &gt; UnloadReference operation.</span>
+<span class="sd">			kBeforeSoftwareRender 	Called before a Software Render begins.</span>
+<span class="sd">			kAfterSoftwareRender 	Called after a Software Render ends.</span>
+<span class="sd">			kBeforeSoftwareFrameRender 	Called before each frame of a Software Render.</span>
+<span class="sd">			kAfterSoftwareFrameRender 	Called after each frame of a Software Render.</span>
+<span class="sd">			kSoftwareRenderInterrupted 	Called when an interactive render is interrupted by the user.</span>
+<span class="sd">			kMayaInitialized 	Called on interactive or batch startup after initialization.</span>
+<span class="sd">			kMayaExiting 	Called just before Maya exits.</span>
+<span class="sd">			kBeforeLoadReference 	Called before a File &gt; LoadReference operation.</span>
+<span class="sd">			kAfterLoadReference 	Called after a File &gt; LoadReference operation.</span>
+<span class="sd">			kBeforePluginLoad 	Called prior to a plugin being loaded.</span>
+<span class="sd">			kAfterPluginLoad 	Called after a plugin is loaded.</span>
+<span class="sd">			kBeforePluginUnload 	Called prior to a plugin being unloaded.</span>
+<span class="sd">			kAfterPluginUnload 	Called after a plugin is unloaded.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">unregister_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">)</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Registering </span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+			<span class="s1">&#39;callback&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_scene_message</span><span class="o">.</span><span class="n">addCallback</span><span class="p">(</span><span class="n">message_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_event_function</span><span class="p">(</span><span class="n">function</span><span class="p">)),</span>
+			<span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">message_type</span><span class="p">,</span> <span class="n">function</span><span class="p">),</span>
+			<span class="s1">&#39;register_method&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">register_scene_event</span><span class="p">,</span>
+			<span class="s1">&#39;message_type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_scene_message</span><span class="p">}</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_scene_check_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_scene_check_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_scene_check_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">message_type</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API scene event which allows you to cancel the action when the event is fired.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later.</span>
+<span class="sd">		message_type: The type of message that the event should be registered for (see below)</span>
+<span class="sd">		function:	  Callback when event fires. Form: def function(do_action, extra_data)</span>
+
+<span class="sd">		Message types (prefix with self.m_scene_message.)</span>
+<span class="sd">			kBeforeNewCheck 	Called prior to File &gt; New operation, allows user to cancel action.</span>
+<span class="sd">			kBeforeOpenCheck 	Called prior to File &gt; Open operation, allows user to cancel action.</span>
+<span class="sd">			kBeforeSaveCheck 	Called prior to File &gt; Save operation, allows user to cancel action.</span>
+<span class="sd">			kBeforeImportCheck 	Called prior to File &gt; Import operation, allows user to cancel action.</span>
+<span class="sd">			kBeforeExportCheck 	Called prior to File &gt; Export operation, allows user to cancel action.</span>
+<span class="sd">			kBeforeLoadReferenceCheck 	Called before a File &gt; LoadReference operation, allows user to cancel action.</span>
+<span class="sd">			kBeforeReferenceCheck 	Called prior to a File &gt; CreateReference operation, allows user to cancel action.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">unregister_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">)</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Registering </span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_scene_message</span><span class="o">.</span><span class="n">addCheckCallback</span><span class="p">(</span><span class="n">message_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_event_function</span><span class="p">(</span><span class="n">function</span><span class="p">))</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_selection_changed_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_selection_changed_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_selection_changed_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API model event which fires when the scene selection changes.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later.</span>
+<span class="sd">		function:	  Callback when event fires. Form: def function(extra_data)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">unregister_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">)</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Registering </span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;callback&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_model_message</span><span class="o">.</span><span class="n">addCallback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m_model_message</span><span class="o">.</span><span class="n">kActiveListModified</span><span class="p">,</span>
+																				<span class="bp">self</span><span class="o">.</span><span class="n">_wrap_event_function</span><span class="p">(</span><span class="n">function</span><span class="p">)),</span>
+									<span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">),</span>
+									<span class="s1">&#39;register_method&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">register_selection_changed_event</span><span class="p">,</span>
+									<span class="s1">&#39;message_type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_model_message</span><span class="p">}</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_dag_changes_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_dag_changes_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_dag_changes_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API dag event which fires when the dag heirarchy changes.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later.</span>
+<span class="sd">		function:	  Callback when event fires. Form: def function(message_type, child, parent, extra_data)</span>
+
+<span class="sd">		message_type is an enum with the following values =</span>
+<span class="sd">		[&#39;kParentAdded&#39;,</span>
+<span class="sd">		&#39;kParentRemoved&#39;,</span>
+<span class="sd">		&#39;kChildAdded&#39;,</span>
+<span class="sd">		&#39;kChildRemoved&#39;,</span>
+<span class="sd">		&#39;kChildReordered&#39;,</span>
+<span class="sd">		&#39;kInstanceAdded&#39;,</span>
+<span class="sd">		&#39;kInstanceRemoved&#39;]</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">unregister_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">)</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Registering </span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_dag_message</span><span class="o">.</span><span class="n">addAllDagChangesCallback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wrap_event_function</span><span class="p">(</span><span class="n">function</span><span class="p">))</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_node_added_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_node_added_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_node_added_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">node_type</span><span class="o">=</span><span class="s2">&quot;dependNode&quot;</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API dg event which fires when a node is added to the scene.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later.</span>
+<span class="sd">		function:	  Callback when event fires. Form: def function(new_node, extra_data)</span>
+<span class="sd">		node_type:	  Node filter for events. Events will only be fired if the object added is of this node type (or is</span>
+<span class="sd">					  inherited from this node type)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">unregister_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">)</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Registering </span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_dg_message</span><span class="o">.</span><span class="n">addNodeAddedCallback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wrap_event_function</span><span class="p">(</span><span class="n">function</span><span class="p">),</span> <span class="n">node_type</span><span class="p">)</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_time_changed_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_time_changed_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_time_changed_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		This method registers a callback that is called whenever the time changes in the dependency graph.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later.</span>
+<span class="sd">		function:	  Callback when event fires. Form: def function(new_node, extra_data)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">unregister_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">)</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Registering </span><span class="si">{unique_id}</span><span class="s1">&#39;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_dg_message</span><span class="o">.</span><span class="n">addTimeChangeCallback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wrap_event_function</span><span class="p">(</span><span class="n">function</span><span class="p">))</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_node_removed_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_node_removed_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_node_removed_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">node_type</span><span class="o">=</span><span class="s2">&quot;dependNode&quot;</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API dg event which fires when a node is removed from the scene.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later.</span>
+<span class="sd">		function:	  Callback when event fires. Form: def function(removed_node, extra_data)</span>
+<span class="sd">		node_type:	  Node filter for events. Events will only be fired if the object removed is of this node type (or is</span>
+<span class="sd">					  inherited from this node type)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">unregister_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">)</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Registering </span><span class="si">{</span><span class="mi">0</span><span class="si">}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">unique_id</span><span class="p">))</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_dg_message</span><span class="o">.</span><span class="n">addNodeRemovedCallback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wrap_event_function</span><span class="p">(</span><span class="n">function</span><span class="p">),</span> <span class="n">node_type</span><span class="p">)</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_node_name_changed_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_node_name_changed_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_node_name_changed_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API node event which fires when a node is renamed in the scene.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later.</span>
+<span class="sd">		function:	  Callback when event fires. Form: def function(node, old_name, extra_data)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">unregister_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">)</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Registering </span><span class="si">{unique_id}</span><span class="s1">&#39;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_node_message</span><span class="o">.</span><span class="n">addNameChangedCallback</span><span class="p">(</span><span class="n">om</span><span class="o">.</span><span class="n">MObject</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_event_function</span><span class="p">(</span><span class="n">function</span><span class="p">))</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_keyframe_changed_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_keyframe_changed_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_keyframe_changed_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API node event which fires when an animation curve is edited in the scene.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later.</span>
+<span class="sd">		function:	  Callback when event fires. Form: def function(node, anim_curve, extra_data)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">unregister_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">)</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Registering </span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_anim_message</span><span class="o">.</span><span class="n">addAnimCurveEditedCallback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wrap_event_function</span><span class="p">(</span><span class="n">function</span><span class="p">))</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_keyframe_edited_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_keyframe_edited_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_keyframe_edited_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API node event which fires when a node is keyframed in the scene.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later.</span>
+<span class="sd">		function:	  Callback when event fires. Form: def function(node, keyframe, extra_data)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">unregister_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">)</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Registering </span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_anim_message</span><span class="o">.</span><span class="n">addAnimKeyframeEditedCallback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wrap_event_function</span><span class="p">(</span><span class="n">function</span><span class="p">))</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_node_keyframe_edited_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_node_keyframe_edited_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_node_keyframe_edited_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API node event which fires when a node is keyframed in the scene.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later.</span>
+<span class="sd">		function:	  Callback when event fires. Form: def function(node, keyframe, extra_data)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">unregister_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">)</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Registering </span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_anim_message</span><span class="o">.</span><span class="n">addNodeAnimKeyframeEditedCallback</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_event_function</span><span class="p">(</span>
+			<span class="n">function</span><span class="p">))</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_attribute_changed_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_attribute_changed_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_attribute_changed_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API node event which fires when attributes of the node in the scene are changed.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later.</span>
+<span class="sd">		function:	  Callback when event fires. Form: def function(message, plug, other_plug, extra_data)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">unregister_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">)</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Registering </span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_node_message</span><span class="o">.</span><span class="n">addAttributeChangedCallback</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">__apimobject__</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_event_function</span><span class="p">(</span><span class="n">function</span><span class="p">))</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_node_about_to_delete_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_node_about_to_delete_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_node_about_to_delete_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API node event which fires when the node is about to be deleted.</span>
+
+<span class="sd">		:param unique_id: Unique name to register the event to. Use this name to unregister the event later.</span>
+<span class="sd">		:param function: Callback when event fires. Form: def function(message, plug, other_plug, extra_data)</span>
+<span class="sd">		:param node: Valid PyNode that inherits from pm.nt.DependNode</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">unregister_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">)</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Registering </span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_node_message</span><span class="o">.</span><span class="n">addNodeAboutToDeleteCallback</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">__apimobject__</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_event_function</span><span class="p">(</span><span class="n">function</span><span class="p">))</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_tool_changed_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_tool_changed_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_tool_changed_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API event which fires when the user changes tools.</span>
+
+<span class="sd">		:param unique_id: Unique name to register the event to. Use this name to unregister the event later.</span>
+<span class="sd">		:param function: Callback when event fires. This event passes None to the callback.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">unregister_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_event_message</span><span class="o">.</span><span class="n">addEventCallback</span><span class="p">(</span><span class="s1">&#39;ToolChanged&#39;</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.register_event_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.register_event_event">[docs]</a>	<span class="k">def</span> <span class="nf">register_event_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">event_name</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Registers an API node event which fires when the named event occurs.</span>
+
+<span class="sd">		unique_id: 	  Unique name to register the event to. Use this name to unregister the event later.</span>
+<span class="sd">		function:	  Callback when event fires. Form: def function(node, keyframe, extra_data)</span>
+<span class="sd">		event_name:	  Event to register the callback for</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">unregister_event</span><span class="p">(</span><span class="n">unique_id</span><span class="p">)</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Registering </span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">om</span><span class="o">.</span><span class="n">MEventMessage</span><span class="o">.</span><span class="n">addEventCallback</span><span class="p">(</span><span class="n">event_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_event_function</span><span class="p">(</span><span class="n">function</span><span class="p">))</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.unregister_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.unregister_event">[docs]</a>	<span class="k">def</span> <span class="nf">unregister_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Unregisters the event with the given unique id</span>
+
+<span class="sd">		unique_id: 	  Unique name to unregister the event from.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="n">unique_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">:</span>
+			<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unregistering </span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+			<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
+				<span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">][</span><span class="s1">&#39;callback&#39;</span><span class="p">]</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">]</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">m_scene_message</span><span class="o">.</span><span class="n">removeCallback</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">unique_id</span><span class="p">)</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.pause_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.pause_event">[docs]</a>	<span class="k">def</span> <span class="nf">pause_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">):</span>
+		<span class="k">if</span> <span class="n">unique_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">:</span>
+			<span class="n">event_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">][</span><span class="s1">&#39;message_type&#39;</span><span class="p">]</span>
+			<span class="n">event_type</span><span class="o">.</span><span class="n">removeCallback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">][</span><span class="s1">&#39;callback&#39;</span><span class="p">])</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">paused_events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">]</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">unique_id</span><span class="p">)</span>
+		<span class="k">return</span></div>
+	
+<div class="viewcode-block" id="EventsRegister.resume_event"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.events.EventsRegister.resume_event">[docs]</a>	<span class="k">def</span> <span class="nf">resume_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">):</span>
+		<span class="k">if</span> <span class="n">unique_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">paused_events</span><span class="p">:</span>
+			<span class="n">event_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">paused_events</span><span class="p">[</span><span class="n">unique_id</span><span class="p">]</span>
+			<span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;register_method&#39;</span><span class="p">](</span><span class="o">*</span><span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">])</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">paused_events</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">unique_id</span><span class="p">)</span>
+		<span class="k">return</span></div>
+	
+	<span class="k">def</span> <span class="nf">_wrap_event_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Wrap the passed function in self._logged_event</span>
+<span class="sd">		intended for use with event functions</span>
+
+<span class="sd">		:param func: event function to wrap</span>
+<span class="sd">		:return: wrapped function</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logged_event</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+	
+	<span class="nd">@staticmethod</span>
+	<span class="k">def</span> <span class="nf">_logged_event</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Wrapper function. Log the event when it&#39;s being called and where it&#39;s coming from.</span>
+<span class="sd">		Not intended for use outside of _wrap_event_function</span>
+
+<span class="sd">		:param func: function attached to the event</span>
+<span class="sd">		:param args: args for the function</span>
+<span class="sd">		:param kwargs: kwargs for the function</span>
+<span class="sd">		:return: func result signature</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Event Starting: </span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+		<span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Event Complete: </span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">result</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

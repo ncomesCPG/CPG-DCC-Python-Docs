@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.utils.node_util &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.utils.node_util</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.utils.node_util</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Modules that interact with transforms</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">lists</span><span class="p">,</span> <span class="n">strings</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">material_utils</span><span class="p">,</span> <span class="n">naming</span><span class="p">,</span> <span class="n">namespace</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils.om</span> <span class="kn">import</span> <span class="n">attributetypes</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.modifiers</span> <span class="kn">import</span> <span class="n">ma_decorators</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.plugins</span> <span class="kn">import</span> <span class="n">loader</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">attr_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+<span class="n">ATTRIBUTES_TO_SKIP_SERIALIZE</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="s1">&#39;hyperLayout&#39;</span><span class="p">,</span> <span class="s1">&#39;boundingBox&#39;</span><span class="p">,</span> <span class="s1">&#39;cpgConstraint&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="RotateOrder"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.node_util.RotateOrder">[docs]</a><span class="k">class</span> <span class="nc">RotateOrder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">XYZ</span> <span class="o">=</span> <span class="s1">&#39;XYZ&#39;</span>
+    <span class="n">YZX</span> <span class="o">=</span> <span class="s1">&#39;YZX&#39;</span>
+    <span class="n">ZXY</span> <span class="o">=</span> <span class="s1">&#39;ZXY&#39;</span>
+    <span class="n">XZY</span> <span class="o">=</span> <span class="s1">&#39;XZY&#39;</span>
+    <span class="n">YXZ</span> <span class="o">=</span> <span class="s1">&#39;YXZ&#39;</span>
+    <span class="n">ZYX</span> <span class="o">=</span> <span class="s1">&#39;ZYX&#39;</span>
+
+<div class="viewcode-block" id="RotateOrder.get_all"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.node_util.RotateOrder.get_all">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_all</span><span class="p">():</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">RotateOrder</span><span class="o">.</span><span class="n">XYZ</span><span class="p">,</span> <span class="n">RotateOrder</span><span class="o">.</span><span class="n">YZX</span><span class="p">,</span> <span class="n">RotateOrder</span><span class="o">.</span><span class="n">ZXY</span><span class="p">,</span> <span class="n">RotateOrder</span><span class="o">.</span><span class="n">XZY</span><span class="p">,</span> <span class="n">RotateOrder</span><span class="o">.</span><span class="n">YXZ</span><span class="p">,</span> <span class="n">RotateOrder</span><span class="o">.</span><span class="n">ZYX</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="RotateOrder.from_index"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.node_util.RotateOrder.from_index">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_index</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;index&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">index</span><span class="p">):</span>     <span class="c1"># support for PyMEL enum</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">index</span>
+
+        <span class="k">return</span> <span class="n">RotateOrder</span><span class="o">.</span><span class="n">get_all</span><span class="p">()[</span><span class="n">index</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="RotateOrder.to_index"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.node_util.RotateOrder.to_index">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">to_index</span><span class="p">(</span><span class="n">rotate_order</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">RotateOrder</span><span class="o">.</span><span class="n">get_all</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">rotate_order</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span></div></div>
+
+
+<div class="viewcode-block" id="match_translation"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.node_util.match_translation">[docs]</a><span class="k">def</span> <span class="nf">match_translation</span><span class="p">(</span><span class="n">transform_name_to_match</span><span class="p">,</span> <span class="n">target_transform_name</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Matches the translation.</span>
+
+<span class="sd">    :param nt.PyNode transform_name_to_match: name of the transform we want to match translation to target transform.</span>
+<span class="sd">    :param nt.PyNode target_transform_name: name of the transform we want to match translation to.</span>
+<span class="sd">    :param str space: whether to match translation in object space or world space. By default, in world space.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">translate_vector</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">target_transform_name</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="n">space</span><span class="p">)</span>
+    <span class="n">scale_pivot_vector</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">target_transform_name</span><span class="p">,</span> <span class="n">sp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">rotate_pivot_vector</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">target_transform_name</span><span class="p">,</span> <span class="n">rp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">world_space</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">transform_name_to_match</span><span class="p">,</span> <span class="n">sp</span><span class="o">=</span><span class="n">scale_pivot_vector</span><span class="p">,</span> <span class="n">world_space</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">transform_name_to_match</span><span class="p">,</span> <span class="n">rp</span><span class="o">=</span><span class="n">rotate_pivot_vector</span><span class="p">,</span> <span class="n">world_space</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">transform_name_to_match</span><span class="o">.</span><span class="n">setTranslatrion</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="n">translate_vector</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="n">space</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="match_rotation"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.node_util.match_rotation">[docs]</a><span class="k">def</span> <span class="nf">match_rotation</span><span class="p">(</span><span class="n">transform_name_to_match</span><span class="p">,</span> <span class="n">target_transform_name</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Matches the rotation in object or world space.</span>
+
+<span class="sd">    :param nt.PyNode transform_name_to_match: name of the transform we want to match rotation to target transform.</span>
+<span class="sd">    :param nt.PyNode target_transform_name: name of the transform we want to match rotation to.</span>
+<span class="sd">    :param str space: whether to match rotation in object space or world space. By default, in world space.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">rotation_vector</span> <span class="o">=</span> <span class="n">target_transform_name</span><span class="o">.</span><span class="n">getRotation</span><span class="p">(</span><span class="n">space</span><span class="o">=</span><span class="n">space</span><span class="p">)</span>
+    <span class="n">rotation_vector</span> <span class="o">=</span> <span class="n">rotation_vector</span><span class="o">.</span><span class="n">reorderIt</span><span class="p">(</span><span class="n">rotation_vector</span><span class="o">.</span><span class="n">getRotationOrder</span><span class="p">())</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">transform_name_to_match</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">rotation_vector</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="n">space</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="reset_transform"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.node_util.reset_transform">[docs]</a><span class="k">def</span> <span class="nf">reset_transform</span><span class="p">(</span><span class="n">transform_node</span><span class="p">,</span> <span class="n">translate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rotate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Resets the transform of this node.</span>
+
+<span class="sd">    :param :class:`pm.nt.Transform` transform_node: PyMEL node we want to set transform matrix of.</span>
+<span class="sd">    :param bool translate: whether to reset translate components of this node transformation.</span>
+<span class="sd">    :param bool rotate: whether to reset rotation components of this node transformation.</span>
+<span class="sd">    :param bool scale: whether to reset scale components of this node transformation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">translate</span><span class="p">:</span>
+        <span class="n">transform_node</span><span class="o">.</span><span class="n">setTranslation</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">rotate</span><span class="p">:</span>
+        <span class="n">transform_node</span><span class="o">.</span><span class="n">setRotation</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Quaternion</span><span class="p">(),</span> <span class="n">space</span><span class="o">=</span><span class="s1">&#39;transform&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">scale</span><span class="p">:</span>
+        <span class="n">transform_node</span><span class="o">.</span><span class="n">setScale</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="is_empty"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.node_util.is_empty">[docs]</a><span class="k">def</span> <span class="nf">is_empty</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">no_user_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">no_connections</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns whether a given node is an empty one (is not referenced, has no child transforms, has no custom attributes</span>
+<span class="sd">    and has no connections).</span>
+
+<span class="sd">    :param pm.PyNode node: name of a Maya node we want to check.</span>
+<span class="sd">    :param bool no_user_attributes: whether a node is considered empty if it contains user attributes.</span>
+<span class="sd">    :param bool no_connections: whether a node is considered empty if it contains connections.</span>
+<span class="sd">    :return: True if the given node is an empty node; False otherwise.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">referenceQuery</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">isNodeReferenced</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">):</span>
+        <span class="n">relatives</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">relatives</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">no_user_attributes</span><span class="p">:</span>
+        <span class="n">attrs</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">listAttr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">userDefined</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">keyable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">attrs</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="n">default_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;defaultLightSet&#39;</span><span class="p">,</span> <span class="s1">&#39;defaultObjectSet&#39;</span><span class="p">,</span> <span class="s1">&#39;initialShadingGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;uiConfigurationScriptNode&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;sceneConfigurationScriptNode&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">default_nodes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">no_connections</span><span class="p">:</span>
+        <span class="n">connections</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">connections</span> <span class="o">!=</span> <span class="p">[</span><span class="s1">&#39;defaultRenderGlobals&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">connections</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="create_or_find"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.node_util.create_or_find">[docs]</a><span class="k">def</span> <span class="nf">create_or_find</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">node_type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find by name or create a new node of the given type.</span>
+
+<span class="sd">    :param str name: The desired name of the new node.</span>
+<span class="sd">    :param PyNode node_type: The PyNode class of the node type.</span>
+<span class="sd">    :return: The created or found PyNode.</span>
+<span class="sd">    :rtype: PyNode</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">node</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">node_type</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="p">:</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="n">node_type</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">node</span></div>
+
+
+<div class="viewcode-block" id="rbf_retarget"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.node_util.rbf_retarget">[docs]</a><span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_namespace_decorator</span>
+<span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_selection_decorator</span>
+<span class="k">def</span> <span class="nf">rbf_retarget</span><span class="p">(</span><span class="n">source_node</span><span class="p">,</span> <span class="n">target_node</span><span class="p">,</span> <span class="n">nodes_to_process</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Using Hans Godard&#39;s RBF system reprocess a list of shaped transforms using two same topology source and target meshes.</span>
+
+<span class="sd">    :param Transform source_node: The source shaped transform. This is what our processable meshes work with.</span>
+<span class="sd">    :param Transform target_node: The target shaped transform. This is what we want our processable meshes to be morphed to.</span>
+<span class="sd">    :param list[Transform] nodes_to_process: A list of shaped transforms we want to be run through the RBF retargeter.</span>
+<span class="sd">    :return: A list of the reprocessed meshes.</span>
+<span class="sd">    :rtype: list[Transform]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">loader</span><span class="o">.</span><span class="n">load_rbf_retargeter_plugin</span><span class="p">()</span>
+
+    <span class="n">source_shape</span> <span class="o">=</span> <span class="n">source_node</span><span class="o">.</span><span class="n">getShape</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">source_shape</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="n">target_shape</span> <span class="o">=</span> <span class="n">target_node</span><span class="o">.</span><span class="n">getShape</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">target_shape</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="n">shape_node_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">name_material_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes_to_process</span><span class="p">:</span>
+        <span class="n">node_shape</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">getShape</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">node_shape</span><span class="p">:</span>
+            <span class="n">shape_node_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node_shape</span><span class="p">)</span>
+            <span class="n">node_name</span> <span class="o">=</span> <span class="n">naming</span><span class="o">.</span><span class="n">get_basename</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="n">material_dict</span> <span class="o">=</span> <span class="n">material_utils</span><span class="o">.</span><span class="n">get_object_material_face_dict</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="n">name_material_dict</span><span class="p">[</span><span class="n">count</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">node_name</span><span class="p">,</span> <span class="n">material_dict</span><span class="p">)</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">shape_node_list</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="n">temp_namespace</span> <span class="o">=</span> <span class="n">strings</span><span class="o">.</span><span class="n">generate_random_string</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">namespace</span><span class="p">(</span><span class="nb">set</span><span class="o">=</span><span class="n">temp_namespace</span><span class="p">)</span>
+
+    <span class="n">reshaped_nodes_list</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">retargetShapes</span><span class="p">(</span><span class="n">source_shape</span><span class="p">,</span> <span class="n">shape_node_list</span><span class="p">,</span> <span class="n">target_shape</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">namespace</span><span class="p">(</span><span class="nb">set</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+
+    <span class="n">return_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">str_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">reshaped_nodes_list</span><span class="p">):</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">str_name</span><span class="p">)</span>
+        <span class="n">return_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="n">node_name</span><span class="p">,</span> <span class="n">material_dict</span> <span class="o">=</span> <span class="n">name_material_dict</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">material_node</span><span class="p">,</span> <span class="n">face_list</span> <span class="ow">in</span> <span class="n">material_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">material_utils</span><span class="o">.</span><span class="n">assign_material</span><span class="p">(</span><span class="n">material_node</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="n">face_list</span><span class="p">])</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">node_name</span><span class="p">)</span>
+            <span class="n">namespace</span><span class="o">.</span><span class="n">move_node_to_namespace</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">)</span>
+
+    <span class="n">namespace</span><span class="o">.</span><span class="n">purge_namespace</span><span class="p">(</span><span class="n">temp_namespace</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">return_list</span></div>
+
+
+<span class="c1">########################################################</span>
+<span class="c1"># EVERYTHING BELOW THIS NEEDS TO DIE</span>
+<span class="c1">########################################################</span>
+<div class="viewcode-block" id="add_attribute"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.node_util.add_attribute">[docs]</a><span class="k">def</span> <span class="nf">add_attribute</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds a new attribute to the given PyNode. This function uses PyMEL addAttr function but give us a bit more</span>
+<span class="sd">    flexibility:</span>
+<span class="sd">        - Allow us to pass a dictionary with all arguments as keyword arguments. For example: {&#39;name&#39;: &#39;test,</span>
+<span class="sd">            &#39;value&#39;: helloWorld, &#39;type&#39;: &#39;string&#39;, &#39;locked&#39;: True, &#39;storable&#39;: True, &#39;writable&#39;: True,</span>
+<span class="sd">            &#39;connectable&#39;: False}</span>
+<span class="sd">        - Allow us to set a default value for string attributes (using value keyword argument).</span>
+<span class="sd">        - Automatically handles the connectable, array and lock status of the attribute.</span>
+
+<span class="sd">    :param pm.PyNode node: node to add attribute to.</span>
+<span class="sd">    :param dict kwargs: keyword arguments.</span>
+<span class="sd">    :return: newly create PyAttribute instance.</span>
+<span class="sd">    :rtype: pm.Attribute</span>
+<span class="sd">    :raises ValueError: if the attribute already exists.</span>
+<span class="sd">    :raises TypeError: if the attribute type is not supported.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">raise_exceptions</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;raise_exceptions&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">attr_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;longName&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;shortName&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="n">attr_name</span><span class="p">):</span>
+        <span class="n">set_attribute_info_from_dict</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">attr_name</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raise_exceptions</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Node &quot;</span><span class="si">{}</span><span class="s1">&quot; already has attribute &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">longName</span><span class="p">(),</span> <span class="n">attr_name</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">attr_name</span><span class="p">)</span>
+
+    <span class="n">children</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;children&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">children</span><span class="p">:</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="n">attr_utils</span><span class="o">.</span><span class="n">add_compound_attribute</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">attr_name</span><span class="p">,</span> <span class="n">attr_map</span><span class="o">=</span><span class="n">children</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">attr_type</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;attrType&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;attr_type&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">attr_type</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr_type</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">attr_type</span> <span class="o">=</span> <span class="n">attributetypes</span><span class="o">.</span><span class="n">om_type_to_pymel_type</span><span class="p">(</span><span class="n">attr_type</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">attr_type</span> <span class="o">==</span> <span class="s1">&#39;complex&#39;</span><span class="p">:</span>
+            <span class="n">attr_type</span> <span class="o">=</span> <span class="s1">&#39;string&#39;</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">default</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Was not possible to convert dictionary to string!&#39;</span><span class="p">)</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">if</span> <span class="n">default</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">default</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Was not possible to convert dictionary to string!&#39;</span><span class="p">)</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="n">add_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">add_kwargs</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr_type</span>
+        <span class="n">add_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;locked&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">add_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;isChild&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">add_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;isDynamic&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">add_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;isElement&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">add_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;softMin&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">add_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;softMax&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">add_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">add_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">add_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">connectable</span> <span class="o">=</span> <span class="n">add_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;connectable&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">channel_box</span> <span class="o">=</span> <span class="n">add_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;channelBox&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">is_array</span> <span class="o">=</span> <span class="n">add_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;isArray&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">default</span> <span class="o">=</span> <span class="n">add_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">default</span> <span class="o">=</span> <span class="n">default</span> <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">add_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;defaultValue&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;multi&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">add_kwargs</span><span class="p">[</span><span class="s1">&#39;multi&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">is_array</span>
+        <span class="k">if</span> <span class="s1">&#39;writable&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">add_kwargs</span><span class="p">:</span>
+            <span class="n">add_kwargs</span><span class="p">[</span><span class="s1">&#39;writable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">connectable</span>
+        <span class="n">enums</span> <span class="o">=</span> <span class="n">add_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;enums&#39;</span><span class="p">,</span> <span class="nb">list</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">enums</span><span class="p">:</span>
+            <span class="n">enum_names</span> <span class="o">=</span> <span class="n">add_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;enumNames&#39;</span><span class="p">,</span> <span class="nb">list</span><span class="p">())</span>
+            <span class="n">enum_names</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">enums</span><span class="p">)</span>
+            <span class="n">add_kwargs</span><span class="p">[</span><span class="s1">&#39;enumName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">enum_names</span><span class="p">))</span>
+
+        <span class="c1"># if a value is given and the is a number we set defaultValue keyword argument</span>
+        <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="n">add_kwargs</span><span class="p">[</span><span class="s1">&#39;defaultValue&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span> <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">default</span>
+
+        <span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="n">attr_name</span><span class="p">,</span> <span class="o">**</span><span class="n">add_kwargs</span><span class="p">)</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">attr_name</span><span class="p">)</span>
+
+        <span class="c1"># if a value is given and the attribute type is a string, we set attribute value</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">attr_type</span> <span class="o">==</span> <span class="s1">&#39;string&#39;</span><span class="p">:</span>
+            <span class="n">attr</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="n">attr</span><span class="o">.</span><span class="n">showInChannelBox</span><span class="p">(</span><span class="n">channel_box</span><span class="p">)</span>
+        <span class="n">set_attribute_info_from_dict</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">attr</span></div>
+
+
+<div class="viewcode-block" id="set_attribute_info_from_dict"><a class="viewcode-back" href="../../../../cpg.maya.utils.html#cpg.maya.utils.node_util.set_attribute_info_from_dict">[docs]</a><span class="k">def</span> <span class="nf">set_attribute_info_from_dict</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets the plug attributes from the given keyword arguments.</span>
+
+<span class="sd">    :param pm.Attribute attr: plug to change.</span>
+<span class="sd">    :param dict kwargs: keyword arguments.</span>
+<span class="sd">    :raises RuntimeError: if an exception is raised while setting plug info.</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        data = {</span>
+<span class="sd">            &quot;type&quot;: 5,</span>
+<span class="sd">            &quot;channelBox&quot;: true,</span>
+<span class="sd">            &quot;default&quot;: 1.0,</span>
+<span class="sd">            &quot;isDynamic&quot;: true,</span>
+<span class="sd">            &quot;keyable&quot;: true,</span>
+<span class="sd">            &quot;locked&quot;: false,</span>
+<span class="sd">            &quot;max&quot;: 99999,</span>
+<span class="sd">            &quot;min&quot;: 0.0,</span>
+<span class="sd">            &quot;name&quot;: &quot;scale&quot;,</span>
+<span class="sd">            &quot;softMax&quot;: None,</span>
+<span class="sd">            &quot;softMin&quot;: None,</span>
+<span class="sd">            &quot;value&quot;: 1.0,</span>
+<span class="sd">            &quot;children&quot;: [{}] # in the same format as the parent info</span>
+<span class="sd">          }</span>
+<span class="sd">        new_plug = pm.Attribute(node)</span>
+<span class="sd">        set_plug_info_from_dict(new_plug, **data)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">children</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;children&#39;</span><span class="p">,</span> <span class="nb">list</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">isCompound</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">attr</span><span class="o">.</span><span class="n">isArray</span><span class="p">():</span>
+        <span class="n">child_count</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">numChildren</span><span class="p">()</span>
+        <span class="n">_children</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">getChildren</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">children</span><span class="p">:</span>
+            <span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">child_count</span><span class="p">)]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">child_info</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">children</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">child_info</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">child_count</span><span class="p">):</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">child_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
+                    <span class="n">default_value</span> <span class="o">=</span> <span class="n">child_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)):</span>
+                        <span class="n">child_info</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">default_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">default_value</span><span class="p">)):</span>
+                        <span class="n">child_info</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">default_value</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">set_attribute_info_from_dict</span><span class="p">(</span><span class="n">_children</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">**</span><span class="n">child_info</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">child_info</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">children</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">child_info</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">child_count</span><span class="p">):</span>
+                    <span class="n">child_plug</span> <span class="o">=</span> <span class="n">_children</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">set_attribute_info_from_dict</span><span class="p">(</span><span class="n">child_plug</span><span class="p">,</span> <span class="o">**</span><span class="n">child_info</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Failed to set default values on plug: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">child_plug</span><span class="o">.</span><span class="n">name</span><span class="p">()),</span> <span class="n">extra</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;attributeDict&#39;</span><span class="p">:</span> <span class="n">child_info</span><span class="p">})</span>
+                        <span class="k">raise</span>
+
+    <span class="n">default</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">)</span>
+    <span class="nb">min</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;min&#39;</span><span class="p">)</span>
+    <span class="nb">max</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max&#39;</span><span class="p">)</span>
+    <span class="n">soft_min</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;softMin&#39;</span><span class="p">)</span>
+    <span class="n">soft_max</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;softMax&#39;</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
+    <span class="n">channel_box</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;channelBox&#39;</span><span class="p">)</span>
+    <span class="n">keyable</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;keyable&#39;</span><span class="p">)</span>
+    <span class="n">locked</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;locked&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="c1"># try:</span>
+    <span class="c1">#     set_plug_default(plug, default)</span>
+    <span class="c1"># except Exception:</span>
+    <span class="c1">#     logger.error(&#39;Failed to set plug default values: {}&#39;.format(plug.name()),</span>
+    <span class="c1">#                  exc_info=True,</span>
+    <span class="c1">#                  extra={&#39;data&#39;: default})</span>
+    <span class="c1">#     raise</span>
+
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">attr</span><span class="o">.</span><span class="n">isCompound</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">attr</span><span class="o">.</span><span class="n">isArray</span><span class="p">():</span>
+        <span class="n">attr</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">attr</span><span class="o">.</span><span class="n">setMin</span><span class="p">(</span><span class="nb">min</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">attr</span><span class="o">.</span><span class="n">setMax</span><span class="p">(</span><span class="nb">max</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">soft_min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">attr</span><span class="o">.</span><span class="n">setSoftMin</span><span class="p">(</span><span class="n">soft_min</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">soft_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">attr</span><span class="o">.</span><span class="n">setSoftMax</span><span class="p">(</span><span class="n">soft_max</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">channel_box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">attr</span><span class="o">.</span><span class="n">showInChannelBox</span><span class="p">(</span><span class="n">channel_box</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">keyable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">attr</span><span class="o">.</span><span class="n">setKeyable</span><span class="p">(</span><span class="n">keyable</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">locked</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">attr</span><span class="o">.</span><span class="n">setLocked</span><span class="p">(</span><span class="n">locked</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

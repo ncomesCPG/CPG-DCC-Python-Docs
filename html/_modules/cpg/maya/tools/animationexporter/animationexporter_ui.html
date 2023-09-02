@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.tools.animationexporter.animationexporter_ui &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.tools.animationexporter.animationexporter_ui</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.tools.animationexporter.animationexporter_ui</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module that contains AnimationExporter UIs.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># python imports</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+
+<span class="kn">from</span> <span class="nn">PySide2.QtWidgets</span> <span class="kn">import</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QToolButton</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="p">,</span> <span class="n">QSpacerItem</span><span class="p">,</span> <span class="n">QFrame</span>
+
+<span class="kn">import</span> <span class="nn">PySide2.QtCore</span> <span class="k">as</span> <span class="nn">QtCore</span>
+<span class="kn">from</span> <span class="nn">PySide2.QtCore</span> <span class="kn">import</span> <span class="n">Qt</span>
+<span class="kn">import</span> <span class="nn">PySide2.QtWidgets</span> <span class="k">as</span> <span class="nn">QtWidgets</span>
+<span class="kn">import</span> <span class="nn">PySide2.QtGui</span> <span class="k">as</span> <span class="nn">QtGui</span>
+
+
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cpg.common.modifiers</span> <span class="kn">import</span> <span class="n">decorators</span>
+<span class="kn">from</span> <span class="nn">cpg.common.assetlist</span> <span class="kn">import</span> <span class="n">assetlist</span>
+<span class="kn">from</span> <span class="nn">cpg.common.paths</span> <span class="kn">import</span> <span class="n">path_utils</span><span class="p">,</span> <span class="n">project_paths</span>
+<span class="kn">from</span> <span class="nn">cpg.common.pyqt</span> <span class="kn">import</span> <span class="n">common_windows</span>
+<span class="kn">from</span> <span class="nn">cpg.common.tools.dcctracking</span> <span class="kn">import</span> <span class="n">dcc_tracking</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">strings</span>
+
+<span class="kn">from</span> <span class="nn">cpg.maya.animation</span> <span class="kn">import</span> <span class="n">time_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.modifiers</span> <span class="kn">import</span> <span class="n">ma_decorators</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.pyqt</span> <span class="kn">import</span> <span class="n">mayawindows</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">frag</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.tools.animationexporter</span> <span class="kn">import</span> <span class="n">animationexporter_utils</span> <span class="k">as</span> <span class="n">ae_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">optionvars</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="CPGAnimationExporterOptionVars"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_ui.CPGAnimationExporterOptionVars">[docs]</a><span class="k">class</span> <span class="nc">CPGAnimationExporterOptionVars</span><span class="p">(</span><span class="n">optionvars</span><span class="o">.</span><span class="n">CPGOptionVars</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This stores the last path for animation browsing.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">CPGLastAnimationPath</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_value&#39;</span><span class="p">:</span> <span class="n">project_paths</span><span class="o">.</span><span class="n">CPG_PROJECT_ROOT</span><span class="p">,</span> <span class="s1">&#39;docstring&#39;</span><span class="p">:</span> <span class="s1">&#39;Branch content path.&#39;</span><span class="p">}</span></div>
+
+
+<span class="n">ANIMATIONEXPORTER_OPTION_VARS</span> <span class="o">=</span> <span class="n">CPGAnimationExporterOptionVars</span><span class="p">()</span>
+<span class="k">global</span> <span class="n">SEQUENCE_PATH_DICT</span>
+<span class="n">SEQUENCE_PATH_DICT</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+<div class="viewcode-block" id="AnimationExporter"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_ui.AnimationExporter">[docs]</a><span class="k">class</span> <span class="nc">AnimationExporter</span><span class="p">(</span><span class="n">mayawindows</span><span class="o">.</span><span class="n">CPGMayaWindow</span><span class="p">):</span>
+    <span class="n">VERSION</span> <span class="o">=</span> <span class="s1">&#39;1.0.3&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">root_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+        <span class="n">ui_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_path</span><span class="p">,</span> <span class="s1">&#39;ui&#39;</span><span class="p">,</span> <span class="s1">&#39;animationexporter_mainUI.ui&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;AnimationExporter&#39;</span><span class="p">,</span>
+                         <span class="n">ui_path</span><span class="o">=</span><span class="n">ui_path</span><span class="p">,</span>
+                         <span class="n">version</span><span class="o">=</span><span class="n">AnimationExporter</span><span class="o">.</span><span class="n">VERSION</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rig_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rig_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertical_spacer</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialize_tabs</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_signals</span><span class="p">()</span>
+
+<div class="viewcode-block" id="AnimationExporter.initialize_tabs"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_ui.AnimationExporter.initialize_tabs">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_tabs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This procedurally generates new tabs and fills them out from the found frag_rigs in the scene and all currently</span>
+<span class="sd">        registered sequences on the FRAG Sequencer.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ae_utils</span><span class="o">.</span><span class="n">reconnect_orphaned_sequences</span><span class="p">()</span>
+        <span class="n">ae_utils</span><span class="o">.</span><span class="n">convert_legacy</span><span class="p">()</span>
+
+        <span class="c1"># start fresh.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">tabWidget</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rig_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rig_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">global</span> <span class="n">SEQUENCE_PATH_DICT</span>
+        <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">SEQUENCE_PATH_DICT</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">value</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">()</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="n">SEQUENCE_PATH_DICT</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">frag_root_list</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_all_frag_roots</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">frag_root</span> <span class="ow">in</span> <span class="n">frag_root_list</span><span class="p">:</span>
+            <span class="c1"># New tab for each rig in the scene.</span>
+            <span class="n">frag_rig</span> <span class="o">=</span> <span class="n">frag_root</span><span class="o">.</span><span class="n">get_rig</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">frag_rig</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rig_dict</span><span class="p">[</span><span class="n">frag_rig</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rig_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frag_rig</span><span class="p">)</span>
+
+            <span class="c1"># Tab widget and layout</span>
+            <span class="n">rig_tab_widget</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">()</span>
+            <span class="n">rig_vertical_layout</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">()</span>
+            <span class="n">rig_horizontal_layout</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">()</span>
+            <span class="n">rig_vertical_layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">rig_horizontal_layout</span><span class="p">)</span>
+            <span class="n">rig_tab_widget</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">rig_vertical_layout</span><span class="p">)</span>
+
+            <span class="n">toggle_export_checkbox</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QCheckBox</span><span class="p">(</span><span class="s1">&#39;Toggle Rig Export&#39;</span><span class="p">)</span>
+            <span class="n">toggle_export_checkbox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rig_dict</span><span class="p">[</span><span class="n">frag_rig</span><span class="p">][</span><span class="s1">&#39;toggle_rig_export_checkbox&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">toggle_export_checkbox</span>
+            <span class="n">rig_horizontal_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">toggle_export_checkbox</span><span class="p">)</span>
+            <span class="n">add_sequence_button</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s1">&#39;Add Sequence&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rig_dict</span><span class="p">[</span><span class="n">frag_rig</span><span class="p">][</span><span class="s1">&#39;add_sequence_button&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">add_sequence_button</span>
+            <span class="n">rig_horizontal_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">add_sequence_button</span><span class="p">)</span>
+
+            <span class="n">rig_tab_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">tabWidget</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="n">rig_tab_widget</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">frag_root</span><span class="o">.</span><span class="n">namespace</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">frag_root</span><span class="o">.</span><span class="n">assetName</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Sequence widget and v Layout</span>
+            <span class="n">rig_tab_sequence_widget</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">()</span>
+            <span class="n">rig_sequence_vertical_layout</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rig_dict</span><span class="p">[</span><span class="n">frag_rig</span><span class="p">][</span><span class="s1">&#39;rig_sequence_vertical_layout&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rig_sequence_vertical_layout</span>
+            <span class="n">rig_tab_sequence_widget</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">rig_sequence_vertical_layout</span><span class="p">)</span>
+
+            <span class="n">scroll_area</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QScrollArea</span><span class="p">()</span>
+            <span class="n">scroll_area</span><span class="o">.</span><span class="n">setVerticalScrollBarPolicy</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ScrollBarAlwaysOn</span><span class="p">)</span>
+            <span class="n">scroll_area</span><span class="o">.</span><span class="n">setHorizontalScrollBarPolicy</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ScrollBarAlwaysOff</span><span class="p">)</span>
+            <span class="n">scroll_area</span><span class="o">.</span><span class="n">setWidgetResizable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">scroll_area</span><span class="o">.</span><span class="n">setWidget</span><span class="p">(</span><span class="n">rig_tab_sequence_widget</span><span class="p">)</span>
+            <span class="n">rig_vertical_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">scroll_area</span><span class="p">)</span>
+
+            <span class="n">add_sequence_button</span><span class="o">.</span><span class="n">pressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_sequence_cmd</span><span class="p">)</span>
+            <span class="n">toggle_export_checkbox</span><span class="o">.</span><span class="n">pressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_toggle_local_export</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">frag_rig</span><span class="p">,</span> <span class="n">sequence_wrapper_dict</span> <span class="ow">in</span> <span class="n">ae_utils</span><span class="o">.</span><span class="n">get_sequences</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">frag_rig</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="c1"># If we have preexisting sequences registered on the FRAGSequencer load those into the GUI.</span>
+            <span class="c1"># Order the entries based on the ui_index value for each entry.</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">sequence_wrapper</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">sequence_wrapper_dict</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">sequence_tuple</span><span class="p">:</span> <span class="n">sequence_tuple</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ui_index</span><span class="p">)):</span>
+                <span class="n">sequence_widget</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_sequence</span><span class="p">(</span><span class="n">frag_rig</span><span class="p">)</span>
+
+                <span class="n">sequence_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_export_path_lineEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">sequence_path</span><span class="p">)</span>
+                <span class="n">sequence_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_start_frame_lineEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">frame_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                <span class="n">sequence_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_end_frame_lineEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">frame_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                <span class="n">sequence_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_notes_lineEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">sequence_notes</span><span class="p">)</span>
+                <span class="n">sequence_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">root_to_origin_checkBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">root_to_origin</span><span class="p">)</span>
+                <span class="n">sequence_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">start_to_zero_checkBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">start_at_zero</span><span class="p">)</span>
+                <span class="n">sequence_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_name_lineEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">sequence_wrapper</span><span class="o">.</span><span class="n">sequence_path</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.fbx&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+                <span class="n">sequence_widget</span><span class="o">.</span><span class="n">set_sequence</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_vertical_spacer</span><span class="p">(</span><span class="n">frag_rig</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_add_vertical_spacer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frag_rig</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                This removes and then adds the vertical spacer to the end of the main v_layout.</span>
+
+<span class="sd">                &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertical_spacer</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_rig_dict</span><span class="p">[</span><span class="n">frag_rig</span><span class="p">][</span><span class="s1">&#39;rig_sequence_vertical_layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertical_spacer</span><span class="o">.</span><span class="n">widget</span><span class="p">())</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertical_spacer</span> <span class="o">=</span> <span class="n">QSpacerItem</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Minimum</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Expanding</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rig_dict</span><span class="p">[</span><span class="n">frag_rig</span><span class="p">][</span><span class="s1">&#39;rig_sequence_vertical_layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertical_spacer</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AnimationExporter.setup_signals"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_ui.AnimationExporter.setup_signals">[docs]</a>    <span class="k">def</span> <span class="nf">setup_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Non-dynamic UI signal hookup.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">export_all_checkBox</span><span class="o">.</span><span class="n">pressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_toggle_global_export</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">refresh_pushButton</span><span class="o">.</span><span class="n">pressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initialize_tabs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">all_rigs_export_selected_pushButton</span><span class="o">.</span><span class="n">pressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_sequences</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">all_rigs_export_all_pushButton</span><span class="o">.</span><span class="n">pressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_sequences</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span></div>
+
+    <span class="k">def</span> <span class="nf">_toggle_global_export</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Toggle only all tab&#39;s sequence export checkbox.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toggle_export</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rig_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">export_all_checkBox</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_toggle_local_export</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Toggle only the current tab&#39;s sequence export checkbox.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">tabWidget</span><span class="o">.</span><span class="n">currentIndex</span><span class="p">()</span>
+        <span class="n">frag_rig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rig_list</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">toggle_export</span><span class="p">([</span><span class="n">frag_rig</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rig_dict</span><span class="p">[</span><span class="n">frag_rig</span><span class="p">][</span><span class="s1">&#39;toggle_rig_export_checkbox&#39;</span><span class="p">])</span>
+
+<div class="viewcode-block" id="AnimationExporter.toggle_export"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_ui.AnimationExporter.toggle_export">[docs]</a>    <span class="k">def</span> <span class="nf">toggle_export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frag_rig_list</span><span class="p">,</span> <span class="n">toggle_checkbox</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        For each sequence entry belonging to the list of FRAG Rigs, toggle their export option to match the checkbox.</span>
+
+<span class="sd">        :param list[FRAGRig] frag_rig_list:</span>
+<span class="sd">        :param QtWidgets.QCheckbox toggle_checkbox: The checkbox that&#39;s currently being toggled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">global</span> <span class="n">SEQUENCE_PATH_DICT</span>
+        <span class="n">check_val</span> <span class="o">=</span> <span class="n">toggle_checkbox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">sequence_widget</span> <span class="ow">in</span> <span class="n">SEQUENCE_PATH_DICT</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">sequence_widget</span><span class="o">.</span><span class="n">frag_rig</span> <span class="ow">in</span> <span class="n">frag_rig_list</span><span class="p">:</span>
+                <span class="n">sequence_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">export_sequence_checkBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="ow">not</span> <span class="n">check_val</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AnimationExporter.add_sequence_cmd"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_ui.AnimationExporter.add_sequence_cmd">[docs]</a>    <span class="k">def</span> <span class="nf">add_sequence_cmd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Finds the active UI tab and looks up the appropriate FRAGRig by its index.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">tabWidget</span><span class="o">.</span><span class="n">currentIndex</span><span class="p">()</span>
+        <span class="n">frag_rig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rig_list</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_sequence</span><span class="p">(</span><span class="n">frag_rig</span><span class="p">)</span>
+        <span class="n">asset_id</span> <span class="o">=</span> <span class="n">frag_rig</span><span class="o">.</span><span class="n">get_asset_id</span><span class="p">(</span><span class="n">frag_rig</span><span class="p">)</span>
+        <span class="n">dcc_tracking</span><span class="o">.</span><span class="n">ddc_tool_entry_thead</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_sequence_cmd</span><span class="p">,</span> <span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AnimationExporter.add_sequence"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_ui.AnimationExporter.add_sequence">[docs]</a>    <span class="k">def</span> <span class="nf">add_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frag_rig</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a new sequencer UI to the active tab.</span>
+
+<span class="sd">        :param FRAGRig frag_rig:</span>
+<span class="sd">        :return: The widget that represents the new sequence that was added.</span>
+<span class="sd">        :rtype: AnimationExporterSequence</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">frag_rig</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">initialize_tabs</span><span class="p">()</span>
+
+        <span class="n">parent_layout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rig_dict</span><span class="p">[</span><span class="n">frag_rig</span><span class="p">][</span><span class="s1">&#39;rig_sequence_vertical_layout&#39;</span><span class="p">]</span>
+        <span class="n">sequence_frame</span> <span class="o">=</span> <span class="n">SequenceFrameButton</span><span class="p">(</span><span class="n">frag_rig</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_layout</span><span class="o">=</span><span class="n">parent_layout</span><span class="p">)</span>
+        <span class="n">sequence_widget</span> <span class="o">=</span> <span class="n">sequence_frame</span><span class="o">.</span><span class="n">sequence_widget</span>
+        <span class="n">parent_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">sequence_frame</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_vertical_spacer</span><span class="p">(</span><span class="n">frag_rig</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sequence_widget</span></div>
+
+<div class="viewcode-block" id="AnimationExporter.export_sequences"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_ui.AnimationExporter.export_sequences">[docs]</a>    <span class="k">def</span> <span class="nf">export_sequences</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">all_rigs</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        For each registered sequence export them if their export toggles are true.</span>
+
+<span class="sd">        :param bool all_rigs: If the current tab or all rig tabs should be exported.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">global</span> <span class="n">SEQUENCE_PATH_DICT</span>
+
+        <span class="n">sequences_to_skip</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">active_frag_rig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rig_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">tabWidget</span><span class="o">.</span><span class="n">currentIndex</span><span class="p">()]</span>
+        <span class="c1"># Collect all sequence paths which should be skipped.</span>
+        <span class="k">for</span> <span class="n">sequence_path</span><span class="p">,</span> <span class="n">sequencer_widget</span> <span class="ow">in</span> <span class="n">SEQUENCE_PATH_DICT</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">sequencer_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">export_sequence_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">all_rigs</span><span class="p">:</span>
+                    <span class="n">sequences_to_skip</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sequence_path</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">sequencer_widget</span><span class="o">.</span><span class="n">frag_rig</span> <span class="o">==</span> <span class="n">active_frag_rig</span><span class="p">:</span>
+                    <span class="n">sequences_to_skip</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sequence_path</span><span class="p">)</span>
+
+        <span class="n">ae_utils</span><span class="o">.</span><span class="n">export_frag_sequences_cmd</span><span class="p">(</span><span class="n">frag_rig_list</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_rig_list</span><span class="p">,</span> <span class="n">sequences_to_skip</span><span class="o">=</span><span class="n">sequences_to_skip</span><span class="p">)</span>
+        <span class="n">frag_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rig_list</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">rig</span> <span class="ow">in</span> <span class="n">frag_list</span><span class="p">:</span>
+            <span class="n">asset_id</span> <span class="o">=</span> <span class="n">rig</span><span class="o">.</span><span class="n">get_asset_id</span><span class="p">(</span><span class="n">rig</span><span class="p">)</span>
+            <span class="n">dcc_tracking</span><span class="o">.</span><span class="n">ddc_tool_entry_thead</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_sequences</span><span class="p">,</span> <span class="n">asset_id</span><span class="o">=</span><span class="n">asset_id</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="SequenceFrameButton"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_ui.SequenceFrameButton">[docs]</a><span class="k">class</span> <span class="nc">SequenceFrameButton</span><span class="p">(</span><span class="n">QFrame</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frag_rig</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent_layout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">main_ui</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent_layout</span> <span class="o">=</span> <span class="n">parent_layout</span>
+
+        <span class="n">guid</span> <span class="o">=</span> <span class="n">strings</span><span class="o">.</span><span class="n">generate_guid</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setSizePolicy</span><span class="p">(</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Expanding</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Fixed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setMinimumHeight</span><span class="p">(</span><span class="mi">195</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">195</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tool_v_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tool_v_layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tool_button</span> <span class="o">=</span> <span class="n">QToolButton</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tool_button</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">guid</span><span class="si">}</span><span class="s1">_toolButton&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tool_button</span><span class="o">.</span><span class="n">setSizePolicy</span><span class="p">(</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Expanding</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Expanding</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tool_button</span><span class="o">.</span><span class="n">setArrowType</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">RightArrow</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tool_button</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;New Animation&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tool_button</span><span class="o">.</span><span class="n">setToolButtonStyle</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">ToolButtonTextBesideIcon</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tool_button</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tool_button</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tool_button</span><span class="o">.</span><span class="n">setMinimumHeight</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tool_button</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tool_v_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tool_button</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_frame</span> <span class="o">=</span> <span class="n">QFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_frame</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">guid</span><span class="si">}</span><span class="s1">_frame&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_frame</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_frame</span><span class="o">.</span><span class="n">setMinimumHeight</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tool_v_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q_frame</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_frame</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_frame</span><span class="o">.</span><span class="n">setSizePolicy</span><span class="p">(</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Expanding</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Fixed</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequence_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q_frame</span><span class="p">)</span>
+        <span class="c1">#self.sequence_layout.setContentsMargins(2, 0, 1, 0)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequence_layout</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">guid</span><span class="si">}</span><span class="s1">_layout&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequence_widget</span> <span class="o">=</span> <span class="n">AnimationExporterSequence</span><span class="p">(</span><span class="n">frag_rig</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequence_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence_widget</span><span class="o">.</span><span class="n">ui</span><span class="p">)</span>
+
+        <span class="c1">#############</span>
+        <span class="c1"># Signals</span>
+        <span class="c1">#############</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tool_button</span><span class="o">.</span><span class="n">pressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">button_pressed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">open_button</span><span class="p">()</span>
+
+<div class="viewcode-block" id="SequenceFrameButton.remove_frame"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_ui.SequenceFrameButton.remove_frame">[docs]</a>    <span class="k">def</span> <span class="nf">remove_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent_layout</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">()</span></div>
+
+
+    <span class="c1">##########</span>
+    <span class="c1"># Slots</span>
+    <span class="c1">##########</span>
+<div class="viewcode-block" id="SequenceFrameButton.button_pressed"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_ui.SequenceFrameButton.button_pressed">[docs]</a>    <span class="k">def</span> <span class="nf">button_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Opens or closes the QToolbarButton</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_frame</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_frame</span><span class="o">.</span><span class="n">isVisible</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">open_button</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close_button</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SequenceFrameButton.open_button"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_ui.SequenceFrameButton.open_button">[docs]</a>    <span class="k">def</span> <span class="nf">open_button</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Opens the QToolbarButton</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tool_button</span><span class="o">.</span><span class="n">setArrowType</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">DownArrow</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_frame</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setMinimumHeight</span><span class="p">(</span><span class="mi">195</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SequenceFrameButton.close_button"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_ui.SequenceFrameButton.close_button">[docs]</a>    <span class="k">def</span> <span class="nf">close_button</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Closes the QToolbarButton</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tool_button</span><span class="o">.</span><span class="n">setArrowType</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">RightArrow</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_frame</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setMinimumHeight</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="AnimationExporterSequence"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_ui.AnimationExporterSequence">[docs]</a><span class="k">class</span> <span class="nc">AnimationExporterSequence</span><span class="p">(</span><span class="n">common_windows</span><span class="o">.</span><span class="n">ParentableWidget</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frag_rig</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent_frame</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">root_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+        <span class="n">ui_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_path</span><span class="p">,</span> <span class="s1">&#39;ui&#39;</span><span class="p">,</span> <span class="s1">&#39;animationexporter_sequenceUI.ui&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span>
+                         <span class="n">ui_path</span><span class="o">=</span><span class="n">ui_path</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">frag_rig</span> <span class="o">=</span> <span class="n">frag_rig</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent_frame</span> <span class="o">=</span> <span class="n">parent_frame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequence_path</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_signals</span><span class="p">()</span>
+
+<div class="viewcode-block" id="AnimationExporterSequence.setup_signals"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_ui.AnimationExporterSequence.setup_signals">[docs]</a>    <span class="k">def</span> <span class="nf">setup_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Connect most UI elements to the set_sequence function which handles updating the FRAGSequencer node.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_start_frame_lineEdit</span><span class="o">.</span><span class="n">editingFinished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_sequence</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">min_frame_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_current_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_start_frame_lineEdit</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_end_frame_lineEdit</span><span class="o">.</span><span class="n">editingFinished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_sequence</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">max_frame_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_current_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_end_frame_lineEdit</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">remove_sequence_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">remove_sequence</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">browse_path_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_file</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">move_up_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">move_sequence</span><span class="p">(</span><span class="n">positive_move</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">move_down_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">move_sequence</span><span class="p">(</span><span class="n">positive_move</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">root_to_origin_checkBox</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_sequence</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">start_to_zero_checkBox</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_sequence</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_export_path_lineEdit</span><span class="o">.</span><span class="n">editingFinished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_sequence</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_name_lineEdit</span><span class="o">.</span><span class="n">editingFinished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_update_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_notes_lineEdit</span><span class="o">.</span><span class="n">editingFinished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_sequence</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">export_sequence_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_sequence</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">set_timeline_pushButton</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QIcon</span><span class="p">(</span><span class="s2">&quot;:adjustTimeline.png&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">set_timeline_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_frame_range</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">play_range_pushButton</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QIcon</span><span class="p">(</span><span class="s2">&quot;:playClip.png&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">play_range_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">play_frame_range</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">playblast_sequence_pushButton</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QIcon</span><span class="p">(</span><span class="s2">&quot;:playblast.png&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">playblast_sequence_pushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">playblast_frame_range</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_update_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        When the name field is updated if the path field is empty automatically propagate the expected path.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_name_lineEdit</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_export_path_lineEdit</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">new_name</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">cpg_asset</span> <span class="o">=</span> <span class="n">assetlist</span><span class="o">.</span><span class="n">get_asset_by_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frag_rig</span><span class="o">.</span><span class="n">get_asset_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frag_rig</span><span class="p">))</span>
+        <span class="n">animation_path</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">cpg_asset</span><span class="p">:</span>
+            <span class="n">animation_path</span> <span class="o">=</span> <span class="n">path_utils</span><span class="o">.</span><span class="n">to_relative_path</span><span class="p">(</span><span class="n">cpg_asset</span><span class="o">.</span><span class="n">animations_path</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">animation_path</span><span class="p">:</span>
+            <span class="c1"># Only update the UI and FRAG Sequencer if we had a valid path resolution.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_sequence</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">animation_path</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s1">.fbx&#39;</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_find_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Open the file browser to look for where this animation should be exported to.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Use the current path or our option var path if the current path is empty.</span>
+        <span class="n">start_path</span> <span class="o">=</span> <span class="n">path_utils</span><span class="o">.</span><span class="n">to_full_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_export_path_lineEdit</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+        <span class="n">start_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">start_path</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">start_path</span> <span class="k">else</span> <span class="n">ANIMATIONEXPORTER_OPTION_VARS</span><span class="o">.</span><span class="n">CPGLastAnimationPath</span>
+
+        <span class="n">found_path_list</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;Select Animation&#39;</span><span class="p">,</span> <span class="n">start_path</span><span class="p">,</span> <span class="s1">&#39;animation (*.fbx)&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">found_path_list</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">found_sequence_path</span> <span class="o">=</span> <span class="n">path_utils</span><span class="o">.</span><span class="n">to_relative_path</span><span class="p">(</span><span class="n">found_path_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_sequence</span><span class="p">(</span><span class="n">found_sequence_path</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_frame_range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Since the frame range line edits are string boxes fixup the values that are input and adjust them if necessary.</span>
+<span class="sd">        Use the scene default time ranges if we&#39;re unsure.</span>
+
+<span class="sd">        return: The start and end frame that is supplied by either the UI or best guess of the scene range.</span>
+<span class="sd">        rtype: list[int, int]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">frame_range</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">frame_element</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_start_frame_lineEdit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_end_frame_lineEdit</span><span class="p">]:</span>
+            <span class="n">frame_val</span> <span class="o">=</span> <span class="n">frame_element</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+            <span class="n">frame_val</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;[^-0-9]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">frame_val</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">frame_val</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="n">frame_val</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">frame_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">frame_val</span><span class="p">)</span>
+            <span class="n">frame_range</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame_val</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">frame_range</span><span class="p">:</span>
+            <span class="n">frame_range</span> <span class="o">=</span> <span class="n">time_utils</span><span class="o">.</span><span class="n">get_times</span><span class="p">()</span>
+            <span class="n">frame_range</span> <span class="o">=</span> <span class="p">[</span><span class="n">pm</span><span class="o">.</span><span class="n">currentTime</span><span class="p">(),</span> <span class="n">frame_range</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">for</span> <span class="n">frame_element</span><span class="p">,</span> <span class="n">frame_val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_start_frame_lineEdit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_end_frame_lineEdit</span><span class="p">],</span> <span class="n">frame_range</span><span class="p">):</span>
+            <span class="c1"># Don&#39;t run cycles of this as we reset the cleaned up value.</span>
+            <span class="n">frame_element</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">frame_element</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">frame_val</span><span class="p">)))</span>
+            <span class="n">frame_element</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">frame_range</span>
+
+<div class="viewcode-block" id="AnimationExporterSequence.remove_sequence"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_ui.AnimationExporterSequence.remove_sequence">[docs]</a>    <span class="k">def</span> <span class="nf">remove_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove the sequence from the FRAG Sequencer, the UI and close this instance of a sequence.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent_frame</span><span class="o">.</span><span class="n">remove_frame</span><span class="p">()</span>
+
+        <span class="n">sequence_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_export_path_lineEdit</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+        <span class="n">ae_utils</span><span class="o">.</span><span class="n">remove_sequence</span><span class="p">(</span><span class="n">sequence_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frag_rig</span><span class="p">)</span>
+
+        <span class="k">global</span> <span class="n">SEQUENCE_PATH_DICT</span>
+        <span class="n">SEQUENCE_PATH_DICT</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence_path</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AnimationExporterSequence.set_sequence"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_ui.AnimationExporterSequence.set_sequence">[docs]</a>    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_current_frame_decorator</span>
+    <span class="k">def</span> <span class="nf">set_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">found_sequence_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Register an update to this sequence UI to the FRAG Sequencer.</span>
+
+<span class="sd">        :param str found_sequence_path: The relative path to a fbx file that this sequence represents.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">frag_rig</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Refresh the main UI, The FRAG Rig associated with this sequence has been lost.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">found_sequence_path</span> <span class="o">=</span> <span class="n">found_sequence_path</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">found_sequence_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">found_sequence_path</span> <span class="k">else</span> <span class="n">path_utils</span><span class="o">.</span><span class="n">to_relative_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_export_path_lineEdit</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">found_sequence_path</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">global</span> <span class="n">SEQUENCE_PATH_DICT</span>
+
+        <span class="k">if</span> <span class="n">found_sequence_path</span> <span class="ow">in</span> <span class="n">SEQUENCE_PATH_DICT</span> <span class="ow">and</span> <span class="n">SEQUENCE_PATH_DICT</span><span class="p">[</span><span class="n">found_sequence_path</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;This sequence is already registered. Select a unique animation path.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># If we were passed a sequence path reset the UI textfield after verifying the path is valid for this sequence.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_export_path_lineEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">found_sequence_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">found_sequence_path</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.fbx&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_export_path_lineEdit</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;QLineEdit { background-color: darkred }&quot;&quot;&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_export_path_lineEdit</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;QLineEdit { background-color: None }&quot;&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">ANIMATIONEXPORTER_OPTION_VARS</span><span class="o">.</span><span class="n">CPGLastAnimationPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">found_sequence_path</span><span class="p">)</span>
+        <span class="n">SEQUENCE_PATH_DICT</span><span class="p">[</span><span class="n">found_sequence_path</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequence_path</span> <span class="o">!=</span> <span class="n">found_sequence_path</span><span class="p">:</span>
+            <span class="n">ae_utils</span><span class="o">.</span><span class="n">remove_sequence</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frag_rig</span><span class="p">)</span>
+            <span class="n">SEQUENCE_PATH_DICT</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence_path</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">frame_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_frame_range</span><span class="p">()</span>
+        <span class="n">ae_utils</span><span class="o">.</span><span class="n">set_sequence</span><span class="p">(</span><span class="n">found_sequence_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frag_rig</span><span class="p">,</span> <span class="n">frame_range</span><span class="o">=</span><span class="n">frame_range</span><span class="p">,</span>
+                              <span class="n">start_at_zero</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">start_to_zero_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">(),</span>
+                              <span class="n">root_to_origin</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">root_to_origin_checkBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">(),</span>
+                              <span class="n">sequence_notes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_notes_lineEdit</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequence_path</span> <span class="o">=</span> <span class="n">path_utils</span><span class="o">.</span><span class="n">to_relative_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_export_path_lineEdit</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+        <span class="n">anim_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.fbx&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">sequence_name_lineEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">anim_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_frame</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent_frame</span><span class="o">.</span><span class="n">tool_button</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">anim_name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AnimationExporterSequence.set_current_frame"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_ui.AnimationExporterSequence.set_current_frame">[docs]</a>    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">set_current_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ui_element</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the current frame to either the min or max frame fields.</span>
+
+<span class="sd">        :param ui_element: The lineEdit to be updated with the current frame number.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">current_frame</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">currentTime</span><span class="p">()</span>
+        <span class="n">ui_element</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">current_frame</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_sequence</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AnimationExporterSequence.export_sequence"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_ui.AnimationExporterSequence.export_sequence">[docs]</a>    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">export_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Export only this sequence.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Create a filter list of other animations assigned to this rig and exclude them before running an export for</span>
+        <span class="c1"># this sequence.</span>
+        <span class="n">rig_sequences</span> <span class="o">=</span> <span class="n">ae_utils</span><span class="o">.</span><span class="n">get_sequences</span><span class="p">()</span>
+        <span class="n">ae_utils</span><span class="o">.</span><span class="n">export_frag_sequences_cmd</span><span class="p">(</span><span class="n">frag_rig_list</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">frag_rig</span><span class="p">],</span> <span class="n">sequences_to_skip</span><span class="o">=</span><span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">rig_sequences</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">frag_rig</span><span class="p">]</span> <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequence_path</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="AnimationExporterSequence.move_sequence"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_ui.AnimationExporterSequence.move_sequence">[docs]</a>    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">move_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positive_move</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reorder the animation in the UI by adjusting the ui_index value.</span>
+
+<span class="sd">        :param bool positive_move: If the animation should be moved up or down on the list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ae_utils</span><span class="o">.</span><span class="n">reorder_sequence</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frag_rig</span><span class="p">,</span> <span class="n">positive_move</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent_frame</span><span class="o">.</span><span class="n">main_ui</span><span class="o">.</span><span class="n">initialize_tabs</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AnimationExporterSequence.set_frame_range"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_ui.AnimationExporterSequence.set_frame_range">[docs]</a>    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">set_frame_range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the active frame range in maya to match this sequence.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">frame_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_frame_range</span><span class="p">()</span>
+        <span class="n">time_utils</span><span class="o">.</span><span class="n">set_timeline_range</span><span class="p">(</span><span class="n">frame_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">frame_range</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">currentTime</span><span class="p">(</span><span class="n">frame_range</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="AnimationExporterSequence.play_frame_range"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_ui.AnimationExporterSequence.play_frame_range">[docs]</a>    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">play_frame_range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the active frame range in maya to match this sequence. Then play that frame range.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">current_state</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">play</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">playbackOptions</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">animationStartTime</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_frame_range</span><span class="p">()[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">current_state</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_frame_range</span><span class="p">()</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">play</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="ow">not</span> <span class="n">current_state</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AnimationExporterSequence.playblast_frame_range"><a class="viewcode-back" href="../../../../../cpg.maya.tools.animationexporter.html#cpg.maya.tools.animationexporter.animationexporter_ui.AnimationExporterSequence.playblast_frame_range">[docs]</a>    <span class="nd">@decorators</span><span class="o">.</span><span class="n">track_fnc</span>
+    <span class="k">def</span> <span class="nf">playblast_frame_range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_frame_range</span><span class="p">()</span></div></div>
+
+        <span class="c1">#playblast.create_playblast(file_name=self.ui.sequence_name_lineEdit.text(), start_frame=start_frame, end_frame=end_frame)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
