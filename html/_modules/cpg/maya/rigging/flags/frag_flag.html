@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.rigging.flags.frag_flag &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.rigging.flags.frag_flag</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.rigging.flags.frag_flag</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module that contains Maya Animation Flag functions</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># python imports</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">naming</span><span class="p">,</span> <span class="n">attr_utils</span><span class="p">,</span> <span class="n">dag</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">joint_utils</span><span class="p">,</span> <span class="n">rig_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging.flags</span> <span class="kn">import</span> <span class="n">serialize_flag</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="is_flag_node"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.frag_flag.is_flag_node">[docs]</a><span class="k">def</span> <span class="nf">is_flag_node</span><span class="p">(</span><span class="n">obj_node</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    If a given node is a rig flag node.</span>
+
+<span class="sd">    :param obj_node:</span>
+<span class="sd">    :return: True or False depending on the node&#39;s markup</span>
+<span class="sd">    :rtype: Bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj_node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">obj_node</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;isFlag&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">obj_node</span><span class="o">.</span><span class="n">isFlag</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="transform_scale"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.frag_flag.transform_scale">[docs]</a><span class="k">def</span> <span class="nf">transform_scale</span><span class="p">(</span><span class="n">align_grp</span><span class="p">,</span> <span class="n">flag</span><span class="p">,</span> <span class="n">translate_scale</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
+    <span class="n">align_grp</span><span class="o">.</span><span class="n">scaleX</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">translate_scale</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">align_grp</span><span class="o">.</span><span class="n">scaleY</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">translate_scale</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">align_grp</span><span class="o">.</span><span class="n">scaleZ</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">translate_scale</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">flag</span><span class="o">.</span><span class="n">scaleX</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">translate_scale</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">flag</span><span class="o">.</span><span class="n">scaleY</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">translate_scale</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">flag</span><span class="o">.</span><span class="n">scaleZ</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">translate_scale</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+    <span class="n">flag</span><span class="o">.</span><span class="n">sx</span><span class="o">.</span><span class="n">lock</span><span class="p">()</span>
+    <span class="n">flag</span><span class="o">.</span><span class="n">sx</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">keyable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channelBox</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">flag</span><span class="o">.</span><span class="n">sy</span><span class="o">.</span><span class="n">lock</span><span class="p">()</span>
+    <span class="n">flag</span><span class="o">.</span><span class="n">sy</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">keyable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channelBox</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">flag</span><span class="o">.</span><span class="n">sz</span><span class="o">.</span><span class="n">lock</span><span class="p">()</span>
+    <span class="n">flag</span><span class="o">.</span><span class="n">sz</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">keyable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channelBox</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="swap_flags"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.frag_flag.swap_flags">[docs]</a><span class="k">def</span> <span class="nf">swap_flags</span><span class="p">(</span><span class="n">flags</span><span class="p">,</span> <span class="n">flag_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Swaps the default flags for rig specific flags.</span>
+
+<span class="sd">    :param list(flag.FLAG) flags: Animation controls.</span>
+<span class="sd">    :param str flag_path: Path to where the flags live.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">found_flag</span> <span class="ow">in</span> <span class="n">flags</span><span class="p">:</span>
+        <span class="n">flag_name</span> <span class="o">=</span> <span class="n">found_flag</span><span class="o">.</span><span class="n">nodeName</span><span class="p">(</span><span class="n">stripNamespace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">flag_flag_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">flag_path</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">flag_name</span><span class="si">}</span><span class="s1">.flag&#39;</span><span class="p">)</span>
+        <span class="n">flag_ma_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">flag_path</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">flag_name</span><span class="si">}</span><span class="s1">.ma&#39;</span><span class="p">)</span>
+        <span class="c1"># first, we try to load the flag from the .ma file (to ensure compatibility).</span>
+        <span class="c1"># TODO: This should be removed once all rigs have been updated with new .flag files</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">flag_flag_path</span><span class="p">):</span>
+            <span class="n">new_flag</span> <span class="o">=</span> <span class="n">serialize_flag</span><span class="o">.</span><span class="n">FlagData</span><span class="p">(</span><span class="n">flag_flag_path</span><span class="p">)</span><span class="o">.</span><span class="n">import_data</span><span class="p">()</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">pointConstraint</span><span class="p">(</span><span class="n">found_flag</span><span class="p">,</span> <span class="n">new_flag</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mo</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+            <span class="n">dag</span><span class="o">.</span><span class="n">parent_shape_node</span><span class="p">(</span><span class="n">new_flag</span><span class="p">,</span> <span class="n">found_flag</span><span class="p">,</span> <span class="n">maintain_offset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">freeze_transform</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">flag_ma_path</span><span class="p">):</span>
+            <span class="n">flag_shape</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">importFile</span><span class="p">(</span><span class="n">filepath</span><span class="o">=</span><span class="n">flag_ma_path</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">returnNewNodes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">flag_shape</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">flag_shape</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">)]</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">pointConstraint</span><span class="p">(</span><span class="n">found_flag</span><span class="p">,</span> <span class="n">flag_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">w</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mo</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+            <span class="n">dag</span><span class="o">.</span><span class="n">parent_shape_node</span><span class="p">(</span><span class="n">flag_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">found_flag</span><span class="p">,</span> <span class="n">maintain_offset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">freeze_transform</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Flag with name &quot;</span><span class="si">{</span><span class="n">flag_name</span><span class="si">}</span><span class="s1">&quot; does not exist in following paths:</span><span class="se">\n\t</span><span class="si">{</span><span class="n">flag_flag_path</span><span class="si">}</span><span class="se">\n\t</span><span class="si">{</span><span class="n">flag_ma_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Flag"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.frag_flag.Flag">[docs]</a><span class="k">class</span> <span class="nc">Flag</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Flag.create"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.frag_flag.Flag.create">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">object_to_match</span><span class="p">,</span>
+                        <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">maintain_shape_offset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">point</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">orient</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">scale</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                        <span class="n">add_align_transform</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">orientation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">is_detail</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">is_sub</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">is_contact</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">is_util</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">meta_connect</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates an animation control.</span>
+
+<span class="sd">        :param nt.Transform object_to_match: object we align the flag to.</span>
+<span class="sd">        :param nt.Transform shape: shape to parent to the flag transform if provided, else is a polyCube.</span>
+<span class="sd">        :param bool maintain_shape_offset: maintain shape offset</span>
+<span class="sd">        :param str label: object label, if label is not input, construct the flag label from the name of object_to_match</span>
+<span class="sd">        :param bool point: align the translation to the object to match</span>
+<span class="sd">        :param bool orient: orient the flag to the object to match</span>
+<span class="sd">        :param float scale: scale of the flag.</span>
+<span class="sd">        :param bool add_align_transform: True creates a zero transform node above the flag.</span>
+<span class="sd">        :param bool meta_connect: True if we want to connect the flag to the driven transform.</span>
+<span class="sd">        :return: Returns an isinstance of the Flag class</span>
+<span class="sd">        :rtype: Flag</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">object_to_match</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">pm</span><span class="o">.</span><span class="n">MayaNodeError</span><span class="p">(</span><span class="s2">&quot;object given to match, </span><span class="si">{0}</span><span class="s2">, doesn&#39;t exist&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">object_to_match</span><span class="p">))</span>
+        <span class="n">object_to_match</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">object_to_match</span><span class="p">)</span>
+
+        <span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">_flag</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">joint</span><span class="p">()</span>
+        <span class="n">_flag</span><span class="o">.</span><span class="n">rotateOrder</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">object_to_match</span><span class="o">.</span><span class="n">rotateOrder</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+
+        <span class="c1"># create a meta connection between the flag and the driven transform</span>
+        <span class="k">if</span> <span class="n">meta_connect</span><span class="p">:</span>
+            <span class="n">attr_utils</span><span class="o">.</span><span class="n">connect_nodes_with_message_attrs</span><span class="p">(</span><span class="n">_flag</span><span class="p">,</span> <span class="s1">&#39;driven_transform&#39;</span><span class="p">,</span> <span class="n">object_to_match</span><span class="p">,</span> <span class="s1">&#39;driver_flag&#39;</span><span class="p">)</span>
+
+        <span class="c1"># rename flag</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">label</span><span class="p">:</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">object_to_match</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">label</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span>
+            <span class="n">label_list</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">label_list</span><span class="p">)</span>
+
+        <span class="n">_flag</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">_flag</span><span class="p">,</span> <span class="s1">&#39;f_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">object_to_match</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">):</span>
+            <span class="n">joint_utils</span><span class="o">.</span><span class="n">inherit_joint_labelling</span><span class="p">(</span><span class="n">object_to_match</span><span class="p">,</span> <span class="n">_flag</span><span class="p">)</span>
+
+        <span class="n">shape_name</span> <span class="o">=</span> <span class="s1">&#39;f_{naming.get_basename(object_to_match)}Shape&#39;</span>
+        <span class="n">shape_node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">curve</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">shape_name</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">(</span>
+            <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">),</span>
+            <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">),</span>
+            <span class="p">(</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">)),</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">))</span>
+
+        <span class="n">shape_node</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">makeIdentity</span><span class="p">(</span><span class="n">shape_node</span><span class="p">,</span> <span class="n">apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># parent new flag shapes into original transform flag node and make sure shape nodes are renamed properly</span>
+        <span class="n">dag</span><span class="o">.</span><span class="n">parent_shape_node</span><span class="p">(</span><span class="n">shape_node</span><span class="p">,</span> <span class="n">_flag</span><span class="p">,</span> <span class="n">maintain_offset</span><span class="o">=</span><span class="n">maintain_shape_offset</span><span class="p">)</span>
+        <span class="n">_flag</span><span class="o">.</span><span class="n">drawStyle</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">flag_shape</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">_flag</span><span class="o">.</span><span class="n">getShapes</span><span class="p">()):</span>
+            <span class="n">flag_shape</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">Shape</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_flag</span><span class="o">.</span><span class="n">shortName</span><span class="p">(),</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+
+        <span class="c1"># align and move rotation to joint orient</span>
+        <span class="k">if</span> <span class="n">point</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">pointConstraint</span><span class="p">(</span><span class="n">object_to_match</span><span class="p">,</span> <span class="n">_flag</span><span class="p">,</span> <span class="n">mo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">orient</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">orientConstraint</span><span class="p">(</span><span class="n">object_to_match</span><span class="p">,</span> <span class="n">_flag</span><span class="p">,</span> <span class="n">mo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">pm</span><span class="o">.</span><span class="n">makeIdentity</span><span class="p">(</span><span class="n">_flag</span><span class="p">,</span> <span class="n">apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">add_align_transform</span><span class="p">:</span>
+            <span class="n">align_transform</span> <span class="o">=</span> <span class="n">rig_utils</span><span class="o">.</span><span class="n">create_align_transform</span><span class="p">(</span><span class="n">_flag</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">orientation</span><span class="p">:</span>
+                <span class="n">align_parent</span> <span class="o">=</span> <span class="n">align_transform</span><span class="o">.</span><span class="n">getParent</span><span class="p">()</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">align_parent</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">align_transform</span><span class="o">.</span><span class="n">rotate</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">orientation</span><span class="p">)</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">align_transform</span><span class="p">,</span> <span class="n">align_parent</span><span class="p">)</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">_flag</span><span class="p">,</span> <span class="n">align_transform</span><span class="p">)</span>
+                <span class="n">_flag</span><span class="o">.</span><span class="n">jointOrient</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Add Attributes</span>
+        <span class="n">_flag</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;isFlag&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">_flag</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;flagLayer&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s2">&quot;message&quot;</span><span class="p">,)</span>
+        <span class="n">_flag</span><span class="o">.</span><span class="n">radius</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">keyable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channelBox</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># check whether it should be a detail flag that is hidden separately in a display layer.</span>
+        <span class="n">_flag</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;isDetail&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">_flag</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;isSub&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">_flag</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;isContact&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">_flag</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;isUtil&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_detail</span><span class="p">:</span>
+            <span class="n">_flag</span><span class="o">.</span><span class="n">isDetail</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_sub</span><span class="p">:</span>
+            <span class="n">_flag</span><span class="o">.</span><span class="n">isSub</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_contact</span><span class="p">:</span>
+            <span class="n">_flag</span><span class="o">.</span><span class="n">isContact</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_util</span><span class="p">:</span>
+            <span class="n">_flag</span><span class="o">.</span><span class="n">isUtil</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">_flag</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the absolute flag name.</span>
+
+<span class="sd">        :return: Returns the absolute joint name.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">naming</span><span class="o">.</span><span class="n">get_basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Flag.create_ratio"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.frag_flag.Flag.create_ratio">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_ratio</span><span class="p">(</span><span class="n">object_to_match</span><span class="p">,</span>
+                        <span class="n">ratio</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                        <span class="n">label</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                        <span class="n">point</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">orient</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                        <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">add_align_transform</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">is_detail</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">is_sub</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">object_to_match</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">pm</span><span class="o">.</span><span class="n">MayaNodeError</span><span class="p">(</span><span class="s2">&quot;object given to match, </span><span class="si">{0}</span><span class="s2">, is not a Transform&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">object_to_match</span><span class="p">))</span>
+
+        <span class="n">_flag</span> <span class="o">=</span> <span class="n">Flag</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">object_to_match</span><span class="o">=</span><span class="n">object_to_match</span><span class="p">,</span>
+                            <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
+                            <span class="n">maintain_shape_offset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span>
+                            <span class="n">point</span><span class="o">=</span><span class="n">point</span><span class="p">,</span>
+                            <span class="n">orient</span><span class="o">=</span><span class="n">orient</span><span class="p">,</span>
+                            <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span>
+                            <span class="n">add_align_transform</span><span class="o">=</span><span class="n">add_align_transform</span><span class="p">,</span>
+                            <span class="n">is_detail</span><span class="o">=</span><span class="n">is_detail</span><span class="p">,</span>
+                            <span class="n">is_sub</span><span class="o">=</span><span class="n">is_sub</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_flag</span></div>
+
+<div class="viewcode-block" id="Flag.set_as_detail"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.frag_flag.Flag.set_as_detail">[docs]</a>    <span class="k">def</span> <span class="nf">set_as_detail</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the flag as a detail flag.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">isDetail</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Flag.set_as_sub"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.frag_flag.Flag.set_as_sub">[docs]</a>    <span class="k">def</span> <span class="nf">set_as_sub</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the flag as a subset flag.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">isSub</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Flag.set_as_contact"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.frag_flag.Flag.set_as_contact">[docs]</a>    <span class="k">def</span> <span class="nf">set_as_contact</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the flag as a contact flag.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">isContact</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Flag.set_as_util"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.frag_flag.Flag.set_as_util">[docs]</a>    <span class="k">def</span> <span class="nf">set_as_util</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the flag as a util flag.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">isUtil</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Flag.get_align_transform"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.frag_flag.Flag.get_align_transform">[docs]</a>    <span class="k">def</span> <span class="nf">get_align_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Get the zero transform for the flag.</span>
+
+<span class="sd">        :return: align_transform: the zero transform node.</span>
+<span class="sd">        :rtype: nt.Transform</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">align_transform</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;alignTransform&#39;</span><span class="p">):</span>
+            <span class="n">align_transforms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alignTransform</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">align_transforms</span><span class="p">:</span>
+                <span class="n">align_transform</span> <span class="o">=</span> <span class="n">align_transforms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">align_transform</span></div>
+
+<div class="viewcode-block" id="Flag.hide_align_transform"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.frag_flag.Flag.hide_align_transform">[docs]</a>    <span class="k">def</span> <span class="nf">hide_align_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">align</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_align_transform</span>
+        <span class="n">align</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Flag.lock_and_hide_attrs"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.frag_flag.Flag.lock_and_hide_attrs">[docs]</a>    <span class="k">def</span> <span class="nf">lock_and_hide_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_list</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Locks and hides attributes</span>
+
+<span class="sd">        :param list(str) attr_list: List of attributes to lock.  EX: [&#39;tx&#39;, &#39;ty&#39;, &#39;tz&#39;]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">attr_utils</span><span class="o">.</span><span class="n">lock_and_hide_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_list</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attrname</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">,</span> <span class="n">attrname</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__melobject__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">__melobject__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__apimfn__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">__apimfn__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="fm">__radd__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__reduce__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">__reduce__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="fm">__ne__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__nonzero__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">__nonzero__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="fm">__lt__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="fm">__gt__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__le__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="fm">__le__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="fm">__ge__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="fm">__hash__</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

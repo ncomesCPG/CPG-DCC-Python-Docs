@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.rigging.frag.face_edit_component &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.rigging.frag.face_edit_component</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.rigging.frag.face_edit_component</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Parameter data for working with the facial rigs.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># System global imports</span>
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.modifiers</span> <span class="kn">import</span> <span class="n">ma_decorators</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging.flags</span> <span class="kn">import</span> <span class="n">frag_flag</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">lists</span>
+
+<span class="c1"># Internal module imports</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging.frag</span> <span class="kn">import</span> <span class="n">frag_base</span><span class="p">,</span> <span class="n">face_parameters</span><span class="p">,</span> <span class="n">frag_rig</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="get_face_edit_node"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.get_face_edit_node">[docs]</a><span class="k">def</span> <span class="nf">get_face_edit_node</span><span class="p">(</span><span class="n">rig_node</span><span class="p">,</span> <span class="n">skip_dialog</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Returns the FaceEditComponent.</span>
+<span class="sd">	</span>
+<span class="sd">	:param pm.nt.Dagnode rig_node: a node that is connected to the rig.</span>
+<span class="sd">	:param bool skip_dialog: If True, no warnings will be printed in the script editor.</span>
+<span class="sd">	:return: Returns the FaceEditComponent.</span>
+<span class="sd">	:rtype: FaceEditComponent</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="n">frag_rig_node</span> <span class="o">=</span> <span class="n">frag_rig</span><span class="o">.</span><span class="n">get_frag_rig</span><span class="p">(</span><span class="n">rig_node</span><span class="p">)</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">frag_rig_node</span><span class="p">:</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">skip_dialog</span><span class="p">:</span>
+			<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The node given is not connected to a rig or there is not FRAGRig node in the scene.&#39;</span><span class="p">)</span>
+		<span class="k">return</span>
+	<span class="n">edit_node</span> <span class="o">=</span> <span class="n">frag_rig_node</span><span class="o">.</span><span class="n">get_frag_children</span><span class="p">(</span><span class="n">of_type</span><span class="o">=</span><span class="n">FaceEditComponent</span><span class="p">)</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">edit_node</span><span class="p">:</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">skip_dialog</span><span class="p">:</span>
+			<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No Staging Edit Node exists in scene&#39;</span><span class="p">)</span>
+		<span class="k">return</span>
+	<span class="k">return</span> <span class="n">edit_node</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="FaceEditComponent"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FaceEditComponent">[docs]</a><span class="k">class</span> <span class="nc">FaceEditComponent</span><span class="p">(</span><span class="n">frag_base</span><span class="o">.</span><span class="n">FRAGNode</span><span class="p">):</span>
+	<span class="n">VERSION</span> <span class="o">=</span> <span class="mf">1.0</span>
+	
+<div class="viewcode-block" id="FaceEditComponent.create"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FaceEditComponent.create">[docs]</a>	<span class="nd">@staticmethod</span>
+	<span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_namespace_decorator</span>
+	<span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">frag_parent</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Creates a Face Edit Component that connects and tracks meshes.</span>
+<span class="sd">		</span>
+<span class="sd">		:param frag_parent: FRAG Skeletal Mesh FRAGNode</span>
+<span class="sd">		:return: Returns an instance of FaceEditNode</span>
+<span class="sd">		:rtype: FaceEditComponent</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="c1"># Set Namespace</span>
+		<span class="n">root_namespace</span> <span class="o">=</span> <span class="n">frag_parent</span><span class="o">.</span><span class="n">namespace</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">namespace</span><span class="p">(</span><span class="nb">set</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">root_namespace</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">namespace</span><span class="p">(</span><span class="nb">set</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">root_namespace</span><span class="si">}</span><span class="s1">:&#39;</span><span class="p">)</span>
+		
+		<span class="n">node</span> <span class="o">=</span> <span class="n">frag_base</span><span class="o">.</span><span class="n">FRAGNode</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">frag_parent</span><span class="o">=</span><span class="n">frag_parent</span><span class="p">,</span>
+											<span class="n">frag_type</span><span class="o">=</span><span class="n">FaceEditComponent</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+											<span class="n">version</span><span class="o">=</span><span class="n">FaceEditComponent</span><span class="o">.</span><span class="n">VERSION</span><span class="p">)</span>
+		
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;isStagingEditNode&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+		
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;flag&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;flagAttribute&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;flagValue&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float3&#39;</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;flagX&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s1">&#39;flagValue&#39;</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;flagY&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s1">&#39;flagValue&#39;</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;flagZ&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s1">&#39;flagValue&#39;</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;maxValue&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;poseName&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;poseSide&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;flagComponent&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+		
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;parameterNode&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;parallelBlendnode&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+		
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;mesh&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;parameterNodePose&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;diffMeshHidden&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>  <span class="c1"># parallel diff</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;liveEditMesh&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>    <span class="c1"># parallel Live</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;dupPosesMesh&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>    <span class="c1"># extra dup mesh</span>
+		
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;poseMesh&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;oldPose&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;neutralPose&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;editMode&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;paintNeutral&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;multiPoseMode&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;singlePoseMode&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;baseEditMode&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;replaceEditMode&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;duplicatedMeshes&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+		
+		<span class="k">return</span> <span class="n">node</span></div>
+	
+<div class="viewcode-block" id="FaceEditComponent.set_flags_info"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FaceEditComponent.set_flags_info">[docs]</a>	<span class="k">def</span> <span class="nf">set_flags_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_pose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Creates compound attributes (blocks) with flag information.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str main_flag: if given, it will skip that flag in the pose data.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="c1"># set the compound attribute</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;activeFlags&#39;</span><span class="p">,</span> <span class="n">numberOfChildren</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">attributeType</span><span class="o">=</span><span class="s1">&#39;compound&#39;</span><span class="p">,</span> <span class="n">multi</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;activeFlag&#39;</span><span class="p">,</span> <span class="n">attributeType</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s1">&#39;activeFlags&#39;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;activeFlagAttribute&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s1">&#39;activeFlags&#39;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;activeFlagValue&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float3&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s1">&#39;activeFlags&#39;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;activeX&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s1">&#39;activeFlagValue&#39;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;activeY&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s1">&#39;activeFlagValue&#39;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;activeZ&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s1">&#39;activeFlagValue&#39;</span><span class="p">)</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;activeFlagMaxValue&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s1">&#39;activeFlags&#39;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;activePoseName&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s1">&#39;activeFlags&#39;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;activeComponent&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s1">&#39;activeFlags&#39;</span><span class="p">)</span>
+		
+		<span class="c1"># Get the parameter node component so we can see what flags are being used.</span>
+		<span class="n">frag_parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_frag_parent</span><span class="p">()</span>
+		<span class="n">parameter_node</span> <span class="o">=</span> <span class="n">frag_parent</span><span class="o">.</span><span class="n">get_frag_children</span><span class="p">(</span><span class="n">of_type</span><span class="o">=</span><span class="n">face_parameters</span><span class="o">.</span><span class="n">FragFaceParameters</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">parameter_node</span><span class="p">:</span>
+			<span class="k">return</span>
+		<span class="c1"># Get the flag names that are being used.</span>
+		<span class="n">active_flags</span> <span class="o">=</span> <span class="n">FaceFlagsData</span><span class="o">.</span><span class="n">create_active</span><span class="p">(</span><span class="n">parameter_node</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">active_flags</span><span class="p">:</span>
+			<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No flags are active.&#39;</span><span class="p">)</span>
+			<span class="k">return</span>
+		<span class="n">flags_dict</span> <span class="o">=</span> <span class="n">active_flags</span><span class="o">.</span><span class="n">get_flags_dict</span><span class="p">()</span>
+		
+		<span class="c1"># Enumerate doesn&#39;t work here.  If it needs to skip, it will set the compound attribute index incorrectly.</span>
+		<span class="c1">#  Keeping it safe...</span>
+		<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="k">for</span> <span class="n">pose_name</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">flags_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+			<span class="c1"># We have to set the compound attributes using the pose names, since they are unique.</span>
+			<span class="c1"># go through every pose and collect the data to stamp on to the compound attributes</span>
+			<span class="c1"># If we find the &quot;Main&quot; flag (The flag we care about) We do not include it in the compound attribute.</span>
+			
+			<span class="n">flag_name</span> <span class="o">=</span> <span class="n">flags_dict</span><span class="p">[</span><span class="n">pose_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;activeFlag&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">pose_name</span> <span class="o">==</span> <span class="n">main_pose</span><span class="p">:</span>
+				<span class="k">continue</span>
+			<span class="n">attr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">activeFlags</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+			<span class="n">flag_pynode</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">flag_name</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+			<span class="n">flag_pynode</span><span class="o">.</span><span class="n">message</span> <span class="o">&gt;&gt;</span> <span class="n">attr</span><span class="o">.</span><span class="n">activeFlag</span>
+			
+			<span class="c1"># Make sure we account whether the value is a vector or a float.</span>
+			<span class="c1"># All compound attributes have 3 floats to represent a Vector.  if it is a single value we just use the</span>
+			<span class="c1"># 1st Value.  ValueX</span>
+			<span class="n">value</span> <span class="o">=</span> <span class="n">flags_dict</span><span class="p">[</span><span class="n">pose_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;activeFlagValue&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">value</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+				<span class="n">value</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">value</span><span class="p">))</span>
+				<span class="n">attr</span><span class="o">.</span><span class="n">activeFlagValue</span><span class="o">.</span><span class="n">activeX</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+				<span class="n">attr</span><span class="o">.</span><span class="n">activeFlagValue</span><span class="o">.</span><span class="n">activeY</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+				<span class="n">attr</span><span class="o">.</span><span class="n">activeFlagValue</span><span class="o">.</span><span class="n">activeZ</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">attr</span><span class="o">.</span><span class="n">activeFlagValue</span><span class="o">.</span><span class="n">activeX</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+			
+			<span class="n">flag_attr</span> <span class="o">=</span> <span class="n">flags_dict</span><span class="p">[</span><span class="n">pose_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;activeFlagAttribute&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+			<span class="n">max_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">flags_dict</span><span class="p">[</span><span class="n">pose_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;activeFlagMaxValue&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+			<span class="n">flag_component</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">flags_dict</span><span class="p">[</span><span class="n">pose_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;activeComponent&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+			
+			<span class="c1"># Set the Compound attribute</span>
+			<span class="n">attr</span><span class="o">.</span><span class="n">activeFlagAttribute</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">flag_attr</span><span class="p">)</span>
+			<span class="n">attr</span><span class="o">.</span><span class="n">activeFlagMaxValue</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">max_value</span><span class="p">)</span>
+			<span class="n">attr</span><span class="o">.</span><span class="n">activePoseName</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">pose_name</span><span class="p">)</span>
+			<span class="n">attr</span><span class="o">.</span><span class="n">activeComponent</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">flag_component</span><span class="p">)</span>
+			<span class="n">attr</span><span class="o">.</span><span class="n">setAlias</span><span class="p">(</span><span class="n">pose_name</span><span class="p">)</span>
+			<span class="n">i</span><span class="o">+=</span><span class="mi">1</span></div>
+	
+<div class="viewcode-block" id="FaceEditComponent.set_main_flag_info"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FaceEditComponent.set_main_flag_info">[docs]</a>	<span class="k">def</span> <span class="nf">set_main_flag_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_pose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets the data for the the flag you are focusing on.  This is the main flag.</span>
+
+<span class="sd">		:param str main_pose: The pose that will be recorded.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="c1"># Get the Parameter Node Componented and Run through all the flags in use and find the one we care about.</span>
+		<span class="c1">#  The &quot;Main&quot; flag.  That data gets stamped outside the counpound attributes.</span>
+		<span class="n">frag_parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_frag_parent</span><span class="p">()</span>
+		<span class="n">parameter_node</span> <span class="o">=</span> <span class="n">frag_parent</span><span class="o">.</span><span class="n">get_frag_children</span><span class="p">(</span><span class="n">of_type</span><span class="o">=</span><span class="n">face_parameters</span><span class="o">.</span><span class="n">FragFaceParameters</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">parameter_node</span><span class="p">:</span>
+			<span class="k">return</span>
+		<span class="n">parameter_node</span> <span class="o">=</span> <span class="n">parameter_node</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">parameterNode</span> <span class="o">&gt;&gt;</span> <span class="n">parameter_node</span><span class="o">.</span><span class="n">faceEditNode</span>
+		
+		<span class="n">active_flags</span> <span class="o">=</span> <span class="n">FaceFlagsData</span><span class="o">.</span><span class="n">create_active</span><span class="p">(</span><span class="n">parameter_node</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">active_flags</span><span class="p">:</span>
+			<span class="k">return</span>
+		<span class="n">flags_dict</span> <span class="o">=</span> <span class="n">active_flags</span><span class="o">.</span><span class="n">get_flags_dict</span><span class="p">()</span>
+		
+		<span class="c1"># Go through all the flags and find the &quot;Main&quot; flag.  Then stamp the data.</span>
+		<span class="k">for</span> <span class="n">pose_name</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">flags_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+			<span class="n">flag_name</span> <span class="o">=</span> <span class="n">flags_dict</span><span class="p">[</span><span class="n">pose_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;activeFlag&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">pose_name</span> <span class="o">==</span> <span class="n">main_pose</span><span class="p">:</span>
+				
+				<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">flag</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">flag_name</span><span class="p">)</span>
+				<span class="n">value</span> <span class="o">=</span> <span class="n">flags_dict</span><span class="p">[</span><span class="n">pose_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;activeFlagValue&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+				<span class="k">if</span> <span class="n">value</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+					<span class="n">value</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">value</span><span class="p">))</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">flagValue</span><span class="o">.</span><span class="n">flagX</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">flagValue</span><span class="o">.</span><span class="n">flagY</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">flagValue</span><span class="o">.</span><span class="n">flagZ</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">flagValue</span><span class="o">.</span><span class="n">flagX</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+				
+				<span class="n">flag_attr</span> <span class="o">=</span> <span class="n">flags_dict</span><span class="p">[</span><span class="n">pose_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;activeFlagAttribute&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+				<span class="n">max_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">flags_dict</span><span class="p">[</span><span class="n">pose_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;activeFlagMaxValue&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+				<span class="n">flag_component</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">flags_dict</span><span class="p">[</span><span class="n">pose_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;activeComponent&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+				
+				<span class="c1"># Set the attibute data</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">flagAttribute</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">flag_attr</span><span class="p">)</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">maxValue</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">max_value</span><span class="p">)</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">parameterNodePose</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">pose_name</span><span class="p">)</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">flagComponent</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">flag_component</span><span class="p">)</span>
+				<span class="k">break</span></div>
+		
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">single_pose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">singlePoseMode</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+	
+	<span class="nd">@single_pose</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">single_pose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">singlePoseMode</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">multi_pose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">multiPoseMode</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+	
+	<span class="nd">@multi_pose</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">multi_pose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">multiPoseMode</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">base_edit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">baseEditMode</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+	
+	<span class="nd">@base_edit</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">base_edit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">baseEditMode</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">paint_neutral</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">paintNeutral</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+	
+	<span class="nd">@paint_neutral</span><span class="o">.</span><span class="n">setter</span>
+	<span class="k">def</span> <span class="nf">paint_neutral</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">paintNeutral</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">main_flag_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the flag value that was recorded.  If it is translate or rotate it will return a list.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns the flag value that was recorded.</span>
+<span class="sd">		:rtype: list(float) or float</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">flagAttribute</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;translate&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">flagAttribute</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;rotate&#39;</span><span class="p">:</span>
+			<span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">flagValue</span><span class="o">.</span><span class="n">flagX</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">flagValue</span><span class="o">.</span><span class="n">flagY</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">flagValue</span><span class="o">.</span><span class="n">flagZ</span><span class="o">.</span><span class="n">get</span><span class="p">()]</span>
+		<span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">flagValue</span><span class="o">.</span><span class="n">flagX</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+	
+<div class="viewcode-block" id="FaceEditComponent.set_main_flag"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FaceEditComponent.set_main_flag">[docs]</a>	<span class="k">def</span> <span class="nf">set_main_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets the flag data for the main flag.  This is the data outside of the compound attributes</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">flag_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">flag</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_flag_value</span>
+		<span class="n">flag_attr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">flagAttribute</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		
+		<span class="n">flag_list</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">flag_name</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">flag_list</span><span class="p">:</span>
+			<span class="k">return</span>
+		<span class="n">main_flag</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">flag_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="n">main_flag</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">flag_attr</span><span class="p">),</span> <span class="n">value</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FaceEditComponent.get_flag_block_value"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FaceEditComponent.get_flag_block_value">[docs]</a>	<span class="k">def</span> <span class="nf">get_flag_block_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pose_name</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the flag value that was recorded.  If it is translate or rotate it will return a list.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str pose_name: The pose name is used for the compound attribute name.</span>
+<span class="sd">		:return: Returns the flag value that was recorded.</span>
+<span class="sd">		:rtype: list(float) or float</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">flag_block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pose_block</span><span class="p">(</span><span class="n">pose_name</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">flag_block</span><span class="p">:</span>
+			<span class="k">return</span>
+		
+		<span class="k">if</span> <span class="n">flag_block</span><span class="o">.</span><span class="n">activeFlagAttribute</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;translate&#39;</span> <span class="ow">or</span> <span class="n">flag_block</span><span class="o">.</span><span class="n">activeFlagAttribute</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;rotate&#39;</span><span class="p">:</span>
+			<span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="n">flag_block</span><span class="o">.</span><span class="n">activeFlagValue</span><span class="o">.</span><span class="n">activeX</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+						<span class="n">flag_block</span><span class="o">.</span><span class="n">activeFlagValue</span><span class="o">.</span><span class="n">activeY</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+						<span class="n">flag_block</span><span class="o">.</span><span class="n">activeFlagValue</span><span class="o">.</span><span class="n">activeZ</span><span class="o">.</span><span class="n">get</span><span class="p">()]</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">value</span> <span class="o">=</span> <span class="n">flag_block</span><span class="o">.</span><span class="n">activeFlagValue</span><span class="o">.</span><span class="n">activeX</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="k">return</span> <span class="n">value</span></div>
+	
+<div class="viewcode-block" id="FaceEditComponent.get_pose_block"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FaceEditComponent.get_pose_block">[docs]</a>	<span class="k">def</span> <span class="nf">get_pose_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pose_name</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the pymel attribute for the compound attribute.</span>
+<span class="sd">		</span>
+<span class="sd">		:param str pose_name: The pose name is used for the compound attribute name.</span>
+<span class="sd">		:return: Returns the pymel attribute for the compound attribute.</span>
+<span class="sd">		:rtype: pm.nt.general.Attribute</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">pose_name</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FaceEditComponent.get_flag_block"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FaceEditComponent.get_flag_block">[docs]</a>	<span class="k">def</span> <span class="nf">get_flag_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag_name</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Gets a compound attribute block that matches the flag name</span>
+<span class="sd">		</span>
+<span class="sd">		:param str pose_name: The pose name is used for the compound attribute name.</span>
+<span class="sd">		:return: Gets the name of the compound attribute</span>
+<span class="sd">		:rtype: pm.nt.general.Attribute</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">block_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">activeFlags</span><span class="o">.</span><span class="n">numElements</span><span class="p">()</span>
+		<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">block_num</span><span class="p">):</span>
+			<span class="n">_flag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">activeFlags</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">activeFlag</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+			<span class="n">block_flag</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">_flag</span><span class="p">)</span><span class="o">.</span><span class="n">nodeName</span><span class="p">()</span>
+			<span class="k">if</span> <span class="n">block_flag</span> <span class="o">==</span> <span class="n">flag_name</span><span class="p">:</span>
+				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">activeFlags</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+		
+		<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">flag_name</span><span class="si">}</span><span class="s1">&quot; does not have a compound attribute.&#39;</span><span class="p">)</span>
+		<span class="k">return</span></div>
+
+<div class="viewcode-block" id="FaceEditComponent.set_all_flag_block_values"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FaceEditComponent.set_all_flag_block_values">[docs]</a>	<span class="k">def</span> <span class="nf">set_all_flag_block_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Set all the flag values in the compound attributes</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">block_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">activeFlags</span><span class="o">.</span><span class="n">numElements</span><span class="p">()</span>
+		
+		<span class="n">pose_names</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">block_num</span><span class="p">):</span>
+			<span class="n">pose_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">activeFlags</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">activePoseName</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+			<span class="n">pose_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pose_name</span><span class="p">)</span>
+		
+		<span class="k">for</span> <span class="n">pose_name</span> <span class="ow">in</span> <span class="n">pose_names</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">set_flag_block_value</span><span class="p">(</span><span class="n">pose_name</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FaceEditComponent.set_flag_block_value"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FaceEditComponent.set_flag_block_value">[docs]</a>	<span class="k">def</span> <span class="nf">set_flag_block_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pose_name</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets a flag value from a compound attribute</span>
+<span class="sd">		</span>
+<span class="sd">		:param str pose_name: The pose name is used for the compound attribute name.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">block_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data_block</span><span class="p">(</span><span class="n">pose_name</span><span class="p">)</span>
+
+		<span class="n">value</span> <span class="o">=</span> <span class="n">block_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;activeFlagValue&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+		<span class="n">flag_attr</span> <span class="o">=</span> <span class="n">block_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;activeFlagAttribute&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+		<span class="n">flag_name</span> <span class="o">=</span> <span class="n">block_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;activeFlag&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+		<span class="n">component</span> <span class="o">=</span> <span class="n">block_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;activeComponent&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+		<span class="n">component</span> <span class="o">=</span> <span class="n">frag_base</span><span class="o">.</span><span class="n">FRAGNode</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+		
+		<span class="n">flag_list</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">flag_name</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Transform</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">flag_list</span><span class="p">:</span>
+			<span class="k">return</span>
+		<span class="n">active_flag</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">flag_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+		<span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">get_type</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;EyeComponent&#39;</span><span class="p">:</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">active_flag</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="k">return</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="n">active_flag</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">flag_attr</span><span class="p">),</span> <span class="n">value</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FaceEditComponent.get_data_block"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FaceEditComponent.get_data_block">[docs]</a>	<span class="k">def</span> <span class="nf">get_data_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pose_name</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Gets all of the data from a compound attribute. (block)</span>
+<span class="sd">		</span>
+<span class="sd">		:param string pose_name: Name of the flag or compound attribute.</span>
+<span class="sd">		:return: dictionary of all the flag information.</span>
+<span class="sd">		:rtype: Dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">flag_block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pose_block</span><span class="p">(</span><span class="n">pose_name</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">flag_block</span><span class="p">:</span>
+			<span class="k">return</span>
+		
+		<span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_flag_block_value</span><span class="p">(</span><span class="n">pose_name</span><span class="p">)</span>
+		
+		<span class="n">block_dict</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">block_dict</span><span class="p">[</span><span class="s1">&#39;activeFlag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_block</span><span class="o">.</span><span class="n">activeFlag</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="n">block_dict</span><span class="p">[</span><span class="s1">&#39;activeFlagAttribute&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_block</span><span class="o">.</span><span class="n">activeFlagAttribute</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="n">block_dict</span><span class="p">[</span><span class="s1">&#39;activeFlagValue&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+		<span class="n">block_dict</span><span class="p">[</span><span class="s1">&#39;activeFlagMaxValue&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">flag_block</span><span class="o">.</span><span class="n">activeFlagMaxValue</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+		<span class="n">block_dict</span><span class="p">[</span><span class="s1">&#39;activePoseName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_block</span><span class="o">.</span><span class="n">activePoseName</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="n">block_dict</span><span class="p">[</span><span class="s1">&#39;activeComponent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_block</span><span class="o">.</span><span class="n">activeComponent</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="k">return</span> <span class="n">block_dict</span></div>
+
+<div class="viewcode-block" id="FaceEditComponent.get_pose_from_block"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FaceEditComponent.get_pose_from_block">[docs]</a>	<span class="k">def</span> <span class="nf">get_pose_from_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag_name</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the pose name from a flag compound attribute. (block)</span>
+<span class="sd">		</span>
+<span class="sd">		:param string flag_name: Name of the flag or compound attribute.</span>
+<span class="sd">		:return: returns the pose name from a stored flag.</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">flag_block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_flag_block</span><span class="p">(</span><span class="n">flag_name</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">flag_block</span><span class="p">:</span>
+			<span class="k">return</span>
+		<span class="k">return</span> <span class="n">flag_block</span><span class="o">.</span><span class="n">activePoseName</span><span class="o">.</span><span class="n">get</span><span class="p">()</span></div>
+	
+<div class="viewcode-block" id="FaceEditComponent.get_flag_attr_from_block"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FaceEditComponent.get_flag_attr_from_block">[docs]</a>	<span class="k">def</span> <span class="nf">get_flag_attr_from_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag_name</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the flag attribute from a compound attribute. (block)</span>
+<span class="sd">		</span>
+<span class="sd">		:param string flag_name: Name of the flag or compound attribute.</span>
+<span class="sd">		:return: Returns the flag attribute from a compound attribute. (block)</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">flag_block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_flag_block</span><span class="p">(</span><span class="n">flag_name</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">flag_block</span><span class="p">:</span>
+			<span class="k">return</span>
+		<span class="k">return</span> <span class="n">flag_block</span><span class="o">.</span><span class="n">activeFlagAttribute</span><span class="o">.</span><span class="n">get</span><span class="p">()</span></div>
+	
+<div class="viewcode-block" id="FaceEditComponent.get_flag_value_from_block"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FaceEditComponent.get_flag_value_from_block">[docs]</a>	<span class="k">def</span> <span class="nf">get_flag_value_from_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag_name</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the flag value from a compound attribute. (block)</span>
+<span class="sd">		</span>
+<span class="sd">		:param string flag_name: Name of the flag or compound attribute.</span>
+<span class="sd">		:return: Returns the flag value from a compound attribute. (block)</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">flag_block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_flag_block</span><span class="p">(</span><span class="n">flag_name</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">flag_block</span><span class="p">:</span>
+			<span class="k">return</span>
+		<span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">flag_block</span><span class="o">.</span><span class="n">activeFlagValue</span><span class="o">.</span><span class="n">get</span><span class="p">())</span></div>
+	
+<div class="viewcode-block" id="FaceEditComponent.get_flag_max_value_from_block"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FaceEditComponent.get_flag_max_value_from_block">[docs]</a>	<span class="k">def</span> <span class="nf">get_flag_max_value_from_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag_name</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the flag value from a compound attribute. (block)</span>
+<span class="sd">		</span>
+<span class="sd">		:param string flag_name: Name of the flag or compound attribute.</span>
+<span class="sd">		:return: Returns the flag value from a compound attribute. (block)</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">flag_block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_flag_block</span><span class="p">(</span><span class="n">flag_name</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">flag_block</span><span class="p">:</span>
+			<span class="k">return</span>
+		<span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">flag_block</span><span class="o">.</span><span class="n">activeFlagMaxValue</span><span class="o">.</span><span class="n">get</span><span class="p">())</span></div>
+	
+<div class="viewcode-block" id="FaceEditComponent.get_flag_component_from_block"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FaceEditComponent.get_flag_component_from_block">[docs]</a>	<span class="k">def</span> <span class="nf">get_flag_component_from_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag_name</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the flag component from a compound attribute. (block)</span>
+<span class="sd">		</span>
+<span class="sd">		:param string flag_name: Name of the flag or compound attribute.</span>
+<span class="sd">		:return: Returns the flag component from a compound attribute. (block)</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">flag_block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_flag_block</span><span class="p">(</span><span class="n">flag_name</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">flag_block</span><span class="p">:</span>
+			<span class="k">return</span>
+		<span class="k">return</span> <span class="n">frag_base</span><span class="o">.</span><span class="n">FRAGNode</span><span class="p">(</span><span class="n">flag_block</span><span class="o">.</span><span class="n">activeComponent</span><span class="o">.</span><span class="n">get</span><span class="p">())</span></div></div>
+	
+	
+<div class="viewcode-block" id="FaceFlagsData"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FaceFlagsData">[docs]</a><span class="k">class</span> <span class="nc">FaceFlagsData</span><span class="p">:</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag_data_list</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">flag_data_list</span> <span class="o">=</span> <span class="n">flag_data_list</span>
+	
+<div class="viewcode-block" id="FaceFlagsData.create_active"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FaceFlagsData.create_active">[docs]</a>	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">create_active</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parameter_node</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns an instance of the FlagData class.  It holds setting information about the flags.</span>
+
+<span class="sd">		:return:  Return the list of transform information.</span>
+<span class="sd">		:rtype: FlagData</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">pose_list</span> <span class="o">=</span> <span class="n">parameter_node</span><span class="o">.</span><span class="n">get_all_active_poses</span><span class="p">()</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">pose_list</span><span class="p">:</span>
+			<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No active poses have been found.  No poses with a value other than 0&#39;</span><span class="p">)</span>
+			<span class="k">return</span>
+		<span class="k">return</span> <span class="n">FaceFlagsData</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">pose_list</span><span class="p">,</span> <span class="n">parameter_node</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FaceFlagsData.create"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FaceFlagsData.create">[docs]</a>	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">pose_list</span><span class="p">,</span> <span class="n">parameter_node</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns an instance of the FlagData class.  It holds setting information about the flags.</span>
+
+<span class="sd">		:return:  Return the list of transform information.</span>
+<span class="sd">		:rtype: FlagData</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="c1"># Goes through all the poses in the parameter node component and finds the ones in use.</span>
+		<span class="n">flag_data</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">pose</span> <span class="ow">in</span> <span class="n">pose_list</span><span class="p">:</span>
+			<span class="n">range_node</span> <span class="o">=</span> <span class="n">parameter_node</span><span class="o">.</span><span class="n">get_range_node</span><span class="p">(</span><span class="n">pose</span><span class="p">)</span>
+			<span class="n">component</span> <span class="o">=</span> <span class="n">frag_base</span><span class="o">.</span><span class="n">FRAGNode</span><span class="p">(</span><span class="n">parameter_node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">pose</span><span class="p">)</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+			<span class="n">rig_flag</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">get_flag</span><span class="p">()</span>
+			<span class="n">parameter_value</span> <span class="o">=</span> <span class="n">parameter_node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">pose</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+			<span class="n">value</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">range_node</span><span class="o">.</span><span class="n">valueX</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="mi">4</span><span class="p">)</span>
+			<span class="n">flag_attr_max</span> <span class="o">=</span> <span class="n">range_node</span><span class="o">.</span><span class="n">oldMaxX</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+			<span class="n">flag_attr</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">range_node</span><span class="o">.</span><span class="n">valueX</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">scn</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+			
+			<span class="c1"># The eye component is handled differently than any of the other components since we need to</span>
+			<span class="c1"># convert rotation into translation.</span>
+			<span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">get_type</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;EyeComponent&#39;</span><span class="p">:</span>
+				<span class="n">value</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="n">rig_flag</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+				<span class="n">flag_attr</span> <span class="o">=</span> <span class="n">rig_flag</span><span class="o">.</span><span class="n">translate</span>
+			
+			<span class="n">flag_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FlagAttrData</span><span class="p">(</span><span class="n">rig_flag</span><span class="o">=</span><span class="n">rig_flag</span><span class="p">,</span>
+											<span class="n">flag_attr</span><span class="o">=</span><span class="n">flag_attr</span><span class="p">,</span>
+											<span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+											<span class="n">pose</span><span class="o">=</span><span class="n">pose</span><span class="p">,</span>
+											<span class="n">flag_attr_max</span><span class="o">=</span><span class="n">flag_attr_max</span><span class="p">,</span>
+											<span class="n">parameter_value</span><span class="o">=</span><span class="n">parameter_value</span><span class="p">,</span>
+											<span class="n">component</span><span class="o">=</span><span class="n">component</span><span class="p">))</span>
+		
+		<span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">flag_data</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="FaceFlagsData.get_fully_active_flags"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FaceFlagsData.get_fully_active_flags">[docs]</a>	<span class="k">def</span> <span class="nf">get_fully_active_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns flags that are at the max value</span>
+
+<span class="sd">		:return: Returns flags that are at the max value</span>
+<span class="sd">		:rtype: list(FlagAttrData)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">active_flags</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">flag_data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag_data_list</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">flag_data</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+				<span class="n">active_flags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flag_data</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">active_flags</span></div>
+	
+<div class="viewcode-block" id="FaceFlagsData.get_partial_active_flags"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FaceFlagsData.get_partial_active_flags">[docs]</a>	<span class="k">def</span> <span class="nf">get_partial_active_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns flags that are at not at the max value but due have a parameter value higher than zero</span>
+
+<span class="sd">		:return:Returns flags that are at not at the max value but due have a parameter value higher than zero</span>
+<span class="sd">		:rtype: list(FlagAttrData)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">active_flags</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">flag_data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag_data_list</span><span class="p">:</span>
+			<span class="k">if</span> <span class="mi">1</span> <span class="o">&gt;</span> <span class="n">flag_data</span><span class="o">.</span><span class="n">value</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+				<span class="n">active_flags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flag_data</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">active_flags</span></div>
+	
+<div class="viewcode-block" id="FaceFlagsData.get_flags_dict"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FaceFlagsData.get_flags_dict">[docs]</a>	<span class="k">def</span> <span class="nf">get_flags_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns a dictionary with all of the flags that are in use.</span>
+<span class="sd">		</span>
+<span class="sd">		:return:  Returns a dictionary with all of the flags that are in use.</span>
+<span class="sd">		:rtype: Dictionary</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">flags_dict</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="k">for</span> <span class="n">_flag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag_data_list</span><span class="p">:</span>
+			<span class="n">pose_name</span> <span class="o">=</span> <span class="n">_flag</span><span class="o">.</span><span class="n">pose</span>
+			<span class="n">flags_dict</span><span class="p">[</span><span class="n">pose_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+			<span class="n">flags_dict</span><span class="p">[</span><span class="n">pose_name</span><span class="p">][</span><span class="s1">&#39;activeFlag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_flag</span><span class="o">.</span><span class="n">flag_as_string</span><span class="p">()</span>
+			<span class="n">flags_dict</span><span class="p">[</span><span class="n">pose_name</span><span class="p">][</span><span class="s1">&#39;activeFlagAttribute&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_flag</span><span class="o">.</span><span class="n">flag_attr_as_string</span><span class="p">()</span>
+			<span class="n">flags_dict</span><span class="p">[</span><span class="n">pose_name</span><span class="p">][</span><span class="s1">&#39;activeFlagValue&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_flag</span><span class="o">.</span><span class="n">value</span>
+			<span class="n">flags_dict</span><span class="p">[</span><span class="n">pose_name</span><span class="p">][</span><span class="s1">&#39;activeFlagMaxValue&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_flag</span><span class="o">.</span><span class="n">flag_attr_max</span>
+			<span class="n">flags_dict</span><span class="p">[</span><span class="n">pose_name</span><span class="p">][</span><span class="s1">&#39;activePoseName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pose_name</span>
+			<span class="n">flags_dict</span><span class="p">[</span><span class="n">pose_name</span><span class="p">][</span><span class="s1">&#39;activeParameterValue&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_flag</span><span class="o">.</span><span class="n">parameter_value</span>
+			<span class="n">flags_dict</span><span class="p">[</span><span class="n">pose_name</span><span class="p">][</span><span class="s1">&#39;activeComponent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_flag</span><span class="o">.</span><span class="n">component</span>
+		<span class="k">return</span> <span class="n">flags_dict</span></div></div>
+
+
+<div class="viewcode-block" id="FlagAttrData"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FlagAttrData">[docs]</a><span class="k">class</span> <span class="nc">FlagAttrData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rig_flag</span><span class="p">,</span> <span class="n">flag_attr</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">pose</span><span class="p">,</span> <span class="n">flag_attr_max</span><span class="p">,</span> <span class="n">parameter_value</span><span class="p">,</span> <span class="n">component</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">rig_flag</span> <span class="o">=</span> <span class="n">frag_flag</span><span class="o">.</span><span class="n">Flag</span><span class="p">(</span><span class="n">rig_flag</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">flag_attr</span> <span class="o">=</span> <span class="n">flag_attr</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">pose</span> <span class="o">=</span> <span class="n">pose</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">flag_attr_max</span> <span class="o">=</span> <span class="n">flag_attr_max</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">parameter_value</span> <span class="o">=</span> <span class="n">parameter_value</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="o">=</span> <span class="n">component</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">percent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Get the percent value of the flag attribute value with a min and max.</span>
+
+<span class="sd">		:return: percent value of the flag attribute value with a min and max.</span>
+<span class="sd">		:rtype: float</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">percent</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag_attr_max</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+		<span class="k">return</span> <span class="n">percent</span>
+	
+<div class="viewcode-block" id="FlagAttrData.flag_as_string"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FlagAttrData.flag_as_string">[docs]</a>	<span class="k">def</span> <span class="nf">flag_as_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_namespace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the name of the flag as a string.</span>
+
+<span class="sd">		:param bool include_namespace: If True, it will return the flag with the namespace.</span>
+<span class="sd">		:return: Returns the name of the flag as a string.</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">include_namespace</span> <span class="ow">and</span> <span class="s1">&#39;:&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rig_flag</span><span class="o">.</span><span class="n">nodeName</span><span class="p">():</span>
+			<span class="n">string_flag</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rig_flag</span><span class="o">.</span><span class="n">nodeName</span><span class="p">())</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+			<span class="k">return</span> <span class="n">string_flag</span>
+
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rig_flag</span><span class="o">.</span><span class="n">nodeName</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="FlagAttrData.flag_attr_as_string"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_edit_component.FlagAttrData.flag_attr_as_string">[docs]</a>	<span class="k">def</span> <span class="nf">flag_attr_as_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the flag attribute as a string.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns the flag attribute as a string.</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag_attr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

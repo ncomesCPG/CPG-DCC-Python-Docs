@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.rigging.chain_markup &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.rigging.chain_markup</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.rigging.chain_markup</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">A way to interact with joint chains in rigs.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+<span class="c1"># Software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">dag</span><span class="p">,</span> <span class="n">naming</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.startup.configs</span> <span class="kn">import</span> <span class="n">ma_consts</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.modifiers</span> <span class="kn">import</span> <span class="n">ma_decorators</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">joint_utils</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="JointMarkup"><a class="viewcode-back" href="../../../../cpg.maya.rigging.html#cpg.maya.rigging.chain_markup.JointMarkup">[docs]</a><span class="k">class</span> <span class="nc">JointMarkup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint_node</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node</span> <span class="o">=</span> <span class="n">joint_node</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">joint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the joint that is being evaluated.</span>
+
+<span class="sd">        :return: Returns the joint that is being evaluated.</span>
+<span class="sd">        :rtype: pm.nt.Joint</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span>
+
+    <span class="c1"># side markup</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">side</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the side in which the joint is on.</span>
+
+<span class="sd">        :return: Returns the side in which the joint is on.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;skelSide&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">skelSide</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">side</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ma_consts</span><span class="o">.</span><span class="n">SIDE_LABELS</span><span class="p">[</span><span class="n">value</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="nd">@side</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">side</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the joint&#39;s side.</span>
+
+<span class="sd">        :param  int/str value: Sets the joint&#39;s side.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;skelSide&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;skelSide&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">skelSide</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">skelSide</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">ma_consts</span><span class="o">.</span><span class="n">SIDE_LABELS</span><span class="p">[</span><span class="n">value</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">region</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the list of regions a joint belongs to.</span>
+
+<span class="sd">        This is a read only property.</span>
+<span class="sd">        :return: Returns the list of regions a joint belongs to.</span>
+<span class="sd">        :rtype list[str]:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;skelRegion&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">skelRegion</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">chainStart</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">chainEnd</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">chainTwist</span> <span class="ow">or</span> <span class="kc">None</span>
+
+    <span class="nd">@region</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets a joint to be marked as a twist joint</span>
+
+<span class="sd">        :param str val: Sets whether the joint is a twist joint or not.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;skelRegion&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;skelRegion&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">skelRegion</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+    <span class="c1"># regional chain markup attrs</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">chainTwist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns whether the joint is a twist joint or not.</span>
+
+<span class="sd">        :return: Returns whether the joint is a twist joint or not.</span>
+<span class="sd">        :rtype str or bool:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;chainTwist&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">chainTwist</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="nd">@chainTwist</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">chainTwist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets a joint to be marked as a twist joint</span>
+
+<span class="sd">        :param str val: Sets whether the joint is a twist joint or not.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;chainTwist&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;chainTwist&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">chainTwist</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">chainStart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns whether the joint is the start of a chain.</span>
+
+<span class="sd">        :return: Returns whether the joint is the start of a chain.</span>
+<span class="sd">        :rtype str or bool:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;chainStart&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">chainStart</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="nd">@chainStart</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">chainStart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the joint as is_start and adds the region.</span>
+
+<span class="sd">        :param str val: A name used to define a joint chain.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;chainStart&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">val</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;chainStart&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;skelRegion&#39;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;skelRegion&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">val</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">chainStart</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">chainStart</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">skelRegion</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+<div class="viewcode-block" id="JointMarkup.remove_is_start"><a class="viewcode-back" href="../../../../cpg.maya.rigging.html#cpg.maya.rigging.chain_markup.JointMarkup.remove_is_start">[docs]</a>    <span class="k">def</span> <span class="nf">remove_is_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Removes the chainStart Attribute.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;chainStart&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">deleteAttr</span><span class="p">(</span><span class="s1">&#39;chainStart&#39;</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">chainEnd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns whether the joint is the end of a chain.</span>
+
+<span class="sd">        :return: Returns whether the joint is the end of a chain.</span>
+<span class="sd">        :rtype str or bool:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;chainEnd&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">chainEnd</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="nd">@chainEnd</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">chainEnd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the joint as is_start and adds the region.</span>
+
+<span class="sd">        :param str region: A name used to define a joint chain.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;chainEnd&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">val</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;chainEnd&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">val</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">chainEnd</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">chainEnd</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+<div class="viewcode-block" id="JointMarkup.remove_is_end"><a class="viewcode-back" href="../../../../cpg.maya.rigging.html#cpg.maya.rigging.chain_markup.JointMarkup.remove_is_end">[docs]</a>    <span class="k">def</span> <span class="nf">remove_is_end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Removes the chainEnd Attribute.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;chainEnd&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">deleteAttr</span><span class="p">(</span><span class="s1">&#39;chainEnd&#39;</span><span class="p">)</span></div>
+
+    <span class="c1"># informational markup</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_sk_export</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns whether the joint should be exported in the sk skeleton.</span>
+
+<span class="sd">        :return: Returns whether the joint should be exported in the sk skeleton.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;skExport&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;skExport&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">skExport</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+    <span class="nd">@is_sk_export</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_sk_export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets a joint to be exported in the sk skeleton.</span>
+
+<span class="sd">        :param  bool value: Sets whether the joint should be exported in the sk skeleton.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">val</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;skExport&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">skExport</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_sk_export</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">skExport</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_animation_export</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns whether the joint should be exported in the animation skeleton.</span>
+
+<span class="sd">        :return: Returns whether the joint should be exported in the animation skeleton.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;animationExport&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;animationExport&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">animationExport</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+    <span class="nd">@is_animation_export</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_animation_export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets a joint to be exported in the animation skeleton.</span>
+
+<span class="sd">        :param bool val: Sets whether the joint should be exported in the animation skeleton.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">val</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;animationExport&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">animationExport</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_animation_export</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">animationExport</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">hierarchyStart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns whether the joint is tagged as first in hierarchy.</span>
+
+<span class="sd">        :return: Returns whether the joint is first in hierarchy.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;hierarchyStart&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">hierarchyStart</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+    <span class="nd">@hierarchyStart</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">hierarchyStart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets a joint to be tagged as first in hierarchy.</span>
+
+<span class="sd">        :param bool val: Sets whether the joint should be tagged as first in hierarchy.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">val</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;hierarchyStart&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">hierarchyStart</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;hierarchyStart&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">hierarchyStart</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the absolute joint name.</span>
+
+<span class="sd">        :return: Returns the absolute joint name.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">naming</span><span class="o">.</span><span class="n">get_basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">name</span><span class="p">())</span>
+
+    <span class="c1"># helper functions</span>
+<div class="viewcode-block" id="JointMarkup.get_joint_index"><a class="viewcode-back" href="../../../../cpg.maya.rigging.html#cpg.maya.rigging.chain_markup.JointMarkup.get_joint_index">[docs]</a>    <span class="k">def</span> <span class="nf">get_joint_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the index position of this joint within a region</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">root_joint</span> <span class="o">=</span> <span class="n">dag</span><span class="o">.</span><span class="n">get_absolute_parent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="p">,</span> <span class="n">node_type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">)</span>
+        <span class="n">skel_hierarchy</span> <span class="o">=</span> <span class="n">ChainMarkup</span><span class="p">(</span><span class="n">root_joint</span><span class="p">)</span>
+        <span class="n">joint_chain_list</span> <span class="o">=</span> <span class="n">skel_hierarchy</span><span class="o">.</span><span class="n">get_full_chain</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">side</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">joint_chain_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">)</span> <span class="k">if</span> <span class="n">joint_chain_list</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="JointMarkup.get_world_matrix"><a class="viewcode-back" href="../../../../cpg.maya.rigging.html#cpg.maya.rigging.chain_markup.JointMarkup.get_world_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">get_world_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the world matrix array for this joint.</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">xform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="p">,</span> <span class="n">matrix</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">worldSpace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="JointMarkup.getParent"><a class="viewcode-back" href="../../../../cpg.maya.rigging.html#cpg.maya.rigging.chain_markup.JointMarkup.getParent">[docs]</a>    <span class="k">def</span> <span class="nf">getParent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns this node&#39;s immediate parent.</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">parent_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">getParent</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">parent_node</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parent_node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">JointMarkup</span><span class="p">(</span><span class="n">parent_node</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">parent_node</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="JointMarkup.getChildren"><a class="viewcode-back" href="../../../../cpg.maya.rigging.html#cpg.maya.rigging.chain_markup.JointMarkup.getChildren">[docs]</a>    <span class="k">def</span> <span class="nf">getChildren</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">children_nodes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint</span><span class="o">.</span><span class="n">getChildren</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">JointMarkup</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">children_nodes</span><span class="p">]</span></div></div>
+
+<div class="viewcode-block" id="ChainMarkup"><a class="viewcode-back" href="../../../../cpg.maya.rigging.html#cpg.maya.rigging.chain_markup.ChainMarkup">[docs]</a><span class="k">class</span> <span class="nc">ChainMarkup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="n">root</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hierarchyStart</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_skJoints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_animationJoints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_joints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_twist_joints</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_chain</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_invalid_joints</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">parse_joints</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">skeleton_dict</span> <span class="o">=</span> <span class="n">joint_utils</span><span class="o">.</span><span class="n">create_skeleton_dict</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the root joint.</span>
+
+<span class="sd">        :return: Returns the root joint.</span>
+<span class="sd">        :rtype: pm.nt.Joint</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_invalid_joints</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">root</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the root joint.</span>
+
+<span class="sd">        :return: Returns the root joint.</span>
+<span class="sd">        :rtype: pm.nt.Joint</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">hierarchyStart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the joint with markup for hierarchy start.</span>
+
+<span class="sd">        :return: Returns the root joint.</span>
+<span class="sd">        :rtype: pm.nt.Joint</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hierarchyStart</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">joints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of JointMarkup data for each start, end, and twist joints.</span>
+<span class="sd">        :return: Returns a list of JointMarkup data for each start, end, and twist joints.</span>
+<span class="sd">        :rtype: list(JointMarkup)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joints</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">chain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a dictionary of all the joint markups.</span>
+
+<span class="sd">        :return: Returns a dictionary of all the joint markups.</span>
+<span class="sd">        :rtype: dictionary</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chain</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">twist_joints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a dictionary of all the twist joints</span>
+
+<span class="sd">        :return: Returns a dictionary of all the twist joints.</span>
+<span class="sd">        :rtype: dictionary</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_twist_joints</span>
+
+<div class="viewcode-block" id="ChainMarkup.parse_joints"><a class="viewcode-back" href="../../../../cpg.maya.rigging.html#cpg.maya.rigging.chain_markup.ChainMarkup.parse_joints">[docs]</a>    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_selection_decorator</span>
+    <span class="k">def</span> <span class="nf">parse_joints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Registers each joint in the JointMarkup class and returns it if it is a start, end or twist joint.</span>
+
+<span class="sd">        :return: Returns a list of start, end, and twist joints registered in the JointMarkup class.</span>
+<span class="sd">        :rtype: list(JointMarkup)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_joints</span> <span class="o">=</span> <span class="n">dag</span><span class="o">.</span><span class="n">get_children_in_order</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">)</span>
+
+        <span class="n">chain_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_skJoints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_animationJoints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_twist_joints</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">joint_node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joints</span><span class="p">:</span>
+            <span class="c1"># use the wrapped joint for lookups, but store the OG PyNode in the class lookups.</span>
+            <span class="c1"># we&#39;re normally using the PyNodes to do ops after so it&#39;s better for use to store them.</span>
+            <span class="n">wrapped_joint</span> <span class="o">=</span> <span class="n">JointMarkup</span><span class="p">(</span><span class="n">joint_node</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">hierarchyStart</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_hierarchyStart</span> <span class="o">=</span> <span class="n">joint_node</span>
+
+            <span class="k">if</span> <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">is_sk_export</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_skJoints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">joint_node</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">is_animation_export</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_animationJoints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">joint_node</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">chainTwist</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">side</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_twist_joints</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_twist_joints</span><span class="p">[</span><span class="n">wrapped_joint</span><span class="o">.</span><span class="n">side</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">if</span> <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">chainTwist</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_twist_joints</span><span class="p">[</span><span class="n">wrapped_joint</span><span class="o">.</span><span class="n">side</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_twist_joints</span><span class="p">[</span><span class="n">wrapped_joint</span><span class="o">.</span><span class="n">side</span><span class="p">][</span><span class="n">wrapped_joint</span><span class="o">.</span><span class="n">chainTwist</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;parent&#39;</span><span class="p">:</span> <span class="n">joint_node</span><span class="o">.</span><span class="n">getParent</span><span class="p">(),</span> <span class="s1">&#39;joints&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_twist_joints</span><span class="p">[</span><span class="n">wrapped_joint</span><span class="o">.</span><span class="n">side</span><span class="p">][</span><span class="n">wrapped_joint</span><span class="o">.</span><span class="n">chainTwist</span><span class="p">][</span><span class="s1">&#39;joints&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">joint_node</span><span class="p">)</span>
+
+            <span class="n">skel_region</span> <span class="o">=</span> <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">region</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">skel_region</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_invalid_joints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">joint_node</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">elif</span> <span class="n">skel_region</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chain_dict</span><span class="p">:</span>
+                <span class="n">chain_dict</span><span class="p">[</span><span class="n">skel_region</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="n">skel_side</span> <span class="o">=</span> <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">side</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">skel_side</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">elif</span> <span class="n">skel_side</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chain_dict</span><span class="p">[</span><span class="n">skel_region</span><span class="p">]:</span>
+                <span class="n">chain_dict</span><span class="p">[</span><span class="n">skel_region</span><span class="p">][</span><span class="n">skel_side</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;joints&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+
+            <span class="k">if</span> <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">chainStart</span><span class="p">:</span>
+                <span class="n">chain_dict</span><span class="p">[</span><span class="n">skel_region</span><span class="p">][</span><span class="n">skel_side</span><span class="p">][</span><span class="s1">&#39;chain_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">joint_node</span>
+            <span class="k">if</span> <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">chainEnd</span><span class="p">:</span>
+                <span class="n">chain_end_region</span> <span class="o">=</span> <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">chainEnd</span>
+                <span class="k">if</span> <span class="n">chain_end_region</span> <span class="o">!=</span> <span class="n">skel_region</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">chain_end_region</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chain_dict</span><span class="p">:</span>
+                        <span class="n">chain_dict</span><span class="p">[</span><span class="n">chain_end_region</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="k">if</span> <span class="n">skel_side</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chain_dict</span><span class="p">[</span><span class="n">chain_end_region</span><span class="p">]:</span>
+                        <span class="n">chain_dict</span><span class="p">[</span><span class="n">chain_end_region</span><span class="p">][</span><span class="n">skel_side</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="n">chain_dict</span><span class="p">[</span><span class="n">chain_end_region</span><span class="p">][</span><span class="n">skel_side</span><span class="p">][</span><span class="s1">&#39;chain_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">joint_node</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">chain_dict</span><span class="p">[</span><span class="n">skel_region</span><span class="p">][</span><span class="n">skel_side</span><span class="p">][</span><span class="s1">&#39;chain_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">joint_node</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">chainStart</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">chainEnd</span><span class="p">:</span>
+                <span class="n">chain_dict</span><span class="p">[</span><span class="n">skel_region</span><span class="p">][</span><span class="n">skel_side</span><span class="p">][</span><span class="s1">&#39;joints&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">joint_node</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_chain</span> <span class="o">=</span> <span class="n">chain_dict</span></div>
+
+<div class="viewcode-block" id="ChainMarkup.get_start"><a class="viewcode-back" href="../../../../cpg.maya.rigging.html#cpg.maya.rigging.chain_markup.ChainMarkup.get_start">[docs]</a>    <span class="k">def</span> <span class="nf">get_start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">side</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a start joint in a specific region and side.</span>
+
+<span class="sd">        :param str region: A name used to define a joint chain.</span>
+<span class="sd">        :param str side: Side in which the chain is on.</span>
+<span class="sd">        :return: Returns a start joint in a specific region and side.</span>
+<span class="sd">        :rtype: pm.nt.Joint</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">skel_region_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="k">return</span> <span class="n">skel_region_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;chain_start&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ChainMarkup.get_end"><a class="viewcode-back" href="../../../../cpg.maya.rigging.html#cpg.maya.rigging.chain_markup.ChainMarkup.get_end">[docs]</a>    <span class="k">def</span> <span class="nf">get_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">side</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns an end joint in a specific region and side.</span>
+
+<span class="sd">        :param str region: A name used to define a joint chain.</span>
+<span class="sd">        :param str side: Side in which the chain is on.</span>
+<span class="sd">        :return: Returns an end joint in a specific region and side.</span>
+<span class="sd">        :rtype: pm.nt.Joint</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">skel_region_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="k">return</span> <span class="n">skel_region_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;chain_end&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ChainMarkup.get_chain"><a class="viewcode-back" href="../../../../cpg.maya.rigging.html#cpg.maya.rigging.chain_markup.ChainMarkup.get_chain">[docs]</a>    <span class="k">def</span> <span class="nf">get_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">side</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the start and end joint for a specific side and region.</span>
+
+<span class="sd">        :param str region: A name used to define a joint chain.</span>
+<span class="sd">        :param str side: Side in which the chain is on.</span>
+<span class="sd">        :return: Returns the start and end joint for a specific side and region.</span>
+<span class="sd">        :rtype: list(pm.nt.Joint)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">skel_region_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="k">return</span> <span class="n">skel_region_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;chain_start&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">skel_region_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;chain_end&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">skel_region_dict</span> <span class="k">else</span> <span class="p">[]</span></div>
+
+<div class="viewcode-block" id="ChainMarkup.get_full_chain"><a class="viewcode-back" href="../../../../cpg.maya.rigging.html#cpg.maya.rigging.chain_markup.ChainMarkup.get_full_chain">[docs]</a>    <span class="k">def</span> <span class="nf">get_full_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">side</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns all the joints in a chain for a specific side and region.</span>
+
+<span class="sd">        :param str region: A name used to define a joint chain.</span>
+<span class="sd">        :param str side: Side in which the chain is on.</span>
+<span class="sd">        :return: Returns all the joints in a chain for a specific side and region.</span>
+<span class="sd">        :rtype: list(pm.nt.Joint)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">skel_region_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">joint_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">skel_region_dict</span><span class="p">:</span>
+            <span class="n">chain_start</span> <span class="o">=</span> <span class="n">skel_region_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;chain_start&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">chain_start</span><span class="p">:</span>
+                <span class="n">joint_list</span> <span class="o">+=</span> <span class="p">[</span><span class="n">chain_start</span><span class="p">]</span>
+
+            <span class="n">mid_joints</span> <span class="o">=</span> <span class="n">skel_region_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;joints&#39;</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="k">if</span> <span class="n">mid_joints</span><span class="p">:</span>
+                <span class="n">joint_list</span> <span class="o">+=</span> <span class="n">mid_joints</span>
+
+            <span class="n">chain_end</span> <span class="o">=</span> <span class="n">skel_region_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;chain_end&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">chain_end</span><span class="p">:</span>
+                <span class="n">joint_list</span> <span class="o">+=</span> <span class="p">[</span><span class="n">chain_end</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">joint_list</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No joints match lookup </span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">. Verify your lookups.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="n">joint_list</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.pyqt.utils.ma_main_window &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.pyqt.utils.ma_main_window</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.pyqt.utils.ma_main_window</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module that contains functions and classes related with Maya GUI</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">PySide2.QtCore</span> <span class="kn">import</span> <span class="n">QObject</span>
+<span class="kn">from</span> <span class="nn">PySide2.QtWidgets</span> <span class="kn">import</span> <span class="n">QApplication</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QMainWindow</span><span class="p">,</span> <span class="n">QMenuBar</span>
+<span class="kn">from</span> <span class="nn">PySide2</span> <span class="kn">import</span> <span class="n">QtGui</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">shiboken2</span> <span class="k">as</span> <span class="nn">shiboken</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">PySide2</span> <span class="kn">import</span> <span class="n">shiboken2</span> <span class="k">as</span> <span class="n">shiboken</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">shiboken</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">Shiboken</span> <span class="kn">import</span> <span class="n">shiboken</span>
+            <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+<span class="kn">import</span> <span class="nn">maya.mel</span> <span class="k">as</span> <span class="nn">mel</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="kn">import</span> <span class="nn">maya.OpenMayaUI</span> <span class="k">as</span> <span class="nn">OpenMayaUI</span>
+
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,):</span>
+    <span class="n">long</span> <span class="o">=</span> <span class="nb">int</span>
+
+
+<div class="viewcode-block" id="get_main_window"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.get_main_window">[docs]</a><span class="k">def</span> <span class="nf">get_main_window</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns Maya main window through MEL</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">mel</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;$tempVar = $gMainWindow&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="to_qt_object"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.to_qt_object">[docs]</a><span class="k">def</span> <span class="nf">to_qt_object</span><span class="p">(</span><span class="n">maya_name</span><span class="p">,</span> <span class="n">qobj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns an instance of the Maya UI element as a QWidget</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">qobj</span><span class="p">:</span>
+        <span class="n">qobj</span> <span class="o">=</span> <span class="n">QWidget</span>
+    <span class="n">ptr</span> <span class="o">=</span> <span class="n">OpenMayaUI</span><span class="o">.</span><span class="n">MQtUtil</span><span class="o">.</span><span class="n">findControl</span><span class="p">(</span><span class="n">maya_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ptr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ptr</span> <span class="o">=</span> <span class="n">OpenMayaUI</span><span class="o">.</span><span class="n">MQtUtil</span><span class="o">.</span><span class="n">findLayout</span><span class="p">(</span><span class="n">maya_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ptr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ptr</span> <span class="o">=</span> <span class="n">OpenMayaUI</span><span class="o">.</span><span class="n">MQtUtil</span><span class="o">.</span><span class="n">findMenuItem</span><span class="p">(</span><span class="n">maya_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ptr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">wrapinstance</span><span class="p">(</span><span class="n">long</span><span class="p">(</span><span class="n">ptr</span><span class="p">),</span> <span class="n">qobj</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="to_maya_object"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.to_maya_object">[docs]</a><span class="k">def</span> <span class="nf">to_maya_object</span><span class="p">(</span><span class="n">qobj</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts given Qt object to a Maya object.</span>
+
+<span class="sd">    :param QObject qobj: Qt object to convert.</span>
+<span class="sd">    :return: Maya object name.</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">OpenMayaUI</span><span class="o">.</span><span class="n">MQtUtil</span><span class="o">.</span><span class="n">fullName</span><span class="p">(</span><span class="n">long</span><span class="p">(</span><span class="n">shiboken</span><span class="o">.</span><span class="n">getCppPointer</span><span class="p">(</span><span class="n">qobj</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span></div>
+
+
+<div class="viewcode-block" id="get_maya_window"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.get_maya_window">[docs]</a><span class="k">def</span> <span class="nf">get_maya_window</span><span class="p">(</span><span class="n">window_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wrap_instance</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the Maya main window widget as a Python object</span>
+<span class="sd">    :return: Maya Window</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">wrap_instance</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">window_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;|&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">window_name</span><span class="p">):</span>
+                <span class="c1"># qt_obj = pm.uitypes.toQtObject(window_id)</span>
+                <span class="n">qt_obj</span> <span class="o">=</span> <span class="n">to_qt_object</span><span class="p">(</span><span class="n">window_name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">qt_obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">qt_obj</span>
+            <span class="n">ptr</span> <span class="o">=</span> <span class="n">OpenMayaUI</span><span class="o">.</span><span class="n">MQtUtil</span><span class="o">.</span><span class="n">findControl</span><span class="p">(</span><span class="n">window_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ptr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">wrapinstance</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="n">QMainWindow</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ptr</span> <span class="o">=</span> <span class="n">OpenMayaUI</span><span class="o">.</span><span class="n">MQtUtil</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">ptr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">wrapinstance</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="n">QMainWindow</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">window_name</span><span class="p">,</span> <span class="p">(</span><span class="n">QWidget</span><span class="p">,</span> <span class="n">QMainWindow</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="n">window_name</span>
+    <span class="n">search</span> <span class="o">=</span> <span class="n">window_name</span> <span class="ow">or</span> <span class="s1">&#39;MayaWindow&#39;</span>
+    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">topLevelWidgets</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">objectName</span><span class="p">()</span> <span class="o">==</span> <span class="n">search</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">obj</span></div>
+
+
+<div class="viewcode-block" id="get_main_menu_menubar"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.get_main_menu_menubar">[docs]</a><span class="k">def</span> <span class="nf">get_main_menu_menubar</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns Maya main menu bar object.</span>
+
+<span class="sd">    :return: found Maya menu bar Qt widget.</span>
+<span class="sd">    :rtype: QMenuBar</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">win</span> <span class="o">=</span> <span class="n">get_maya_window</span><span class="p">()</span>
+    <span class="n">main_menu_bar</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">win</span><span class="o">.</span><span class="n">children</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">QMenuBar</span><span class="p">):</span>
+            <span class="n">main_menu_bar</span> <span class="o">=</span> <span class="n">child</span>
+
+    <span class="k">return</span> <span class="n">main_menu_bar</span></div>
+
+
+<div class="viewcode-block" id="wrapinstance"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.wrapinstance">[docs]</a><span class="k">def</span> <span class="nf">wrapinstance</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">ptr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">ptr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;shiboken&#39;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">base</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">qobj</span> <span class="o">=</span> <span class="n">shiboken</span><span class="o">.</span><span class="n">wrapInstance</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ptr</span><span class="p">),</span> <span class="n">QObject</span><span class="p">)</span>
+                <span class="n">meta_obj</span> <span class="o">=</span> <span class="n">qobj</span><span class="o">.</span><span class="n">metaObject</span><span class="p">()</span>
+                <span class="bp">cls</span> <span class="o">=</span> <span class="n">meta_obj</span><span class="o">.</span><span class="n">className</span><span class="p">()</span>
+                <span class="n">super_cls</span> <span class="o">=</span> <span class="n">meta_obj</span><span class="o">.</span><span class="n">superClass</span><span class="p">()</span><span class="o">.</span><span class="n">className</span><span class="p">()</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">QtGui</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+                    <span class="n">base</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">QtGui</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">QtGui</span><span class="p">,</span> <span class="n">super_cls</span><span class="p">):</span>
+                    <span class="n">base</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">QtGui</span><span class="p">,</span> <span class="n">super_cls</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">base</span> <span class="o">=</span> <span class="n">QWidget</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">shiboken</span><span class="o">.</span><span class="n">wrapInstance</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ptr</span><span class="p">),</span> <span class="n">base</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">PySide.shiboken</span> <span class="kn">import</span> <span class="n">wrapInstance</span>
+                <span class="k">return</span> <span class="n">wrapInstance</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ptr</span><span class="p">),</span> <span class="n">base</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s1">&#39;sip&#39;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
+            <span class="n">base</span> <span class="o">=</span> <span class="n">QObject</span>
+            <span class="k">return</span> <span class="n">shiboken</span><span class="o">.</span><span class="n">wrapinstance</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ptr</span><span class="p">),</span> <span class="n">base</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Failed to wrap object ...&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="delete_window"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.delete_window">[docs]</a><span class="k">def</span> <span class="nf">delete_window</span><span class="p">(</span><span class="n">window_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deletes Maya window with given name.</span>
+
+<span class="sd">    :param str window_name: name of the Maya window to delete.</span>
+<span class="sd">    :return: True if the window deletion operation was successful; False otherwise.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">window</span><span class="p">(</span><span class="n">window_name</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ex</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">deleteUI</span><span class="p">(</span><span class="n">window_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="is_enable_workspace_control"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.is_enable_workspace_control">[docs]</a><span class="k">def</span> <span class="nf">is_enable_workspace_control</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns whether or not workspace functionality is enabled.</span>
+
+<span class="sd">    :return: True if workspace functionality is enabled; False otherwise.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">about</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">4</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">2016</span></div>
+
+
+<div class="viewcode-block" id="delete_workspace_control"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.delete_workspace_control">[docs]</a><span class="k">def</span> <span class="nf">delete_workspace_control</span><span class="p">(</span><span class="n">workspace_control</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Delets workspace control with given name.</span>
+
+<span class="sd">    :param str workspace_control: name of the workspace control.</span>
+<span class="sd">    :return: True if the workspace control deletion operation was successful; False otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">is_enable_workspace_control</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">workspaceControl</span><span class="p">(</span><span class="n">workspace_control</span><span class="p">,</span> <span class="n">ex</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">deleteUI</span><span class="p">(</span><span class="n">workspace_control</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="isolate_current_panel"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.isolate_current_panel">[docs]</a><span class="k">def</span> <span class="nf">isolate_current_panel</span><span class="p">(</span><span class="n">add</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Isolates current Maya gui panel.</span>
+
+<span class="sd">    :param bool add:</span>
+<span class="sd">    :param args:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">panel</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">paneLayout</span><span class="p">(</span><span class="s1">&#39;viewPanes&#39;</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pane1</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">isolateSelect</span><span class="p">(</span><span class="n">panel</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">editor</span><span class="p">(</span><span class="n">panel</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mainListConnection</span><span class="o">=</span><span class="s2">&quot;activeList&quot;</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">isolateSelect</span><span class="p">(</span><span class="n">panel</span><span class="p">,</span> <span class="n">loadSelected</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">isolateSelect</span><span class="p">(</span><span class="n">panel</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="ow">not</span> <span class="n">state</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">add</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">editor</span><span class="p">(</span><span class="n">panel</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">unlockMainConnection</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">editor</span><span class="p">(</span><span class="n">panel</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">lockMainConnection</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="refresh_outliner"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.refresh_outliner">[docs]</a><span class="k">def</span> <span class="nf">refresh_outliner</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Force the refresh of the Maya outliner UI.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">mel</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;AEdagNodeCommonRefreshOutliners();&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="show_time_slider"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.show_time_slider">[docs]</a><span class="k">def</span> <span class="nf">show_time_slider</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Shows Maya UI time slider.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">mel</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;setTimeSliderVisible 1;&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="hide_time_slider"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.hide_time_slider">[docs]</a><span class="k">def</span> <span class="nf">hide_time_slider</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Hides Maya UI time slider.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">mel</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;setTimeSliderVisible 0;&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="is_time_slider_visible"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.is_time_slider_visible">[docs]</a><span class="k">def</span> <span class="nf">is_time_slider_visible</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns whether or not time slider is visible within UI.</span>
+
+<span class="sd">    :return: True if time slider is visible; False otherwise.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">playback_slider</span> <span class="o">=</span> <span class="n">mel</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;$tmpVar=$gPlayBackSlider&#39;</span><span class="p">)</span>
+    <span class="n">is_visible</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">timeControl</span><span class="p">(</span><span class="n">playback_slider</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">is_obscured</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">timeControl</span><span class="p">(</span><span class="n">playback_slider</span><span class="p">,</span> <span class="n">isObscured</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">is_visible</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_obscured</span> <span class="k">else</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="get_progress_bar"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.get_progress_bar">[docs]</a><span class="k">def</span> <span class="nf">get_progress_bar</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns Maya progress bar object.</span>
+
+<span class="sd">    :return: Maya progress bar object name.</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">main_progress_bar</span> <span class="o">=</span> <span class="n">mel</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;$tmp = $gMainProgressBar&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">main_progress_bar</span></div>
+
+
+<div class="viewcode-block" id="switch_xray_joints"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.switch_xray_joints">[docs]</a><span class="k">def</span> <span class="nf">switch_xray_joints</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">panel</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Switches xray joints.</span>
+
+<span class="sd">    :param bool state: xray joints status.</span>
+<span class="sd">    :param int panel: panel index.</span>
+<span class="sd">    :param args:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">state</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">modelEditor</span><span class="p">(</span><span class="s2">&quot;modelPanel</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">panel</span><span class="p">),</span> <span class="n">e</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">jx</span><span class="o">=</span><span class="n">state</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">currentState</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">modelEditor</span><span class="p">(</span><span class="s2">&quot;modelPanel</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">panel</span><span class="p">),</span> <span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">jx</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">modelEditor</span><span class="p">(</span><span class="s2">&quot;modelPanel</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">panel</span><span class="p">),</span> <span class="n">e</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">jx</span><span class="o">=</span><span class="ow">not</span> <span class="n">currentState</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="setup_axis"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.setup_axis">[docs]</a><span class="k">def</span> <span class="nf">setup_axis</span><span class="p">(</span><span class="n">axis</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Updates all the model panels to match the correct view along axis</span>
+<span class="sd">    axis: x or y</span>
+
+<span class="sd">    Return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">axis</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">):</span>
+        <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> is not a valid up axis. Please choose &#39;y&#39; or &#39;z&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">pm</span><span class="o">.</span><span class="n">upAxis</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">rv</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">model_panels</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">getPanel</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;modelPanel&#39;</span><span class="p">)</span>
+    <span class="n">cameras</span> <span class="o">=</span> <span class="p">[</span><span class="n">pm</span><span class="o">.</span><span class="n">modelPanel</span><span class="p">(</span><span class="n">model_panel</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">camera</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">model_panel</span> <span class="ow">in</span> <span class="n">model_panels</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">model_panel</span><span class="p">,</span> <span class="n">camera</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">model_panels</span><span class="p">,</span> <span class="n">cameras</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">camera</span> <span class="o">==</span> <span class="s1">&#39;top&#39;</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">viewSet</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">viewNegativeY</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span> <span class="k">else</span> <span class="n">pm</span><span class="o">.</span><span class="n">viewSet</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">viewNegativeZ</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">camera</span> <span class="o">==</span> <span class="s1">&#39;front&#39;</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">viewSet</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">viewNegativeZ</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span> <span class="k">else</span> <span class="n">pm</span><span class="o">.</span><span class="n">viewSet</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">viewY</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">camera</span> <span class="o">==</span> <span class="s1">&#39;left&#39;</span> <span class="ow">or</span> <span class="n">camera</span> <span class="o">==</span> <span class="s1">&#39;side&#39;</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">viewSet</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">viewNegativeX</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span> <span class="k">else</span> <span class="n">pm</span><span class="o">.</span><span class="n">viewSet</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">viewNegativeX</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">camera</span> <span class="o">==</span> <span class="s1">&#39;right&#39;</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">viewSet</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">viewX</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span> <span class="k">else</span> <span class="n">pm</span><span class="o">.</span><span class="n">viewSet</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">viewX</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">viewLookAt</span><span class="p">(</span><span class="n">camera</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">viewFit</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">panel</span><span class="o">=</span><span class="n">model_panel</span><span class="p">,</span> <span class="n">animate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_node_editors"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.get_node_editors">[docs]</a><span class="k">def</span> <span class="nf">get_node_editors</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns all node editors panels opened in Maya.</span>
+
+<span class="sd">    :return: list of opened Maya node editor panels.</span>
+<span class="sd">    :rtype: list(str)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">found</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">panel</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">getPanel</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;scriptedPanel&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">scriptedPanel</span><span class="p">(</span><span class="n">panel</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;nodeEditorPanel&#39;</span><span class="p">:</span>
+            <span class="n">node_editor</span> <span class="o">=</span> <span class="n">panel</span> <span class="o">+</span> <span class="s1">&#39;NodeEditorEd&#39;</span>
+            <span class="n">found</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node_editor</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">found</span></div>
+
+
+<div class="viewcode-block" id="is_ui_suspended"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.is_ui_suspended">[docs]</a><span class="k">def</span> <span class="nf">is_ui_suspended</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns whether UI is being suspended.</span>
+
+<span class="sd">    :return: True if UI is suspended; False otherwise.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">about</span><span class="p">(</span><span class="n">batch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">waitCursor</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="is_view_isolated"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.is_view_isolated">[docs]</a><span class="k">def</span> <span class="nf">is_view_isolated</span><span class="p">(</span><span class="n">model_panel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns whether given model panel is isolated.</span>
+
+<span class="sd">    :param str model_panel: model panel name.</span>
+<span class="sd">    :return: True if panel is isolated; False otherwise.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">state</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">isolateSelect</span><span class="p">(</span><span class="n">model_panel</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="k">return</span> <span class="n">state</span></div>
+
+
+<div class="viewcode-block" id="get_isolated_objects_for_model_panel"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.get_isolated_objects_for_model_panel">[docs]</a><span class="k">def</span> <span class="nf">get_isolated_objects_for_model_panel</span><span class="p">(</span><span class="n">model_panel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns all nodes that are being isolated in given model panel.</span>
+
+<span class="sd">    :param str model_panel: model panel name.</span>
+<span class="sd">    :return: list of isolated nodes in given model panel.</span>
+<span class="sd">    :rtype: list(pm.nt.DagNode)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">members</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">isolateSelect</span><span class="p">(</span><span class="n">model_panel</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">view_objects</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">isolateSelect</span><span class="p">(</span><span class="n">model_panel</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">viewObjects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">state</span> <span class="ow">and</span> <span class="n">view_objects</span><span class="p">:</span>
+            <span class="n">members</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sets</span><span class="p">(</span><span class="n">view_objects</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="k">return</span> <span class="n">members</span></div>
+
+
+<div class="viewcode-block" id="add_isolated_objects_for_model_panel"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.add_isolated_objects_for_model_panel">[docs]</a><span class="k">def</span> <span class="nf">add_isolated_objects_for_model_panel</span><span class="p">(</span><span class="n">model_panel</span><span class="p">,</span> <span class="n">nodes</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds given nodes as isolated nodes into the given model panel.</span>
+
+<span class="sd">    :param str model_panel: model panel name.</span>
+<span class="sd">    :param list(DagNode) nodes: nodes to isolate.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">selected</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">sl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">clear</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">model_panel</span> <span class="ow">and</span> <span class="n">nodes</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">isolateSelect</span><span class="p">(</span><span class="n">model_panel</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">isolateSelect</span><span class="p">(</span><span class="n">model_panel</span><span class="p">,</span> <span class="n">addDagObject</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+
+    <span class="n">pm</span><span class="o">.</span><span class="n">isolateSelect</span><span class="p">(</span><span class="n">model_panel</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">selected</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ManageNodeEditors"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.ManageNodeEditors">[docs]</a><span class="k">class</span> <span class="nc">ManageNodeEditors</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class that allows to temporary turn off node editor panels and restore them when needed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_node_editors</span> <span class="o">=</span> <span class="n">get_node_editors</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_additive_state_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">editor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_editors</span><span class="p">:</span>
+            <span class="n">current_value</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">nodeEditor</span><span class="p">(</span><span class="n">editor</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ann</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_additive_state_dict</span><span class="p">[</span><span class="n">editor</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_value</span>
+
+    <span class="c1"># =================================================================================================================</span>
+    <span class="c1"># PROPERTIES</span>
+    <span class="c1"># =================================================================================================================</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">node_editors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_editors</span>
+
+    <span class="c1"># =================================================================================================================</span>
+    <span class="c1"># BASE</span>
+    <span class="c1"># =================================================================================================================</span>
+
+<div class="viewcode-block" id="ManageNodeEditors.turn_off_add_new_nodes"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.ManageNodeEditors.turn_off_add_new_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">turn_off_add_new_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Disables all currently opened node editors. This disables the possibility to add new nodes into them.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">editor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_editors</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">nodeEditor</span><span class="p">(</span><span class="n">editor</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ann</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ManageNodeEditors.restore_add_new_nodes"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.ManageNodeEditors.restore_add_new_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">restore_add_new_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Restore opened node editor additive statuses.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">editor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_editors</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">nodeEditor</span><span class="p">(</span><span class="n">editor</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ann</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_additive_state_dict</span><span class="p">[</span><span class="n">editor</span><span class="p">])</span></div></div>
+
+
+<div class="viewcode-block" id="SuspendUI"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.SuspendUI">[docs]</a><span class="k">class</span> <span class="nc">SuspendUI</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class that allow to handle the suspension of Maya UI.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">AUTO_KEY_FRAME_STATE</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">BATCH_MODE</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="SuspendUI.check_batch_mode"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.SuspendUI.check_batch_mode">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">check_batch_mode</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns whether batch mode is enabled.</span>
+
+<span class="sd">        :return: True if batch mode is enabled; False otherwise.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">BATCH_MODE</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">BATCH_MODE</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">about</span><span class="p">(</span><span class="n">batch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">BATCH_MODE</span></div>
+
+<div class="viewcode-block" id="SuspendUI.set_batch_mode"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.SuspendUI.set_batch_mode">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">set_batch_mode</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">flag</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets whether batch mode is enabled.</span>
+
+<span class="sd">        :param flag: True if batch mode is enabled; False otherwise.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">cls</span><span class="o">.</span><span class="n">BATCH_MODE</span> <span class="o">=</span> <span class="n">flag</span></div>
+
+<div class="viewcode-block" id="SuspendUI.get_state"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.SuspendUI.get_state">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_state</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns whether UI is being suspended.</span>
+
+<span class="sd">        :return: True if UI is suspended; False otherwise.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">is_ui_suspended</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SuspendUI.set_state"><a class="viewcode-back" href="../../../../../cpg.maya.pyqt.utils.html#cpg.maya.pyqt.utils.ma_main_window.SuspendUI.set_state">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">flag</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets whether UI should be suspended.</span>
+
+<span class="sd">        :param flag: True to suspend Maya UI. False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">check_batch_mode</span><span class="p">():</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">AUTO_KEY_FRAME_STATE</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">autoKeyframe</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">autoKeyframe</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">waitCursor</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="n">suspend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">autoKeyframe</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">AUTO_KEY_FRAME_STATE</span><span class="p">)</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">waitCursor</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="n">suspend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

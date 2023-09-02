@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.rigging.frag.keyable_component &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.rigging.frag.keyable_component</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.rigging.frag.keyable_component</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Parameter data for working with the facial rigs.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+<span class="c1"># python imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">constraint</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.animation</span> <span class="kn">import</span> <span class="n">baking</span>
+<span class="c1"># Internal module imports</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging.frag</span> <span class="kn">import</span> <span class="n">rig_component</span>
+
+
+<div class="viewcode-block" id="KeyableComponent"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.keyable_component.KeyableComponent">[docs]</a><span class="k">class</span> <span class="nc">KeyableComponent</span><span class="p">(</span><span class="n">rig_component</span><span class="o">.</span><span class="n">RigComponent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    All flag based FRAG components should be of this type.</span>
+<span class="sd">    This would include keyable elements like FKComponents.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="KeyableComponent.create"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.keyable_component.KeyableComponent.create">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">frag_parent</span><span class="p">,</span> <span class="n">frag_type</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">align_component</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param frag_parent:</span>
+<span class="sd">        :param frag_type:</span>
+<span class="sd">        :param version:</span>
+<span class="sd">        :param side:</span>
+<span class="sd">        :param region:</span>
+<span class="sd">        :param align_component:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">rig_component</span><span class="o">.</span><span class="n">RigComponent</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">frag_parent</span><span class="p">,</span>
+                                                    <span class="n">frag_type</span><span class="p">,</span>
+                                                    <span class="n">version</span><span class="p">,</span>
+                                                    <span class="n">side</span><span class="o">=</span><span class="n">side</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+                                                    <span class="n">region</span><span class="o">=</span><span class="n">region</span><span class="p">,</span>
+                                                    <span class="n">align_component</span><span class="o">=</span><span class="n">align_component</span><span class="p">)</span>
+        <span class="n">flag_group</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">empty</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="s2">&quot;flags_</span><span class="si">{0}</span><span class="s2">_</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="n">region</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">align_component</span><span class="p">:</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">parentConstraint</span><span class="p">(</span><span class="n">align_component</span><span class="p">,</span> <span class="n">flag_group</span><span class="p">))</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">makeIdentity</span><span class="p">(</span><span class="n">flag_group</span><span class="p">,</span> <span class="n">apply</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># Add Attributes and connect attributes</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">connect_node</span><span class="p">(</span><span class="n">flag_group</span><span class="p">,</span> <span class="s1">&#39;flagGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;fragParent&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">frag_parent</span><span class="o">.</span><span class="n">get_type</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;FRAGRig&quot;</span><span class="p">:</span>
+            <span class="n">flag_group</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="n">frag_parent</span><span class="o">.</span><span class="n">flagsAll</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">node</span></div>
+
+    <span class="c1"># quick access properties</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">flag_group</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;flagGroup&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">bind_joints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;bindJoints&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;bindJoints&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="KeyableComponent.remove"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.keyable_component.KeyableComponent.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove this component and its build groups.</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">no_touch_grp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag_group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="KeyableComponent.bake_to_skeleton"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.keyable_component.KeyableComponent.bake_to_skeleton">[docs]</a>    <span class="k">def</span> <span class="nf">bake_to_skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bake_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pass bind joints to bake function.</span>
+<span class="sd">        :param list[int, int] bake_range: Two ints representing a range of frame values to bake between.</span>
+<span class="sd">        :param dict kwargs: A list of args to pass to bakeResults.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">bind_joint_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bindJoints</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()</span>
+        <span class="n">extra_attrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">bind_joint</span> <span class="ow">in</span> <span class="n">bind_joint_list</span><span class="p">:</span>
+            <span class="c1"># check for keyable custom attrs.</span>
+            <span class="n">extra_attrs</span> <span class="o">+=</span> <span class="n">bind_joint</span><span class="o">.</span><span class="n">listAttr</span><span class="p">(</span><span class="n">ud</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">baking</span><span class="o">.</span><span class="n">bake_objects</span><span class="p">(</span><span class="n">bind_joint_list</span><span class="p">,</span> <span class="n">bake_range</span><span class="o">=</span><span class="n">bake_range</span><span class="p">,</span> <span class="n">custom_attrs</span><span class="o">=</span><span class="n">extra_attrs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="KeyableComponent.attach_to_skeleton"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.keyable_component.KeyableComponent.attach_to_skeleton">[docs]</a>    <span class="k">def</span> <span class="nf">attach_to_skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Drive the component with a given skeleton.</span>
+
+<span class="sd">        :return: A list of all constraints created during the attachment process.</span>
+<span class="sd">        :rtype: list[Constraint]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">[]</span></div>
+
+<div class="viewcode-block" id="KeyableComponent.get_bakeable_rig_nodes"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.keyable_component.KeyableComponent.get_bakeable_rig_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">get_bakeable_rig_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of bakeable flags and the helpers/constraints driving them.</span>
+
+<span class="sd">        :return: A list of transforms, keyable attrs, and things to remove after baking.</span>
+<span class="sd">        :rtype: list[Transform], list[str] list[PyNode]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">flag_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_flags</span><span class="p">()</span>
+        <span class="n">things_to_delete</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">attr_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">bakeable_flags</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">flag_node</span> <span class="ow">in</span> <span class="n">flag_list</span><span class="p">:</span>
+            <span class="n">constraint_list</span> <span class="o">=</span> <span class="n">flag_node</span><span class="o">.</span><span class="n">getChildren</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">ParentConstraint</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">constraint_node</span> <span class="ow">in</span> <span class="n">constraint_list</span><span class="p">:</span>
+                <span class="n">things_to_delete</span> <span class="o">+=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">constraint</span><span class="o">.</span><span class="n">get_constraint_targets</span><span class="p">(</span><span class="n">constraint_node</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;bake_helper&#39;</span><span class="p">)]</span>
+            <span class="n">things_to_delete</span> <span class="o">+=</span> <span class="n">constraint_list</span>
+            <span class="c1"># only return attributes with an incoming connection</span>
+            <span class="c1"># $Hack FSchorsch fuck toeTap why is it on the offset flag as a pass through.</span>
+            <span class="c1"># it can&#39;t be keyed and it can&#39;t be set there.</span>
+            <span class="c1"># scooping it here causes a bake failure down range cause Maya is a drama queen.</span>
+            <span class="n">attr_list</span> <span class="o">+=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">attrName</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">flag_node</span><span class="o">.</span><span class="n">listAttr</span><span class="p">(</span><span class="n">ud</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">keyable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">settable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="kc">False</span> <span class="ow">and</span> <span class="n">x</span><span class="o">.</span><span class="n">attrName</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;toeTap&#39;</span><span class="p">])]</span>
+            <span class="k">if</span> <span class="n">constraint_list</span> <span class="ow">or</span> <span class="n">attr_list</span><span class="p">:</span>
+                <span class="n">bakeable_flags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flag_node</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">bakeable_flags</span><span class="p">,</span> <span class="n">attr_list</span><span class="p">,</span> <span class="n">things_to_delete</span></div>
+
+<div class="viewcode-block" id="KeyableComponent.get_bakeable_skeleton_nodes"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.keyable_component.KeyableComponent.get_bakeable_skeleton_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">get_bakeable_skeleton_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of driven joints.</span>
+
+<span class="sd">        :return: A list of joints this component is driving.</span>
+<span class="sd">        :rtype: list[Joint]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bindJoints</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="KeyableComponent.set_scale"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.keyable_component.KeyableComponent.set_scale">[docs]</a>    <span class="k">def</span> <span class="nf">set_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        overridable function to handle this component&#39;s scale attachment settings.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.rigging.frag.aim_component &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.rigging.frag.aim_component</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.rigging.frag.aim_component</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Parameter data for working with the facial rigs.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+
+<span class="c1"># Software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="c1"># CPG Python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">attr_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.modifiers</span> <span class="kn">import</span> <span class="n">ma_decorators</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging.frag</span> <span class="kn">import</span> <span class="n">keyable_component</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">rig_aim_joint</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging.flags</span> <span class="kn">import</span> <span class="n">frag_flag</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">lists</span>
+<span class="c1"># internal module imports</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="AimComponent"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.aim_component.AimComponent">[docs]</a><span class="k">class</span> <span class="nc">AimComponent</span><span class="p">(</span><span class="n">keyable_component</span><span class="o">.</span><span class="n">KeyableComponent</span><span class="p">):</span>
+    <span class="n">VERSION</span> <span class="o">=</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="AimComponent.create"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.aim_component.AimComponent.create">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_namespace_decorator</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">frag_parent</span><span class="p">,</span>
+                <span class="n">bind_joint</span><span class="p">,</span>
+                <span class="n">side</span><span class="p">,</span>
+                <span class="n">region</span><span class="p">,</span>
+                <span class="n">aim_target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">flag_distance</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+                <span class="n">aim_axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="n">up_axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="n">proxy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates an aim component for a single object.</span>
+
+<span class="sd">        :param FRAGNode frag_parent: FRAG Rig FRAGNode.</span>
+<span class="sd">        :param pm.nt.Joint bind_joint: Joint that will be the aim joint.</span>
+<span class="sd">        :param string side: the side in which the eye is on the face. Examples: &#39;right&#39;, &#39;left&#39;, &#39;back_left&#39;</span>
+<span class="sd">        :param string region: Name of the region.  Ex: &#39;Eye&#39;</span>
+<span class="sd">        :param float flag_distance: distance between start_joint and the flag</span>
+<span class="sd">        :param vector aim_axis: which direction in local space is up.</span>
+<span class="sd">        :param vector up_axis: which axis + or negative will be pointing down the joint in local space.</span>
+<span class="sd">        :param bool proxy: if True then it won&#39;t affect the bind joints.</span>
+<span class="sd">        :return: Returns the AimComponent component.</span>
+<span class="sd">        :rtype: AimComponent</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Set Namespace</span>
+        <span class="n">root_namespace</span> <span class="o">=</span> <span class="n">frag_parent</span><span class="o">.</span><span class="n">namespace</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">namespace</span><span class="p">(</span><span class="nb">set</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">root_namespace</span><span class="si">}</span><span class="s1">:&#39;</span><span class="p">)</span>
+
+        <span class="c1"># serialize build kwargs for later.</span>
+        <span class="n">kwargs_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">kwargs_dict</span><span class="p">[</span><span class="s1">&#39;aim_target&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aim_target</span> <span class="k">if</span> <span class="n">aim_target</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">kwargs_dict</span><span class="p">[</span><span class="s1">&#39;flag_distance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_distance</span>
+        <span class="n">kwargs_dict</span><span class="p">[</span><span class="s1">&#39;aim_axis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aim_axis</span>
+        <span class="n">kwargs_dict</span><span class="p">[</span><span class="s1">&#39;up_axis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">up_axis</span>
+        <span class="n">kwargs_dict</span><span class="p">[</span><span class="s1">&#39;proxy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">proxy</span>
+
+        <span class="n">node</span> <span class="o">=</span> <span class="n">keyable_component</span><span class="o">.</span><span class="n">KeyableComponent</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">frag_parent</span><span class="p">,</span>
+                                                            <span class="n">AimComponent</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                                                            <span class="n">AimComponent</span><span class="o">.</span><span class="n">VERSION</span><span class="p">,</span>
+                                                            <span class="n">side</span><span class="o">=</span><span class="n">side</span><span class="p">,</span>
+                                                            <span class="n">region</span><span class="o">=</span><span class="n">region</span><span class="p">,</span>
+                                                            <span class="n">align_component</span><span class="o">=</span><span class="n">bind_joint</span><span class="p">)</span>
+
+        <span class="c1"># set serialized kwargs onto our network node we&#39;ll use this for serializing the exact build params.</span>
+        <span class="n">attr_utils</span><span class="o">.</span><span class="n">set_compound_attribute_groups</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s1">&#39;buildKwargs&#39;</span><span class="p">,</span> <span class="n">kwargs_dict</span><span class="p">)</span>
+
+        <span class="c1"># Get local level groups</span>
+        <span class="n">flag_grp</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">flagGroup</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">nt_grp</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">noTouch</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+        <span class="n">aim_dict</span> <span class="o">=</span> <span class="n">rig_aim_joint</span><span class="o">.</span><span class="n">rig_aim_joint</span><span class="p">(</span><span class="n">bind_joint</span><span class="o">=</span><span class="n">bind_joint</span><span class="p">,</span>
+                                                    <span class="n">flag_distance</span><span class="o">=</span><span class="n">flag_distance</span><span class="p">,</span>
+                                                    <span class="n">aim_axis</span><span class="o">=</span><span class="n">aim_axis</span><span class="p">,</span>
+                                                    <span class="n">up_axis</span><span class="o">=</span><span class="n">up_axis</span><span class="p">,</span>
+                                                    <span class="n">proxy</span><span class="o">=</span><span class="n">proxy</span><span class="p">)</span>
+
+        <span class="n">aim_flag</span> <span class="o">=</span> <span class="n">aim_dict</span><span class="p">[</span><span class="s1">&#39;flag&#39;</span><span class="p">]</span>
+        <span class="n">rotate_loc</span> <span class="o">=</span> <span class="n">aim_dict</span><span class="p">[</span><span class="s1">&#39;rotate_locator&#39;</span><span class="p">]</span>
+        <span class="n">up_loc</span> <span class="o">=</span> <span class="n">aim_dict</span><span class="p">[</span><span class="s1">&#39;up_locator&#39;</span><span class="p">]</span>
+        <span class="n">rotate_loc_align_grp</span> <span class="o">=</span> <span class="n">aim_dict</span><span class="p">[</span><span class="s1">&#39;rotate_loc_align_grp&#39;</span><span class="p">]</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">rotate_loc_align_grp</span><span class="p">,</span> <span class="n">nt_grp</span><span class="p">)</span>
+
+        <span class="n">bind_joint</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;side&#39;</span><span class="p">,</span> <span class="n">aim_flag</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;side&#39;</span><span class="p">))</span>
+        <span class="n">bind_joint</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="n">aim_flag</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">))</span>
+        <span class="n">bind_joint</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;otherType&#39;</span><span class="p">,</span> <span class="n">aim_flag</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;otherType&#39;</span><span class="p">))</span>
+
+        <span class="n">aim_align_grp</span> <span class="o">=</span> <span class="n">aim_flag</span><span class="o">.</span><span class="n">get_align_transform</span><span class="p">()</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">aim_align_grp</span><span class="p">,</span> <span class="n">flag_grp</span><span class="p">)</span>
+
+        <span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">rotate_loc</span><span class="p">,</span> <span class="n">rotate_loc_align_grp</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">up_loc</span><span class="p">,</span> <span class="n">rotate_loc_align_grp</span><span class="p">)</span>
+
+        <span class="c1"># Connect to nodes</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">connect_node</span><span class="p">(</span><span class="n">aim_flag</span><span class="p">,</span> <span class="s1">&#39;flag&#39;</span><span class="p">,</span> <span class="s1">&#39;fragParent&#39;</span><span class="p">)</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">connect_node</span><span class="p">(</span><span class="n">bind_joint</span><span class="p">,</span> <span class="s1">&#39;bindJoints&#39;</span><span class="p">,</span> <span class="s1">&#39;fragParent&#39;</span><span class="p">)</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">connect_node</span><span class="p">(</span><span class="n">rotate_loc</span><span class="p">,</span> <span class="s1">&#39;rotateObject&#39;</span><span class="p">,</span> <span class="s1">&#39;fragParent&#39;</span><span class="p">)</span>
+
+        <span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;distance&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">distance</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">flag_distance</span><span class="p">)</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;aimAxis&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float3&#39;</span><span class="p">)</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;aimAxisX&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s1">&#39;aimAxis&#39;</span><span class="p">)</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;aimAxisY&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s1">&#39;aimAxis&#39;</span><span class="p">)</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;aimAxisZ&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s1">&#39;aimAxis&#39;</span><span class="p">)</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">aimAxis</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">aim_axis</span><span class="p">)</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;upAxis&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float3&#39;</span><span class="p">)</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;upAxisX&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s1">&#39;upAxis&#39;</span><span class="p">)</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;upAxisY&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s1">&#39;upAxis&#39;</span><span class="p">)</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;upAxisZ&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s1">&#39;upAxis&#39;</span><span class="p">)</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">upAxis</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">up_axis</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">node</span></div>
+
+<div class="viewcode-block" id="AimComponent.get_aim_flag"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.aim_component.AimComponent.get_aim_flag">[docs]</a>    <span class="k">def</span> <span class="nf">get_aim_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the connected flag.</span>
+
+<span class="sd">        :return: Returns the connected flag.</span>
+<span class="sd">        :rtype: frag.Flag</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_flag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">_flag</span><span class="p">:</span>
+            <span class="n">_flag</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">_flag</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">frag_flag</span><span class="o">.</span><span class="n">Flag</span><span class="p">(</span><span class="n">_flag</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="AimComponent.get_flags"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.aim_component.AimComponent.get_flags">[docs]</a>    <span class="k">def</span> <span class="nf">get_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the connected flags.</span>
+
+<span class="sd">        :return: Returns the connected flags.</span>
+<span class="sd">        :rtype: list(flag.Flag)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">flags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">flags</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="si">}</span><span class="s1">: Does not have any flags&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">flags</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">frag_flag</span><span class="o">.</span><span class="n">Flag</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">flags</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">flags</span></div>
+
+<div class="viewcode-block" id="AimComponent.select_flag"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.aim_component.AimComponent.select_flag">[docs]</a>    <span class="k">def</span> <span class="nf">select_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Selects all the flags associated with the rig implementation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_aim_flag</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="AimComponent.key_flag"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.aim_component.AimComponent.key_flag">[docs]</a>    <span class="k">def</span> <span class="nf">key_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Keys all the flags associated with the rig implementation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">flag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_aim_flag</span><span class="p">()</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">setKeyframe</span><span class="p">(</span><span class="n">flag</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AimComponent.to_default_pose"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.aim_component.AimComponent.to_default_pose">[docs]</a>    <span class="k">def</span> <span class="nf">to_default_pose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Moves the rig implementation back to the default pose.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">flags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_flags</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">_flag</span> <span class="ow">in</span> <span class="n">flags</span><span class="p">:</span>
+            <span class="n">attr_utils</span><span class="o">.</span><span class="n">reset_attrs</span><span class="p">(</span><span class="n">_flag</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AimComponent.get_aim_axis"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.aim_component.AimComponent.get_aim_axis">[docs]</a>    <span class="k">def</span> <span class="nf">get_aim_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the aim axis. The axis which is pointing to the aim object.</span>
+
+<span class="sd">        :return:  Returns the aim axis as a vector.</span>
+<span class="sd">        :rtype: dt.Vector</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aimAxis</span><span class="o">.</span><span class="n">get</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="AimComponent.get_up_axis"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.aim_component.AimComponent.get_up_axis">[docs]</a>    <span class="k">def</span> <span class="nf">get_up_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the up axis. The axis which is pointing to the up object.</span>
+
+<span class="sd">        :return:  Returns the up axis as a vector.</span>
+<span class="sd">        :rtype: dt.Vector</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">pm</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">upAxis</span><span class="o">.</span><span class="n">get</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="AimComponent.get_rotate_object"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.aim_component.AimComponent.get_rotate_object">[docs]</a>    <span class="k">def</span> <span class="nf">get_rotate_object</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the object that is using the aim constraint.  This is usually a locator in which the bind joint</span>
+<span class="sd">        gets constrained to.</span>
+
+<span class="sd">        :return: Returns the object that is using the aim constraint.</span>
+<span class="sd">        :rtype: pm.nt.Transform</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotateObject</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="AimComponent.get_eye_rotations"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.aim_component.AimComponent.get_eye_rotations">[docs]</a>    <span class="k">def</span> <span class="nf">get_eye_rotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the rotation value of the eyes</span>
+
+<span class="sd">        :return: left_eye_right_left, + = degrees right, - = degrees left</span>
+<span class="sd">        left_eye_up_down, + = degrees up, - = degrees down</span>
+<span class="sd">        right_eye_right_left, + = degrees right, - = degrees left</span>
+<span class="sd">        right_eye_up_down, + = degrees up, - = degrees down</span>
+<span class="sd">        :rtype: list(float)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Assumes up axis is [0,1,0] and forward axis is [0,0,1]</span>
+        <span class="n">r_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rotate_object</span><span class="p">()</span>
+        <span class="n">r_rot</span> <span class="o">=</span> <span class="n">r_object</span><span class="o">.</span><span class="n">rotate</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">[</span><span class="o">-</span><span class="n">r_rot</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="n">r_rot</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

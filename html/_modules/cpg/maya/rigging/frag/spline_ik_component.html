@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.rigging.frag.spline_ik_component &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.rigging.frag.spline_ik_component</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.rigging.frag.spline_ik_component</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Parameter data for working with the facial rigs.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+<span class="c1"># python imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">lists</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">attr_utils</span> <span class="k">as</span> <span class="n">attr_utils</span><span class="p">,</span> <span class="n">constraint</span><span class="p">,</span> <span class="n">dag</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.modifiers</span> <span class="kn">import</span> <span class="n">ma_decorators</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">joint_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">chain_markup</span><span class="p">,</span> <span class="n">spline_ik_rig</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging.flags</span> <span class="kn">import</span> <span class="n">frag_flag</span>
+<span class="c1"># Internal module imports</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging.frag</span> <span class="kn">import</span> <span class="n">keyable_component</span>
+
+
+<div class="viewcode-block" id="SplineIKComponent"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.spline_ik_component.SplineIKComponent">[docs]</a><span class="k">class</span> <span class="nc">SplineIKComponent</span><span class="p">(</span><span class="n">keyable_component</span><span class="o">.</span><span class="n">KeyableComponent</span><span class="p">):</span>
+	<span class="n">VERSION</span> <span class="o">=</span> <span class="mi">1</span>
+
+	<span class="n">ATTACH_ATTRS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;retract&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="SplineIKComponent.create"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.spline_ik_component.SplineIKComponent.create">[docs]</a>	<span class="nd">@staticmethod</span>
+	<span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_namespace_decorator</span>
+	<span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">frag_parent</span><span class="p">,</span>
+			   <span class="n">start_joint</span><span class="p">,</span>
+			   <span class="n">end_joint</span><span class="p">,</span>
+			   <span class="n">end_helper_joint</span><span class="p">,</span>
+			   <span class="n">mid_helper_joint</span><span class="p">,</span>
+			   <span class="n">side</span><span class="p">,</span>
+			   <span class="n">region</span><span class="p">,</span>
+			   <span class="n">start_helper_joint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+			   <span class="n">mid_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+			   <span class="n">can_retract</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+			   <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		This will create a new complex splineIK rig component for use within the FRAG system.</span>
+
+<span class="sd">		:param FRAGNode frag_parent: FRAG Rig FRAGNode.</span>
+<span class="sd">		:param Joint start_joint: Start joint of the chain.</span>
+<span class="sd">		:param Joint end_joint: End joint of the chain.</span>
+<span class="sd">		:param Joint start_helper_joint: A joint separated, but co-located with the start joint of the primary chain. If a joint is not supplied a flag will not be created for this.</span>
+<span class="sd">		:param Joint end_helper_joint: A joint separated, but co-located with the end joint of the primary chain.</span>
+<span class="sd">		:param Joint mid_helper_joint: A joint located between the start/end joint, but not part of the primary chain.</span>
+<span class="sd">		:param str side: The side in which the component is on the body.</span>
+<span class="sd">		:param str region: The name of the region.  EX: &quot;Arm&quot;</span>
+<span class="sd">		:param bool mid_flag: If we should create a mid component flag.</span>
+<span class="sd">		:param bool can_retract: If this component will be setup with the ability to retract.</span>
+<span class="sd">		:return: The newly created SplineIKComponent</span>
+<span class="sd">		:rtype: SplineIKComponent</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="c1"># serialize build kwargs for later.</span>
+		<span class="n">kwargs_dict</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">kwargs_dict</span><span class="p">[</span><span class="s1">&#39;mid_flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mid_flag</span>
+		<span class="n">kwargs_dict</span><span class="p">[</span><span class="s1">&#39;can_retract&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">can_retract</span>
+
+		<span class="c1"># Set Namespace</span>
+		<span class="n">root_namespace</span> <span class="o">=</span> <span class="n">frag_parent</span><span class="o">.</span><span class="n">namespace</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">namespace</span><span class="p">(</span><span class="nb">set</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">root_namespace</span><span class="si">}</span><span class="s1">:&#39;</span><span class="p">)</span>
+
+		<span class="n">node</span> <span class="o">=</span> <span class="n">keyable_component</span><span class="o">.</span><span class="n">KeyableComponent</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">frag_parent</span><span class="p">,</span>
+														 <span class="n">SplineIKComponent</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+														 <span class="n">SplineIKComponent</span><span class="o">.</span><span class="n">VERSION</span><span class="p">,</span>
+														 <span class="n">side</span><span class="o">=</span><span class="n">side</span><span class="p">,</span>
+														 <span class="n">region</span><span class="o">=</span><span class="n">region</span><span class="p">,</span>
+														 <span class="n">align_component</span><span class="o">=</span><span class="n">start_joint</span><span class="p">)</span>
+
+		<span class="c1"># set serialized kwargs onto our network node we&#39;ll use this for serializing the exact build params.</span>
+		<span class="n">attr_utils</span><span class="o">.</span><span class="n">set_compound_attribute_groups</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s1">&#39;buildKwargs&#39;</span><span class="p">,</span> <span class="n">kwargs_dict</span><span class="p">)</span>
+
+		<span class="n">chain_between</span> <span class="o">=</span> <span class="n">dag</span><span class="o">.</span><span class="n">get_between_nodes</span><span class="p">(</span><span class="n">start_joint</span><span class="p">,</span> <span class="n">end_joint</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">)</span>
+		<span class="n">skel_root</span> <span class="o">=</span> <span class="n">dag</span><span class="o">.</span><span class="n">get_absolute_parent</span><span class="p">(</span><span class="n">start_joint</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">)</span>
+		<span class="n">skel_hierarchy</span> <span class="o">=</span> <span class="n">chain_markup</span><span class="o">.</span><span class="n">ChainMarkup</span><span class="p">(</span><span class="n">skel_root</span><span class="p">)</span>
+		<span class="n">wrapped_joint</span> <span class="o">=</span> <span class="n">chain_markup</span><span class="o">.</span><span class="n">JointMarkup</span><span class="p">(</span><span class="n">start_joint</span><span class="p">)</span>
+		<span class="n">leaf_joint_list</span> <span class="o">=</span> <span class="n">skel_hierarchy</span><span class="o">.</span><span class="n">get_full_chain</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">wrapped_joint</span><span class="o">.</span><span class="n">region</span><span class="si">}</span><span class="s1">_leaf&#39;</span><span class="p">,</span> <span class="n">wrapped_joint</span><span class="o">.</span><span class="n">side</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">leaf_joint_list</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unable to find leaf joints with expected markup region: </span><span class="si">{</span><span class="n">wrapped_joint</span><span class="o">.</span><span class="n">region</span><span class="si">}</span><span class="s1">_leaf, side: </span><span class="si">{</span><span class="n">wrapped_joint</span><span class="o">.</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+		<span class="c1"># Get local level groups</span>
+		<span class="n">flag_grp</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">flagGroup</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="n">mid_flag_grp</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">_mid&#39;</span><span class="p">,</span> <span class="n">em</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">mid_flag_grp</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="n">flag_grp</span><span class="o">.</span><span class="n">getParent</span><span class="p">())</span>
+		<span class="n">nt_grp</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">noTouch</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+		<span class="c1"># duplicate chain and set up the fk chain</span>
+		<span class="n">spline_joint_chain</span> <span class="o">=</span> <span class="n">joint_utils</span><span class="o">.</span><span class="n">duplicate_chain</span><span class="p">(</span><span class="n">start_joint</span><span class="p">,</span> <span class="n">end_joint</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;spline_ik&#39;</span><span class="p">)</span>
+		<span class="n">spline_joint_chain</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="n">nt_grp</span><span class="p">)</span>
+
+		<span class="n">spline_ik_results</span> <span class="o">=</span> <span class="n">spline_ik_rig</span><span class="o">.</span><span class="n">spline_ctrl</span><span class="p">(</span><span class="n">spline_joint_chain</span><span class="p">,</span> <span class="n">end_helper_joint</span><span class="p">,</span> <span class="n">mid_helper_joint</span><span class="p">,</span>
+													  <span class="n">region</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">start_helper_joint</span><span class="o">=</span><span class="n">start_helper_joint</span><span class="p">,</span> <span class="n">mid_flag</span><span class="o">=</span><span class="n">mid_flag</span><span class="p">,</span> <span class="n">can_retract</span><span class="o">=</span><span class="n">can_retract</span><span class="p">,</span> <span class="n">root_align_transform</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">start_helper_joint</span><span class="p">:</span>
+			<span class="c1"># if we did not supply a start_helper_joint, constraint the alignment one to the flags group. This will</span>
+			<span class="c1"># allow the base of the spline IK to follow the motion of its parent.</span>
+			<span class="n">constraint</span><span class="o">.</span><span class="n">parent_constraint_safe</span><span class="p">(</span><span class="n">flag_grp</span><span class="p">,</span> <span class="n">spline_ik_results</span><span class="p">[</span><span class="s1">&#39;start_helper_joint&#39;</span><span class="p">],</span> <span class="n">mo</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">can_retract</span><span class="p">:</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">mid_helper_joint</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;retract&#39;</span><span class="p">):</span>
+				<span class="n">mid_helper_joint</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;retract&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="c1"># drive the attr on our helper joint with the end flag attr.</span>
+			<span class="c1"># this will help us restore animation if we need to bake from a skel.</span>
+			<span class="n">spline_ik_results</span><span class="p">[</span><span class="s1">&#39;flag_nodes&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">retract</span> <span class="o">&gt;&gt;</span> <span class="n">mid_helper_joint</span><span class="o">.</span><span class="n">retract</span>
+
+		<span class="k">if</span> <span class="n">mid_flag</span><span class="p">:</span>
+			<span class="n">mid_joint_flag</span> <span class="o">=</span> <span class="n">spline_ik_results</span><span class="p">[</span><span class="s1">&#39;flag_nodes&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+			<span class="n">mid_joint_flag</span><span class="o">.</span><span class="n">get_align_transform</span><span class="p">()</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="n">mid_flag_grp</span><span class="p">)</span>
+
+		<span class="c1"># parent flag align groups to the rig flag group.</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">spline_ik_results</span><span class="p">[</span><span class="s1">&#39;do_not_touch&#39;</span><span class="p">],</span> <span class="n">nt_grp</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">flag_node</span> <span class="ow">in</span> <span class="n">spline_ik_results</span><span class="p">[</span><span class="s1">&#39;flag_nodes&#39;</span><span class="p">]:</span>
+			<span class="k">if</span> <span class="n">flag_node</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">spline_ik_results</span><span class="p">[</span><span class="s1">&#39;aux_flag&#39;</span><span class="p">],</span> <span class="n">mid_joint_flag</span><span class="p">]:</span>
+				<span class="n">flag_node</span><span class="o">.</span><span class="n">get_align_transform</span><span class="p">()</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="n">flag_grp</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">can_retract</span><span class="p">:</span>
+			<span class="n">remap</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">RemapValue</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">_spline_ik_remap_end&#39;</span><span class="p">)</span>
+			<span class="n">remap</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;outputMin&#39;</span><span class="p">,</span> <span class="mf">.001</span><span class="p">)</span>
+
+			<span class="n">spline_ik_results</span><span class="p">[</span><span class="s1">&#39;orient_end&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sy</span> <span class="o">&gt;&gt;</span> <span class="n">remap</span><span class="o">.</span><span class="n">inputValue</span>
+
+		<span class="k">for</span> <span class="n">driver_joint</span><span class="p">,</span> <span class="n">chain_joint</span><span class="p">,</span> <span class="n">leaf_joint</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">spline_joint_chain</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="p">[</span><span class="n">spline_ik_results</span><span class="p">[</span><span class="s1">&#39;orient_end&#39;</span><span class="p">]],</span> <span class="n">chain_between</span><span class="p">,</span> <span class="n">leaf_joint_list</span><span class="p">):</span>
+			<span class="c1"># connect our drive hierarchy joints to our live joints.</span>
+			<span class="n">constraint</span><span class="o">.</span><span class="n">parent_constraint_safe</span><span class="p">(</span><span class="n">driver_joint</span><span class="p">,</span> <span class="n">chain_joint</span><span class="p">)</span>
+			<span class="c1"># only drive the scale x the default component will only use this channel.</span>
+			<span class="c1"># the leaper tongue component has other features that use sy/sz</span>
+			<span class="k">if</span> <span class="n">leaf_joint</span> <span class="o">!=</span> <span class="n">leaf_joint_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+				<span class="c1"># ignore the sx value on the last joint, causes some awkward stretching during normal use.</span>
+				<span class="n">driver_joint</span><span class="o">.</span><span class="n">sx</span> <span class="o">&gt;&gt;</span> <span class="n">leaf_joint</span><span class="o">.</span><span class="n">sx</span>
+			<span class="k">if</span> <span class="n">can_retract</span><span class="p">:</span>
+				<span class="n">remap</span><span class="o">.</span><span class="n">outValue</span> <span class="o">&gt;&gt;</span> <span class="n">leaf_joint</span><span class="o">.</span><span class="n">sy</span>
+				<span class="n">remap</span><span class="o">.</span><span class="n">outValue</span> <span class="o">&gt;&gt;</span> <span class="n">leaf_joint</span><span class="o">.</span><span class="n">sz</span>
+
+		<span class="k">if</span> <span class="n">can_retract</span><span class="p">:</span>
+			<span class="c1"># if we can retract make sure that all downstream joints inherit the scale.</span>
+			<span class="c1"># create remap to force a .001-1 range. Unreal does not like 0 value scales.</span>
+			<span class="k">for</span> <span class="n">child_joint</span> <span class="ow">in</span> <span class="n">chain_between</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">ad</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">):</span>
+				<span class="k">if</span> <span class="n">child_joint</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">leaf_joint_list</span><span class="p">:</span>
+					<span class="c1"># Little bit of a hack to make sure on retract we&#39;re uniformly scaling all child joints.</span>
+					<span class="n">remap</span><span class="o">.</span><span class="n">outValue</span> <span class="o">&gt;&gt;</span> <span class="n">child_joint</span><span class="o">.</span><span class="n">sx</span>
+					<span class="n">remap</span><span class="o">.</span><span class="n">outValue</span> <span class="o">&gt;&gt;</span> <span class="n">child_joint</span><span class="o">.</span><span class="n">sy</span>
+					<span class="n">remap</span><span class="o">.</span><span class="n">outValue</span> <span class="o">&gt;&gt;</span> <span class="n">child_joint</span><span class="o">.</span><span class="n">sz</span>
+
+		<span class="n">alignment_joints</span> <span class="o">=</span> <span class="p">[</span><span class="n">start_helper_joint</span><span class="p">,</span> <span class="n">end_helper_joint</span><span class="p">,</span> <span class="n">mid_helper_joint</span><span class="p">]</span> <span class="k">if</span> <span class="n">start_helper_joint</span> <span class="k">else</span> <span class="p">[</span><span class="n">end_helper_joint</span><span class="p">,</span> <span class="n">mid_helper_joint</span><span class="p">]</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">connect_nodes</span><span class="p">(</span><span class="n">chain_between</span><span class="o">+</span><span class="n">alignment_joints</span><span class="p">,</span> <span class="s1">&#39;bindJoints&#39;</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">connect_nodes</span><span class="p">(</span><span class="n">spline_ik_results</span><span class="p">[</span><span class="s1">&#39;flag_nodes&#39;</span><span class="p">],</span> <span class="s1">&#39;flags&#39;</span><span class="p">,</span> <span class="s1">&#39;fragParent&#39;</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">connect_node</span><span class="p">(</span><span class="n">spline_ik_results</span><span class="p">[</span><span class="s1">&#39;end_flag&#39;</span><span class="p">],</span> <span class="s1">&#39;end_flag&#39;</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">connect_nodes</span><span class="p">(</span><span class="n">leaf_joint_list</span><span class="p">,</span> <span class="s1">&#39;leafJoints&#39;</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">connect_node</span><span class="p">(</span><span class="n">mid_helper_joint</span><span class="p">,</span> <span class="s1">&#39;helper_joint&#39;</span><span class="p">)</span>
+
+		<span class="k">return</span> <span class="n">node</span></div>
+
+<div class="viewcode-block" id="SplineIKComponent.get_flags"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.spline_ik_component.SplineIKComponent.get_flags">[docs]</a>	<span class="k">def</span> <span class="nf">get_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">flags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()</span>
+		<span class="n">flags</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">frag_flag</span><span class="o">.</span><span class="n">Flag</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">flags</span><span class="p">))</span>
+		<span class="k">return</span> <span class="n">flags</span></div>
+
+<div class="viewcode-block" id="SplineIKComponent.attach_component"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.spline_ik_component.SplineIKComponent.attach_component">[docs]</a>	<span class="k">def</span> <span class="nf">attach_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_component_list</span><span class="p">,</span> <span class="n">parent_object_list</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Constrain the flag and no touch groups to a list of given parent objects for point and orient.</span>
+
+<span class="sd">		:param list[FRAGNode] parent_component_list: The FRAG Nodes that should be registered as parents for attachment.</span>
+<span class="sd">		:param list[Transform] parent_object_list: A list of transforms this component should be constrainted between.</span>
+<span class="sd">		:param bool point: If this FRAG component should constrain its translation.</span>
+<span class="sd">		:param bool orient: If this FRAG component should constrain its rotation.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="c1"># Get local level groups</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">parent_object_list</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">parent_component_list</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">([</span><span class="n">point</span><span class="p">,</span> <span class="n">orient</span><span class="p">]):</span>
+			<span class="k">return</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parent_object_list</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+			<span class="n">parent_object_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">parent_object_list</span><span class="p">]</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parent_component_list</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+			<span class="n">parent_component_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">parent_component_list</span><span class="p">]</span>
+
+		<span class="n">flag_grp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;flagGroup&#39;</span><span class="p">)</span>
+		<span class="n">nt_grp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;noTouch&#39;</span><span class="p">)</span>
+
+		<span class="n">attr_utils</span><span class="o">.</span><span class="n">set_attr_state</span><span class="p">(</span><span class="n">nt_grp</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">attr_utils</span><span class="o">.</span><span class="n">TRANSLATION_ATTRS</span> <span class="o">+</span> <span class="n">attr_utils</span><span class="o">.</span><span class="n">ROTATION_ATTRS</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">point</span><span class="p">:</span>
+			<span class="n">constraint</span><span class="o">.</span><span class="n">parent_constraint_safe</span><span class="p">(</span><span class="n">parent_object_list</span><span class="p">,</span> <span class="n">flag_grp</span><span class="p">,</span> <span class="n">mo</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">skip_rotate_attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">])</span>
+
+		<span class="k">if</span> <span class="n">orient</span><span class="p">:</span>
+			<span class="n">constraint</span><span class="o">.</span><span class="n">parent_constraint_safe</span><span class="p">(</span><span class="n">parent_object_list</span><span class="p">,</span> <span class="n">flag_grp</span><span class="p">,</span> <span class="n">mo</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">skip_translate_attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">])</span>
+
+		<span class="k">for</span> <span class="n">parent_component</span> <span class="ow">in</span> <span class="n">parent_component_list</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">point</span><span class="p">:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_connect_parent</span><span class="p">(</span><span class="n">parent_component</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pointParentAttachments</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">orient</span><span class="p">:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_connect_parent</span><span class="p">(</span><span class="n">parent_component</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientParentAttachments</span><span class="p">)</span>
+
+		<span class="k">for</span> <span class="n">parent_object</span> <span class="ow">in</span> <span class="n">parent_object_list</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">point</span><span class="p">:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_connect_parent</span><span class="p">(</span><span class="n">parent_object</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pointParentObjects</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">orient</span><span class="p">:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_connect_parent</span><span class="p">(</span><span class="n">parent_object</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientParentObjects</span><span class="p">)</span>
+
+		<span class="n">attr_utils</span><span class="o">.</span><span class="n">set_attr_state</span><span class="p">(</span><span class="n">nt_grp</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">attr_utils</span><span class="o">.</span><span class="n">TRANSLATION_ATTRS</span> <span class="o">+</span> <span class="n">attr_utils</span><span class="o">.</span><span class="n">ROTATION_ATTRS</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SplineIKComponent.attach_to_skeleton"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.spline_ik_component.SplineIKComponent.attach_to_skeleton">[docs]</a>	<span class="k">def</span> <span class="nf">attach_to_skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attach_skeleton_root</span><span class="p">,</span> <span class="n">mo</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Drive the component with a given skeleton.</span>
+
+<span class="sd">		:param Joint attach_skeleton_root: Top level joint of the hierarchy to drive the component.</span>
+<span class="sd">		:param bool mo: If object offsets should be maintained.</span>
+<span class="sd">		:return: A list of all created constraints.</span>
+<span class="sd">		:rtype: list[Constraint]</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">target_root_hierarchy</span> <span class="o">=</span> <span class="n">chain_markup</span><span class="o">.</span><span class="n">ChainMarkup</span><span class="p">(</span><span class="n">attach_skeleton_root</span><span class="p">)</span>
+		<span class="n">constraint_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+		<span class="c1"># get a list of all our flags.</span>
+		<span class="n">flag_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_flags</span><span class="p">()</span>
+		<span class="c1"># find out if we expect a mid flag</span>
+		<span class="n">has_mid_flag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;buildKwargs_mid_flag&#39;</span><span class="p">)</span>
+		<span class="c1"># find out if we also have a start flag min flag are end, end aux, +1 for mid +1 for start 2-4 flags total</span>
+		<span class="n">has_start_flag</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="o">+</span><span class="nb">int</span><span class="p">(</span><span class="n">has_mid_flag</span><span class="p">)</span>
+		<span class="c1"># setup our slice index for our bind joints. There will always be a mid helper even if there is not a mid flag.</span>
+		<span class="n">expected_bind_joints</span> <span class="o">=</span> <span class="mi">3</span><span class="o">+</span><span class="nb">int</span><span class="p">(</span><span class="n">has_start_flag</span><span class="p">)</span>
+
+		<span class="n">bind_joint_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bind_joints</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">expected_bind_joints</span><span class="p">:]</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">has_mid_flag</span><span class="p">:</span>
+			<span class="c1"># if we don&#39;t have a mid flag, pop off the mid_helper joint.</span>
+			<span class="n">bind_joint_list</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+		<span class="c1"># slice will always be, last of the chain joints, for end aux</span>
+		<span class="c1"># then in order: start_helper, end_helper, mid_helper | this will line up with the flag list, including if elements are missing.</span>
+
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag_list</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">bind_joint_list</span><span class="p">):</span>
+			<span class="k">for</span> <span class="n">wrapped_flag</span><span class="p">,</span> <span class="n">joint_node</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">flag_list</span><span class="p">,</span> <span class="n">bind_joint_list</span><span class="p">):</span>
+				<span class="n">wrapped_node</span> <span class="o">=</span> <span class="n">chain_markup</span><span class="o">.</span><span class="n">JointMarkup</span><span class="p">(</span><span class="n">joint_node</span><span class="p">)</span>
+				<span class="n">local_index</span> <span class="o">=</span> <span class="n">wrapped_node</span><span class="o">.</span><span class="n">get_joint_index</span><span class="p">()</span>
+				<span class="n">found_chain</span> <span class="o">=</span> <span class="n">target_root_hierarchy</span><span class="o">.</span><span class="n">get_full_chain</span><span class="p">(</span><span class="n">wrapped_node</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">wrapped_node</span><span class="o">.</span><span class="n">side</span><span class="p">)</span>
+				<span class="k">if</span> <span class="n">found_chain</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">found_chain</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">local_index</span><span class="p">:</span>
+					<span class="n">constraint_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">constraint</span><span class="o">.</span><span class="n">parent_constraint_safe</span><span class="p">(</span><span class="n">found_chain</span><span class="p">[</span><span class="n">local_index</span><span class="p">],</span> <span class="n">wrapped_flag</span><span class="p">))</span>
+
+			<span class="n">end_flag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;end_flag&#39;</span><span class="p">)</span>
+			<span class="n">wrapped_mid_helper</span> <span class="o">=</span> <span class="n">chain_markup</span><span class="o">.</span><span class="n">JointMarkup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;helper_joint&#39;</span><span class="p">))</span>
+			<span class="n">bind_mid_helper</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">target_root_hierarchy</span><span class="o">.</span><span class="n">get_full_chain</span><span class="p">(</span><span class="n">wrapped_mid_helper</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">wrapped_mid_helper</span><span class="o">.</span><span class="n">side</span><span class="p">))</span>
+			<span class="k">if</span> <span class="n">bind_mid_helper</span><span class="p">:</span>
+				<span class="k">for</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ATTACH_ATTRS</span><span class="p">:</span>
+					<span class="c1"># handle attrs that were baked to the skeleton.</span>
+					<span class="k">if</span> <span class="n">bind_mid_helper</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="n">attr_name</span><span class="p">):</span>
+						<span class="n">bind_mid_helper</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="n">attr_name</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">end_flag</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="n">attr_name</span><span class="p">)</span>
+
+		<span class="k">return</span> <span class="n">constraint_list</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

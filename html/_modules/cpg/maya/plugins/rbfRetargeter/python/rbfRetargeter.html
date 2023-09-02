@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../../" id="documentation_options" src="../../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../../_static/jquery.js"></script>
+        <script src="../../../../../../_static/underscore.js"></script>
+        <script src="../../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../../_static/doctools.js"></script>
+        <script src="../../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter</h1><div class="highlight"><pre>
+<span></span><span class="k">try</span><span class="p">:</span>
+	<span class="kn">from</span> <span class="nn">Qt</span> <span class="kn">import</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtWidgets</span>
+<span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+	<span class="kn">from</span> <span class="nn">PySide2</span> <span class="kn">import</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtWidgets</span>
+
+<span class="kn">import</span> <span class="nn">shiboken2</span>
+
+<span class="kn">from</span> <span class="nn">maya</span> <span class="kn">import</span> <span class="n">OpenMayaUI</span><span class="p">,</span> <span class="n">OpenMaya</span><span class="p">,</span> <span class="n">OpenMayaAnim</span><span class="p">,</span> <span class="n">cmds</span>
+<span class="kn">import</span> <span class="nn">maya.api.OpenMaya</span> <span class="k">as</span> <span class="nn">OpenMaya2</span>
+
+
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1"># GUI</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+
+<div class="viewcode-block" id="getMayaWindow"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.getMayaWindow">[docs]</a><span class="k">def</span> <span class="nf">getMayaWindow</span><span class="p">():</span>
+	<span class="k">try</span><span class="p">:</span>
+		<span class="n">ptr</span>     <span class="o">=</span> <span class="n">OpenMayaUI</span><span class="o">.</span><span class="n">MQtUtil</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">()</span>
+		<span class="k">return</span> <span class="n">shiboken2</span><span class="o">.</span><span class="n">wrapInstance</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ptr</span><span class="p">),</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">)</span>
+	<span class="k">except</span> <span class="p">:</span>
+		<span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="RbfRetargeterGUI"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.RbfRetargeterGUI">[docs]</a><span class="k">class</span> <span class="nc">RbfRetargeterGUI</span><span class="p">(</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMainWindow</span> <span class="p">):</span>
+
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">getMayaWindow</span><span class="p">()</span> <span class="p">):</span>
+		<span class="c1">#super(DeformationToSkinningGUI, self).__init__(parent)</span>
+		<span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMainWindow</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>  <span class="bp">self</span><span class="p">,</span> <span class="n">parent</span> <span class="p">)</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;RBF Retargeter&quot;</span><span class="p">)</span>
+
+		<span class="c1"># UI elements</span>
+		<span class="n">central_Widget</span>		<span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">()</span> <span class="p">;</span><span class="bp">self</span><span class="o">.</span><span class="n">setCentralWidget</span><span class="p">(</span> <span class="n">central_Widget</span> <span class="p">)</span>
+		<span class="n">central_Layout</span>		<span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">(</span> <span class="n">central_Widget</span> <span class="p">)</span>
+
+
+		<span class="n">gb3</span> 	<span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGroupBox</span><span class="p">()</span>  <span class="p">;</span><span class="n">central_Layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span> <span class="n">gb3</span> <span class="p">)</span>
+		<span class="n">gb3</span><span class="o">.</span><span class="n">setTitle</span><span class="p">(</span><span class="s1">&#39;Source&#39;</span><span class="p">)</span>
+		<span class="n">v3</span>		<span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">(</span> <span class="n">gb3</span> <span class="p">)</span>
+		<span class="n">v3_h1</span>	<span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">(</span> <span class="p">)</span>  <span class="p">;</span><span class="n">v3</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span> <span class="n">v3_h1</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">src_LE</span> 	<span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">()</span>    <span class="p">;</span><span class="n">v3_h1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">src_LE</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">src_PB</span>     <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">()</span>  <span class="p">;</span><span class="n">v3_h1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">src_PB</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">src_PB</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;&#39;</span><span class="p">)</span>
+
+		<span class="n">gb2</span> 	<span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGroupBox</span><span class="p">()</span>  <span class="p">;</span><span class="n">central_Layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span> <span class="n">gb2</span> <span class="p">)</span>
+		<span class="n">gb2</span><span class="o">.</span><span class="n">setTitle</span><span class="p">(</span><span class="s1">&#39;Source Shapes&#39;</span><span class="p">)</span>
+		<span class="n">v2</span>		<span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">(</span> <span class="n">gb2</span> <span class="p">)</span>
+		<span class="n">v2_h1</span>	<span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">(</span> <span class="p">)</span>  <span class="p">;</span><span class="n">v2</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span> <span class="n">v2_h1</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">srcShapes_LW</span>   <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QListWidget</span><span class="p">()</span>  <span class="p">;</span><span class="n">v2_h1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">srcShapes_LW</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">srcShapes_PB</span>   <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">()</span>  <span class="p">;</span><span class="n">v2_h1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">srcShapes_PB</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">srcShapes_PB</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;&#39;</span><span class="p">)</span>
+
+		<span class="n">gb4</span> 	<span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGroupBox</span><span class="p">()</span>  <span class="p">;</span><span class="n">central_Layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span> <span class="n">gb4</span> <span class="p">)</span>
+		<span class="n">gb4</span><span class="o">.</span><span class="n">setTitle</span><span class="p">(</span><span class="s1">&#39;Target&#39;</span><span class="p">)</span>
+		<span class="n">v4</span>		<span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">(</span> <span class="n">gb4</span> <span class="p">)</span>
+		<span class="n">v4_h1</span>	<span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">(</span> <span class="p">)</span>  <span class="p">;</span><span class="n">v4</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span> <span class="n">v4_h1</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">tgts_LW</span>   <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QListWidget</span><span class="p">()</span>  <span class="p">;</span><span class="n">v4_h1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">tgts_LW</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">tgts_PB</span>   <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">()</span>  <span class="p">;</span><span class="n">v4_h1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">tgts_PB</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">tgts_PB</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;&#39;</span><span class="p">)</span>
+
+		<span class="n">gb1</span> 	<span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGroupBox</span><span class="p">()</span>  <span class="p">;</span><span class="n">central_Layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span> <span class="n">gb1</span> <span class="p">)</span>
+		<span class="n">gb1</span><span class="o">.</span><span class="n">setTitle</span><span class="p">(</span><span class="s1">&#39;Other&#39;</span><span class="p">)</span>
+		<span class="n">v1</span>		<span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">(</span> <span class="n">gb1</span> <span class="p">)</span>
+
+		<span class="n">v1_h1</span>	<span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">(</span> <span class="p">)</span>  <span class="p">;</span><span class="n">v1</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span> <span class="n">v1_h1</span> <span class="p">)</span>
+		<span class="n">label1</span> 		    <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">()</span> <span class="p">;</span><span class="n">v1_h1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">label1</span><span class="p">)</span>
+		<span class="n">label1</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Shader From&#39;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">shader_CB</span>  <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QComboBox</span><span class="p">()</span>  <span class="p">;</span><span class="n">v1_h1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">shader_CB</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">shader_CB</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span> <span class="s1">&#39;Target&#39;</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">shader_CB</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span> <span class="s1">&#39;Shapes&#39;</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">shader_CB</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span>
+
+		<span class="n">v1_h2</span>	<span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">(</span> <span class="p">)</span>  <span class="p">;</span><span class="n">v1</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span> <span class="n">v1_h2</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">sphere_CB</span>  <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QCheckBox</span><span class="p">()</span> <span class="p">;</span><span class="n">v1_h2</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sphere_CB</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">sphere_CB</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span> <span class="s1">&#39;Volumic Sphere&#39;</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">sphere_CB</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+		<span class="n">v1_h3</span>	<span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">(</span> <span class="p">)</span>  <span class="p">;</span><span class="n">v1</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span> <span class="n">v1_h3</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">fromVertexIds_LE</span> 	<span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">()</span> <span class="p">;</span><span class="n">v1_h3</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">fromVertexIds_LE</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">fromVertexIds_LE</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span> <span class="kc">False</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">fromGetIds_PB</span>     <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">()</span>  <span class="p">;</span><span class="n">v1_h3</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">fromGetIds_PB</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">fromGetIds_PB</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span> <span class="s1">&#39;&lt;&lt;&#39;</span> <span class="p">)</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">build_PB</span>  <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">()</span>  <span class="p">;</span><span class="n">central_Layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_PB</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">build_PB</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span> <span class="s1">&#39;Build Shapes&#39;</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">build_PB</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span> <span class="s1">&#39;background-color: rgb(60,60,60);border: 2px solid rgb(0,0,0);border-radius: 3px;font: 13pt courier;color : rgb(255,77,133);&#39;</span> <span class="p">)</span>
+
+		<span class="c1"># aesthetic</span>
+		<span class="n">central_Layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span> <span class="mi">9</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">5</span> <span class="p">)</span>
+		<span class="n">v3</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="p">)</span>
+		<span class="n">v3_h1</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="p">)</span>
+		<span class="n">v2</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="p">)</span>
+		<span class="n">v2_h1</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="p">)</span>
+		<span class="n">v4</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="p">)</span>
+		<span class="n">v4_h1</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="p">)</span>
+		<span class="n">v1</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="p">)</span>
+		<span class="n">v1_h1</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="p">)</span>
+		<span class="n">v1_h2</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="p">)</span>
+		<span class="n">v1_h3</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="p">)</span>
+		<span class="n">v3</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span>
+		<span class="n">v3_h1</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span>
+		<span class="n">v2</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span>
+		<span class="n">v2_h1</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span>
+		<span class="n">v4</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span>
+		<span class="n">v4_h1</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span>
+		<span class="n">v1</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span> <span class="mi">5</span> <span class="p">)</span>
+		<span class="n">v1_h1</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span>
+		<span class="n">v1_h2</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span>
+		<span class="n">v1_h3</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span>
+
+		<span class="c1"># functions</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">src_PB</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_source</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">srcShapes_PB</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_sourceShapes</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">tgts_PB</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_targets</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">build_PB</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">buildShapes</span> <span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">fromGetIds_PB</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_src_vertexIds</span> <span class="p">)</span>
+
+		<span class="c1"># empty all   because  Qline_edits are stored  with the  self.loadSettings()</span>
+		<span class="c1"># but NOT the  QlistWidget   so I prefer to have all empty</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">src_LE</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">tgts_LW</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">srcShapes_LW</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">fromVertexIds_LE</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Solver Vertices&#39;</span><span class="p">)</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QRect</span><span class="p">(</span><span class="mi">579</span><span class="p">,</span> <span class="mi">749</span><span class="p">,</span> <span class="mi">199</span><span class="p">,</span> <span class="mi">515</span><span class="p">)</span> <span class="p">)</span>
+
+<div class="viewcode-block" id="RbfRetargeterGUI.mesh_from_transform"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.RbfRetargeterGUI.mesh_from_transform">[docs]</a>	<span class="k">def</span> <span class="nf">mesh_from_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span> <span class="p">):</span>
+
+		<span class="k">if</span> <span class="n">cmds</span><span class="o">.</span><span class="n">nodeType</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">==</span><span class="s1">&#39;mesh&#39;</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">item</span>
+		<span class="c1"># else</span>
+		<span class="n">mesh</span>    <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pa</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;mesh&quot;</span>  <span class="p">)</span> <span class="c1"># f=fullPath</span>
+
+		<span class="k">if</span> <span class="n">mesh</span> <span class="p">:</span>
+			<span class="k">return</span> <span class="n">mesh</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="RbfRetargeterGUI.set_source"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.RbfRetargeterGUI.set_source">[docs]</a>	<span class="k">def</span> <span class="nf">set_source</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+		<span class="n">sel</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">sl</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;transform&#39;</span><span class="p">,</span><span class="s1">&#39;mesh&#39;</span><span class="p">)</span> <span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">sel</span> <span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">src_LE</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+			<span class="n">OpenMaya2</span><span class="o">.</span><span class="n">MGlobal</span><span class="o">.</span><span class="n">displayInfo</span><span class="p">(</span><span class="s1">&#39;Please select a mesh&#39;</span><span class="p">)</span>
+		<span class="k">else</span> <span class="p">:</span>
+			<span class="n">mesh</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_from_transform</span><span class="p">(</span> <span class="n">sel</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span>
+
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">mesh</span> <span class="p">:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">src_LE</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+				<span class="n">OpenMaya2</span><span class="o">.</span><span class="n">MGlobal</span><span class="o">.</span><span class="n">displayInfo</span><span class="p">(</span><span class="s1">&#39;Please select a mesh&#39;</span><span class="p">)</span>
+			<span class="k">else</span> <span class="p">:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">src_LE</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RbfRetargeterGUI.set_targets"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.RbfRetargeterGUI.set_targets">[docs]</a>	<span class="k">def</span> <span class="nf">set_targets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+		<span class="n">sel</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">sl</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;transform&#39;</span><span class="p">,</span><span class="s1">&#39;mesh&#39;</span><span class="p">)</span> <span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">sel</span> <span class="p">:</span>
+			<span class="n">meshes</span>  <span class="o">=</span> <span class="p">[]</span>
+			<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sel</span> <span class="p">:</span>
+				<span class="n">mesh</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_from_transform</span><span class="p">(</span> <span class="n">item</span> <span class="p">)</span>
+				<span class="k">if</span> <span class="ow">not</span> <span class="n">mesh</span> <span class="p">:</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">tgts_LW</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+					<span class="n">OpenMaya2</span><span class="o">.</span><span class="n">MGlobal</span><span class="o">.</span><span class="n">displayInfo</span><span class="p">(</span><span class="s1">&#39;Please select meshes&#39;</span><span class="p">)</span>
+					<span class="k">return</span>
+				<span class="n">meshes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">mesh</span> <span class="p">)</span>
+
+			<span class="bp">self</span><span class="o">.</span><span class="n">tgts_LW</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">tgts_LW</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span> <span class="n">meshes</span>  <span class="p">)</span>
+		<span class="k">else</span> <span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">tgts_LW</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="RbfRetargeterGUI.set_sourceShapes"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.RbfRetargeterGUI.set_sourceShapes">[docs]</a>	<span class="k">def</span> <span class="nf">set_sourceShapes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+		<span class="n">sel</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">sl</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;transform&#39;</span><span class="p">,</span><span class="s1">&#39;mesh&#39;</span><span class="p">)</span> <span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">sel</span> <span class="p">:</span>
+			<span class="n">meshes</span>  <span class="o">=</span> <span class="p">[]</span>
+
+			<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sel</span> <span class="p">:</span>
+				<span class="n">mesh</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_from_transform</span><span class="p">(</span> <span class="n">item</span> <span class="p">)</span>
+
+				<span class="k">if</span> <span class="ow">not</span> <span class="n">mesh</span> <span class="p">:</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">srcShapes_LW</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+					<span class="n">OpenMaya2</span><span class="o">.</span><span class="n">MGlobal</span><span class="o">.</span><span class="n">displayInfo</span><span class="p">(</span><span class="s1">&#39;Please select meshes&#39;</span><span class="p">)</span>
+					<span class="k">return</span>
+				<span class="n">meshes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">mesh</span> <span class="p">)</span>
+
+			<span class="bp">self</span><span class="o">.</span><span class="n">srcShapes_LW</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">srcShapes_LW</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span> <span class="n">meshes</span>  <span class="p">)</span>
+		<span class="k">else</span> <span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">srcShapes_LW</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="RbfRetargeterGUI.set_src_vertexIds"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.RbfRetargeterGUI.set_src_vertexIds">[docs]</a>	<span class="k">def</span> <span class="nf">set_src_vertexIds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+		<span class="n">sel</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span> <span class="s2">&quot;*.vtx[*]&quot;</span><span class="p">,</span> <span class="n">sl</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">sel</span> <span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">fromVertexIds_LE</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Solver Vertices&#39;</span><span class="p">)</span>
+			<span class="k">return</span>
+
+		<span class="c1"># else</span>
+		<span class="n">vIds_str</span>    <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+		<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span> <span class="p">:</span>
+			<span class="n">tmp</span>         <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">)</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+			<span class="n">vIds_str</span>    <span class="o">+=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;]&#39;</span><span class="p">)</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+			<span class="k">if</span> <span class="n">i</span><span class="o">!=</span><span class="nb">len</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+				<span class="n">vIds_str</span>    <span class="o">+=</span> <span class="s1">&#39;, &#39;</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">fromVertexIds_LE</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">vIds_str</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RbfRetargeterGUI.get_srcVertexIds"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.RbfRetargeterGUI.get_srcVertexIds">[docs]</a>	<span class="k">def</span> <span class="nf">get_srcVertexIds</span><span class="p">(</span><span class="bp">self</span> <span class="p">):</span>
+
+		<span class="n">ids_str</span>     <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fromVertexIds_LE</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+
+		<span class="k">if</span> <span class="n">ids_str</span> <span class="o">==</span> <span class="s1">&#39;Solver Vertices&#39;</span><span class="p">:</span>
+			<span class="k">return</span> <span class="p">[]</span>
+
+
+		<span class="n">input_ids</span>   <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span> <span class="s1">&#39;[&#39;</span><span class="o">+</span><span class="n">ids_str</span><span class="o">+</span><span class="s1">&#39;]&#39;</span> <span class="p">)</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_ids</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span> <span class="p">:</span>
+			<span class="k">return</span> <span class="p">[]</span>
+
+		<span class="k">return</span> <span class="n">input_ids</span></div>
+
+<div class="viewcode-block" id="RbfRetargeterGUI.buildShapes"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.RbfRetargeterGUI.buildShapes">[docs]</a>	<span class="k">def</span> <span class="nf">buildShapes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+		<span class="n">cmds</span><span class="o">.</span><span class="n">undoInfo</span><span class="p">(</span><span class="n">openChunk</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+		<span class="c1"># get</span>
+		<span class="n">source</span>          <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">src_LE</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+		<span class="n">targets</span>         <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tgts_LW</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tgts_LW</span><span class="o">.</span><span class="n">count</span><span class="p">())]</span>
+		<span class="n">sourceShapes</span>    <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">srcShapes_LW</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">srcShapes_LW</span><span class="o">.</span><span class="n">count</span><span class="p">())]</span>
+
+		<span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">source</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">targets</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">sourceShapes</span><span class="p">):</span>
+			<span class="n">OpenMaya2</span><span class="o">.</span><span class="n">MGlobal</span><span class="o">.</span><span class="n">displayInfo</span><span class="p">(</span><span class="s1">&#39;Please fill all inputs : source mesh, source shape(s), target(s) mesh&#39;</span><span class="p">)</span>
+			<span class="k">return</span>
+
+		<span class="k">if</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">sourceShapes</span><span class="p">:</span>
+			<span class="n">OpenMaya2</span><span class="o">.</span><span class="n">MGlobal</span><span class="o">.</span><span class="n">displayInfo</span><span class="p">(</span><span class="s2">&quot;Source can&#39;t be a SourceShape at the same time !&quot;</span><span class="p">)</span>
+			<span class="k">return</span>
+		<span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets</span> <span class="p">:</span>
+			<span class="k">if</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">sourceShapes</span> <span class="p">:</span>
+				<span class="n">OpenMaya2</span><span class="o">.</span><span class="n">MGlobal</span><span class="o">.</span><span class="n">displayInfo</span><span class="p">(</span><span class="s2">&quot;Target can&#39;t be a SourceShape at the same time !&quot;</span><span class="p">)</span>
+				<span class="k">return</span>
+			<span class="k">if</span> <span class="n">source</span><span class="o">==</span><span class="n">target</span> <span class="p">:</span>
+				<span class="n">OpenMaya2</span><span class="o">.</span><span class="n">MGlobal</span><span class="o">.</span><span class="n">displayInfo</span><span class="p">(</span><span class="s2">&quot;Source can&#39;t be a Target at the same time !&quot;</span><span class="p">)</span>
+				<span class="k">return</span>
+
+		<span class="c1"># build or not  the Volumic/Static Sphere  +  get vertexIds used in the command</span>
+		<span class="n">useSphere</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sphere_CB</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
+		<span class="n">from_ids</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_srcVertexIds</span><span class="p">(</span>  <span class="p">)</span>
+
+		<span class="k">if</span> <span class="mi">0</span><span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">from_ids</span><span class="p">)</span> <span class="o">&lt;</span><span class="mi">3</span> <span class="p">:</span>
+			<span class="n">OpenMaya2</span><span class="o">.</span><span class="n">MGlobal</span><span class="o">.</span><span class="n">displayInfo</span><span class="p">(</span><span class="s1">&#39;Solver Vertices minimum is 3&#39;</span><span class="p">)</span>
+			<span class="k">return</span>
+
+		<span class="c1"># launch custom command for each target</span>
+		<span class="c1"># cmds.loadPlugin( &quot;rbfRetargeter&quot;, quiet=True )</span>
+
+		<span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets</span> <span class="p">:</span>
+
+			<span class="n">newTRs</span>      <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">retargetShapes</span><span class="p">(</span> <span class="n">source</span><span class="p">,</span> <span class="n">sourceShapes</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">useSphere</span><span class="p">,</span> <span class="n">from_ids</span> <span class="p">)</span>
+			<span class="n">newShapes</span>   <span class="o">=</span> <span class="p">[</span><span class="n">cmds</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">newTRs</span><span class="p">]</span>
+
+			<span class="c1"># copy shaders from target or shapes</span>
+			<span class="n">shaderMode</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shader_CB</span><span class="o">.</span><span class="n">currentIndex</span><span class="p">()</span>
+			<span class="k">if</span> <span class="n">shaderMode</span><span class="o">==</span><span class="mi">0</span> <span class="p">:</span>      <span class="n">transfer_to_multiple</span><span class="p">(</span> <span class="n">target</span><span class="p">,</span> <span class="n">newShapes</span> <span class="p">)</span>
+			<span class="k">elif</span> <span class="n">shaderMode</span><span class="o">==</span><span class="mi">1</span> <span class="p">:</span>    <span class="n">transfer_one_to_one</span><span class="p">(</span> <span class="n">sourceShapes</span><span class="p">,</span> <span class="n">newShapes</span> <span class="p">)</span>
+
+		<span class="n">cmds</span><span class="o">.</span><span class="n">undoInfo</span><span class="p">(</span><span class="n">closeChunk</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="showUI"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.showUI">[docs]</a><span class="k">def</span> <span class="nf">showUI</span><span class="p">():</span>
+	<span class="n">win</span>     <span class="o">=</span> <span class="n">RbfRetargeterGUI</span><span class="p">()</span>
+	<span class="n">win</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+	<span class="k">return</span> <span class="n">win</span></div>
+
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1"># Utilities</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+
+
+<div class="viewcode-block" id="get_shadingEngines"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.get_shadingEngines">[docs]</a><span class="k">def</span> <span class="nf">get_shadingEngines</span><span class="p">(</span> <span class="n">item</span> <span class="p">):</span>
+<span class="w">	</span><span class="sd">&#39;&#39;&#39;from a shader or a shape &#39;&#39;&#39;</span>
+
+	<span class="n">outputs</span>    <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span> <span class="n">item</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;shadingEngine&quot;</span> <span class="p">)</span>
+
+	<span class="k">if</span> <span class="n">outputs</span> <span class="p">:</span>
+		<span class="k">return</span> <span class="nb">list</span><span class="p">(</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">outputs</span><span class="p">))</span>
+	<span class="k">else</span> <span class="p">:</span>
+		<span class="c1">#OpenMaya2.MGlobal.displayInfo(&#39;No ShadingEngine connected to &#39;+item)</span>
+		<span class="k">return</span> <span class="p">[]</span></div>
+
+<div class="viewcode-block" id="assigned_from_shadingEngine"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.assigned_from_shadingEngine">[docs]</a><span class="k">def</span> <span class="nf">assigned_from_shadingEngine</span><span class="p">(</span> <span class="n">shadingEngine</span> <span class="p">):</span>
+<span class="w">	</span><span class="sd">&#39;&#39;&#39;get shapes and compounds assigned by this shading engine&#39;&#39;&#39;</span>
+
+	<span class="n">assigned</span>	<span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">sets</span><span class="p">(</span> <span class="n">shadingEngine</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="c1"># assigned	= cmds.ls( assigned, fl=True )</span>
+
+	<span class="k">return</span> <span class="n">assigned</span></div>
+
+<div class="viewcode-block" id="assignedList_from_shape"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.assignedList_from_shape">[docs]</a><span class="k">def</span> <span class="nf">assignedList_from_shape</span><span class="p">(</span> <span class="n">shape</span>  <span class="p">):</span>
+<span class="w">	</span><span class="sd">&#39;&#39;&#39;get shapes and compounds assigned on this shape&#39;&#39;&#39;</span>
+
+	<span class="n">shEngines</span>	    <span class="o">=</span> <span class="n">get_shadingEngines</span><span class="p">(</span> <span class="n">shape</span> <span class="p">)</span>
+	<span class="n">assigned_list</span><span class="p">,</span> <span class="n">assigned_engines</span>   <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+
+	<span class="n">transform</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="k">for</span> <span class="n">shEngine</span> <span class="ow">in</span> <span class="n">shEngines</span><span class="p">:</span>
+		<span class="n">allObjs</span> <span class="o">=</span> <span class="n">assigned_from_shadingEngine</span><span class="p">(</span> <span class="n">shEngine</span> <span class="p">)</span>
+		<span class="n">objs</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">allObjs</span> <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="n">shape</span><span class="p">,</span> <span class="n">transform</span><span class="p">]]</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">objs</span><span class="p">:</span>
+			<span class="k">continue</span>
+
+		<span class="n">assigned_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">objs</span> <span class="p">)</span>
+		<span class="n">assigned_engines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">shEngine</span> <span class="p">)</span>
+
+	<span class="k">return</span> <span class="n">assigned_list</span><span class="p">,</span> <span class="n">assigned_engines</span></div>
+
+<div class="viewcode-block" id="assign"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.assign">[docs]</a><span class="k">def</span> <span class="nf">assign</span><span class="p">(</span> <span class="n">onThat</span><span class="p">,</span> <span class="n">shEngine</span> <span class="p">):</span>
+<span class="w">	</span><span class="sd">&#39;&#39;&#39;onThat is a list of shapes and compounds</span>
+<span class="sd">	This command can</span>
+<span class="sd">	- assign onThat  and  create a new shader with shaderName and shaderType</span>
+<span class="sd">	- or just assign  using existing shaderName  ( so ignoring shaderType )&#39;&#39;&#39;</span>
+
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	if cmds.objExists( shaderName ):</span>
+<span class="sd">		shaderNode      = shaderName</span>
+<span class="sd">		shEngine        = get_shadingEngines( shaderNode )[0]</span>
+
+<span class="sd">	else :</span>
+<span class="sd">		# createNew</span>
+<span class="sd">		# connection for Maya shaders</span>
+<span class="sd">		cmds.connectAttr( shaderNode+&#39;.outColor&#39;, shEngine+&#39;.surfaceShader&#39;)</span>
+
+<span class="sd">		# for mentalRay shaders</span>
+<span class="sd">		#...</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># assign</span>
+	<span class="c1">#for item in onThat :</span>
+	<span class="c1">#	cmds.sets( item, fe=shEngine  )</span>
+	<span class="n">cmds</span><span class="o">.</span><span class="n">sets</span><span class="p">(</span> <span class="n">onThat</span><span class="p">,</span> <span class="n">fe</span><span class="o">=</span><span class="n">shEngine</span>  <span class="p">)</span></div>
+
+<div class="viewcode-block" id="transfer_multiple"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.transfer_multiple">[docs]</a><span class="k">def</span> <span class="nf">transfer_multiple</span><span class="p">(</span> <span class="n">assigned_list</span><span class="p">,</span> <span class="n">shEngines</span> <span class="p">):</span>
+
+	<span class="k">for</span> <span class="n">onThat</span><span class="p">,</span> <span class="n">shEngine</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">assigned_list</span><span class="p">,</span> <span class="n">shEngines</span><span class="p">)</span> <span class="p">:</span>
+
+		<span class="n">assign</span><span class="p">(</span> <span class="n">onThat</span><span class="p">,</span> <span class="n">shEngine</span> <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="compress"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.compress">[docs]</a><span class="k">def</span> <span class="nf">compress</span><span class="p">(</span> <span class="n">componentList</span><span class="p">,</span> <span class="n">vertex</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">edge</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="kc">False</span> <span class="p">):</span>
+<span class="w">	</span><span class="sd">&#39;&#39;&#39;Invert ls(fl=True) effect,  return [&#39;mesh.f[0:1]&#39;, &#39;mesh.f[3]&#39;] &#39;&#39;&#39;</span>
+
+	<span class="k">if</span> <span class="n">vertex</span> <span class="p">:</span>
+		<span class="k">return</span> <span class="n">cmds</span><span class="o">.</span><span class="n">polyListComponentConversion</span><span class="p">(</span> <span class="n">componentList</span><span class="p">,</span> <span class="n">fv</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tv</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
+	<span class="k">elif</span> <span class="n">edge</span> <span class="p">:</span>
+		<span class="k">return</span> <span class="n">cmds</span><span class="o">.</span><span class="n">polyListComponentConversion</span><span class="p">(</span> <span class="n">componentList</span><span class="p">,</span> <span class="n">fe</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">te</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
+	<span class="k">elif</span> <span class="n">face</span> <span class="p">:</span>
+		<span class="k">return</span> <span class="n">cmds</span><span class="o">.</span><span class="n">polyListComponentConversion</span><span class="p">(</span> <span class="n">componentList</span><span class="p">,</span> <span class="n">ff</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tf</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
+	<span class="k">else</span> <span class="p">:</span>
+		<span class="n">cmds</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No flag specified ! vertex ? edge ? face ?&#39;</span><span class="p">)</span>
+		<span class="k">return</span></div>
+
+<div class="viewcode-block" id="uncompress"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.uncompress">[docs]</a><span class="k">def</span> <span class="nf">uncompress</span><span class="p">(</span> <span class="n">componentList</span> <span class="p">):</span>
+	<span class="k">return</span> <span class="n">cmds</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span> <span class="n">componentList</span><span class="p">,</span> <span class="n">fl</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span></div>
+
+<div class="viewcode-block" id="get_node"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.get_node">[docs]</a><span class="k">def</span> <span class="nf">get_node</span><span class="p">(</span> <span class="n">plug</span> <span class="p">):</span>
+
+	<span class="k">return</span> <span class="n">plug</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="get_shape_from_component"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.get_shape_from_component">[docs]</a><span class="k">def</span> <span class="nf">get_shape_from_component</span><span class="p">(</span> <span class="n">component</span> <span class="p">):</span>
+<span class="w">	</span><span class="sd">&#39;&#39;&#39;Because a component can be transform.f[0] or shape.f[0] I need a function to deal with that &#39;&#39;&#39;</span>
+
+	<span class="n">shape</span>   <span class="o">=</span> <span class="n">get_node</span><span class="p">(</span> <span class="n">component</span> <span class="p">)</span>
+
+	<span class="k">if</span> <span class="n">cmds</span><span class="o">.</span><span class="n">nodeType</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;transform&#39;</span><span class="p">,</span><span class="s1">&#39;joint&#39;</span><span class="p">):</span>
+		<span class="n">shape</span>   <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">True</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># -path give fullPath only if doubleNamed</span>
+
+	<span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="get_componentId"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.get_componentId">[docs]</a><span class="k">def</span> <span class="nf">get_componentId</span><span class="p">(</span> <span class="n">component</span> <span class="p">):</span>
+<span class="w">	</span><span class="sd">&#39;&#39;&#39;component &#39;pSphere3.vtx[184]&#39; or &#39;nurbsSphere1.cv[32][11]&#39;  etc... so return a list of ids&#39;&#39;&#39;</span>
+
+	<span class="n">component_dim</span>   <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">)</span>
+
+	<span class="n">ids</span>     <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span> <span class="n">component</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="o">+</span><span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;]&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span>  <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">component_dim</span><span class="p">)</span> <span class="p">]</span>
+
+	<span class="k">return</span> <span class="n">ids</span></div>
+
+<div class="viewcode-block" id="shape_componentList_to_dict"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.shape_componentList_to_dict">[docs]</a><span class="k">def</span> <span class="nf">shape_componentList_to_dict</span><span class="p">(</span> <span class="n">componentList</span> <span class="p">):</span>
+<span class="w">	</span><span class="sd">&#39;&#39;&#39;from []   return {&#39;pSphereShape3&#39;: [[0], [1], [2]], &#39;nurbs1:[[0,0],[0,1],[0,2]]&#39; } &#39;&#39;&#39;</span>
+
+
+	<span class="n">ids_per_shape</span>   <span class="o">=</span> <span class="p">{}</span>
+
+
+	<span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">componentList</span> <span class="p">:</span>
+
+		<span class="c1">#</span>
+		<span class="n">shape</span>   <span class="o">=</span> <span class="n">get_shape_from_component</span><span class="p">(</span> <span class="n">component</span> <span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">shape</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ids_per_shape</span> <span class="p">:</span>
+			<span class="n">ids_per_shape</span><span class="p">[</span><span class="n">shape</span><span class="p">]</span>    <span class="o">=</span> <span class="p">[]</span>
+
+		<span class="c1">#</span>
+		<span class="n">vId</span>     <span class="o">=</span> <span class="n">get_componentId</span><span class="p">(</span> <span class="n">component</span> <span class="p">)</span>
+
+		<span class="n">ids_per_shape</span><span class="p">[</span><span class="n">shape</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">vId</span> <span class="p">)</span>
+
+
+	<span class="k">return</span> <span class="n">ids_per_shape</span></div>
+
+<div class="viewcode-block" id="componentList_to_dict"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.componentList_to_dict">[docs]</a><span class="k">def</span> <span class="nf">componentList_to_dict</span><span class="p">(</span>  <span class="n">componentList</span>  <span class="p">):</span>
+<span class="w">	</span><span class="sd">&#39;&#39;&#39;Use same function than lib.shape,</span>
+<span class="sd">	Ignore component type.</span>
+<span class="sd">	return {shape1:[0,5,3,2], shape2:[10,11], ...}&#39;&#39;&#39;</span>
+
+	<span class="n">componentList</span> 	<span class="o">=</span> <span class="n">uncompress</span><span class="p">(</span> <span class="n">componentList</span> <span class="p">)</span>
+
+	<span class="n">ids_per_shape</span>   <span class="o">=</span> <span class="n">shape_componentList_to_dict</span><span class="p">(</span> <span class="n">componentList</span> <span class="p">)</span>
+
+
+	<span class="c1"># libShape function return n-dimension component</span>
+	<span class="c1"># mesh components are 1-dim</span>
+	<span class="n">ids_per_mesh</span>    <span class="o">=</span> <span class="p">{}</span>
+
+	<span class="k">for</span> <span class="n">mesh</span> <span class="ow">in</span> <span class="n">ids_per_shape</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="p">:</span>
+
+		<span class="n">mesh_nIds</span>   <span class="o">=</span> <span class="n">ids_per_shape</span><span class="p">[</span><span class="n">mesh</span><span class="p">]</span>
+		<span class="n">mesh_1Ids</span>   <span class="o">=</span> <span class="p">[</span><span class="n">nId</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">nId</span> <span class="ow">in</span> <span class="n">mesh_nIds</span><span class="p">]</span>
+
+		<span class="n">ids_per_mesh</span><span class="p">[</span><span class="n">mesh</span><span class="p">]</span>  <span class="o">=</span> <span class="n">mesh_1Ids</span>
+
+	<span class="k">return</span> <span class="n">ids_per_mesh</span></div>
+
+<div class="viewcode-block" id="dict_to_componentList"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.dict_to_componentList">[docs]</a><span class="k">def</span> <span class="nf">dict_to_componentList</span><span class="p">(</span> <span class="n">dic</span><span class="p">,</span> <span class="n">vertex</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">edge</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="kc">False</span> <span class="p">):</span>
+
+	<span class="n">cType</span> 	<span class="o">=</span> <span class="mi">0</span>
+	<span class="k">if</span> <span class="n">edge</span> <span class="p">:</span><span class="n">cType</span><span class="o">=</span><span class="mi">1</span>
+	<span class="k">if</span> <span class="n">face</span> <span class="p">:</span><span class="n">cType</span><span class="o">=</span><span class="mi">2</span>
+	<span class="nb">str</span> 	<span class="o">=</span> <span class="p">[</span><span class="s1">&#39;vtx&#39;</span><span class="p">,</span><span class="s1">&#39;e&#39;</span><span class="p">,</span><span class="s1">&#39;f&#39;</span><span class="p">][</span><span class="n">cType</span><span class="p">]</span>
+
+	<span class="n">componentList</span> 	<span class="o">=</span> <span class="p">[]</span>
+	<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+		<span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+			<span class="n">componentList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">key</span><span class="o">+</span><span class="s1">&#39;.</span><span class="si">%s</span><span class="s1">[</span><span class="si">%s</span><span class="s1">]&#39;</span><span class="o">%</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="n">value</span><span class="p">)</span> <span class="p">)</span>
+
+	<span class="k">return</span> <span class="n">componentList</span></div>
+
+
+
+<div class="viewcode-block" id="transfer_to"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.transfer_to">[docs]</a><span class="k">def</span> <span class="nf">transfer_to</span><span class="p">(</span> <span class="n">fromShape</span><span class="p">,</span> <span class="n">toShape</span><span class="p">,</span> <span class="n">cloneNum</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&#39;&#39;&#39;must have same topo.</span>
+<span class="sd">	If cloneNum = &gt;=2  force assign to faces*cloneNum even if the faces dont exist.</span>
+<span class="sd">	if cloneNum == -1  try to assign to the exact number of clone.</span>
+<span class="sd">	if cloneNum == 0 or 1  dont do anything.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="c1"># secu</span>
+	<span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">cmds</span><span class="o">.</span><span class="n">nodeType</span><span class="p">(</span><span class="n">fromShape</span><span class="p">)</span><span class="o">==</span><span class="s1">&#39;mesh&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">cmds</span><span class="o">.</span><span class="n">nodeType</span><span class="p">(</span><span class="n">toShape</span><span class="p">)</span><span class="o">==</span><span class="s1">&#39;mesh&#39;</span><span class="p">):</span>
+		<span class="n">OpenMaya2</span><span class="o">.</span><span class="n">MGlobal</span><span class="o">.</span><span class="n">displayError</span><span class="p">(</span><span class="s1">&#39;Inputs must be mesh shapes : &#39;</span><span class="o">+</span><span class="n">fromShape</span><span class="o">+</span><span class="s1">&#39; &#39;</span><span class="o">+</span><span class="n">toShape</span><span class="p">)</span>
+		<span class="k">return</span> <span class="kc">None</span>
+
+
+	<span class="c1">#</span>
+	<span class="n">fromTr</span>      <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">listRelatives</span><span class="p">(</span> <span class="n">fromShape</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">True</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+	<span class="n">assigned_list</span><span class="p">,</span> <span class="n">shEngines</span>    <span class="o">=</span> <span class="n">assignedList_from_shape</span><span class="p">(</span> <span class="n">fromShape</span> <span class="p">)</span>
+
+	<span class="c1"># replace the name of fromShape by toShape</span>
+	<span class="n">newAssign_list</span>  <span class="o">=</span> <span class="p">[]</span>
+
+	<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">assigned</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">assigned_list</span><span class="p">)</span> <span class="p">:</span>
+
+		<span class="n">newAssign</span>   <span class="o">=</span> <span class="p">[]</span>
+
+		<span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">assigned</span><span class="p">)</span> <span class="p">:</span>
+
+
+			<span class="c1"># the shape</span>
+			<span class="k">if</span> <span class="n">assigned_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="n">fromShape</span> <span class="p">:</span>
+
+				<span class="n">newAssign</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">toShape</span> <span class="p">)</span>
+
+
+			<span class="c1"># a face</span>
+			<span class="k">elif</span> <span class="s2">&quot;.f[&quot;</span> <span class="ow">in</span> <span class="n">assigned_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="p">:</span>
+
+				<span class="k">if</span> <span class="n">fromTr</span> <span class="ow">in</span> <span class="n">assigned_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="p">:</span>
+					<span class="n">newAssign</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>  <span class="n">assigned_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span> <span class="n">fromTr</span><span class="p">,</span> <span class="n">toShape</span> <span class="p">)</span> <span class="p">)</span>
+
+				<span class="k">elif</span> <span class="n">fromShape</span> <span class="ow">in</span> <span class="n">assigned_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="p">:</span>
+					<span class="n">newAssign</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>  <span class="n">assigned_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span> <span class="n">fromShape</span><span class="p">,</span> <span class="n">toShape</span> <span class="p">)</span> <span class="p">)</span>
+<span class="w">			</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">				else :</span>
+<span class="sd">					print &quot;ignored : &quot;+assigned_list[i][j]</span>
+<span class="sd">			else :</span>
+<span class="sd">				print &quot;ignored : &quot;+assigned_list[i][j]</span>
+<span class="sd">			&#39;&#39;&#39;</span>
+
+		<span class="n">newAssign_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">newAssign</span> <span class="p">)</span>
+
+
+	<span class="c1"># assign to cloned geometry (currently used in cloneToQuad function )</span>
+	<span class="n">numShader</span>   <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="n">shEngines</span> <span class="p">)</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="n">numShader</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">)</span>   <span class="ow">and</span>   <span class="p">(</span><span class="n">cloneNum</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="p">:</span>   <span class="c1"># can be -1</span>
+
+		<span class="n">fromShape_F</span> 	<span class="o">=</span> <span class="n">libMesh</span><span class="o">.</span><span class="n">get_numFace</span><span class="p">(</span> <span class="n">fromShape</span> <span class="p">)</span>
+		<span class="k">if</span> <span class="n">cloneNum</span><span class="o">==-</span><span class="mi">1</span> <span class="p">:</span>   <span class="n">toShape_F</span> <span class="o">=</span> <span class="n">libMesh</span><span class="o">.</span><span class="n">get_numFace</span><span class="p">(</span> <span class="n">toShape</span> <span class="p">)</span>
+		<span class="k">else</span> <span class="p">:</span>              <span class="n">toShape_F</span> <span class="o">=</span> <span class="n">fromShape_F</span> <span class="o">*</span> <span class="n">cloneNum</span>
+
+		<span class="k">if</span> <span class="n">toShape_F</span> <span class="o">%</span> <span class="n">fromShape_F</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">:</span>
+			<span class="n">OpenMaya2</span><span class="o">.</span><span class="n">MGlobal</span><span class="o">.</span><span class="n">displayWarning</span><span class="p">(</span><span class="s1">&#39;ToShape is not a clean clonedMesh, assign anyway.&#39;</span><span class="p">)</span>
+
+		<span class="k">for</span> <span class="n">aa</span><span class="p">,</span><span class="n">assigned</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">newAssign_list</span><span class="p">)</span> <span class="p">:</span>
+			<span class="n">comp_dict</span> 	<span class="o">=</span> <span class="n">componentList_to_dict</span><span class="p">(</span>  <span class="n">assigned</span>  <span class="p">)</span>
+			<span class="n">key</span>         <span class="o">=</span> <span class="n">comp_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+			<span class="n">fIds</span>        <span class="o">=</span> <span class="n">comp_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+			<span class="n">new_fIds</span>    <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">fIds</span><span class="p">)</span>
+			<span class="k">for</span> <span class="n">ff</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="n">toShape_F</span> <span class="p">):</span>
+				<span class="k">for</span> <span class="n">fId</span> <span class="ow">in</span> <span class="n">fIds</span> <span class="p">:</span>
+					<span class="n">new_fIds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">fromShape_F</span> <span class="o">*</span> <span class="n">ff</span> <span class="o">+</span> <span class="n">fId</span> <span class="p">)</span>
+			<span class="n">new_dict</span>    <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span><span class="n">new_fIds</span> <span class="p">}</span>
+			<span class="n">newAssign_list</span><span class="p">[</span><span class="n">aa</span><span class="p">]</span>  <span class="o">=</span> <span class="n">dict_to_componentList</span><span class="p">(</span> <span class="n">new_dict</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="kc">True</span>  <span class="p">)</span>
+			<span class="n">newAssign_list</span><span class="p">[</span><span class="n">aa</span><span class="p">]</span>  <span class="o">=</span> <span class="n">compress</span><span class="p">(</span> <span class="n">newAssign_list</span><span class="p">[</span><span class="n">aa</span><span class="p">],</span> <span class="n">face</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
+
+
+	<span class="c1"># assign</span>
+	<span class="n">transfer_multiple</span><span class="p">(</span> <span class="n">newAssign_list</span><span class="p">,</span> <span class="n">shEngines</span> <span class="p">)</span>
+	<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+		<span class="n">OpenMaya2</span><span class="o">.</span><span class="n">MGlobal</span><span class="o">.</span><span class="n">displayInfo</span><span class="p">(</span><span class="s1">&#39;Shading.transfer_to OK from &#39;</span><span class="o">+</span><span class="n">fromShape</span><span class="o">+</span><span class="s1">&#39; to &#39;</span><span class="o">+</span><span class="n">toShape</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="transfer_to_multiple"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.transfer_to_multiple">[docs]</a><span class="k">def</span> <span class="nf">transfer_to_multiple</span><span class="p">(</span> <span class="n">fromShape</span><span class="p">,</span> <span class="n">toShapes</span> <span class="p">):</span>
+
+	<span class="k">for</span> <span class="n">toShape</span> <span class="ow">in</span>  <span class="n">toShapes</span> <span class="p">:</span>
+
+		<span class="n">transfer_to</span><span class="p">(</span> <span class="n">fromShape</span><span class="p">,</span> <span class="n">toShape</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="transfer_one_to_one"><a class="viewcode-back" href="../../../../../../cpg.maya.plugins.rbfRetargeter.python.html#cpg.maya.plugins.rbfRetargeter.python.rbfRetargeter.transfer_one_to_one">[docs]</a><span class="k">def</span> <span class="nf">transfer_one_to_one</span><span class="p">(</span> <span class="n">fromShapes</span><span class="p">,</span> <span class="n">toShapes</span> <span class="p">):</span>
+
+	<span class="k">for</span> <span class="n">fromShape</span><span class="p">,</span><span class="n">toShape</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">fromShapes</span><span class="p">,</span> <span class="n">toShapes</span><span class="p">)</span> <span class="p">:</span>
+
+		<span class="n">transfer_to</span><span class="p">(</span> <span class="n">fromShape</span><span class="p">,</span> <span class="n">toShape</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

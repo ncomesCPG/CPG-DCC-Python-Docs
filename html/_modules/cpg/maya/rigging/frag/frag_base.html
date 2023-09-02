@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.rigging.frag.frag_base &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.rigging.frag.frag_base</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.rigging.frag.frag_base</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Generic Meta Node class</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="kn">import</span> <span class="nn">maya.cmds</span> <span class="k">as</span> <span class="nn">cmds</span>
+
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">lists</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">attr_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.startup.configs</span> <span class="kn">import</span> <span class="n">ma_consts</span>
+
+<span class="n">FRAG_TYPE_ATTR</span> <span class="o">=</span> <span class="s1">&#39;fragType&#39;</span>
+
+
+<div class="viewcode-block" id="is_frag_node"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.is_frag_node">[docs]</a><span class="k">def</span> <span class="nf">is_frag_node</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">FRAGNode</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">objExists</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Type filter found that node does not exist in the scene. Skipping - &quot;</span><span class="si">{0}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Network</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">attr_utils</span><span class="o">.</span><span class="n">has_attribute</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s1">&#39;xrigType&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">attr_utils</span><span class="o">.</span><span class="n">has_attribute</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">FRAG_TYPE_ATTR</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="get_frag_parent"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.get_frag_parent">[docs]</a><span class="k">def</span> <span class="nf">get_frag_parent</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+    <span class="n">node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">DependNode</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">attr_utils</span><span class="o">.</span><span class="n">has_attribute</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s1">&#39;fragParent&#39;</span><span class="p">):</span>
+            <span class="n">conn</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.fragParent&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">conn</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">FRAGNode</span><span class="p">(</span><span class="n">conn</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<span class="k">def</span> <span class="nf">_import_external_frag_node_package</span><span class="p">(</span><span class="n">frag_node_type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Import FRAGNode package locations that were registered at startup then check to see if the given FRAGNode type</span>
+<span class="sd">    exists in any of them. This utility assumes that the FRAGNode type was not found within this base package.</span>
+<span class="sd">    The very act of importing registers FRAGNode classes to a dictionary of known types so this just returns True</span>
+<span class="sd">    to indicate that our FRAGNode type was found. Then whatever is calling this utility can sort out the rest.</span>
+
+<span class="sd">    :param str frag_node_type: frag node class name from FRAGNode&#39;s get_type()</span>
+<span class="sd">    :return bool: True if a package was found and imported with the given FRAGNode type</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">node_package_path</span> <span class="ow">in</span> <span class="n">ma_consts</span><span class="o">.</span><span class="n">FRAG_NODE_PACKAGE_PATHS</span><span class="p">:</span>
+        <span class="c1"># If the package path is THIS package then we can skip it since if the</span>
+        <span class="c1"># FRAG Node lived here it would have been imported and found already</span>
+        <span class="k">if</span> <span class="n">__package__</span> <span class="o">==</span> <span class="n">node_package_path</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Make sure the external package is imported. These packages were registered at</span>
+        <span class="c1"># startup and will be different depending on the project context.</span>
+        <span class="n">package</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">node_package_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">frag_node_type</span><span class="p">):</span>
+            <span class="n">frag_class</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">frag_node_type</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">frag_class</span><span class="p">,</span> <span class="n">FRAGNode</span><span class="p">):</span>
+                <span class="c1"># We imported the package, found the class, and verified it inherited from FRAGNode</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="kc">False</span>
+
+
+<div class="viewcode-block" id="FRAGNodeRegister"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.FRAGNodeRegister">[docs]</a><span class="k">class</span> <span class="nc">FRAGNodeRegister</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Metaclass for tracking all FRAGNode classes in the import path.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">__frag_node_types__</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FRAGNodeRegister</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># Check for clashing class names on FRAGNodes. New FRAGNodes require unique class names!</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__frag_node_types__</span><span class="p">:</span>
+            <span class="n">clash_path</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__module__</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="n">existing_class</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__frag_node_types__</span><span class="p">[</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span>
+            <span class="n">existing_path</span> <span class="o">=</span> <span class="n">existing_class</span><span class="o">.</span><span class="vm">__module__</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">existing_class</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="c1"># If we reload() and the exact same class is registered things are fine, but if a clashing class name is</span>
+            <span class="c1"># registered from a different module raise an exception.</span>
+            <span class="k">if</span> <span class="n">clash_path</span> <span class="o">!=</span> <span class="n">existing_path</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span>
+                    <span class="s2">&quot;FRAG Node </span><span class="si">{}</span><span class="s2"> name clashes with existing FRAG Node </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">clash_path</span><span class="p">,</span> <span class="n">existing_path</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">__frag_node_types__</span><span class="p">[</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span></div>
+
+
+<div class="viewcode-block" id="FRAGNode"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.FRAGNode">[docs]</a><span class="k">class</span> <span class="nc">FRAGNode</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">FRAGNodeRegister</span><span class="p">):</span>
+
+    <span class="n">VERSION</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="c1"># Overwrite of __new__ allows wrapping any FRAGNode in the base FRAGNode class and getting the correct subclass</span>
+    <span class="c1"># returned</span>
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">node</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">):</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="c1"># Check if node is a network.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Network</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Node </span><span class="si">{0}</span><span class="s2"> is not a network node and can&#39;t be a FRAG Node.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">attr_utils</span><span class="o">.</span><span class="n">has_attribute</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">FRAG_TYPE_ATTR</span><span class="p">):</span>
+                <span class="n">class_string</span> <span class="o">=</span> <span class="n">attr_utils</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">FRAG_TYPE_ATTR</span><span class="p">,</span> <span class="n">attr_type</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Node </span><span class="si">{0}</span><span class="s2"> is not a FRAG Node.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">class_string</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__frag_node_types__</span><span class="p">:</span>
+                <span class="n">frag_class</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__frag_node_types__</span><span class="p">[</span><span class="n">class_string</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">frag_class</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">frag_class</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">_import_external_frag_node_package</span><span class="p">(</span><span class="n">class_string</span><span class="p">):</span>
+                <span class="n">frag_class</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__frag_node_types__</span><span class="p">[</span><span class="n">class_string</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">frag_class</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">frag_class</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;FRAGNode </span><span class="si">{0}</span><span class="s2"> does not exist in register.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">class_string</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">FRAGNode</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">):</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span> <span class="o">=</span> <span class="n">node</span>
+
+<div class="viewcode-block" id="FRAGNode.create"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.FRAGNode.create">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">frag_parent</span><span class="p">,</span> <span class="n">frag_type</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a FRAGNode of given frag_type.</span>
+
+<span class="sd">        :param frag_parent:</span>
+<span class="sd">        :param frag_type:</span>
+<span class="sd">        :param version:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">frag_parent</span><span class="p">:</span>
+            <span class="n">frag_parent</span> <span class="o">=</span> <span class="n">FRAGNode</span><span class="p">(</span><span class="n">frag_parent</span><span class="p">)</span>
+        <span class="c1"># Create node</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="s2">&quot;network&quot;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">frag_type</span><span class="p">))</span>
+
+        <span class="c1"># Add attributes</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;double&#39;</span><span class="p">)</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="n">FRAG_TYPE_ATTR</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">FRAG_TYPE_ATTR</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">frag_type</span><span class="p">)</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s2">&quot;fragChildren&quot;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s2">&quot;fragParent&quot;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">FRAGNode</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">frag_parent</span><span class="p">:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">set_frag_parent</span><span class="p">(</span><span class="n">frag_parent</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">node</span></div>
+
+<div class="viewcode-block" id="FRAGNode.connect_node"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.FRAGNode.connect_node">[docs]</a>    <span class="k">def</span> <span class="nf">connect_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">parent_attr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">node_to_connect</span> <span class="o">=</span> <span class="n">node</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s1">&#39;node&#39;</span><span class="p">):</span>
+                <span class="n">node_to_connect</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">node</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">node_to_connect</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">parent_attr</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="n">parent_attr</span><span class="p">):</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="n">parent_attr</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+            <span class="n">node_to_connect</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">parent_attr</span><span class="p">)</span>
+        <span class="n">attr_utils</span><span class="o">.</span><span class="n">set_attribute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="p">,</span> <span class="p">{</span><span class="n">attr</span><span class="p">:</span> <span class="n">node_to_connect</span><span class="p">})</span></div>
+
+<div class="viewcode-block" id="FRAGNode.connect_nodes"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.FRAGNode.connect_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">connect_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connect_nodes</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">parent_attr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">merge_values</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Connects the node to frag node at given attr.</span>
+
+<span class="sd">        :param list[PyNode] connect_nodes: A list of pynodes to connect to this FRAGNode</span>
+<span class="sd">        :param str attr: Attr on this FRAGNode to connect with.</span>
+<span class="sd">        :param str parent_attr: The name of the parent attr on the connected nodes that should be used to form the connection</span>
+<span class="sd">            NOTE this will override the connection when used so last connected will be the final value.</span>
+<span class="sd">        :param bool merge_values: If values already connected should be kept.</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">connect_nodes</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="n">connect_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">connect_nodes</span><span class="p">]</span>
+
+        <span class="n">pynode_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">connect_nodes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s1">&#39;node&#39;</span><span class="p">):</span>
+                    <span class="n">pynode_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">node</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="n">pynode_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
+                <span class="k">continue</span>
+            <span class="n">pynode_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+        <span class="n">objs_to_connect</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">parent_attr</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">pynode_list</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="n">parent_attr</span><span class="p">):</span>
+                    <span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="n">parent_attr</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+                <span class="n">objs_to_connect</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">parent_attr</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">objs_to_connect</span> <span class="o">=</span> <span class="n">pynode_list</span>
+
+        <span class="n">attr_utils</span><span class="o">.</span><span class="n">set_attribute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="p">,</span> <span class="p">{</span><span class="n">attr</span><span class="p">:</span> <span class="n">objs_to_connect</span><span class="p">},</span> <span class="n">merge_values</span><span class="o">=</span><span class="n">merge_values</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FRAGNode.get_frag_parent"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.FRAGNode.get_frag_parent">[docs]</a>    <span class="k">def</span> <span class="nf">get_frag_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_attribute</span><span class="p">(</span><span class="s1">&#39;fragParent&#39;</span><span class="p">):</span>
+            <span class="n">conn</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.fragParent&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">conn</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">FRAGNode</span><span class="p">(</span><span class="n">conn</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="FRAGNode.get_frag_children"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.FRAGNode.get_frag_children">[docs]</a>    <span class="k">def</span> <span class="nf">get_frag_children</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">of_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        From a list of all FRAGNode children return a list of them that match search criteria.</span>
+
+<span class="sd">        :param FRAGNode of_type: The specific class of FRAGNode to filter by.</span>
+<span class="sd">        :param str side: Side identifier of the FRAGNode</span>
+<span class="sd">        :param str region: Region identifier of the FRAGNode</span>
+<span class="sd">        :return: A list of FRAGNodes that match the search.</span>
+<span class="sd">        :rtype: list[FRAGNode]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">return_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;fragChildren&#39;</span><span class="p">):</span>
+            <span class="n">frag_children</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fragChildren</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">child_node</span> <span class="ow">in</span> <span class="n">frag_children</span><span class="p">:</span>
+                <span class="n">wrapped_node</span> <span class="o">=</span> <span class="n">FRAGNode</span><span class="p">(</span><span class="n">child_node</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">side</span> <span class="ow">and</span> <span class="n">wrapped_node</span><span class="o">.</span><span class="n">side</span> <span class="o">!=</span> <span class="n">side</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="n">side</span> <span class="ow">and</span> <span class="n">wrapped_node</span><span class="o">.</span><span class="n">region</span> <span class="o">!=</span> <span class="n">region</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="n">of_type</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">wrapped_node</span><span class="p">,</span> <span class="n">of_type</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="n">return_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wrapped_node</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">return_list</span></div>
+
+<div class="viewcode-block" id="FRAGNode.get_type"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.FRAGNode.get_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_attribute</span><span class="p">(</span><span class="n">FRAG_TYPE_ATTR</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">attr_utils</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="p">,</span> <span class="n">FRAG_TYPE_ATTR</span><span class="p">,</span> <span class="n">attr_type</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="FRAGNode.set_frag_parent"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.FRAGNode.set_frag_parent">[docs]</a>    <span class="k">def</span> <span class="nf">set_frag_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frag_parent</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_frag_node</span><span class="p">(</span><span class="n">frag_parent</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;frag node parent given, </span><span class="si">{0}</span><span class="s2">, isn&#39;t a FRAGNode&quot;</span><span class="p">)</span>
+        <span class="n">parent_attr</span> <span class="o">=</span> <span class="n">frag_parent</span><span class="o">.</span><span class="n">fragChildren</span>
+        <span class="n">child_attr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fragParent</span>
+        <span class="n">parent_attr</span> <span class="o">&gt;&gt;</span> <span class="n">child_attr</span></div>
+
+<div class="viewcode-block" id="FRAGNode.add_frag_child"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.FRAGNode.add_frag_child">[docs]</a>    <span class="k">def</span> <span class="nf">add_frag_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">):</span>
+        <span class="n">child</span><span class="o">.</span><span class="n">set_frag_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FRAGNode.get_frag_child"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.FRAGNode.get_frag_child">[docs]</a>    <span class="k">def</span> <span class="nf">get_frag_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">of_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_frag_children</span><span class="p">(</span><span class="n">of_type</span><span class="o">=</span><span class="n">of_type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">results</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FRAGNode.get_pynode"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.FRAGNode.get_pynode">[docs]</a>    <span class="k">def</span> <span class="nf">get_pynode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span></div>
+
+<div class="viewcode-block" id="FRAGNode.get_version"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.FRAGNode.get_version">[docs]</a>    <span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">get</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="FRAGNode.set_version"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.FRAGNode.set_version">[docs]</a>    <span class="k">def</span> <span class="nf">set_version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">version</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="FRAGNode.get_frag_root"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.FRAGNode.get_frag_root">[docs]</a>    <span class="k">def</span> <span class="nf">get_frag_root</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_node</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_frag_node</span><span class="p">(</span><span class="n">input_node</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+    
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_node</span><span class="p">,</span> <span class="n">FRAGNode</span><span class="p">):</span>
+            <span class="n">input_node</span> <span class="o">=</span> <span class="n">FRAGNode</span><span class="p">(</span><span class="n">input_node</span><span class="p">)</span>
+    
+        <span class="n">found_root</span> <span class="o">=</span> <span class="n">input_node</span> <span class="k">if</span> <span class="n">input_node</span><span class="o">.</span><span class="n">has_attribute</span><span class="p">(</span><span class="s1">&#39;isFragRoot&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">frag_parent_node</span> <span class="o">=</span> <span class="n">input_node</span><span class="o">.</span><span class="n">get_frag_parent</span><span class="p">()</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">found_root</span> <span class="ow">and</span> <span class="n">frag_parent_node</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">frag_parent_node</span><span class="o">.</span><span class="n">has_attribute</span><span class="p">(</span><span class="s1">&#39;isFragRoot&#39;</span><span class="p">):</span>
+                <span class="n">found_root</span> <span class="o">=</span> <span class="n">frag_parent_node</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">input_node</span> <span class="o">=</span> <span class="n">frag_parent_node</span>
+            <span class="n">frag_parent_node</span> <span class="o">=</span> <span class="n">input_node</span><span class="o">.</span><span class="n">get_frag_parent</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">found_root</span></div>
+    
+<div class="viewcode-block" id="FRAGNode.get_asset_id"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.FRAGNode.get_asset_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_asset_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_node</span><span class="p">):</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_frag_root</span><span class="p">(</span><span class="n">input_node</span><span class="o">=</span><span class="n">input_node</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">root</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No root was found.  Cannot access the Asset ID.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">return</span> <span class="n">root</span><span class="o">.</span><span class="n">asset_id</span></div>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">side</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the side markup on this FRAGNode.</span>
+
+<span class="sd">        :return: Returns the side markup on this node.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;side&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;side&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="nd">@side</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">side</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the joint as is_start and adds the region.</span>
+
+<span class="sd">        :param str val: A name used to define a joint chain.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;side&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;side&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;side&#39;</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">region</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the region markup on this FRAGNode.</span>
+
+<span class="sd">        :return: Returns the region markup on this node.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;region&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;region&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="nd">@region</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the FRAGNode&#39;s region markup</span>
+
+<span class="sd">        :param str val: An identifier for the FRAGNode</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;region&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;region&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">setAttr</span><span class="p">(</span><span class="s1">&#39;region&#39;</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FRAGNode.update"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.FRAGNode.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">current_version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
+        <span class="n">latest_version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">VERSION</span>
+        <span class="k">while</span> <span class="n">current_version</span> <span class="o">&lt;</span> <span class="n">latest_version</span><span class="p">:</span>
+            <span class="n">update_method_name</span> <span class="o">=</span> <span class="s2">&quot;_update_version_</span><span class="si">{0}</span><span class="s2">_to_version_</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">current_version</span><span class="p">,</span> <span class="n">current_version</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">update_method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update_method_name</span><span class="p">)</span>
+            <span class="n">update_method</span><span class="p">()</span>
+            <span class="n">later_version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">later_version</span> <span class="o">==</span> <span class="n">current_version</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Please set the version in your update script: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">update_method</span><span class="p">))</span>
+            <span class="n">current_version</span> <span class="o">=</span> <span class="n">later_version</span></div>
+
+<div class="viewcode-block" id="FRAGNode.has_attribute"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.FRAGNode.has_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">has_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Efficient way of checking if this FRAG node&#39;s PyNode has a particular attribute.</span>
+
+<span class="sd">        :param str attr_name: Name of attribute to check for</span>
+<span class="sd">        :return: True if the attribute exists on the internally stored PyNode</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">attr_utils</span><span class="o">.</span><span class="n">has_attribute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attrname</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">attrname</span> <span class="o">==</span> <span class="s1">&#39;pynode&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;this instance of </span><span class="si">{0}</span><span class="s2"> has no pynode&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="p">,</span> <span class="n">attrname</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__melobject__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">__melobject__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__apimfn__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">__apimfn__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="fm">__radd__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__reduce__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">__reduce__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">&quot;pynode&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">pynode</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="fm">__hash__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="fm">__ne__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__nonzero__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">__nonzero__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="fm">__lt__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="fm">__gt__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__le__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="fm">__le__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="fm">__ge__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_frag_node_parents"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.get_frag_node_parents">[docs]</a><span class="k">def</span> <span class="nf">get_frag_node_parents</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">of_type</span><span class="o">=</span><span class="n">FRAGNode</span><span class="p">):</span>
+    <span class="n">node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">frag_parent</span> <span class="o">=</span> <span class="n">get_frag_parent</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">frag_parent</span><span class="p">:</span>
+        <span class="n">to_add</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frag_parent</span><span class="p">,</span> <span class="n">of_type</span><span class="p">):</span>
+            <span class="n">to_add</span> <span class="o">=</span> <span class="p">[</span><span class="n">frag_parent</span><span class="p">]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">to_add</span> <span class="o">+</span> <span class="n">get_frag_node_parents</span><span class="p">(</span><span class="n">frag_parent</span><span class="p">,</span> <span class="n">of_type</span><span class="o">=</span><span class="n">of_type</span><span class="p">)</span>  <span class="c1"># direct parent first</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="get_frag_node_descendants"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.get_frag_node_descendants">[docs]</a><span class="k">def</span> <span class="nf">get_frag_node_descendants</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">of_type</span><span class="o">=</span><span class="n">FRAGNode</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">is_frag_node</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">FRAGNode</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="n">all_children</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_frag_children</span><span class="p">()</span>
+        <span class="n">matching_children</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">all_children</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">of_type</span><span class="p">)]</span>
+        <span class="n">children_descendants</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">all_children</span><span class="p">:</span>
+            <span class="n">children_descendants</span> <span class="o">+=</span> <span class="n">get_frag_node_descendants</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">of_type</span><span class="o">=</span><span class="n">of_type</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">matching_children</span> <span class="o">+</span> <span class="n">children_descendants</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="get_all_frag_nodes"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.get_all_frag_nodes">[docs]</a><span class="k">def</span> <span class="nf">get_all_frag_nodes</span><span class="p">(</span><span class="n">of_type</span><span class="o">=</span><span class="n">FRAGNode</span><span class="p">):</span>
+    <span class="n">all_networks</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;network&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
+    <span class="n">all_frag_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">FRAGNode</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">all_networks</span> <span class="k">if</span> <span class="n">is_frag_node</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+    <span class="n">matching_frag_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">all_frag_nodes</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">of_type</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">matching_frag_nodes</span></div>
+
+
+<div class="viewcode-block" id="list_frag_node_connections"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.list_frag_node_connections">[docs]</a><span class="k">def</span> <span class="nf">list_frag_node_connections</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">of_type</span><span class="o">=</span><span class="n">FRAGNode</span><span class="p">):</span>
+    <span class="c1"># get connected network nodes</span>
+    <span class="n">network_nodes</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">object</span><span class="p">),</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;network&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
+    <span class="n">network_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">FRAGNode</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">network_nodes</span> <span class="k">if</span> <span class="n">is_frag_node</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">FRAGNode</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">of_type</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">network_nodes</span></div>
+
+
+<div class="viewcode-block" id="update_all_frag_nodes"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_base.update_all_frag_nodes">[docs]</a><span class="k">def</span> <span class="nf">update_all_frag_nodes</span><span class="p">():</span>
+    <span class="n">all_networks</span> <span class="o">=</span> <span class="n">cmds</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;network&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
+    <span class="n">all_frag_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">FRAGNode</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">all_networks</span> <span class="k">if</span> <span class="n">is_frag_node</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">all_frag_nodes</span><span class="p">:</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

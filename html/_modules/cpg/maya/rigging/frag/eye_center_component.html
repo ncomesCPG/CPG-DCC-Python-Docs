@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.rigging.frag.eye_center_component &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.rigging.frag.eye_center_component</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.rigging.frag.eye_center_component</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">purpose: Center Eye Component.  This is the center controller for eye rigs.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+<span class="c1"># Software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+
+<span class="c1"># CPG Python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">attr_utils</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.animation</span> <span class="kn">import</span> <span class="n">anim_curves</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.modifiers</span> <span class="kn">import</span> <span class="n">ma_decorators</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">lists</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">chain_markup</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging.flags</span> <span class="kn">import</span> <span class="n">frag_flag</span>
+
+<span class="c1"># internal module imports</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging.frag</span> <span class="kn">import</span> <span class="n">keyable_component</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="EyeCenterComponent"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.eye_center_component.EyeCenterComponent">[docs]</a><span class="k">class</span> <span class="nc">EyeCenterComponent</span><span class="p">(</span><span class="n">keyable_component</span><span class="o">.</span><span class="n">KeyableComponent</span><span class="p">):</span>
+	<span class="n">VERSION</span> <span class="o">=</span> <span class="mi">1</span>
+	
+<div class="viewcode-block" id="EyeCenterComponent.create"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.eye_center_component.EyeCenterComponent.create">[docs]</a>	<span class="nd">@staticmethod</span>
+	<span class="nd">@ma_decorators</span><span class="o">.</span><span class="n">keep_namespace_decorator</span>
+	<span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">frag_parent</span><span class="p">,</span>
+				<span class="n">side</span><span class="p">,</span>
+				<span class="n">region</span><span class="p">,</span>
+				<span class="n">components</span><span class="p">,</span>
+				<span class="n">attrs_to_lock_hide</span><span class="o">=</span><span class="n">attr_utils</span><span class="o">.</span><span class="n">SCALE_ATTRS</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;v&#39;</span><span class="p">]):</span>
+<span class="w">	</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Creates a center eye component and constrains other eye components under it.</span>
+<span class="sd">		</span>
+<span class="sd">		:param frag_parent: FRAG Rig FRAGNode.</span>
+<span class="sd">		:param str side: component side.</span>
+<span class="sd">		:param str region: component region.</span>
+<span class="sd">		:param list(frag_base.FRAGNode) components: List of components to follow the center component.</span>
+<span class="sd">		:return: Returns an instance of the EyeCenterComponent</span>
+<span class="sd">		:rtype: EyeCenterComponent</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="c1"># Set Namespace</span>
+		<span class="n">root_namespace</span> <span class="o">=</span> <span class="n">frag_parent</span><span class="o">.</span><span class="n">namespace</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">namespace</span><span class="p">(</span><span class="nb">set</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">root_namespace</span><span class="si">}</span><span class="s1">:&#39;</span><span class="p">)</span>
+		
+		<span class="n">kwargs_dict</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">kwargs_dict</span><span class="p">[</span><span class="s1">&#39;attrs_to_lock_hide&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attrs_to_lock_hide</span>
+		
+		<span class="n">node</span> <span class="o">=</span> <span class="n">keyable_component</span><span class="o">.</span><span class="n">KeyableComponent</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">frag_parent</span><span class="p">,</span>
+															<span class="n">EyeCenterComponent</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+															<span class="n">EyeCenterComponent</span><span class="o">.</span><span class="n">VERSION</span><span class="p">,</span>
+															<span class="n">side</span><span class="o">=</span><span class="n">side</span><span class="p">,</span>
+															<span class="n">region</span><span class="o">=</span><span class="n">region</span><span class="p">)</span>
+		
+		<span class="c1"># set serialized kwargs onto our network node we&#39;ll use this for serializing the exact build params.</span>
+		<span class="n">attr_utils</span><span class="o">.</span><span class="n">set_compound_attribute_groups</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s1">&#39;buildKwargs&#39;</span><span class="p">,</span> <span class="n">kwargs_dict</span><span class="p">)</span>
+		
+		<span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;isFragFace&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		
+		<span class="n">flag_grp</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">flagGroup</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		
+		<span class="c1"># Get flags from the frag</span>
+		<span class="n">component_flags</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span><span class="p">:</span>
+			<span class="n">component_flag</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">get_flags</span><span class="p">()</span>
+			<span class="k">if</span> <span class="n">component_flag</span><span class="p">:</span>
+				<span class="n">component_flags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">component_flag</span><span class="p">)</span>
+		<span class="n">component_flags</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">lists</span><span class="o">.</span><span class="n">flatten_list</span><span class="p">(</span><span class="n">component_flags</span><span class="p">)))</span>
+		
+		<span class="n">object_to_match</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">spaceLocator</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;c_</span><span class="si">{0}</span><span class="s1">_aim&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">region</span><span class="p">))</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">pointConstraint</span><span class="p">(</span><span class="n">component_flags</span><span class="p">,</span> <span class="n">object_to_match</span><span class="p">,</span> <span class="n">mo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">orientConstraint</span><span class="p">(</span><span class="n">component_flags</span><span class="p">,</span> <span class="n">object_to_match</span><span class="p">,</span> <span class="n">mo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+		<span class="n">center_flag</span> <span class="o">=</span> <span class="n">frag_flag</span><span class="o">.</span><span class="n">Flag</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">object_to_match</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">_aim&#39;</span><span class="p">)</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">object_to_match</span><span class="p">)</span>
+		
+		<span class="c1"># Set groupings</span>
+		<span class="n">center_flag_align_grp</span> <span class="o">=</span> <span class="n">center_flag</span><span class="o">.</span><span class="n">get_align_transform</span><span class="p">()</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">center_flag_align_grp</span><span class="p">,</span> <span class="n">flag_grp</span><span class="p">)</span>
+		
+		<span class="k">for</span> <span class="n">component_flag</span> <span class="ow">in</span> <span class="n">component_flags</span><span class="p">:</span>
+			<span class="n">align_transform</span> <span class="o">=</span> <span class="n">component_flag</span><span class="o">.</span><span class="n">get_align_transform</span><span class="p">()</span>
+			<span class="n">align_transform</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="n">center_flag</span><span class="p">)</span>
+			
+		<span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="n">components</span><span class="p">:</span>
+			<span class="n">flag_grp</span> <span class="o">=</span> <span class="n">comp</span><span class="o">.</span><span class="n">flagGroup</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+			<span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">flag_grp</span><span class="p">)</span>
+		
+		<span class="c1"># We will use the 1st joint to track the eye translates</span>
+		<span class="n">eye_joint</span> <span class="o">=</span> <span class="n">components</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bind_joints</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">eye_joint</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">Joint</span><span class="p">):</span>
+			<span class="n">eye_joint</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">PyNode</span><span class="p">(</span><span class="n">eye_joint</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">eye_joint</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;centerFlagTx&#39;</span><span class="p">):</span>
+			<span class="n">eye_joint</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;centerFlagTx&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">eye_joint</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;centerFlagTy&#39;</span><span class="p">):</span>
+			<span class="n">eye_joint</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;centerFlagTy&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">eye_joint</span><span class="o">.</span><span class="n">hasAttr</span><span class="p">(</span><span class="s1">&#39;centerFlagTz&#39;</span><span class="p">):</span>
+			<span class="n">eye_joint</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;centerFlagTz&#39;</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		
+		<span class="n">center_flag</span><span class="o">.</span><span class="n">tx</span> <span class="o">&gt;&gt;</span> <span class="n">eye_joint</span><span class="o">.</span><span class="n">centerFlagTx</span>
+		<span class="n">center_flag</span><span class="o">.</span><span class="n">ty</span> <span class="o">&gt;&gt;</span> <span class="n">eye_joint</span><span class="o">.</span><span class="n">centerFlagTy</span>
+		<span class="n">center_flag</span><span class="o">.</span><span class="n">tz</span> <span class="o">&gt;&gt;</span> <span class="n">eye_joint</span><span class="o">.</span><span class="n">centerFlagTz</span>
+		
+		<span class="c1"># Lock and hide attributes.</span>
+		<span class="n">center_flag</span><span class="o">.</span><span class="n">lock_and_hide_attrs</span><span class="p">(</span><span class="n">attrs_to_lock_hide</span><span class="p">)</span>
+		
+		<span class="c1"># Make Connections</span>
+		<span class="n">components</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">pynode</span><span class="p">,</span> <span class="n">components</span><span class="p">))</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">connect_nodes</span><span class="p">(</span><span class="n">components</span><span class="p">,</span> <span class="s1">&#39;otherComponent&#39;</span><span class="p">,</span> <span class="s1">&#39;fragChildren&#39;</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">connect_nodes</span><span class="p">(</span><span class="n">component_flags</span><span class="p">,</span> <span class="s1">&#39;otherComponentFlags&#39;</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">connect_node</span><span class="p">(</span><span class="n">center_flag</span><span class="p">,</span> <span class="s1">&#39;centerFlag&#39;</span><span class="p">,</span> <span class="s1">&#39;fragParent&#39;</span><span class="p">)</span>
+		<span class="n">node</span><span class="o">.</span><span class="n">connect_node</span><span class="p">(</span><span class="n">eye_joint</span><span class="p">,</span> <span class="s1">&#39;trackingJoint&#39;</span><span class="p">,</span> <span class="s1">&#39;trackingJoint&#39;</span><span class="p">)</span>
+		
+		<span class="k">return</span> <span class="n">node</span></div>
+		
+<div class="viewcode-block" id="EyeCenterComponent.get_flags"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.eye_center_component.EyeCenterComponent.get_flags">[docs]</a>	<span class="k">def</span> <span class="nf">get_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the connected flags.</span>
+
+<span class="sd">		:return: Returns the connected flags.</span>
+<span class="sd">		:rtype: list(flag.Flag)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">flags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">centerFlag</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">flags</span><span class="p">:</span>
+			<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="si">}</span><span class="s1">: Does not have any flags&#39;</span><span class="p">)</span>
+			<span class="k">return</span>
+		<span class="n">flags</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">frag_flag</span><span class="o">.</span><span class="n">Flag</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">flags</span><span class="p">))</span>
+		<span class="k">return</span> <span class="n">flags</span></div>
+	
+<div class="viewcode-block" id="EyeCenterComponent.get_start_flag"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.eye_center_component.EyeCenterComponent.get_start_flag">[docs]</a>	<span class="k">def</span> <span class="nf">get_start_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the first flag connected to the component.</span>
+
+<span class="sd">		:return: Returns the first flag connected to the component.</span>
+<span class="sd">		:rtype: flag.Flag</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">flags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_flags</span><span class="p">()</span>
+		<span class="k">return</span> <span class="n">flags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">center_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the center flag.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns the center flag.</span>
+<span class="sd">		:rtype: flag.Flag</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">centerFlag</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">tracking_joint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">trackingJoint</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+	
+<div class="viewcode-block" id="EyeCenterComponent.select_flags"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.eye_center_component.EyeCenterComponent.select_flags">[docs]</a>	<span class="k">def</span> <span class="nf">select_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Selected all the flags.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_flags</span><span class="p">())</span></div>
+	
+<div class="viewcode-block" id="EyeCenterComponent.key_flags"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.eye_center_component.EyeCenterComponent.key_flags">[docs]</a>	<span class="k">def</span> <span class="nf">key_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets a keyframe on all the flags in the scene</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">flags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_flags</span><span class="p">()</span>
+		<span class="n">pm</span><span class="o">.</span><span class="n">setKeyframe</span><span class="p">(</span><span class="n">flags</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="EyeCenterComponent.to_default_pose"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.eye_center_component.EyeCenterComponent.to_default_pose">[docs]</a>	<span class="k">def</span> <span class="nf">to_default_pose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets all the flags to there default position.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">flags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_flags</span><span class="p">()</span>
+		<span class="k">for</span> <span class="n">_flag</span> <span class="ow">in</span> <span class="n">flags</span><span class="p">:</span>
+			<span class="n">attr_utils</span><span class="o">.</span><span class="n">reset_attrs</span><span class="p">(</span><span class="n">_flag</span><span class="p">)</span></div>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">other_component_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the other component connected flags.</span>
+
+<span class="sd">		:return: Returns the other component connected flags.</span>
+<span class="sd">		:rtype: list(flag.Flag)</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">flags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="o">.</span><span class="n">otherComponentFlags</span><span class="o">.</span><span class="n">listConnections</span><span class="p">()</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">flags</span><span class="p">:</span>
+			<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pynode</span><span class="si">}</span><span class="s1">: Does not other component flags connected.&#39;</span><span class="p">)</span>
+			<span class="k">return</span>
+		<span class="n">flags</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">frag_flag</span><span class="o">.</span><span class="n">Flag</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">flags</span><span class="p">))</span>
+		<span class="k">return</span> <span class="n">flags</span>
+	
+<div class="viewcode-block" id="EyeCenterComponent.keyframe_flags_max_values"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.eye_center_component.EyeCenterComponent.keyframe_flags_max_values">[docs]</a>	<span class="k">def</span> <span class="nf">keyframe_flags_max_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sets a keyframe for the pose on the max value on the correct pose frame.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="kc">None</span></div>
+	
+<div class="viewcode-block" id="EyeCenterComponent.attach_to_skeleton"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.eye_center_component.EyeCenterComponent.attach_to_skeleton">[docs]</a>	<span class="k">def</span> <span class="nf">attach_to_skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attach_skeleton_root</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mo</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Drive the component with a given skeleton.</span>
+
+<span class="sd">		:param Joint attach_skeleton_root: Top level joint of the hierarchy to drive the component.</span>
+<span class="sd">		:param bool mo: If object offsets should be maintained.</span>
+<span class="sd">		:return: A list of all created constraints.</span>
+<span class="sd">		:rtype list[Constraint]:</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">: Face components currently do not support attaching to skeleton.&#39;</span><span class="p">)</span>
+		<span class="k">return</span> <span class="p">[]</span></div>
+	
+<div class="viewcode-block" id="EyeCenterComponent.reanimate"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.eye_center_component.EyeCenterComponent.reanimate">[docs]</a>	<span class="k">def</span> <span class="nf">reanimate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other_root</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Transfers animation from a skeleton back onto a face rig.</span>
+
+<span class="sd">		:param pm.nt.Joint other_root: The root joint that has all the animation curves</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">current_eye_joint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracking_joint</span>
+		<span class="n">side</span> <span class="o">=</span> <span class="n">current_eye_joint</span><span class="o">.</span><span class="n">skelSide</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+		<span class="c1"># get eye_joint from the root</span>
+		<span class="n">markup</span> <span class="o">=</span> <span class="n">chain_markup</span><span class="o">.</span><span class="n">ChainMarkup</span><span class="p">(</span><span class="n">other_root</span><span class="p">)</span>
+		<span class="n">eye_joint</span> <span class="o">=</span> <span class="n">markup</span><span class="o">.</span><span class="n">get_start</span><span class="p">(</span><span class="s1">&#39;eye&#39;</span><span class="p">,</span> <span class="n">side</span><span class="p">)</span>
+		
+		<span class="c1"># Get Eye Curves</span>
+		<span class="n">tx_curve</span> <span class="o">=</span> <span class="n">eye_joint</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="s1">&#39;centerFlagTx&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimCurve</span><span class="p">)</span>
+		<span class="n">ty_curve</span> <span class="o">=</span> <span class="n">eye_joint</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="s1">&#39;centerFlagTy&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimCurve</span><span class="p">)</span>
+		<span class="n">tz_curve</span> <span class="o">=</span> <span class="n">eye_joint</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="s1">&#39;centerFlagTz&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">listConnections</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">AnimCurve</span><span class="p">)</span>
+		
+		<span class="n">curves</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="k">if</span> <span class="n">tx_curve</span><span class="p">:</span>
+			<span class="n">curves</span><span class="p">[</span><span class="s1">&#39;tx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tx_curve</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="k">if</span> <span class="n">ty_curve</span><span class="p">:</span>
+			<span class="n">curves</span><span class="p">[</span><span class="s1">&#39;ty&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ty_curve</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="k">if</span> <span class="n">tz_curve</span><span class="p">:</span>
+			<span class="n">curves</span><span class="p">[</span><span class="s1">&#39;tz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tz_curve</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">curves</span><span class="p">:</span>
+			<span class="k">return</span>
+		
+		<span class="c1"># Get flags</span>
+		<span class="n">flag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_flag</span><span class="p">()</span>
+		
+		<span class="c1"># Transfer Anim Curves</span>
+		<span class="c1"># Attach or merge anim curve to flag attribute</span>
+		<span class="k">for</span> <span class="n">flag_attr</span><span class="p">,</span> <span class="n">curve</span> <span class="ow">in</span> <span class="n">curves</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="n">anim_curves</span><span class="o">.</span><span class="n">reanimate_from_anim_curves</span><span class="p">(</span><span class="n">anim_curve</span><span class="o">=</span><span class="n">curve</span><span class="p">,</span>
+			                                       <span class="n">object_attribute</span><span class="o">=</span><span class="n">flag</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">flag_attr</span><span class="p">),</span>
+			                                       <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span>
+			                                       <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="EyeCenterComponent.get_flag"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.eye_center_component.EyeCenterComponent.get_flag">[docs]</a>	<span class="k">def</span> <span class="nf">get_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the first flag connected to the component.</span>
+<span class="sd">		</span>
+<span class="sd">		:return: Returns the first flag connected to the component.</span>
+<span class="sd">		:rtype: flag.Flag</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_start_flag</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

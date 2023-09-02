@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.pyqt.dialogs &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.pyqt.dialogs</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.pyqt.dialogs</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Helper functions for Blend nodes and shapes</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># python imports</span>
+
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cpg.common.pyqt</span> <span class="kn">import</span> <span class="n">messages</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.pyqt.utils</span> <span class="kn">import</span> <span class="n">ma_main_window</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<span class="n">MAYA_MAIN_WINDOW</span> <span class="o">=</span> <span class="n">ma_main_window</span><span class="o">.</span><span class="n">get_maya_window</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="display_view_message"><a class="viewcode-back" href="../../../../cpg.maya.pyqt.html#cpg.maya.pyqt.dialogs.display_view_message">[docs]</a><span class="k">def</span> <span class="nf">display_view_message</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;No text given&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;good&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">fade_time</span><span class="o">=</span><span class="mi">110</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Displays a popup message with relevant information.</span>
+
+<span class="sd">    :param str text: text to display.</span>
+<span class="sd">    :param str mode: mode to define text color (&#39;good&#39; = green; &#39;error&#39; = red)</span>
+<span class="sd">    :param str header: prefix before the message.</span>
+<span class="sd">    :param float fade_time: the time the message is on the screen.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">fade_time</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">*</span> <span class="n">fade_time</span>
+    <span class="k">if</span> <span class="n">fade_time</span> <span class="o">&gt;=</span> <span class="mi">10000</span><span class="p">:</span>
+        <span class="n">fade_time</span> <span class="o">=</span> <span class="mi">10000</span>
+
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;good&#39;</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">inViewMessage</span><span class="p">(</span>
+            <span class="n">assistMessage</span><span class="o">=</span><span class="p">(</span><span class="sa">u</span><span class="s2">&quot;&lt;span style=</span><span class="se">\&quot;</span><span class="s2">color:#21C4F5;</span><span class="se">\&quot;</span><span class="s2">&gt;</span><span class="si">{}</span><span class="s2">:&lt;/span&gt; </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">text</span><span class="p">),</span>
+            <span class="n">pos</span><span class="o">=</span><span class="s1">&#39;topRight&#39;</span><span class="p">,</span> <span class="n">fade</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fadeStayTime</span><span class="o">=</span><span class="n">fade_time</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">inViewMessage</span><span class="p">(</span>
+            <span class="n">assistMessage</span><span class="o">=</span><span class="p">(</span><span class="sa">u</span><span class="s2">&quot;&lt;span style=</span><span class="se">\&quot;</span><span class="s2">color:#f52121;</span><span class="se">\&quot;</span><span class="s2">&gt;</span><span class="si">{}</span><span class="s2">:&lt;/span&gt; </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">text</span><span class="p">),</span>
+            <span class="n">pos</span><span class="o">=</span><span class="s1">&#39;topRight&#39;</span><span class="p">,</span> <span class="n">fade</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fadeStayTime</span><span class="o">=</span><span class="n">fade_time</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="error_prompt"><a class="viewcode-back" href="../../../../cpg.maya.pyqt.html#cpg.maya.pyqt.dialogs.error_prompt">[docs]</a><span class="k">def</span> <span class="nf">error_prompt</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">detail_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sound</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">messages</span><span class="o">.</span><span class="n">error_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+                                        <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span>
+                                        <span class="n">detail_text</span><span class="o">=</span><span class="n">detail_text</span><span class="p">,</span>
+                                        <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
+                                        <span class="n">sound</span><span class="o">=</span><span class="n">sound</span><span class="p">,</span>
+                                        <span class="n">icon</span><span class="o">=</span><span class="n">icon</span><span class="p">,</span>
+                                        <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="info_prompt"><a class="viewcode-back" href="../../../../cpg.maya.pyqt.html#cpg.maya.pyqt.dialogs.info_prompt">[docs]</a><span class="k">def</span> <span class="nf">info_prompt</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">detail_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sound</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">messages</span><span class="o">.</span><span class="n">info_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+                                        <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span>
+                                        <span class="n">detail_text</span><span class="o">=</span><span class="n">detail_text</span><span class="p">,</span>
+                                        <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
+                                        <span class="n">sound</span><span class="o">=</span><span class="n">sound</span><span class="p">,</span>
+                                        <span class="n">icon</span><span class="o">=</span><span class="n">icon</span><span class="p">,</span>
+                                        <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="question_prompt"><a class="viewcode-back" href="../../../../cpg.maya.pyqt.html#cpg.maya.pyqt.dialogs.question_prompt">[docs]</a><span class="k">def</span> <span class="nf">question_prompt</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">detail_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sound</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="s1">&#39;question&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">messages</span><span class="o">.</span><span class="n">question_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+                                        <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span>
+                                        <span class="n">detail_text</span><span class="o">=</span><span class="n">detail_text</span><span class="p">,</span>
+                                        <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
+                                        <span class="n">sound</span><span class="o">=</span><span class="n">sound</span><span class="p">,</span>
+                                        <span class="n">icon</span><span class="o">=</span><span class="n">icon</span><span class="p">,</span>
+                                        <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">)</span></div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

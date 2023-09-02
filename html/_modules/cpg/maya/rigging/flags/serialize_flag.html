@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.rigging.flags.serialize_flag &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">cpg-maya</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cpg.maya.rigging.flags.serialize_flag</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cpg.maya.rigging.flags.serialize_flag</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module that contains Rig Control data part implementation</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System global imports</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="c1"># software specific imports</span>
+<span class="kn">import</span> <span class="nn">pymel.core</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="c1"># CPG python imports</span>
+<span class="kn">from</span> <span class="nn">cpg.common.assetlist</span> <span class="kn">import</span> <span class="n">assetlist</span>
+<span class="kn">from</span> <span class="nn">cpg.common.resources</span> <span class="kn">import</span> <span class="n">resources</span>
+<span class="kn">from</span> <span class="nn">cpg.common.utils</span> <span class="kn">import</span> <span class="n">strings</span><span class="p">,</span> <span class="n">lists</span><span class="p">,</span> <span class="n">fileio</span>
+<span class="kn">from</span> <span class="nn">cpg.common.textio</span> <span class="kn">import</span> <span class="n">jsonio</span>
+<span class="kn">from</span> <span class="nn">cpg.common.paths</span> <span class="kn">import</span> <span class="n">project_paths</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.utils</span> <span class="kn">import</span> <span class="n">node_util</span><span class="p">,</span> <span class="n">attr_utils</span><span class="p">,</span> <span class="n">maya_utils</span><span class="p">,</span> <span class="n">dag</span>
+<span class="kn">from</span> <span class="nn">cpg.common</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cpg.maya.rigging</span> <span class="kn">import</span> <span class="n">frag</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">CPG_LOGGER</span>
+
+
+<div class="viewcode-block" id="serialize_all_flags_from_rig"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.serialize_flag.serialize_all_flags_from_rig">[docs]</a><span class="k">def</span> <span class="nf">serialize_all_flags_from_rig</span><span class="p">(</span><span class="n">frag_rig</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Froma  given rig_root serialize all flags.</span>
+
+<span class="sd">    :param FRAGRig frag_rig: The frag rig to get flags from.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">frag</span><span class="o">.</span><span class="n">is_frag_node</span><span class="p">(</span><span class="n">frag_rig</span><span class="p">):</span>
+        <span class="n">frag_rig</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">FRAGNode</span><span class="p">(</span><span class="n">frag_rig</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frag_rig</span><span class="p">,</span> <span class="n">frag</span><span class="o">.</span><span class="n">FRAGRig</span><span class="p">):</span>
+            <span class="c1"># A valid frag rig must be passed.</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">frag_rig</span><span class="si">}</span><span class="s1"> is not a valid FRAGRig.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+    <span class="n">frag_root</span> <span class="o">=</span> <span class="n">frag</span><span class="o">.</span><span class="n">get_frag_root</span><span class="p">(</span><span class="n">frag_rig</span><span class="p">)</span>
+    <span class="n">asset_id</span> <span class="o">=</span> <span class="n">frag_root</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="s1">&#39;assetID&#39;</span><span class="p">)</span>
+    <span class="n">cpg_asset</span> <span class="o">=</span> <span class="n">assetlist</span><span class="o">.</span><span class="n">get_asset_by_id</span><span class="p">(</span><span class="n">asset_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">cpg_asset</span><span class="p">:</span>
+        <span class="c1"># failed to find asset registered</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unable to find asset: </span><span class="si">{</span><span class="n">asset_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">flag_dir</span> <span class="o">=</span> <span class="n">cpg_asset</span><span class="o">.</span><span class="n">flags_path</span>
+
+    <span class="k">for</span> <span class="n">wrapped_flag</span> <span class="ow">in</span> <span class="n">frag_rig</span><span class="o">.</span><span class="n">get_flags</span><span class="p">():</span>
+        <span class="n">flag_name</span> <span class="o">=</span> <span class="n">wrapped_flag</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">flag_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">flag_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">flag_name</span><span class="si">}</span><span class="s1">.flag&#39;</span><span class="p">)</span>
+        <span class="n">FlagData</span><span class="p">(</span><span class="n">flag_path</span><span class="p">)</span><span class="o">.</span><span class="n">export_data</span><span class="p">(</span><span class="n">wrapped_flag</span><span class="o">.</span><span class="n">node</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="serialize_flag"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.serialize_flag.serialize_flag">[docs]</a><span class="k">def</span> <span class="nf">serialize_flag</span><span class="p">(</span><span class="n">transform_node</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">serialize_color</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">serialize_transform_matrix</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Serializes given transform node and returns a dictionary with all the data necessary to recreate that flag.</span>
+
+<span class="sd">    :param pm.Transform transform_node: node that represents a transform node with shapes.</span>
+<span class="sd">    :param str space: space we want to serialize shape data with (&#39;world&#39;, &#39;transform&#39;, &#39;object&#39;)</span>
+<span class="sd">    :param bool serialize_color: whether to include color data of the curve shapes.</span>
+<span class="sd">    :param bool normalize: whether to CVs should be normalized in 0 to 1 range.</span>
+<span class="sd">    :param bool serialize_transform_matrix: whether to include curve transform matrices.</span>
+<span class="sd">    :return: returns serialized transform curves.</span>
+<span class="sd">    :return: serialized transform curves.</span>
+<span class="sd">    :rtype: dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_get_curve_data</span><span class="p">(</span><span class="n">shape_node</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Internal function that retrieves the curve data from the given shape node.</span>
+
+<span class="sd">        :param pm.Shape shape_node: flag curve shape node.</span>
+<span class="sd">        :return: dictionary containing all the curve shape data.</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">curve_data</span> <span class="o">=</span> <span class="n">dag</span><span class="o">.</span><span class="n">get_node_color_data</span><span class="p">(</span><span class="n">shape_node</span><span class="p">)</span> <span class="k">if</span> <span class="n">serialize_color</span> <span class="k">else</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">curve_data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+            <span class="s1">&#39;knots&#39;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">shape_node</span><span class="o">.</span><span class="n">getKnots</span><span class="p">()),</span>
+            <span class="s1">&#39;cvs&#39;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">shape_node</span><span class="o">.</span><span class="n">getCVs</span><span class="p">(</span><span class="n">space</span><span class="p">))),</span>
+            <span class="s1">&#39;degree&#39;</span><span class="p">:</span> <span class="n">shape_node</span><span class="o">.</span><span class="n">degree</span><span class="p">(),</span>
+            <span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">shape_node</span><span class="o">.</span><span class="n">form</span><span class="p">()),</span>
+            <span class="s1">&#39;worldMatrix&#39;</span><span class="p">:</span> <span class="n">get_transform_world_matrix</span><span class="p">(</span><span class="n">transform_node</span><span class="p">)</span><span class="o">.</span><span class="n">formated</span><span class="p">()</span> <span class="k">if</span> <span class="n">serialize_transform_matrix</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;matrix&#39;</span><span class="p">:</span> <span class="n">transform_node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="s1">&#39;matrix&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">formated</span><span class="p">()</span> <span class="k">if</span> <span class="n">serialize_transform_matrix</span> <span class="k">else</span> <span class="kc">None</span><span class="p">})</span>
+
+        <span class="k">return</span> <span class="n">curve_data</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">space</span> <span class="o">=</span> <span class="n">space</span> <span class="ow">or</span> <span class="s1">&#39;world&#39;</span>
+    <span class="n">shapes</span> <span class="o">=</span> <span class="n">transform_node</span><span class="o">.</span><span class="n">getShapes</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">shape_found</span> <span class="ow">in</span> <span class="n">shapes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">shape_found</span><span class="o">.</span><span class="n">isIntermediateObject</span><span class="p">():</span>
+            <span class="k">continue</span>
+        <span class="n">curve_data</span> <span class="o">=</span> <span class="n">_get_curve_data</span><span class="p">(</span><span class="n">shape_found</span><span class="p">)</span>
+        <span class="n">curve_data</span><span class="p">[</span><span class="s1">&#39;space&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">space</span>
+        <span class="k">if</span> <span class="n">serialize_color</span><span class="p">:</span>
+            <span class="n">curve_data</span><span class="p">[</span><span class="s1">&#39;outlinerColor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">curve_data</span><span class="p">[</span><span class="s1">&#39;outlinerColor&#39;</span><span class="p">])</span>
+            <span class="n">curve_data</span><span class="p">[</span><span class="s1">&#39;overrideColorRGB&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">curve_data</span><span class="p">[</span><span class="s1">&#39;overrideColorRGB&#39;</span><span class="p">])</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">shape_found</span><span class="o">.</span><span class="n">nodeName</span><span class="p">(</span><span class="n">stripNamespace</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span> <span class="o">=</span> <span class="n">curve_data</span>
+
+    <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
+        <span class="n">mx</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">shape_name</span><span class="p">,</span> <span class="n">shape_data</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">cv</span> <span class="ow">in</span> <span class="n">shape_data</span><span class="p">[</span><span class="s1">&#39;cvs&#39;</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">cv</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">mx</span> <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+                        <span class="n">mx</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">shape_name</span><span class="p">,</span> <span class="n">shape_data</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">shape_data</span><span class="p">[</span><span class="s1">&#39;cvs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[[</span><span class="n">p</span> <span class="o">/</span> <span class="n">mx</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pt</span><span class="p">]</span> <span class="k">for</span> <span class="n">pt</span> <span class="ow">in</span> <span class="n">shape_data</span><span class="p">[</span><span class="s1">&#39;cvs&#39;</span><span class="p">]]</span>
+
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="deserialize_flag"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.serialize_flag.deserialize_flag">[docs]</a><span class="k">def</span> <span class="nf">deserialize_flag</span><span class="p">(</span><span class="n">flag_data</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deserializes given flag data and creates a new flag based on it.</span>
+
+<span class="sd">    :param dict flag_data: flag data serialized using serialize_flag function.</span>
+<span class="sd">    :param str space: space we want to deserialize shape data with (&#39;world&#39;, &#39;transform&#39;, &#39;object&#39;)</span>
+<span class="sd">    :param pm.Transform or None parent: optional parent transform node for the deserialized flag shapes.</span>
+<span class="sd">    :return: newly created flag.</span>
+<span class="sd">    :rtype: Flag or None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># import here to avoid cyclic imports</span>
+    <span class="kn">from</span> <span class="nn">cpg.maya.rigging.flags</span> <span class="kn">import</span> <span class="n">frag_flag</span>
+
+    <span class="n">space</span> <span class="o">=</span> <span class="n">flag_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;space&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">space</span> <span class="ow">or</span> <span class="s1">&#39;world&#39;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">parent</span><span class="p">:</span>
+        <span class="n">replace</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span> <span class="ow">or</span> <span class="kc">None</span>
+
+    <span class="n">new_curve</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">current_shape</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">shape_name</span><span class="p">,</span> <span class="n">curve_data</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">flag_data</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="n">cvs</span> <span class="o">=</span> <span class="n">curve_data</span><span class="p">[</span><span class="s1">&#39;cvs&#39;</span><span class="p">]</span>
+        <span class="n">knots</span> <span class="o">=</span> <span class="n">curve_data</span><span class="p">[</span><span class="s1">&#39;knots&#39;</span><span class="p">]</span>
+        <span class="n">degree</span> <span class="o">=</span> <span class="n">curve_data</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">curve_data</span><span class="p">[</span><span class="s1">&#39;form&#39;</span><span class="p">]</span>
+        <span class="n">periodic</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">form</span> <span class="o">==</span> <span class="mi">3</span> <span class="k">else</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">parent</span><span class="p">:</span>
+            <span class="n">replace</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">curve</span><span class="p">(</span><span class="n">point</span><span class="o">=</span><span class="n">cvs</span><span class="p">,</span> <span class="n">knot</span><span class="o">=</span><span class="n">knots</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="n">periodic</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">new_curve</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">replace</span><span class="p">:</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">curve</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="n">cvs</span><span class="p">,</span> <span class="n">knot</span><span class="o">=</span><span class="n">knots</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="n">periodic</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">child_curve</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">curve</span><span class="p">(</span><span class="n">point</span><span class="o">=</span><span class="n">cvs</span><span class="p">,</span> <span class="n">knot</span><span class="o">=</span><span class="n">knots</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="n">periodic</span><span class="p">)</span>
+                <span class="n">dag</span><span class="o">.</span><span class="n">parent_shape_node</span><span class="p">(</span>
+                    <span class="n">child_curve</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">maintain_offset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">freeze_transform</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">current_shape</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">new_curve</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Was not possible to deserialize flag&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">new_curve</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">frag_flag</span><span class="o">.</span><span class="n">Flag</span><span class="p">(</span><span class="n">new_curve</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="export_flag"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.serialize_flag.export_flag">[docs]</a><span class="k">def</span> <span class="nf">export_flag</span><span class="p">(</span><span class="n">transform_node</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">flag_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">export_color</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exports given flag node into given directory.</span>
+
+<span class="sd">    :param Flag or pm.Transform transform_node: flag transform node we want to export shapes of.</span>
+<span class="sd">    :param str directory: directory where flag file will be stored.</span>
+<span class="sd">    :param str flag_name: optional name for the exported flag file.</span>
+<span class="sd">    :param bool export_color: whether to flag color should be stored within file.</span>
+<span class="sd">    :param bool in_place: whether the flag should be exported in place or in the 0, 0, 0 of the world.</span>
+<span class="sd">    :return: True if the export flag operation was successful; False otherwise.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">flag_name</span> <span class="o">=</span> <span class="n">flag_name</span> <span class="ow">or</span> <span class="n">transform_node</span><span class="o">.</span><span class="n">shortName</span><span class="p">(</span><span class="n">stripNamespace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">flag_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">flag_name</span><span class="si">}</span><span class="s1">.flag&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">flag_path</span><span class="p">):</span>
+        <span class="n">fileio</span><span class="o">.</span><span class="n">touch_path</span><span class="p">(</span><span class="n">flag_path</span><span class="p">)</span>
+    <span class="n">flag_data</span> <span class="o">=</span> <span class="n">FlagData</span><span class="p">(</span><span class="n">flag_path</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">in_place</span><span class="p">:</span>
+        <span class="n">duplicated_flag</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">duplicate</span><span class="p">(</span><span class="n">transform_node</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">duplicated_flag</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="n">world</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">attr_utils</span><span class="o">.</span><span class="n">unlock_transform_attributes</span><span class="p">(</span><span class="n">duplicated_flag</span><span class="p">)</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">duplicated_flag</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">flag_data</span><span class="o">.</span><span class="n">export_data</span><span class="p">(</span><span class="n">duplicated_flag</span><span class="p">,</span> <span class="n">export_color</span><span class="o">=</span><span class="n">export_color</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">duplicated_flag</span><span class="o">.</span><span class="n">getParent</span><span class="p">():</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">duplicated_flag</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">duplicated_flag</span><span class="o">.</span><span class="n">getParent</span><span class="p">())</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">flag_data</span><span class="o">.</span><span class="n">export_data</span><span class="p">(</span><span class="n">transform_node</span><span class="p">,</span> <span class="n">export_color_data</span><span class="o">=</span><span class="n">export_color</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FlagData"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.serialize_flag.FlagData">[docs]</a><span class="k">class</span> <span class="nc">FlagData</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    DataPart that represents Flag Curve data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">DATA_TYPE</span> <span class="o">=</span> <span class="s1">&#39;rig.flag&#39;</span>
+    <span class="n">NICE_NAME</span> <span class="o">=</span> <span class="s1">&#39;Rig Flag&#39;</span>
+    <span class="n">PRIORITY</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">VERSION</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="n">_has_trait</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\.flag$&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">I</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">identifier</span>
+
+    <span class="c1"># =================================================================================================================</span>
+    <span class="c1"># OVERRIDES</span>
+    <span class="c1"># =================================================================================================================</span>
+
+<div class="viewcode-block" id="FlagData.can_represent"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.serialize_flag.FlagData.can_represent">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">can_represent</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">only_extension</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overrides base DataPart can_represent function.</span>
+<span class="sd">        Returns whether this data part can represent by the given identifier.</span>
+
+<span class="sd">        :param str identifier: data identifier. This could be a URL, a file path, a UUID, etc.</span>
+<span class="sd">        :param bool only_extension: If True, only trait (usually extension) will be checked.</span>
+<span class="sd">        :return: True if the current data part can be represented by the given identifier; False otherwise.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">FlagData</span><span class="o">.</span><span class="n">_has_trait</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">identifier</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">only_extension</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">identifier</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="FlagData.extension"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.serialize_flag.FlagData.extension">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">extension</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overrides base DataPart extension function.</span>
+<span class="sd">        Returns extension of this data part.</span>
+
+<span class="sd">        :return: data part extension.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="s1">&#39;.flag&#39;</span></div>
+
+<div class="viewcode-block" id="FlagData.icon"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.serialize_flag.FlagData.icon">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">icon</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overrides base DataPart icon function.</span>
+<span class="sd">        Returns the icon of this data part.</span>
+
+<span class="sd">        :return: data part icon</span>
+<span class="sd">        :rtype: QIcon</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">resources</span><span class="o">.</span><span class="n">icon</span><span class="p">(</span><span class="s1">&#39;circle&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FlagData.functionality"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.serialize_flag.FlagData.functionality">[docs]</a>    <span class="k">def</span> <span class="nf">functionality</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overrides base DataPart functionality function.</span>
+<span class="sd">        Exposes per-data functionality in the form of a dictionary where the key is the string accessor, and the value</span>
+<span class="sd">        is a callable one.</span>
+<span class="sd">        In a situation where multiple DataParts are bound then a single dictionary with all the entries combined is</span>
+<span class="sd">        returned.</span>
+
+<span class="sd">        :return: data part functionality dictionary.</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">read_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">read_data</span><span class="p">,</span>
+            <span class="n">save_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">save_data</span><span class="p">,</span>
+            <span class="n">import_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">import_data</span><span class="p">,</span>
+            <span class="n">export_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">export_data</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="FlagData.read_data"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.serialize_flag.FlagData.read_data">[docs]</a>    <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads flags data containing in file.</span>
+
+<span class="sd">        :return: dictionary containing all flag data.</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">file_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">()</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">strings</span><span class="o">.</span><span class="n">append_extension</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">())</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Impossible to read flags data from non existent file: &quot;</span><span class="si">{}</span><span class="s1">&quot;!&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+            <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Reading flags data from file: &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">jsonio</span><span class="o">.</span><span class="n">read_json_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FlagData.save_data"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.serialize_flag.FlagData.save_data">[docs]</a>    <span class="k">def</span> <span class="nf">save_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves given curve data into a file in disk.</span>
+
+<span class="sd">        :param dict flag_data: flags data to save.</span>
+<span class="sd">        :return: True if the save operation was successful; False otherwise.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">file_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">file_path</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Impossible to save flags data to file because save file path not defined!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">strings</span><span class="o">.</span><span class="n">append_extension</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">())</span>
+
+        <span class="n">jsonio</span><span class="o">.</span><span class="n">write_to_json_file</span><span class="p">(</span><span class="n">flag_data</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="FlagData.import_data"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.serialize_flag.FlagData.import_data">[docs]</a>    <span class="k">def</span> <span class="nf">import_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Imports flags data from file.</span>
+
+<span class="sd">        :return: newly created flag from imported data.</span>
+<span class="sd">        :rtype: Flag or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">file_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">()</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">strings</span><span class="o">.</span><span class="n">append_extension</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">())</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Impossible to import flags data file &quot;</span><span class="si">{}</span><span class="s1">&quot; because it does not exists!&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">file_path</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">flag_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">functionality</span><span class="p">()[</span><span class="s1">&#39;read_data&#39;</span><span class="p">]()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">flag_data</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s1">&#39;Impossible to import flags data file &quot;</span><span class="si">{}</span><span class="s1">&quot; because it does not contains valid skeleton data!&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">file_path</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">flag_data</span> <span class="o">=</span> <span class="n">flag_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag&#39;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">())</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">flag_data</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No valid flag data found within file: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="n">deserialize_flag</span><span class="p">(</span><span class="n">flag_data</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="FlagData.identifier"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.serialize_flag.FlagData.identifier">[docs]</a>    <span class="k">def</span> <span class="nf">identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the identifier of this data part.</span>
+
+<span class="sd">        :return: data part identifier.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span></div>
+
+<div class="viewcode-block" id="FlagData.export_data"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.serialize_flag.FlagData.export_data">[docs]</a>    <span class="k">def</span> <span class="nf">export_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag_to_export</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">export_color_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Exports flag data to file.</span>
+
+<span class="sd">        :param Flag or pm.Transform flag_to_export: flag whose data we want to save.</span>
+<span class="sd">        :param bool export_color_data: whether to export controls color data.</span>
+<span class="sd">        :return: True if the export data operation was successful; False otherwise.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">file_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">file_path</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Impossible to save flag data to file because save file path not defined!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">strings</span><span class="o">.</span><span class="n">append_extension</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">())</span>
+
+        <span class="n">flag_to_export</span> <span class="o">=</span> <span class="n">flag_to_export</span> <span class="ow">or</span> <span class="n">lists</span><span class="o">.</span><span class="n">get_first_in_list</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">selected</span><span class="p">())</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">flag_to_export</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No flag selected to export. please, select flag to export&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Saving </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+
+        <span class="n">space</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;space&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">flag_data</span> <span class="o">=</span> <span class="n">serialize_flag</span><span class="p">(</span><span class="n">flag_to_export</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">serialize_color</span><span class="o">=</span><span class="n">export_color_data</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="n">space</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">flag_data</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Was not possible to serialize flag data: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">flag_to_export</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">data_to_save</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">flag</span><span class="o">=</span><span class="n">flag_data</span><span class="p">,</span>
+            <span class="n">dcc</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Maya&#39;</span><span class="p">,</span>
+                <span class="n">version</span><span class="o">=</span><span class="n">maya_utils</span><span class="o">.</span><span class="n">get_version</span><span class="p">(),</span>
+                <span class="n">up_axis</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="n">upAxis</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="n">version</span><span class="o">=</span><span class="n">FlagData</span><span class="o">.</span><span class="n">VERSION</span>
+        <span class="p">)</span>
+
+        <span class="n">valid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">functionality</span><span class="p">()[</span><span class="s1">&#39;save_data&#39;</span><span class="p">](</span><span class="n">flag_data</span><span class="o">=</span><span class="n">data_to_save</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">valid</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s1">&#39;Was not possible to save flag &quot;</span><span class="si">{}</span><span class="s1">&quot; data properly in file: &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">flag_to_export</span><span class="p">,</span> <span class="n">file_path</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div></div>
+
+
+<div class="viewcode-block" id="get_transform_world_matrix_attribute"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.serialize_flag.get_transform_world_matrix_attribute">[docs]</a><span class="k">def</span> <span class="nf">get_transform_world_matrix_attribute</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the MPlug pointing worldMatrix of the given Maya object pointing a DAG node.</span>
+
+<span class="sd">    :param pm.PyNode node: PyMEL node we want to retrieve world matrix plug of.</span>
+<span class="sd">    :return: World matrix Maya object attribute.</span>
+<span class="sd">    :rtype: pm.Attribute</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">world_matrix</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="s1">&#39;worldMatrix&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">world_matrix</span><span class="o">.</span><span class="n">elementByLogicalIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_transform_world_matrix"><a class="viewcode-back" href="../../../../../cpg.maya.rigging.flags.html#cpg.maya.rigging.flags.serialize_flag.get_transform_world_matrix">[docs]</a><span class="k">def</span> <span class="nf">get_transform_world_matrix</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns world matrix of the given PyMEL node.</span>
+
+<span class="sd">    :param pm.PyNode node: PyMEL node we want to retrieve world matrix of.</span>
+<span class="sd">    :return: Maya object world matrix.</span>
+<span class="sd">    :rtype: pm.datatypes.Matrix</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">get_transform_world_matrix_attribute</span><span class="p">(</span><span class="n">node</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
