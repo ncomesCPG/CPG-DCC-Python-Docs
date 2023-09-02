@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.utils.om package &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="cpg.maya.utils package" href="cpg.maya.utils.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">cpg-maya</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="cpg.html">cpg package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="cpg.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="cpg.maya.html">cpg.maya package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cpg.html#module-cpg">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">cpg-maya</a></li>
+          <li class="breadcrumb-item"><a href="cpg.html">cpg package</a></li>
+          <li class="breadcrumb-item"><a href="cpg.maya.html">cpg.maya package</a></li>
+          <li class="breadcrumb-item"><a href="cpg.maya.utils.html">cpg.maya.utils package</a></li>
+      <li class="breadcrumb-item active">cpg.maya.utils.om package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/cpg.maya.utils.om.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cpg-maya-utils-om-package">
+<h1>cpg.maya.utils.om package<a class="headerlink" href="#cpg-maya-utils-om-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-cpg.maya.utils.om.attributetypes">
+<span id="cpg-maya-utils-om-attributetypes-module"></span><h2>cpg.maya.utils.om.attributetypes module<a class="headerlink" href="#module-cpg.maya.utils.om.attributetypes" title="Permalink to this heading"></a></h2>
+<p>Module that centralizes May attribute types</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.utils.om.attributetypes.api_type_from_pymel_type">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.utils.om.attributetypes.</span></span><span class="sig-name descname"><span class="pre">api_type_from_pymel_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pymel_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/utils/om/attributetypes.html#api_type_from_pymel_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.utils.om.attributetypes.api_type_from_pymel_type" title="Permalink to this definition"></a></dt>
+<dd><p>Returns OpenMaya API type from PyMEL type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pymel_type</strong> (<em>str</em>) – PyMEL attribute type.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>OpenMaya type.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.utils.om.attributetypes.api_type_to_string">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.utils.om.attributetypes.</span></span><span class="sig-name descname"><span class="pre">api_type_to_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_attribute_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/utils/om/attributetypes.html#api_type_to_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.utils.om.attributetypes.api_type_to_string" title="Permalink to this definition"></a></dt>
+<dd><p>Coverts given integer Maya OpenMaya API attribute type as a string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>api_attribute_type</strong> (<em>int</em>) – Maya OpenMaya API attribute type as an integer value.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Maya Openmaya API attribute type as a string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.utils.om.attributetypes.maya_mfn_data_type_to_internal_type">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.utils.om.attributetypes.</span></span><span class="sig-name descname"><span class="pre">maya_mfn_data_type_to_internal_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/utils/om/attributetypes.html#maya_mfn_data_type_to_internal_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.utils.om.attributetypes.maya_mfn_data_type_to_internal_type" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the CPG internal attribute type for the given Maya data type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data_type</strong> (<em>OpenMaya.MFnData</em>) – Maya data attribute type.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>internal attribute type.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.utils.om.attributetypes.maya_numeric_type_to_internal_type">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.utils.om.attributetypes.</span></span><span class="sig-name descname"><span class="pre">maya_numeric_type_to_internal_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numeric_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/utils/om/attributetypes.html#maya_numeric_type_to_internal_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.utils.om.attributetypes.maya_numeric_type_to_internal_type" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the CPG internal attribute type for the given Maya numeric type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>numeric_type</strong> (<em>OpenMaya.MFnNumericData</em>) – Maya numeric attribute type.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>internal attribute type.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.utils.om.attributetypes.maya_type_from_api_type">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.utils.om.attributetypes.</span></span><span class="sig-name descname"><span class="pre">maya_type_from_api_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/utils/om/attributetypes.html#maya_type_from_api_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.utils.om.attributetypes.maya_type_from_api_type" title="Permalink to this definition"></a></dt>
+<dd><p>Returns maya.cmds API type from the given Maya OpenMaya API type.
+:param int api_type: Maya OpenMaya API attribute type as an integer value.
+:return: maya.cmds API type.
+:rtype: str</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.utils.om.attributetypes.maya_type_to_python_type">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.utils.om.attributetypes.</span></span><span class="sig-name descname"><span class="pre">maya_type_to_python_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maya_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/utils/om/attributetypes.html#maya_type_to_python_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.utils.om.attributetypes.maya_type_to_python_type" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the Python type for the given Maya type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>maya_type</strong> (<em>object</em>) – Maya attribute type.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Python type.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int, float, string, list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.utils.om.attributetypes.maya_unit_type_to_internal_type">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.utils.om.attributetypes.</span></span><span class="sig-name descname"><span class="pre">maya_unit_type_to_internal_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typed_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/utils/om/attributetypes.html#maya_unit_type_to_internal_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.utils.om.attributetypes.maya_unit_type_to_internal_type" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the CPG internal attribute type for the given Maya typed type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>typed_type</strong> (<em>OpenMaya.MFnUnitAttribute</em>) – Maya typed attribute type.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>internal attribute type.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.utils.om.attributetypes.om_type_to_pymel_type">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.utils.om.attributetypes.</span></span><span class="sig-name descname"><span class="pre">om_type_to_pymel_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">om_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/utils/om/attributetypes.html#om_type_to_pymel_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.utils.om.attributetypes.om_type_to_pymel_type" title="Permalink to this definition"></a></dt>
+<dd><p>Returns PyMEL type from given OpenMaya type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>om_type</strong> (<em>int</em>) – OpenMaya attribute type.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>PyMEL type.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.utils.om.om_plug">
+<span id="cpg-maya-utils-om-om-plug-module"></span><h2>cpg.maya.utils.om.om_plug module<a class="headerlink" href="#module-cpg.maya.utils.om.om_plug" title="Permalink to this heading"></a></h2>
+<p>Module that centralizes May attribute types</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.utils.om.om_plug.as_mplug">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.utils.om.om_plug.</span></span><span class="sig-name descname"><span class="pre">as_mplug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute_full_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/utils/om/om_plug.html#as_mplug"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.utils.om.om_plug.as_mplug" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the MPlug instance of the given attribute full name (node.attribute_name).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attribute_full_name</strong> (<em>str</em>) – full name of the Maya attribute to convert to MPlug</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>MPlug associated to given attribute name/</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>OpenMaya.MPlug</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.utils.om.om_plug.get_enum_names">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.utils.om.om_plug.</span></span><span class="sig-name descname"><span class="pre">get_enum_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plug</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/utils/om/om_plug.html#get_enum_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.utils.om.om_plug.get_enum_names" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the plug enumeration field names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plug</strong> (<em>OpenMaya.MPlug</em>) – MPlug to query enumeration field names from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>sequence of enum names.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list(str)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.utils.om.om_plug.get_numeric_type_and_value">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.utils.om.om_plug.</span></span><span class="sig-name descname"><span class="pre">get_numeric_type_and_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plug</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/utils/om/om_plug.html#get_numeric_type_and_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.utils.om.om_plug.get_numeric_type_and_value" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the numeric type and value of the given OpenMaya MPlug.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plug</strong> (<em>MPlug</em>) – plug we want to retrieve numeric type and value of.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple containing the numeric attribute type and value.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple(int, int or float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.utils.om.om_plug.get_plug_default">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.utils.om.om_plug.</span></span><span class="sig-name descname"><span class="pre">get_plug_default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plug</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/utils/om/om_plug.html#get_plug_default"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.utils.om.om_plug.get_plug_default" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the default value of the given plug.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plug</strong> (<em>OpenMaya.MPlug</em>) – plug to retrieve default value of.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>plug default value.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>object or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.utils.om.om_plug.get_plug_type">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.utils.om.om_plug.</span></span><span class="sig-name descname"><span class="pre">get_plug_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plug</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/utils/om/om_plug.html#get_plug_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.utils.om.om_plug.get_plug_type" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the type of the given OpenMaya MPlug.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plug</strong> (<em>MPlug</em>) – plug we want to retrieve type and value of.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>MPlug type.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<p>..note:: If possible Python default type will be returned.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.utils.om.om_plug.get_plug_type_and_value">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.utils.om.om_plug.</span></span><span class="sig-name descname"><span class="pre">get_plug_type_and_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plug</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/utils/om/om_plug.html#get_plug_type_and_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.utils.om.om_plug.get_plug_type_and_value" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the value and the type of the given OpenMaya MPlug.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plug</strong> (<em>MPlug</em>) – plug we want to retrieve type and value of.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple containing the MPlug type and value.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple(int, object)</p>
+</dd>
+</dl>
+<p>..note:: If possible Python default type will be returned.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.utils.om.om_plug.get_python_type_from_plug_value">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.utils.om.om_plug.</span></span><span class="sig-name descname"><span class="pre">get_python_type_from_plug_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plug</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/utils/om/om_plug.html#get_python_type_from_plug_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.utils.om.om_plug.get_python_type_from_plug_value" title="Permalink to this definition"></a></dt>
+<dd><p>Returns Python type of the given MPlug.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plug</strong> (<em>OpenMaya.MPlug</em>) – plug whose python type we want to retrieve.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Python type.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int, float, str, list or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.utils.om.om_plug.get_typed_type_and_value">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.utils.om.om_plug.</span></span><span class="sig-name descname"><span class="pre">get_typed_type_and_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plug</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/utils/om/om_plug.html#get_typed_type_and_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.utils.om.om_plug.get_typed_type_and_value" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the typed type and value of the given OpenMaya MPlug.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plug</strong> (<em>MPlug</em>) – plug we want to retrieve typed type and value of.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple containing the typed attribute type and value.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple(int, object)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.utils.om.om_plug.serialize_plug">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.utils.om.om_plug.</span></span><span class="sig-name descname"><span class="pre">serialize_plug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plug</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/utils/om/om_plug.html#serialize_plug"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.utils.om.om_plug.serialize_plug" title="Permalink to this definition"></a></dt>
+<dd><p>Function that converts given OpenMaya.MPlug into a serialized dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plug</strong> (<em>om.Plug</em>) – plug to serialize.</p></li>
+<li><p><strong>optimize</strong> (<em>bool</em>) – If True, all the serialized data with default values will be ignored.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>serialized plug as a dictionary.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.utils.om.om_utils">
+<span id="cpg-maya-utils-om-om-utils-module"></span><h2>cpg.maya.utils.om.om_utils module<a class="headerlink" href="#module-cpg.maya.utils.om.om_utils" title="Permalink to this heading"></a></h2>
+<p>Open Maya Utilities.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.utils.om.om_utils.get_adjacent_vertices">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.utils.om.om_utils.</span></span><span class="sig-name descname"><span class="pre">get_adjacent_vertices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vertex</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/utils/om/om_utils.html#get_adjacent_vertices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.utils.om.om_utils.get_adjacent_vertices" title="Permalink to this definition"></a></dt>
+<dd><p>Gets adjacent vertex indices for specified vertex index</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>vertex</strong> (<em>str</em>) – Vertex return adjacent vertex indices for</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Adjacent vertex indices</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list(int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.utils.om.om_utils.get_closest_joint_to_vertex">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.utils.om.om_utils.</span></span><span class="sig-name descname"><span class="pre">get_closest_joint_to_vertex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vertex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/utils/om/om_utils.html#get_closest_joint_to_vertex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.utils.om.om_utils.get_closest_joint_to_vertex" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the closest joint to a provided vertex index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vertex</strong> (<em>int</em>) – Vertex index</p></li>
+<li><p><strong>mesh_name</strong> (<em>str</em>) – Name of the mesh</p></li>
+<li><p><strong>joint_list</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – List of names of joints to be considered</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The name of the closest joint</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.utils.om.om_utils.pynode_to_om2_mobject_mdag_path">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.utils.om.om_utils.</span></span><span class="sig-name descname"><span class="pre">pynode_to_om2_mobject_mdag_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/utils/om/om_utils.html#pynode_to_om2_mobject_mdag_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.utils.om.om_utils.pynode_to_om2_mobject_mdag_path" title="Permalink to this definition"></a></dt>
+<dd><p>Convert a pynode into a MDagPath and MObject</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>PyNode</em>) – The PyNode to be converted.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The om equivalent objects.</p>
+</dd>
+<dt class="field-odd">Rtype MDagPath, MObject<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.utils.om">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cpg.maya.utils.om" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cpg.maya.utils.html" class="btn btn-neutral float-left" title="cpg.maya.utils package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

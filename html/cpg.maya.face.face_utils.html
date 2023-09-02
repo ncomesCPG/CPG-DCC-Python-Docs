@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.face.face_utils package &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="cpg.maya.modeling package" href="cpg.maya.modeling.html" />
+    <link rel="prev" title="cpg.maya.face.face_poses package" href="cpg.maya.face.face_poses.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">cpg-maya</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="cpg.html">cpg package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="cpg.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="cpg.maya.html">cpg.maya package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cpg.html#module-cpg">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">cpg-maya</a></li>
+          <li class="breadcrumb-item"><a href="cpg.html">cpg package</a></li>
+          <li class="breadcrumb-item"><a href="cpg.maya.html">cpg.maya package</a></li>
+          <li class="breadcrumb-item"><a href="cpg.maya.face.html">cpg.maya.face package</a></li>
+      <li class="breadcrumb-item active">cpg.maya.face.face_utils package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/cpg.maya.face.face_utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cpg-maya-face-face-utils-package">
+<h1>cpg.maya.face.face_utils package<a class="headerlink" href="#cpg-maya-face-face-utils-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-cpg.maya.face.face_utils.eyelash_snapping">
+<span id="cpg-maya-face-face-utils-eyelash-snapping-module"></span><h2>cpg.maya.face.face_utils.eyelash_snapping module<a class="headerlink" href="#module-cpg.maya.face.face_utils.eyelash_snapping" title="Permalink to this heading"></a></h2>
+<p>Modules that do eyelash snapping to the face model.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.eyelash_snapping.eyelash_snap_action">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.eyelash_snapping.</span></span><span class="sig-name descname"><span class="pre">eyelash_snap_action</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/eyelash_snapping.html#eyelash_snap_action"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.eyelash_snapping.eyelash_snap_action" title="Permalink to this definition"></a></dt>
+<dd><p>Snaps mesh onto eyelids using mesh markup and coordinate data in face_source_data file.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.eyelash_snapping.setup_jnts">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.eyelash_snapping.</span></span><span class="sig-name descname"><span class="pre">setup_jnts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main_mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snap_mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eyelash_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">side</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/eyelash_snapping.html#setup_jnts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.eyelash_snapping.setup_jnts" title="Permalink to this definition"></a></dt>
+<dd><p>Set up joints and locators based on UV coords.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>main_mesh</strong> (<em>nt.Transform</em>) – Head mesh</p></li>
+<li><p><strong>snap_mesh</strong> (<em>nt.Transform</em>) – Mesh to snap</p></li>
+<li><p><strong>eyelash_coords</strong> (<em>dict</em>) – A dictionary containing UV information</p></li>
+<li><p><strong>side</strong> (<em>int</em>) – Side to identify correct coords to use, 1 is left and 2 is right</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a dictionary of created joints and locators</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.eyelash_snapping.snap_eyelash_mesh">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.eyelash_snapping.</span></span><span class="sig-name descname"><span class="pre">snap_eyelash_mesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main_mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snap_mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snap_region</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eyelash_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skin_data_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/eyelash_snapping.html#snap_eyelash_mesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.eyelash_snapping.snap_eyelash_mesh" title="Permalink to this definition"></a></dt>
+<dd><p>Snaps eyelash/shadow/tear mesh onto eyelids based on UV coords.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>main_mesh</strong> (<em>nt.Transform</em>) – Head mesh</p></li>
+<li><p><strong>snap_mesh</strong> (<em>nt.Transform</em>) – Mesh to snap</p></li>
+<li><p><strong>snap_region</strong> (<em>str</em>) – The name of the region to identify which coords to use</p></li>
+<li><p><strong>eyelash_coords</strong> (<em>dict</em>) – A dictionary containing UV information</p></li>
+<li><p><strong>skin_data_path</strong> (<em>str</em>) – Path to common skin data to use for snapping meshes</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.face.face_utils.face_import_export">
+<span id="cpg-maya-face-face-utils-face-import-export-module"></span><h2>cpg.maya.face.face_utils.face_import_export module<a class="headerlink" href="#module-cpg.maya.face.face_utils.face_import_export" title="Permalink to this heading"></a></h2>
+<p>Face: Staging UI.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_import_export.export_all_blendshapes">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_import_export.</span></span><span class="sig-name descname"><span class="pre">export_all_blendshapes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_mtls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_import_export.html#export_all_blendshapes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_import_export.export_all_blendshapes" title="Permalink to this definition"></a></dt>
+<dd><p>Exports all the blend shapes in a scene.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset_id</strong> (<em>string</em>) – The str asset id for the asset.</p></li>
+<li><p><strong>region_name</strong> (<em>string</em>) – The region name for the mesh to identify what mesh is being looked at.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_import_export.export_blendshapes">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_import_export.</span></span><span class="sig-name descname"><span class="pre">export_blendshapes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meshes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_mtls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_import_export.html#export_blendshapes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_import_export.export_blendshapes" title="Permalink to this definition"></a></dt>
+<dd><p>Exports a list of meshes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – The file path.</p></li>
+<li><p><strong>meshes</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – List of meshes that will be exported.</p></li>
+<li><p><strong>remove_mtls</strong> (<em>bool</em>) – If True, the mtls in the folder will be removed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_import_export.import_all_blendshapes">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_import_export.</span></span><span class="sig-name descname"><span class="pre">import_all_blendshapes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.fbx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_import_export.html#import_all_blendshapes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_import_export.import_all_blendshapes" title="Permalink to this definition"></a></dt>
+<dd><p>Imports blend shapes associated with a blend shape mesh.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset_id</strong> (<em>string</em>) – The str asset id for the asset.</p></li>
+<li><p><strong>region</strong> (<em>string</em>) – The region name for the mesh to identify what mesh is being looked at.</p></li>
+<li><p><strong>ext</strong> (<em>str</em>) – Name of the file extension.</p></li>
+<li><p><strong>exist_check</strong> (<em>bool</em>) – If True, will check to see if the mesh is already in the scene.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a dictionary with all of the poses that were imported and the pose group that the get
+Parented under.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_import_export.set_native_dialog">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_import_export.</span></span><span class="sig-name descname"><span class="pre">set_native_dialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dialog_style</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_import_export.html#set_native_dialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_import_export.set_native_dialog" title="Permalink to this definition"></a></dt>
+<dd><p>Sets Maya default file dialog style to avoid import issues when using cmds.file()</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dialog_style</strong> (<em>int</em>) – Current file dialog style, 1 for OS native and 2 for Maya default</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if dialog style was changed to Maya default, otherwise False</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.face.face_utils.face_skinning">
+<span id="cpg-maya-face-face-utils-face-skinning-module"></span><h2>cpg.maya.face.face_utils.face_skinning module<a class="headerlink" href="#module-cpg.maya.face.face_utils.face_skinning" title="Permalink to this heading"></a></h2>
+<p>Parameter data for working with the facial rigs.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_skinning.apply_common_skinning">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_skinning.</span></span><span class="sig-name descname"><span class="pre">apply_common_skinning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_skinning.html#apply_common_skinning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_skinning.apply_common_skinning" title="Permalink to this definition"></a></dt>
+<dd><p>Applies common skinning</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mesh</strong> (<em>list</em><em>(</em><em>pm.nt.Transform</em><em>)</em>) – Mesh to skin</p></li>
+<li><p><strong>mesh_type</strong> (<em>str</em>) – Blendshape type to find skinning for</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_skinning.apply_face_skinning_from_file">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_skinning.</span></span><span class="sig-name descname"><span class="pre">apply_face_skinning_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_skinning.html#apply_face_skinning_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_skinning.apply_face_skinning_from_file" title="Permalink to this definition"></a></dt>
+<dd><p>Applies skinning from an existing .sknr file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset_id</strong> (<em>str</em>) – id of the rig</p></li>
+<li><p><strong>mesh</strong> (<em>pm.nt.mesh</em>) – The mesh that the skinning will get applied.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns if the skin was set or not.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_skinning.apply_non_deform_skinning">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_skinning.</span></span><span class="sig-name descname"><span class="pre">apply_non_deform_skinning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">non_deform_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_skinning.html#apply_non_deform_skinning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_skinning.apply_non_deform_skinning" title="Permalink to this definition"></a></dt>
+<dd><p>Applies non_deform skinning</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset_id</strong> (<em>str</em>) – Asset ID of character we are skinning (to check for skin data, if none yet will use common)</p></li>
+<li><p><strong>mesh</strong> (<em>str</em>) – Mesh name</p></li>
+<li><p><strong>non_deform_data</strong> (<em>dict</em>) – Dict containing non_deform vertex IDs from rig source data</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_skinning.apply_skinning_from_data">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_skinning.</span></span><span class="sig-name descname"><span class="pre">apply_skinning_from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verts_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skinned_joints</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_skinning.html#apply_skinning_from_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_skinning.apply_skinning_from_data" title="Permalink to this definition"></a></dt>
+<dd><p>Applies skin data saved in rig_source_data.json</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>face_data</strong> (<a class="reference internal" href="cpg.maya.face.html#cpg.maya.face.source_data.FaceMeshRegionData" title="cpg.maya.face.source_data.FaceMeshRegionData"><em>FaceMeshRegionData</em></a>) – Instance of FaceMeshRegionData class</p></li>
+<li><p><strong>face_mesh</strong> (<em>str/pm.nt.Transform</em>) – Skinned face mesh to apply weights on</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_skinning.cleanup_brows_skinning">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_skinning.</span></span><span class="sig-name descname"><span class="pre">cleanup_brows_skinning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face_mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vert_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_skinning.html#cleanup_brows_skinning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_skinning.cleanup_brows_skinning" title="Permalink to this definition"></a></dt>
+<dd><p>Removes some influences from common offenders knows for having influences in the brow region
+when they should not</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>face_mesh</strong> (<em>pm.nt.Transform</em>) – Mesh to edit skinning on</p></li>
+<li><p><strong>vert_list</strong> (<em>list</em><em>(</em><em>int</em><em>)</em>) – List of vertex indices to operate on</p></li>
+<li><p><strong>joint_list</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – List of all joint names</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_skinning.cleanup_face_skinning_right_left">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_skinning.</span></span><span class="sig-name descname"><span class="pre">cleanup_face_skinning_right_left</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face_mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mirror_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_skinning.html#cleanup_face_skinning_right_left"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_skinning.cleanup_face_skinning_right_left" title="Permalink to this definition"></a></dt>
+<dd><p>Removes left side joint influences from right side of face mesh and vice versa.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>face_mesh</strong> (<em>pm.nt.Transform</em>) – Mesh to edit skinning on</p></li>
+<li><p><strong>mirror_data</strong> (<a class="reference internal" href="cpg.maya.face.html#cpg.maya.face.face_vertex_data.SourceVertexMirror" title="cpg.maya.face.face_vertex_data.SourceVertexMirror"><em>SourceVertexMirror</em></a>) – Mirror vertex data from rig source data</p></li>
+<li><p><strong>joint_list</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – List of all joint names</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_skinning.cleanup_lips_skinning">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_skinning.</span></span><span class="sig-name descname"><span class="pre">cleanup_lips_skinning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face_mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eyelash_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_skinning.html#cleanup_lips_skinning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_skinning.cleanup_lips_skinning" title="Permalink to this definition"></a></dt>
+<dd><p>Removes upper lip joint influences from bottom which is a common issue after LSD process</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>face_mesh</strong> (<em>pm.nt.Transform</em>) – Mesh to edit skinning on</p></li>
+<li><p><strong>eyelash_data</strong> (<a class="reference internal" href="cpg.maya.face.html#cpg.maya.face.face_vertex_data.SourceFaceEyelashShelf" title="cpg.maya.face.face_vertex_data.SourceFaceEyelashShelf"><em>SourceFaceEyelashShelf</em></a>) – Eye (and lip) snapping data from rig source data</p></li>
+<li><p><strong>joint_list</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – List of all joint names</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_skinning.copy_weights_from_head">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_skinning.</span></span><span class="sig-name descname"><span class="pre">copy_weights_from_head</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face_mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_to_skin</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_skinning.html#copy_weights_from_head"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_skinning.copy_weights_from_head" title="Permalink to this definition"></a></dt>
+<dd><p>Copies weights from head mesh and applies them to another mesh</p>
+<p>param: str face_mesh: Name of face mesh to copy weights from
+param: FaceMeshRegionData face_data: Data for head, used to determine what joints should be skinned
+param: list(pm.nt.Transform or pm.general.MeshVertex) mesh_to_skin: Mesh or vertices to copy weights into</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_skinning.export_face_skinning_to_file">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_skinning.</span></span><span class="sig-name descname"><span class="pre">export_face_skinning_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_skinning.html#export_face_skinning_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_skinning.export_face_skinning_to_file" title="Permalink to this definition"></a></dt>
+<dd><p>Exports skinning from a mesh.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset_id</strong> (<em>str</em>) – id of the rig</p></li>
+<li><p><strong>mesh</strong> (<em>str/pm.nt.Transform</em>) – The mesh that the skinning will get exported.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns The file name of the exported file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_skinning.face_skinning_converter_cmd">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_skinning.</span></span><span class="sig-name descname"><span class="pre">face_skinning_converter_cmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blendshape_mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skin_mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_decomp_mesh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_skinning.html#face_skinning_converter_cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_skinning.face_skinning_converter_cmd" title="Permalink to this definition"></a></dt>
+<dd><p>Runs the Hans Godard Linear Skinning Decomposition Plugin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>blendshape_mesh</strong> (<em>str/pm.nt.Transform</em>) – mesh to get skinned</p></li>
+<li><p><strong>skin_mesh</strong> (<em>str/pm.nt.Transform</em>) – mesh to get skinned</p></li>
+<li><p><strong>joints</strong> (<em>list</em><em>(</em><em>str/pm.nt.Joint</em><em>)</em>) – List of joints that get skinned</p></li>
+<li><p><strong>start_frame</strong> (<em>int</em>) – Start frame of the poses</p></li>
+<li><p><strong>end_frame</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – End frame of the poses</p></li>
+<li><p><strong>end_frame</strong> – End frame of the poses</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a dictionary of everything that was created.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_skinning.mirror_face_weights">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_skinning.</span></span><span class="sig-name descname"><span class="pre">mirror_face_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verts_to_mirror</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_skinning.html#mirror_face_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_skinning.mirror_face_weights" title="Permalink to this definition"></a></dt>
+<dd><p>Mirrors vertex weights on face mesh</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list(pm.general.MeshVertex) verts_to_mirror: List of vertices to mirror weights from</p>
+</dd>
+<dt class="field-even">Param<span class="colon">:</span></dt>
+<dd class="field-even"><p>str face_mesh: Name of face mesh</p>
+</dd>
+<dt class="field-odd">Param<span class="colon">:</span></dt>
+<dd class="field-odd"><p>FaceMeshRegionData face_data: Data for head, used to find mirror vertex</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_skinning.post_lsd_face_cleanup">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_skinning.</span></span><span class="sig-name descname"><span class="pre">post_lsd_face_cleanup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrapped_root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asset_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_skinning.html#post_lsd_face_cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_skinning.post_lsd_face_cleanup" title="Permalink to this definition"></a></dt>
+<dd><p>Runs functions for cleaning up face skinning.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mesh_node</strong> (<em>pm.nt.Transform</em>) – Face mesh node we are cleaning up skinning on</p></li>
+<li><p><strong>region_data</strong> (<a class="reference internal" href="cpg.maya.face.html#cpg.maya.face.source_data.FaceMeshRegionData" title="cpg.maya.face.source_data.FaceMeshRegionData"><em>FaceMeshRegionData</em></a>) – Rig source data</p></li>
+<li><p><strong>wrapped_root</strong> (<a class="reference internal" href="cpg.maya.rigging.html#cpg.maya.rigging.chain_markup.ChainMarkup" title="cpg.maya.rigging.chain_markup.ChainMarkup"><em>ChainMarkup</em></a>) – Wrapped root joint of the rig</p></li>
+<li><p><strong>asset_id</strong> (<em>str</em>) – ID of the asset we are skinning. If None we’ll grab common skinning data</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_skinning.skin_to_head_joint">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_skinning.</span></span><span class="sig-name descname"><span class="pre">skin_to_head_joint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh_to_skin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_joint</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_skinning.html#skin_to_head_joint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_skinning.skin_to_head_joint" title="Permalink to this definition"></a></dt>
+<dd><p>Skins a mesh to the head joint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mesh_to_skin</strong> (<em>list</em><em>(</em><em>pm.nt.Transform</em><em> or </em><em>pm.general.MeshVertex</em><em>)</em>) – The mesh that the skinning will get applied.</p></li>
+<li><p><strong>root_joint</strong> (<em>pm.nt.Joint</em>) – The root joint of the skeleton.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_skinning.smooth_vert_weights">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_skinning.</span></span><span class="sig-name descname"><span class="pre">smooth_vert_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vert_index_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_skinning.html#smooth_vert_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_skinning.smooth_vert_weights" title="Permalink to this definition"></a></dt>
+<dd><p>Smooths vertex weights out</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vert_index_list</strong> (<em>list</em><em>(</em><em>int</em><em>)</em>) – List of vertex indices to operate on</p></li>
+<li><p><strong>mesh_name</strong> (<em>str</em>) – Name of the mesh they belong to</p></li>
+<li><p><strong>tol_val</strong> (<em>float</em>) – Tolerance value for smoothWeights operation (lower value = more smooth)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_skinning.verts_skin_data">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_skinning.</span></span><span class="sig-name descname"><span class="pre">verts_skin_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_skinning.html#verts_skin_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_skinning.verts_skin_data" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a dictionary containing vertex skin data
+:param list verts: List of vertices
+:param skinCluster skin_cluster:
+:return: Returns dictionary of all vertex skin data
+:rtype: dict</p>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.face.face_utils.face_util">
+<span id="cpg-maya-face-face-utils-face-util-module"></span><h2>cpg.maya.face.face_utils.face_util module<a class="headerlink" href="#module-cpg.maya.face.face_utils.face_util" title="Permalink to this heading"></a></h2>
+<p>Face: Utility Functions.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_util.clean_and_save_face_rig">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_util.</span></span><span class="sig-name descname"><span class="pre">clean_and_save_face_rig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_util.html#clean_and_save_face_rig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_util.clean_and_save_face_rig" title="Permalink to this definition"></a></dt>
+<dd><p>Cleans up and saves the final rig scene.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset_id</strong> (<em>string</em>) – The str asset id for the asset.</p></li>
+<li><p><strong>save_file</strong> (<em>bool</em>) – if True, the rig file will be saved.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_util.create_all_counter_part_meshes">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_util.</span></span><span class="sig-name descname"><span class="pre">create_all_counter_part_meshes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hide</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_util.html#create_all_counter_part_meshes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_util.create_all_counter_part_meshes" title="Permalink to this definition"></a></dt>
+<dd><p>Duplicates the skinned meshes and tags them with the blend shape data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset_id</strong> (<em>string</em>) – The str asset id for the asset.</p></li>
+<li><p><strong>hide</strong> (<em>bool</em>) – If true, hides the original meshes after duplicating them.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a list of all duplicated meshes.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list(pm.nt.Transform)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_util.create_pose_grp">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_util.</span></span><span class="sig-name descname"><span class="pre">create_pose_grp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shapes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_util.html#create_pose_grp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_util.create_pose_grp" title="Permalink to this definition"></a></dt>
+<dd><p>Creates and returns the pose grp or if one exists, it returns that one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the pose grp</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pm.nt.Group</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_util.duplicate_blendshape_mesh">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_util.</span></span><span class="sig-name descname"><span class="pre">duplicate_blendshape_mesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_util.html#duplicate_blendshape_mesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_util.duplicate_blendshape_mesh" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the blend shape version of a mesh.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset_id</strong> (<em>string</em>) – The str asset id for the asset.</p></li>
+<li><p><strong>mesh</strong> (<em>pm.nt.Transform</em>) – The mesh that gets duplicated.</p></li>
+<li><p><strong>region_name</strong> (<em>string</em>) – The region name for the mesh to identify what mesh is being looked at.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the blend shape version of a mesh.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pm.nt.Transform</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_util.export_head_sk">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_util.</span></span><span class="sig-name descname"><span class="pre">export_head_sk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meshes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_joint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sk_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_util.html#export_head_sk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_util.export_head_sk" title="Permalink to this definition"></a></dt>
+<dd><p>Duplicates the meshes and skel, copies skinning from original mesh, deletes null joints from duplicated skel</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>meshes</strong> (<em>list</em><em>(</em><em>pm.nt.Transform</em><em>)</em>) – A list of meshes to duplicate</p></li>
+<li><p><strong>root_joint</strong> (<em>pm.nt.Joint</em>) – Root joint for the SK being exported</p></li>
+<li><p><strong>sk_path</strong> (<em>string</em>) – path of SK</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_util.face_scene_setup">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_util.</span></span><span class="sig-name descname"><span class="pre">face_scene_setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">focus_object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rig_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_util.html#face_scene_setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_util.face_scene_setup" title="Permalink to this definition"></a></dt>
+<dd><p>Cleans up the staging scene after the rig has been built.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>focus_object</strong> (<em>str</em>) – obj</p></li>
+<li><p><strong>rig_node</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_util.get_all_scene_blendshapes">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_util.</span></span><span class="sig-name descname"><span class="pre">get_all_scene_blendshapes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_util.html#get_all_scene_blendshapes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_util.get_all_scene_blendshapes" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a list of Blend Shape Meshes in the scene.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset_id</strong> (<em>string</em>) – The str asset id for the asset.</p></li>
+<li><p><strong>region_name</strong> (<em>string</em>) – The region name for the mesh to identify what mesh is being looked at.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of Blend Shape Meshes in the scene.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list(pm.nt.Transform)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_util.get_all_scene_face_meshes">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_util.</span></span><span class="sig-name descname"><span class="pre">get_all_scene_face_meshes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_util.html#get_all_scene_face_meshes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_util.get_all_scene_face_meshes" title="Permalink to this definition"></a></dt>
+<dd><p>Returns all the face meshes in the scene.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ns</strong> (<em>str</em>) – </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns all the face meshes in the scene.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list(pm.nt.Transform)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_util.get_common_face_data">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_util.</span></span><span class="sig-name descname"><span class="pre">get_common_face_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_util.html#get_common_face_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_util.get_common_face_data" title="Permalink to this definition"></a></dt>
+<dd><p>Returns an instance of SourceFaceData based on common data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns an instance of FaceMeshRegionData.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="cpg.maya.face.html#cpg.maya.face.source_data.SourceFaceData" title="cpg.maya.face.source_data.SourceFaceData">SourceFaceData</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_util.get_common_face_region_data">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_util.</span></span><span class="sig-name descname"><span class="pre">get_common_face_region_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">region_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_util.html#get_common_face_region_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_util.get_common_face_region_data" title="Permalink to this definition"></a></dt>
+<dd><p>Returns an instance of FaceMeshRegionData.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>region_name</strong> (<em>string</em>) – The region name for the mesh to identify what mesh is being looked at.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns an instance of FaceMeshRegionData for a specific mesh.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="cpg.maya.face.html#cpg.maya.face.source_data.FaceMeshRegionData" title="cpg.maya.face.source_data.FaceMeshRegionData">FaceMeshRegionData</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_util.get_face_region_data">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_util.</span></span><span class="sig-name descname"><span class="pre">get_face_region_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_util.html#get_face_region_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_util.get_face_region_data" title="Permalink to this definition"></a></dt>
+<dd><p>Returns an instance of FaceMeshRegionData for a specific mesh.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset_id</strong> (<em>string</em>) – The str asset id for the asset.</p></li>
+<li><p><strong>region_name</strong> (<em>string</em>) – The region name for the mesh to identify what mesh is being looked at.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns an instance of FaceMeshRegionData for a specific mesh.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="cpg.maya.face.html#cpg.maya.face.source_data.FaceMeshRegionData" title="cpg.maya.face.source_data.FaceMeshRegionData">FaceMeshRegionData</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_util.get_face_rigs_from_scene">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_util.</span></span><span class="sig-name descname"><span class="pre">get_face_rigs_from_scene</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_util.html#get_face_rigs_from_scene"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_util.get_face_rigs_from_scene" title="Permalink to this definition"></a></dt>
+<dd><p>Returns all the face FRAGRigs from the scene.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns all the face FRAGRigs from the scene.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list(<a class="reference internal" href="cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_rig.FRAGRig" title="cpg.maya.rigging.frag.frag_rig.FRAGRig">FRAGRig</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_util.get_parameters_region_instance">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_util.</span></span><span class="sig-name descname"><span class="pre">get_parameters_region_instance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_util.html#get_parameters_region_instance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_util.get_parameters_region_instance" title="Permalink to this definition"></a></dt>
+<dd><p>Returns an instance of ParameterData based on the parameters dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset_id</strong> (<em>string</em>) – The str asset id for the asset.</p></li>
+<li><p><strong>region_name</strong> (<em>string</em>) – The region name for the mesh to identify what mesh is being looked at.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns an instance of ParameterData based on the parameters dictionary.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_parameters.ParameterData" title="cpg.maya.rigging.frag.face_parameters.ParameterData">ParameterData</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_util.get_source_face_data">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_util.</span></span><span class="sig-name descname"><span class="pre">get_source_face_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_util.html#get_source_face_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_util.get_source_face_data" title="Permalink to this definition"></a></dt>
+<dd><p>Returns an instance of SourceFaceData for a specific mesh.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>asset_id</strong> (<em>string</em>) – The str asset id for the asset.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns an instance of FaceMeshRegionData for a specific mesh.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="cpg.maya.face.html#cpg.maya.face.source_data.SourceFaceData" title="cpg.maya.face.source_data.SourceFaceData">SourceFaceData</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_util.get_source_face_data_path">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_util.</span></span><span class="sig-name descname"><span class="pre">get_source_face_data_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_util.html#get_source_face_data_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_util.get_source_face_data_path" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the path to the source data file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>asset_id</strong> (<em>string</em>) – The str asset id for the asset.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the path to the source data file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_util.has_skinning_data">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_util.</span></span><span class="sig-name descname"><span class="pre">has_skinning_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asset_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.json'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_util.html#has_skinning_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_util.has_skinning_data" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_util.set_common_flag_positions">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_util.</span></span><span class="sig-name descname"><span class="pre">set_common_flag_positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrapped_root</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_util.html#set_common_flag_positions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_util.set_common_flag_positions" title="Permalink to this definition"></a></dt>
+<dd><p>Sets null joint positions for face based on common UV data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mesh</strong> (<em>pm.nt.Transform</em>) – Face mesh being rigged</p></li>
+<li><p><strong>wrapped_root</strong> (<a class="reference internal" href="cpg.maya.rigging.html#cpg.maya.rigging.chain_markup.ChainMarkup" title="cpg.maya.rigging.chain_markup.ChainMarkup"><em>ChainMarkup</em></a>) – Wrapped root joint for face rig</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_util.set_head_rig_jnts">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_util.</span></span><span class="sig-name descname"><span class="pre">set_head_rig_jnts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">head_asset_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrapped_head_root</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_util.html#set_head_rig_jnts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_util.set_head_rig_jnts" title="Permalink to this definition"></a></dt>
+<dd><p>Sets head rig non-face joints to the positions of the asset’s body rig.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>head_asset_id</strong> (<em>str</em>) – Asset ID for the head.</p></li>
+<li><p><strong>wrapped_head_root</strong> (<a class="reference internal" href="cpg.maya.rigging.html#cpg.maya.rigging.chain_markup.ChainMarkup" title="cpg.maya.rigging.chain_markup.ChainMarkup"><em>ChainMarkup</em></a>) – Wrapped root joint of the head rig.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.face.face_utils.face_util.sort_shapes">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.face.face_utils.face_util.</span></span><span class="sig-name descname"><span class="pre">sort_shapes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meshes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/face/face_utils/face_util.html#sort_shapes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.face.face_utils.face_util.sort_shapes" title="Permalink to this definition"></a></dt>
+<dd><p>Ignore this.  THIS IS A HOT PILE OF…
+This is a place holder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>shapes</strong> (<em>list</em><em>(</em><em>pm.nt.Transform</em><em>)</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.face.face_utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cpg.maya.face.face_utils" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cpg.maya.face.face_poses.html" class="btn btn-neutral float-left" title="cpg.maya.face.face_poses package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cpg.maya.modeling.html" class="btn btn-neutral float-right" title="cpg.maya.modeling package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.deformations package &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="cpg.maya.face package" href="cpg.maya.face.html" />
+    <link rel="prev" title="cpg.maya.cinematics package" href="cpg.maya.cinematics.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">cpg-maya</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="cpg.html">cpg package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="cpg.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="cpg.maya.html">cpg.maya package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cpg.html#module-cpg">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">cpg-maya</a></li>
+          <li class="breadcrumb-item"><a href="cpg.html">cpg package</a></li>
+          <li class="breadcrumb-item"><a href="cpg.maya.html">cpg.maya package</a></li>
+      <li class="breadcrumb-item active">cpg.maya.deformations package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/cpg.maya.deformations.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cpg-maya-deformations-package">
+<h1>cpg.maya.deformations package<a class="headerlink" href="#cpg-maya-deformations-package" title="Permalink to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-cpg.maya.deformations.cluster">
+<span id="cpg-maya-deformations-cluster-module"></span><h2>cpg.maya.deformations.cluster module<a class="headerlink" href="#module-cpg.maya.deformations.cluster" title="Permalink to this heading"></a></h2>
+<p>Parameter data for working with the facial rigs.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.cluster.create_cluster_from_component_names">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.cluster.</span></span><span class="sig-name descname"><span class="pre">create_cluster_from_component_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">front_of_chain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclusive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/cluster.html#create_cluster_from_component_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.cluster.create_cluster_from_component_names" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a cluster on the CV/vertex names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> – list(str), names of cv points to cluster.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – name of the cluster.</p></li>
+<li><p><strong>relative</strong> (<em>bool</em>) – whether cluster is created in relative mode. In this mode, only the transformations
+directly above the cluster are used by the cluster.</p></li>
+<li><p><strong>front_of_chain</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>exclusive</strong> (<em>bool</em>) – whether cluster deformation set is put in deform partition. If True, a vertex/CV
+only will be able to be deformed by one cluster.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list(str, str), [cluster, handle]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.deformations.skin_utils">
+<span id="cpg-maya-deformations-skin-utils-module"></span><h2>cpg.maya.deformations.skin_utils module<a class="headerlink" href="#module-cpg.maya.deformations.skin_utils" title="Permalink to this heading"></a></h2>
+<p>Modules that interact with Maya skinning</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.apply_skin_weights_cmd">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">apply_skin_weights_cmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">skin_data_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#apply_skin_weights_cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.apply_skin_weights_cmd" title="Permalink to this definition"></a></dt>
+<dd><p>Applies previously saved skin weights to selected meshes or vertices</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>skin_data_path</strong> (<em>str</em>) – Path to skin data folder to pull weight data file from</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.apply_skinning_to_mesh">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">apply_skinning_to_mesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skin_data_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_override</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#apply_skinning_to_mesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.apply_skinning_to_mesh" title="Permalink to this definition"></a></dt>
+<dd><p>Applies previously saved skin weights to selected meshes or vertices</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mesh_list</strong> (<em>list</em><em>(</em><em>pm.nt.Transform</em><em>)</em>) – List of meshes to apply skinning to</p></li>
+<li><p><strong>skin_data_path</strong> (<em>str</em>) – Path to skin data folder to pull weight data file from</p></li>
+<li><p><strong>name_override</strong> (<em>str</em>) – Name to look for in skin data file</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.apply_skinning_to_verts">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">apply_skinning_to_verts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vertex_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skin_data_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_override</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#apply_skinning_to_verts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.apply_skinning_to_verts" title="Permalink to this definition"></a></dt>
+<dd><p>Applies previously saved skin weights to vertices</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vertex_list</strong> (<em>list</em><em>(</em><em>pm.MeshVertex</em><em>)</em>) – List of vertices to apply skinning to</p></li>
+<li><p><strong>skin_data_path</strong> (<em>str</em>) – Path to skin data folder to pull weight data file from</p></li>
+<li><p><strong>name_override</strong> (<em>str</em>) – Name of data to look for if different from mesh name</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.auto_skin">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">auto_skin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archetype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main_mesh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#auto_skin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.auto_skin" title="Permalink to this definition"></a></dt>
+<dd><p>Skins a mesh based on archetype</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>archetype</strong> (<em>str</em>) – Archetype for this mesh (used to find both skeleton and deformer mesh file)</p></li>
+<li><p><strong>main_mesh</strong> (<em>pm.nt.Transform</em>) – Mesh to skin</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.copy_skin_weights">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">copy_skin_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_influences</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_influences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#copy_skin_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.copy_skin_weights" title="Permalink to this definition"></a></dt>
+<dd><p>Copies skin weights between objects with option to force influences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_list</strong> (<em>list</em><em>[</em><em>pm.nt.Transform</em><em>|</em><em>pm.MeshVertex</em><em>]</em>) – A list of shaped Transforms, or MeshVerts that will be used as the source for the copy.</p></li>
+<li><p><strong>target_list</strong> (<em>list</em><em>[</em><em>pm.nt.Transform</em><em>|</em><em>pm.MeshVertex</em><em>]</em>) – A list of shaped Transforms, or MeshVerts that will be used at the target for the copy. These will receive influence values.</p></li>
+<li><p><strong>match_influences</strong> (<em>bool</em>) – If all target mesh influence list should be updated to match the source influences.</p></li>
+<li><p><strong>max_influences</strong> (<em>int</em>) – The maximum number of influences any new skin binds should have.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None or True if successful.</p>
+</dd>
+<dt class="field-odd">Rtype Bool|None<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.find_related_skin_cluster">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">find_related_skin_cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">skin_obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#find_related_skin_cluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.find_related_skin_cluster" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the skinCluster for a given bound object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>skin_obj</strong> (<em>PyNode</em>) – Can be a Transform, Shape, Vertex/Edge/Face, or a CV component on a curve or surface.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Found skinCluster or None</p>
+</dd>
+<dt class="field-odd">Rtype SkinCluster<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.get_all_hierarchy_bind_roots">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">get_all_hierarchy_bind_roots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#get_all_hierarchy_bind_roots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.get_all_hierarchy_bind_roots" title="Permalink to this definition"></a></dt>
+<dd><p>From a given node find all potential bind roots for that hierarchy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>Transform</em>) – A node within the hierarchy to traverse.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of all potential bind roots.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[Joint]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.get_influences">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">get_influences</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">skinned_mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_namespace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#get_influences"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.get_influences" title="Permalink to this definition"></a></dt>
+<dd><p>Returns all joint influences from the given skinned mesh.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>skinned_mesh</strong> (<em>str</em><em> or </em><em>pm.PYNode</em>) – mesh with a SkinCluster applied to it.</p></li>
+<li><p><strong>skip_namespace</strong> (<em>bool</em>) – whether to remove namespace from influences.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of influences of the skinned mesh.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list(pm.PyNode)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.get_skin_cluster_from_geometry">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">get_skin_cluster_from_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#get_skin_cluster_from_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.get_skin_cluster_from_geometry" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the skinCluster node attached to the specified geometry transform/shape node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>geo</strong> (<em>str/PyNode</em>) – geometry transform or shape node.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>related skin cluster.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.get_skin_weights">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">get_skin_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh_node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#get_skin_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.get_skin_weights" title="Permalink to this definition"></a></dt>
+<dd><p>Gets skin weight data from a mesh and returns it as a dict for skin weights and list for blend weights
+:param pm.nt.Transform mesh_node: The mesh we want to get skinning data from
+:return: Dictionary with vertex IDs as keys and lists of tuples as values [(joint name, influence value)] and a
+list of blend weights with influence values on vertices
+:rtype: dict, list</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.get_vert_weights_from_skin_data">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">get_vert_weights_from_skin_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weight_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#get_vert_weights_from_skin_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.get_vert_weights_from_skin_data" title="Permalink to this definition"></a></dt>
+<dd><p>Converts weight data dict to a format we can easily use with PyMel commands</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>weight_data</strong> (<em>dict</em>) – Dict with joint names as keys and lists of influence values sorted by vertex ID as values</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Weight dictionary with vertex IDs as keys and lists of tuples as values [(joint name: influence value)]</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.get_weight_data_from_vert_weights">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">get_weight_data_from_vert_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vert_weights</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#get_weight_data_from_vert_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.get_weight_data_from_vert_weights" title="Permalink to this definition"></a></dt>
+<dd><p>Converts vertex weight data from {vertex id: [(joint1, weight value),(joint2, weight value)]} to structure
+used by set_skin_weights(): {joint1: [wv, wv, wv, wv, …], joint2: [wv, wv, wv, wv, …]} with weight
+values being in corresponding order with the vertex ID</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>vert_weights</strong> (<em>dict</em>) – Vertex weight dictionary to rearrange</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a dictionary of skin weights</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.import_skin_wrap_mesh">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">import_skin_wrap_mesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archetype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deformed_mesh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#import_skin_wrap_mesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.import_skin_wrap_mesh" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a wrap deformer</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>archetype</strong> (<em>str</em>) – Archetype for this mesh</p></li>
+<li><p><strong>deformed_mesh</strong> (<em>pm.nt.Transform</em>) – The mesh to be deformed by the wrap deformer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the wrap node that was created and imported groups.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list(pm.nt.Wrap, pm.nt.Transform)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.rebind_mesh_to_skel">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">rebind_mesh_to_skel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bind_root</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#rebind_mesh_to_skel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.rebind_mesh_to_skel" title="Permalink to this definition"></a></dt>
+<dd><p>Rebind a mesh from one skeleton in the scene to another.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node_list</strong> (<em>list</em><em>[</em><em>Transform</em><em>]</em>) – A list of shaped transforms.</p></li>
+<li><p><strong>bind_root</strong> (<em>Joint</em>) – The root of the skeleton we want to rebind the mesh to.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.remove_keywords_influ_from_verts">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">remove_keywords_influ_from_verts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vert_index_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keywords</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#remove_keywords_influ_from_verts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.remove_keywords_influ_from_verts" title="Permalink to this definition"></a></dt>
+<dd><p>Removes influences from joints with a specific keyword in their name from a list of vertices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mesh_name</strong> (<em>str</em>) – Name of the mesh to operate on.</p></li>
+<li><p><strong>vert_index_list</strong> (<em>list</em><em>(</em><em>int</em><em>)</em>) – List of vertex indices on the mesh to operate on</p></li>
+<li><p><strong>joint_list</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – List of joint names including all in skinCluster</p></li>
+<li><p><strong>keywords</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – Keywords to look for in joint names to remove influence from</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.remove_wrong_side_influ">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">remove_wrong_side_influ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_vert_index_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left_vert_index_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_r_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#remove_wrong_side_influ"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.remove_wrong_side_influ" title="Permalink to this definition"></a></dt>
+<dd><p>Removes left side joint influences from right side and vice versa.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mesh_name</strong> (<em>str</em>) – Name of the mesh to operate on</p></li>
+<li><p><strong>right_vert_index_list</strong> (<em>list</em><em>(</em><em>int</em><em>)</em>) – List of vertex indices on the right side of mesh</p></li>
+<li><p><strong>left_vert_index_list</strong> (<em>list</em><em>(</em><em>int</em><em>)</em>) – List of vertex indices on the left side of mesh</p></li>
+<li><p><strong>joint_list</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – List of joint names</p></li>
+<li><p><strong>l_r_labels</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – Left and right joint name labels in that order</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns weight dictionary and blend weights</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict, list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.run_skinning_converter_cmd">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">run_skinning_converter_cmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blendshape_mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skin_mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_decomp_mesh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#run_skinning_converter_cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.run_skinning_converter_cmd" title="Permalink to this definition"></a></dt>
+<dd><p>Runs the Hans Godard Linear Skinning Decomposition Plugin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>blendshape_mesh</strong> (<em>str/pm.nt.Transform</em>) – mesh to get skinned</p></li>
+<li><p><strong>skin_mesh</strong> (<em>str/pm.nt.Transform</em>) – mesh to get skinned</p></li>
+<li><p><strong>joints</strong> (<em>list</em><em>(</em><em>str/pm.nt.Joint</em><em>)</em>) – List of joints that get skinned</p></li>
+<li><p><strong>start_frame</strong> (<em>int</em>) – Start frame of the poses</p></li>
+<li><p><strong>end_frame</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – End frame of the poses</p></li>
+<li><p><strong>end_frame</strong> – End frame of the poses</p></li>
+<li><p><strong>delete_decomp_mesh</strong> (<em>bool</em>) – Deletes mesh duplicated for LSD process if True</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.save_skin_weights_cmd">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">save_skin_weights_cmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">skin_data_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#save_skin_weights_cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.save_skin_weights_cmd" title="Permalink to this definition"></a></dt>
+<dd><p>Saves selected meshes skin weights</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>skin_data_path</strong> (<em>str</em>) – Path to skin data folder where we want to place weight data file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.set_skin_weights">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">set_skin_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weight_dictionary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blend_weights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">influence_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dual_quat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#set_skin_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.set_skin_weights" title="Permalink to this definition"></a></dt>
+<dd><p>Unlocks all transform values on the given transform node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>weight_dictionary</strong> (<em>dict</em>) – Dict with joints as keys and lists of influence values sorted by vertex ID as values</p></li>
+<li><p><strong>blend_weights</strong> (<em>list</em><em>(</em><em>float</em><em>)</em>) – list of blend weights containing influence values on vertices</p></li>
+<li><p><strong>shape_node</strong> (<em>str</em><em> or </em><em>pm.nt.Transform</em>) – Mesh to apply skinning to</p></li>
+<li><p><strong>influence_set</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – List of joint names including all that were previously saved in the old skinCluster</p></li>
+<li><p><strong>dual_quat</strong> (<em>bool</em>) – Skinning method, False uses classic linear and True uses dual quaternion</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.set_vertex_weights">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">set_vertex_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vert_ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#set_vertex_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.set_vertex_weights" title="Permalink to this definition"></a></dt>
+<dd><p>Sets previously saved vertex weights onto a mesh with the same vert count</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vert_ids</strong> (<em>list</em><em>(</em><em>int</em><em>)</em>) – A list of vertex IDs to apply skinning to</p></li>
+<li><p><strong>mesh_name</strong> (<em>str</em>) – Name of the mesh that the vertices belong to</p></li>
+<li><p><strong>weight_map</strong> (<em>dict</em>) – Dict with vertex IDs as keys and lists of tuples [(joint name, influence value)] as values</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if weights were applied, else False</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.skinning_converter_cmd">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">skinning_converter_cmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meshes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#skinning_converter_cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.skinning_converter_cmd" title="Permalink to this definition"></a></dt>
+<dd><p>Runs the Hans Godard Linear Skinning Decomposition Plugin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>joints</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – List of joints that get skinned</p></li>
+<li><p><strong>start_frame</strong> (<em>int</em>) – Start frame of the poses</p></li>
+<li><p><strong>end_frame</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – End frame of the poses</p></li>
+<li><p><strong>end_frame</strong> – End frame of the poses</p></li>
+<li><p><strong>meshes</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – List of meshes to get skinned.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a dictionary of everything that was created.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.smooth_mesh_weights">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">smooth_mesh_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#smooth_mesh_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.smooth_mesh_weights" title="Permalink to this definition"></a></dt>
+<dd><p>Smooths out weights on a mesh</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mesh</strong> (<em>pm.nt.Transform</em>) – Mesh to smooth skin weights on</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.smooth_vertex_weight">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">smooth_vertex_weight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vertex</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#smooth_vertex_weight"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.smooth_vertex_weight" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>vertex</strong> (<em>pm.nt.MeshVertex</em>) – Vertex whose weights we want to smooth out.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.deformations.skin_utils.swap_vertex_influence_weight_cmd">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.deformations.skin_utils.</span></span><span class="sig-name descname"><span class="pre">swap_vertex_influence_weight_cmd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/deformations/skin_utils.html#swap_vertex_influence_weight_cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.deformations.skin_utils.swap_vertex_influence_weight_cmd" title="Permalink to this definition"></a></dt>
+<dd><p>Takes all the influence of the first joint and replaces it with the second selected joint to all selected vertices.</p>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.deformations">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cpg.maya.deformations" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cpg.maya.cinematics.html" class="btn btn-neutral float-left" title="cpg.maya.cinematics package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cpg.maya.face.html" class="btn btn-neutral float-right" title="cpg.maya.face package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

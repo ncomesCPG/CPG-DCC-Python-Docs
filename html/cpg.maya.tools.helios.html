@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.tools.helios package &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="cpg.maya.tools.multiconstraintswitch package" href="cpg.maya.tools.multiconstraintswitch.html" />
+    <link rel="prev" title="cpg.maya.tools.flags_exporter.core package" href="cpg.maya.tools.flags_exporter.core.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">cpg-maya</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="cpg.html">cpg package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="cpg.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="cpg.maya.html">cpg.maya package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cpg.html#module-cpg">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">cpg-maya</a></li>
+          <li class="breadcrumb-item"><a href="cpg.html">cpg package</a></li>
+          <li class="breadcrumb-item"><a href="cpg.maya.html">cpg.maya package</a></li>
+          <li class="breadcrumb-item"><a href="cpg.maya.tools.html">cpg.maya.tools package</a></li>
+      <li class="breadcrumb-item active">cpg.maya.tools.helios package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/cpg.maya.tools.helios.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cpg-maya-tools-helios-package">
+<h1>cpg.maya.tools.helios package<a class="headerlink" href="#cpg-maya-tools-helios-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-cpg.maya.tools.helios.helios_registry">
+<span id="cpg-maya-tools-helios-helios-registry-module"></span><h2>cpg.maya.tools.helios.helios_registry module<a class="headerlink" href="#module-cpg.maya.tools.helios.helios_registry" title="Permalink to this heading"></a></h2>
+<p>Module that contains fncs for dealing with Helios’ main registries.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_registry.HeliosArchetype">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.helios.helios_registry.</span></span><span class="sig-name descname"><span class="pre">HeliosArchetype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_registry.html#HeliosArchetype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_registry.HeliosArchetype" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_registry.HeliosArchetype.base_dir">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">base_dir</span></span><a class="headerlink" href="#cpg.maya.tools.helios.helios_registry.HeliosArchetype.base_dir" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_registry.HeliosArchetype.get_data_dict">
+<span class="sig-name descname"><span class="pre">get_data_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_registry.html#HeliosArchetype.get_data_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_registry.HeliosArchetype.get_data_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_registry.HeliosArchetype.hierarchy">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hierarchy</span></span><a class="headerlink" href="#cpg.maya.tools.helios.helios_registry.HeliosArchetype.hierarchy" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_registry.HeliosArchetype.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#cpg.maya.tools.helios.helios_registry.HeliosArchetype.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_registry.HeliosArchetype.register">
+<span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_registry.html#HeliosArchetype.register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_registry.HeliosArchetype.register" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_registry.HeliosArchetypeRegistry">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.helios.helios_registry.</span></span><span class="sig-name descname"><span class="pre">HeliosArchetypeRegistry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_registry.html#HeliosArchetypeRegistry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_registry.HeliosArchetypeRegistry" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">SimpleSingleton</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_registry.HeliosArchetypeRegistry.DIRTY">
+<span class="sig-name descname"><span class="pre">DIRTY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#cpg.maya.tools.helios.helios_registry.HeliosArchetypeRegistry.DIRTY" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_registry.HeliosArchetypeRegistry.DIR_REGISTRY">
+<span class="sig-name descname"><span class="pre">DIR_REGISTRY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#cpg.maya.tools.helios.helios_registry.HeliosArchetypeRegistry.DIR_REGISTRY" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_registry.HeliosArchetypeRegistry.NAME_REGISTRY">
+<span class="sig-name descname"><span class="pre">NAME_REGISTRY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#cpg.maya.tools.helios.helios_registry.HeliosArchetypeRegistry.NAME_REGISTRY" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_registry.HeliosArchetypeRegistry.REGISTRY_DICT">
+<span class="sig-name descname"><span class="pre">REGISTRY_DICT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#cpg.maya.tools.helios.helios_registry.HeliosArchetypeRegistry.REGISTRY_DICT" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_registry.HeliosArchetypeRegistry.commit">
+<span class="sig-name descname"><span class="pre">commit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_registry.html#HeliosArchetypeRegistry.commit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_registry.HeliosArchetypeRegistry.commit" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_registry.HeliosArchetypeRegistry.register_asset">
+<span class="sig-name descname"><span class="pre">register_asset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">helios_archetype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_registry.html#HeliosArchetypeRegistry.register_asset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_registry.HeliosArchetypeRegistry.register_asset" title="Permalink to this definition"></a></dt>
+<dd><p>This will serialize one of our data classes to the main register.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>helios_archetype</strong> (<a class="reference internal" href="#cpg.maya.tools.helios.helios_registry.HeliosArchetype" title="cpg.maya.tools.helios.helios_registry.HeliosArchetype"><em>HeliosArchetype</em></a>) – The helios archetype to be registered.</p></li>
+<li><p><strong>commit</strong> (<em>bool</em>) – If the registry should be saved after the addition. For perf reasons this can be held until
+multiple registers are completed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_registry.HeliosArchetypeRegistry.reload">
+<span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_registry.html#HeliosArchetypeRegistry.reload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_registry.HeliosArchetypeRegistry.reload" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_registry.convert_template_to_asset">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.helios.helios_registry.</span></span><span class="sig-name descname"><span class="pre">convert_template_to_asset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">build_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remap_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modified_base_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_registry.html#convert_template_to_asset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_registry.convert_template_to_asset" title="Permalink to this definition"></a></dt>
+<dd><p>This converts a template into valid Helios Assets. This is often called recursively depending on the complexity
+of the template.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset_name</strong> (<em>str</em>) – Name of the new Helios Asset build structure</p></li>
+<li><p><strong>base_dir</strong> (<em>str</em>) – The base directory this asset should be built.</p></li>
+<li><p><strong>build_dict</strong> (<em>dict</em>) – Dictionary containing the build structure for the CPG asset.
+Rough example template.
+{‘markup’:{property_name:property_value},
+‘children’:nested_dict, #This is optional
+‘iterable_data’:{‘$childname’:[str],} # This should only be used with children.
+}</p></li>
+<li><p><strong>remap_dict</strong> (<em>dict</em>) – A dictionary of strings to values that are remapped within each template entry.</p></li>
+<li><p><strong>modified_base_dir</strong> (<em>bool</em>) – If the base directory has been modified from the templates expectations.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>CPGAsset that are built from the template.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CPGAsset</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_registry.create_new_assets_from_archetype">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.helios.helios_registry.</span></span><span class="sig-name descname"><span class="pre">create_new_assets_from_archetype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">helios_archetype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asset_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modified_base_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_registry.html#create_new_assets_from_archetype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_registry.create_new_assets_from_archetype" title="Permalink to this definition"></a></dt>
+<dd><p>From a Helios Archetype return the Helios Asset build structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>helios_archetype</strong> (<a class="reference internal" href="#cpg.maya.tools.helios.helios_registry.HeliosArchetype" title="cpg.maya.tools.helios.helios_registry.HeliosArchetype"><em>HeliosArchetype</em></a>) – A Helios Archetype class.</p></li>
+<li><p><strong>asset_name</strong> (<em>str</em>) – Name of the new template.</p></li>
+<li><p><strong>base_dir</strong> (<em>str</em>) – The base directory this asset should be built.</p></li>
+<li><p><strong>modified_base_dir</strong> (<em>bool</em>) – If the base directory has been modified from the templates expectations.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A freshly minted cpg_asset based off this archetype.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CPGAsset</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.tools.helios.helios_ui">
+<span id="cpg-maya-tools-helios-helios-ui-module"></span><h2>cpg.maya.tools.helios.helios_ui module<a class="headerlink" href="#module-cpg.maya.tools.helios.helios_ui" title="Permalink to this heading"></a></h2>
+<p>Module that contains Helios main UI.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_ui.Helios">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.helios.helios_ui.</span></span><span class="sig-name descname"><span class="pre">Helios</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_ui.html#Helios"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_ui.Helios" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="cpg.maya.pyqt.html#cpg.maya.pyqt.mayawindows.CPGMayaWindow" title="cpg.maya.pyqt.mayawindows.CPGMayaWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">CPGMayaWindow</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_ui.Helios.APPAREL_SLOTS">
+<span class="sig-name descname"><span class="pre">APPAREL_SLOTS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['head',</span> <span class="pre">'top',</span> <span class="pre">'legs',</span> <span class="pre">'shoes',</span> <span class="pre">'backpack']</span></em><a class="headerlink" href="#cpg.maya.tools.helios.helios_ui.Helios.APPAREL_SLOTS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_ui.Helios.VERSION">
+<span class="sig-name descname"><span class="pre">VERSION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'1.0.1'</span></em><a class="headerlink" href="#cpg.maya.tools.helios.helios_ui.Helios.VERSION" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_ui.Helios.export_selected">
+<span class="sig-name descname"><span class="pre">export_selected</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_ui.html#Helios.export_selected"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_ui.Helios.export_selected" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_ui.Helios.import_selected">
+<span class="sig-name descname"><span class="pre">import_selected</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_ui.html#Helios.import_selected"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_ui.Helios.import_selected" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_ui.Helios.remove_entry">
+<span class="sig-name descname"><span class="pre">remove_entry</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_ui.html#Helios.remove_entry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_ui.Helios.remove_entry" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_ui.Helios.setup_signals">
+<span class="sig-name descname"><span class="pre">setup_signals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_ui.html#Helios.setup_signals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_ui.Helios.setup_signals" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_ui.Wizard">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.helios.helios_ui.</span></span><span class="sig-name descname"><span class="pre">Wizard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_ui.html#Wizard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_ui.Wizard" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="cpg.maya.pyqt.html#cpg.maya.pyqt.mayawindows.CPGMayaWindow" title="cpg.maya.pyqt.mayawindows.CPGMayaWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">CPGMayaWindow</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_ui.Wizard.browse_export_directory">
+<span class="sig-name descname"><span class="pre">browse_export_directory</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_ui.html#Wizard.browse_export_directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_ui.Wizard.browse_export_directory" title="Permalink to this definition"></a></dt>
+<dd><p>Find an override directory and use that instead of the automatically generated field.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_ui.Wizard.organize_scene">
+<span class="sig-name descname"><span class="pre">organize_scene</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_ui.html#Wizard.organize_scene"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_ui.Wizard.organize_scene" title="Permalink to this definition"></a></dt>
+<dd><p>From the selected archetype and name generate the new Helios Asset build structure for the scene
+and optionally build out the working folder structure.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_ui.Wizard.preview_export_path">
+<span class="sig-name descname"><span class="pre">preview_export_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_ui.html#Wizard.preview_export_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_ui.Wizard.preview_export_path" title="Permalink to this definition"></a></dt>
+<dd><p>This updates the export preview path whenever one of the re-requisites is updated.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_ui.Wizard.setup_signals">
+<span class="sig-name descname"><span class="pre">setup_signals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_ui.html#Wizard.setup_signals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_ui.Wizard.setup_signals" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_ui.summon_the_wizard">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.helios.helios_ui.</span></span><span class="sig-name descname"><span class="pre">summon_the_wizard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_ui.html#summon_the_wizard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_ui.summon_the_wizard" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-cpg.maya.tools.helios.helios_utils">
+<span id="cpg-maya-tools-helios-helios-utils-module"></span><h2>cpg.maya.tools.helios.helios_utils module<a class="headerlink" href="#module-cpg.maya.tools.helios.helios_utils" title="Permalink to this heading"></a></h2>
+<p>Module that contains misc utils for use within Helios’ ecosystem.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.helios.helios_utils.</span></span><span class="sig-name descname"><span class="pre">CPGHeliosOptionVars</span></span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_utils.html#CPGHeliosOptionVars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="cpg.maya.utils.html#cpg.maya.utils.optionvars.CPGOptionVars" title="cpg.maya.utils.optionvars.CPGOptionVars"><code class="xref py py-class docutils literal notranslate"><span class="pre">CPGOptionVars</span></code></a></p>
+<p>This handles keeping track of Helio’s UI values to be restored or used during various UI functions.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars.CPGCreateFolders">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CPGCreateFolders</span></span><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars.CPGCreateFolders" title="Permalink to this definition"></a></dt>
+<dd><p>If the new asset folder structure should be generated when the scene is organized.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars.CPGExportSkn">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CPGExportSkn</span></span><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars.CPGExportSkn" title="Permalink to this definition"></a></dt>
+<dd><p>If when exporting a skn file should be saved as well.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars.CPGExportSourceMa">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CPGExportSourceMa</span></span><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars.CPGExportSourceMa" title="Permalink to this definition"></a></dt>
+<dd><p>If when exporting a source file should be saved as well.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars.CPGLastAssetType">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CPGLastAssetType</span></span><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars.CPGLastAssetType" title="Permalink to this definition"></a></dt>
+<dd><p>The last archetype selected in the wizard.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars.CPGLastMaterialPath">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CPGLastMaterialPath</span></span><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars.CPGLastMaterialPath" title="Permalink to this definition"></a></dt>
+<dd><p>Branch content path.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars.CPGLastOpenTab">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CPGLastOpenTab</span></span><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars.CPGLastOpenTab" title="Permalink to this definition"></a></dt>
+<dd><p>The last opened tabs.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars.CPGLastRelease">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CPGLastRelease</span></span><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars.CPGLastRelease" title="Permalink to this definition"></a></dt>
+<dd><p>The last release option selected in the wizard.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars.CPGPerfMaterials">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CPGPerfMaterials</span></span><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars.CPGPerfMaterials" title="Permalink to this definition"></a></dt>
+<dd><p>If performance materials should be used when importing assets.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars.CPGToSelected">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CPGToSelected</span></span><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars.CPGToSelected" title="Permalink to this definition"></a></dt>
+<dd><p>If existing scene skeletons should be used when importing assets.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars.CPGWithFullSkeleton">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CPGWithFullSkeleton</span></span><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars.CPGWithFullSkeleton" title="Permalink to this definition"></a></dt>
+<dd><p>If the full skeleton should be merged in.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars.CPGWithSkinning">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CPGWithSkinning</span></span><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.CPGHeliosOptionVars.CPGWithSkinning" title="Permalink to this definition"></a></dt>
+<dd><p>If skins should be imported when importing assets.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.apply_materials_to_selected_cmd">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.helios.helios_utils.</span></span><span class="sig-name descname"><span class="pre">apply_materials_to_selected_cmd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_utils.html#apply_materials_to_selected_cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.apply_materials_to_selected_cmd" title="Permalink to this definition"></a></dt>
+<dd><p>UI command to find and apply materials using the CPG material builder. This works within Helios’ ecosystem to import/restore materials on models.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.copy_skn_weights">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.helios.helios_utils.</span></span><span class="sig-name descname"><span class="pre">copy_skn_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bind_root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skin_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_utils.html#copy_skn_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.copy_skn_weights" title="Permalink to this definition"></a></dt>
+<dd><p>From a save skin weights file, import and copy skins.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bind_root</strong> (<em>Joint</em>) – The root joint of the skeleton our meshes will be bound to.</p></li>
+<li><p><strong>node_list</strong> (<em>list</em><em>[</em><em>Transform</em><em>]</em>) – A list of all shaped transforms that need skinning data.</p></li>
+<li><p><strong>skin_path</strong> (<em>str</em>) – The path to a save skin weights file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.create_folder_structure">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.helios.helios_utils.</span></span><span class="sig-name descname"><span class="pre">create_folder_structure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cpg_asset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_utils.html#create_folder_structure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.create_folder_structure" title="Permalink to this definition"></a></dt>
+<dd><p>From the Helios Asset build structure find all model paths and make sure the working directories are available.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cpg_asset</strong> (<em>CPGAsset</em>) – The Helios Asset to build from.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.duplicate_material_cmd">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.helios.helios_utils.</span></span><span class="sig-name descname"><span class="pre">duplicate_material_cmd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_utils.html#duplicate_material_cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.duplicate_material_cmd" title="Permalink to this definition"></a></dt>
+<dd><p>Duplicate a Helios safe material with a different name so that the engine see it
+as a new material slot.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.export_helios_asset">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.helios.helios_utils.</span></span><span class="sig-name descname"><span class="pre">export_helios_asset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_skn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">register_assets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_utils.html#export_helios_asset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.export_helios_asset" title="Permalink to this definition"></a></dt>
+<dd><p>From a given node find all valid exportable groups and export them to their file paths.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node</strong> (<em>Transform</em>) – A node in the export hierarchy.</p></li>
+<li><p><strong>update_skn</strong> (<em>bool</em>) – If the skn file associated with this model should be updated.</p></li>
+<li><p><strong>save_source</strong> (<em>bool</em>) – If a source .ma should be saved during export.</p></li>
+<li><p><strong>register_assets</strong> (<em>bool</em>) – If the exported assets should be added to our helios asset registry.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.find_export_groups">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.helios.helios_utils.</span></span><span class="sig-name descname"><span class="pre">find_export_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_utils.html#find_export_groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.find_export_groups" title="Permalink to this definition"></a></dt>
+<dd><p>Search through all children and identify exportable groups.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>Transform</em>) – The starting group to base our export off of.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuples of the export group and its export path in a list of all found groups.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[(Transform, str)…]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.get_all_cpg_assets">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.helios.helios_utils.</span></span><span class="sig-name descname"><span class="pre">get_all_cpg_assets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cpg_asset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_utils.html#get_all_cpg_assets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.get_all_cpg_assets" title="Permalink to this definition"></a></dt>
+<dd><p>From a Helios build structure find and return all model paths.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cpg_asset</strong> (<em>CPGAsset</em>) – The CPG Asset to search though</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of all fbx model paths used by this organization structure.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[CPGAsset, …]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.get_asset_from_export_group">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.helios.helios_utils.</span></span><span class="sig-name descname"><span class="pre">get_asset_from_export_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">export_group</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_utils.html#get_asset_from_export_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.get_asset_from_export_group" title="Permalink to this definition"></a></dt>
+<dd><p>Read Helios markup off an object to build an asset data class for use with exporting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>export_group</strong> (<em>Transform</em>) – A transform with Helios markup.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A CPG asset data class.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CPGAsset</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.get_exportable_meshes">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.helios.helios_utils.</span></span><span class="sig-name descname"><span class="pre">get_exportable_meshes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">export_group</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_utils.html#get_exportable_meshes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.get_exportable_meshes" title="Permalink to this definition"></a></dt>
+<dd><p>From a valid export group find all exportable meshes. This is used during SM/SK exports.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>export_group</strong> (<em>Transform</em>) – A group that represents a valid exportable group.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of all valid shaped transforms or groups containing valid shaped transforms.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[Transform]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.get_exportable_meshes_organization">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.helios.helios_utils.</span></span><span class="sig-name descname"><span class="pre">get_exportable_meshes_organization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">export_group</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_utils.html#get_exportable_meshes_organization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.get_exportable_meshes_organization" title="Permalink to this definition"></a></dt>
+<dd><p>From a valid export group find all meshes and the names of their parents for restoring after RBF operations.
+This is used to find group pairings for RBF retargeting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>export_group</strong> (<em>Transform</em>) – A group that represents a valid exportable group.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of all valid shaped transforms or groups containing valid shaped transforms.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[Transform]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.helios_rbf">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.helios.helios_utils.</span></span><span class="sig-name descname"><span class="pre">helios_rbf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operand_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_utils.html#helios_rbf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.helios_rbf" title="Permalink to this definition"></a></dt>
+<dd><p>Runs the given dict of export groups and their optional children through Helios’ automated RBF reprocessing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>operand_dict</strong> (<em>dict</em>) – A dictionary of export groups and optionally the objects in those export groups to be processed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.helios_rbf_cmd">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.helios.helios_utils.</span></span><span class="sig-name descname"><span class="pre">helios_rbf_cmd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_utils.html#helios_rbf_cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.helios_rbf_cmd" title="Permalink to this definition"></a></dt>
+<dd><p>Helios UI command for retargeting permutations.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.import_helios_asset">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.helios.helios_utils.</span></span><span class="sig-name descname"><span class="pre">import_helios_asset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cpg_asset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_skinning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skel_root_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">organize_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_utils.html#import_helios_asset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.import_helios_asset" title="Permalink to this definition"></a></dt>
+<dd><p>From a Helios Data class import and organize the asset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cpg_asset</strong> (<em>CPGAsset</em>) – CPGAsset data class which contains information on how to import and construct the scene hierarchy.</p></li>
+<li><p><strong>with_skinning</strong> (<em>bool</em>) – If skinning should be kept or applied to the imported models.</p></li>
+<li><p><strong>skel_root_dict</strong> (<em>dict{str</em><em>|</em><em>Joint}</em>) – A dictionary of rig asset ids to the joints they represent. When importing
+with skinning if the rig asset id matches the incoming asset it will be bound against it instead of deleted.
+If skinning is enabled but a root dict was not provided this will be generated during the import process.</p></li>
+<li><p><strong>organize_only</strong> (<em>bool</em>) – If the scene should only build organization groups and not attempt to import.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The imported organization group, and the skel_root_dict</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Transform, dict{str|Joint}</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.import_source_file">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.helios.helios_utils.</span></span><span class="sig-name descname"><span class="pre">import_source_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_utils.html#import_source_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.import_source_file" title="Permalink to this definition"></a></dt>
+<dd><p>Helios core function for importing and cleaning fbx files for use in organizing scenes.
+Based on the NODE_WHITE_LIST established at the head of this file all other node types are removed.
+NOTE this function should be modified to support other file times if required.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em>) – A full path to a given .fbx file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of all imported nodes that are part of a type matching those in the NODE_WHITE_LIST.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[PyNode]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.tools.helios.helios_utils.organize_scene_from_archetype">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.helios.helios_utils.</span></span><span class="sig-name descname"><span class="pre">organize_scene_from_archetype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">helios_archetype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asset_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modified_base_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_directories</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/helios/helios_utils.html#organize_scene_from_archetype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.helios.helios_utils.organize_scene_from_archetype" title="Permalink to this definition"></a></dt>
+<dd><p>From a Helios Archetype create the organization structure for this scene.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>helios_archetype</strong> (<a class="reference internal" href="#cpg.maya.tools.helios.helios_registry.HeliosArchetype" title="cpg.maya.tools.helios.helios_registry.HeliosArchetype"><em>HeliosArchetype</em></a>) – The archetype to convert into a Helios Asset build structure</p></li>
+<li><p><strong>asset_name</strong> (<em>str</em>) – Name of the new Helios Asset build structure</p></li>
+<li><p><strong>base_dir</strong> (<em>str</em>) – The base directory this asset should be built.</p></li>
+<li><p><strong>modified_base_dir</strong> (<em>bool</em>) – If the base directory has been modified from the templates expectations.</p></li>
+<li><p><strong>create_directories</strong> (<em>bool</em>) – If the folder structure should be built out at the same time.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.tools.helios">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cpg.maya.tools.helios" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cpg.maya.tools.flags_exporter.core.html" class="btn btn-neutral float-left" title="cpg.maya.tools.flags_exporter.core package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cpg.maya.tools.multiconstraintswitch.html" class="btn btn-neutral float-right" title="cpg.maya.tools.multiconstraintswitch package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

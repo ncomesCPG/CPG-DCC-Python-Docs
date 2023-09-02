@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.modeling package &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="cpg.maya.modifiers package" href="cpg.maya.modifiers.html" />
+    <link rel="prev" title="cpg.maya.face.face_utils package" href="cpg.maya.face.face_utils.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">cpg-maya</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="cpg.html">cpg package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="cpg.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="cpg.maya.html">cpg.maya package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cpg.html#module-cpg">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">cpg-maya</a></li>
+          <li class="breadcrumb-item"><a href="cpg.html">cpg package</a></li>
+          <li class="breadcrumb-item"><a href="cpg.maya.html">cpg.maya package</a></li>
+      <li class="breadcrumb-item active">cpg.maya.modeling package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/cpg.maya.modeling.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cpg-maya-modeling-package">
+<h1>cpg.maya.modeling package<a class="headerlink" href="#cpg-maya-modeling-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-cpg.maya.modeling.blendshape_model">
+<span id="cpg-maya-modeling-blendshape-model-module"></span><h2>cpg.maya.modeling.blendshape_model module<a class="headerlink" href="#module-cpg.maya.modeling.blendshape_model" title="Permalink to this heading"></a></h2>
+<p>Helper functions for Blend nodes and shapes</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_model.create_parallel_blendnode">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.blendshape_model.</span></span><span class="sig-name descname"><span class="pre">create_parallel_blendnode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diff_mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pose_mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'parallel_blendshape'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_model.html#create_parallel_blendnode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_model.create_parallel_blendnode" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a parallel blend shape node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>last_mesh</strong> (<em>nt.Mesh</em>) – Mesh that is the shape you want to blend.</p></li>
+<li><p><strong>pose_mesh</strong> (<em>nt.Mesh</em>) – Source mesh that is the shape you want to blend.</p></li>
+<li><p><strong>diff_mesh</strong> (<em>nt.Mesh</em>) – A neutral posed mesh.</p></li>
+<li><p><strong>name</strong> (<em>string</em>) – name of the blend node.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the parallel blend node.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pm.nt.BlendShape</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_model.delete_blendshapes">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.blendshape_model.</span></span><span class="sig-name descname"><span class="pre">delete_blendshapes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blendnode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_model.html#delete_blendshapes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_model.delete_blendshapes" title="Permalink to this definition"></a></dt>
+<dd><p>Deletes the all the blend shape connected to the blend shape node in the scene.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_model.dup_and_delete_mesh">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.blendshape_model.</span></span><span class="sig-name descname"><span class="pre">dup_and_delete_mesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_user_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_model.html#dup_and_delete_mesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_model.dup_and_delete_mesh" title="Permalink to this definition"></a></dt>
+<dd><p>Duplicates its a mesh and deletes the old copy. A way to generate a clean mesh/pose.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mesh</strong> (<em>pm.nt.transform</em>) – Mesh that will be duplicated.</p></li>
+<li><p><strong>label</strong> (<em>string</em>) – The name of the newly created mesh.</p></li>
+<li><p><strong>remove_attrs</strong> (<em>list</em><em>[</em><em>string</em><em>]</em>) – Removes a list attributes from the mesh.</p></li>
+<li><p><strong>remove_user_attrs</strong> (<em>bool</em>) – Removes all attributes that were added by a user.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the duplicated mesh.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pm.nt.transform</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_model.duplicate_mesh">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.blendshape_model.</span></span><span class="sig-name descname"><span class="pre">duplicate_mesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_user_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_model.html#duplicate_mesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_model.duplicate_mesh" title="Permalink to this definition"></a></dt>
+<dd><p>Duplicates a mesh.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mesh</strong> (<em>pm.nt.transform</em>) – Mesh that will be duplicated.</p></li>
+<li><p><strong>label</strong> (<em>string</em>) – The name of the newly created mesh.</p></li>
+<li><p><strong>remove_attrs</strong> (<em>list</em><em>[</em><em>string</em><em>]</em>) – Removes a list attributes from the mesh.</p></li>
+<li><p><strong>remove_user_attrs</strong> (<em>bool</em>) – Removes all attributes that were added by a user.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the duplicated mesh.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pm.nt.transform</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_model.get_active_attribute">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.blendshape_model.</span></span><span class="sig-name descname"><span class="pre">get_active_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blendnode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_model.html#get_active_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_model.get_active_attribute" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a list of blend shapes that are fully activated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>blendnode</strong> (<em>nt.BlendShape</em>) – Blend node that has shapes attached.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a list of blend shapes that are fully activated.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[string]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_model.get_all_blendnodes">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.blendshape_model.</span></span><span class="sig-name descname"><span class="pre">get_all_blendnodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_model.html#get_all_blendnodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_model.get_all_blendnodes" title="Permalink to this definition"></a></dt>
+<dd><p>Returns all the blend nodes on a mesh.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mesh</strong> (<em>nt.Mesh</em>) – A poly Mesh.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns all the blend nodes on a mesh.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[pm.nt.BlendShape]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_model.get_blendnode_index">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.blendshape_model.</span></span><span class="sig-name descname"><span class="pre">get_blendnode_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blendnode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_model.html#get_blendnode_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_model.get_blendnode_index" title="Permalink to this definition"></a></dt>
+<dd><p>Returns an index list of the blend shapes as ints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>blendnode</strong> (<em>nt.BlendShape</em>) – Blend node that has shapes attached.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns an index list of the blend shapes as ints.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_model.get_blendnode_index_as_dict">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.blendshape_model.</span></span><span class="sig-name descname"><span class="pre">get_blendnode_index_as_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blendnode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_model.html#get_blendnode_index_as_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_model.get_blendnode_index_as_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the name of the shape as the key and the index as the value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>blendnode</strong> (<em>nt.BlendShape</em>) – Blend node that has shapes attached.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the name of the shape as the key and the index as the value.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dictionary{string:int}</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_model.get_blendnode_shapes">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.blendshape_model.</span></span><span class="sig-name descname"><span class="pre">get_blendnode_shapes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blendnode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_model.html#get_blendnode_shapes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_model.get_blendnode_shapes" title="Permalink to this definition"></a></dt>
+<dd><p>Gets a list of all the shapes connected to the blend node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>blendnode</strong> (<em>nt.BlendShape</em>) – Blend node that has shapes attached.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Gets a list of all the shapes connected to the blend node.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[string]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_model.get_first_blendnode">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.blendshape_model.</span></span><span class="sig-name descname"><span class="pre">get_first_blendnode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_model.html#get_first_blendnode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_model.get_first_blendnode" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the first blend node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mesh</strong> (<em>nt.transform</em>) – A mesh that has a blend node attached.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a blend node.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pm.nt.BlendShape</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_model.set_blendshape_weight_symmetry">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.blendshape_model.</span></span><span class="sig-name descname"><span class="pre">set_blendshape_weight_symmetry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symmetry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_model.html#set_blendshape_weight_symmetry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_model.set_blendshape_weight_symmetry" title="Permalink to this definition"></a></dt>
+<dd><p>Set Maya’s blend shape weight symmetry.
+:param string side: the side the pose is on.
+:param bool symmetry: Turn on/off blend shape weight symmetry.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_model.set_blendshape_weights">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.blendshape_model.</span></span><span class="sig-name descname"><span class="pre">set_blendshape_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blendnode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_model.html#set_blendshape_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_model.set_blendshape_weights" title="Permalink to this definition"></a></dt>
+<dd><p>Set the Blendshape weight on each vert.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>blendnode</strong> (<em>nt.BlendShape</em>) – Blend node that has shapes attached.</p></li>
+<li><p><strong>weight</strong> (<em>float</em>) – the blend shape weight value a blend shape should have on a base mesh.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_model.set_blendshape_weights_from_mesh">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.blendshape_model.</span></span><span class="sig-name descname"><span class="pre">set_blendshape_weights_from_mesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blendnode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_model.html#set_blendshape_weights_from_mesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_model.set_blendshape_weights_from_mesh" title="Permalink to this definition"></a></dt>
+<dd><p>Set the Blendshape weight on each vert.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mesh</strong> (<em>nt.Mesh</em>) – Mesh that is being set.</p></li>
+<li><p><strong>blendnode</strong> (<em>nt.BlendShape</em>) – Blend node that has shapes attached.</p></li>
+<li><p><strong>weight</strong> (<em>float</em>) – the blend shape weight value a blend shape should have on a base mesh.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.modeling.blendshape_node">
+<span id="cpg-maya-modeling-blendshape-node-module"></span><h2>cpg.maya.modeling.blendshape_node module<a class="headerlink" href="#module-cpg.maya.modeling.blendshape_node" title="Permalink to this heading"></a></h2>
+<p>Face: Utility Functions.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_node.BlendShapeNode">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.blendshape_node.</span></span><span class="sig-name descname"><span class="pre">BlendShapeNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blendnode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_node.html#BlendShapeNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_node.BlendShapeNode" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_node.BlendShapeNode.create">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shapes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'blendnode'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blendnode_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'main'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_node.html#BlendShapeNode.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_node.BlendShapeNode.create" title="Permalink to this definition"></a></dt>
+<dd><p>Returns an instance of the class BlendShapeNode</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shapes</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – list of meshes that are used to create blend shapes.</p></li>
+<li><p><strong>mesh</strong> (<em>pm.nt.Transform</em>) – The mesh to connect the blend shapes to.</p></li>
+<li><p><strong>label</strong> (<em>str</em>) – name of the blend node.</p></li>
+<li><p><strong>suffix</strong> (<em>str</em>) – name of the blend node.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns an instance of the class BlendShapeNode</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#cpg.maya.modeling.blendshape_node.BlendShapeNode" title="cpg.maya.modeling.blendshape_node.BlendShapeNode">BlendShapeNode</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_node.BlendShapeNode.delete_blendshapes">
+<span class="sig-name descname"><span class="pre">delete_blendshapes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_node.html#BlendShapeNode.delete_blendshapes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_node.BlendShapeNode.delete_blendshapes" title="Permalink to this definition"></a></dt>
+<dd><p>Deletes all blend shape in a scene that are attached to the blendnode.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_node.BlendShapeNode.disconnect_from_rig">
+<span class="sig-name descname"><span class="pre">disconnect_from_rig</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_node.html#BlendShapeNode.disconnect_from_rig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_node.BlendShapeNode.disconnect_from_rig" title="Permalink to this definition"></a></dt>
+<dd><p>Disconnects all of the blend shapes from a rig.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_node.BlendShapeNode.generate_face_shapes">
+<span class="sig-name descname"><span class="pre">generate_face_shapes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_node.html#BlendShapeNode.generate_face_shapes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_node.BlendShapeNode.generate_face_shapes" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a list of generated face shapes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns a list of generated face shapes.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list(pm.nt.Transform)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_node.BlendShapeNode.get_all_blendnodes">
+<span class="sig-name descname"><span class="pre">get_all_blendnodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_node.html#BlendShapeNode.get_all_blendnodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_node.BlendShapeNode.get_all_blendnodes" title="Permalink to this definition"></a></dt>
+<dd><p>Returns all the blendnodes associated with a mesh.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mesh</strong> (<em>pm.nt.transform</em>) – Mesh that has blendnodes associated with a it.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of all the blendnodes associated with a mesh.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[pm.nt.Blendnode]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_node.BlendShapeNode.get_blendnode">
+<span class="sig-name descname"><span class="pre">get_blendnode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blendnode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_node.html#BlendShapeNode.get_blendnode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_node.BlendShapeNode.get_blendnode" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a blend node.  If you pass in a mesh it will grab the 1st blend node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>blendnode</strong> (<em>pm.nt blend</em>) – This can be a blend shape node or a mesh that has a blend shape connected to it.</p>
+</dd>
+<dt class="field-even">Return pm.nt.Blendnode<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a blend node.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_node.BlendShapeNode.get_blendnode_index_as_dict">
+<span class="sig-name descname"><span class="pre">get_blendnode_index_as_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_node.html#BlendShapeNode.get_blendnode_index_as_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_node.BlendShapeNode.get_blendnode_index_as_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the name of the shape as the key and the index as the value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the name of the shape as the key and the index as the value.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dictionary{string:int}</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_node.BlendShapeNode.get_blendnode_mesh_name">
+<span class="sig-name descname"><span class="pre">get_blendnode_mesh_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_node.html#BlendShapeNode.get_blendnode_mesh_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_node.BlendShapeNode.get_blendnode_mesh_name" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the name of the mesh the blend node is attached to.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the name of the mesh the blend node is attached to.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_node.BlendShapeNode.get_mesh">
+<span class="sig-name descname"><span class="pre">get_mesh</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_node.html#BlendShapeNode.get_mesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_node.BlendShapeNode.get_mesh" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the original connected mesh.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the original connected mesh.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pm.nt.Transform</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_node.BlendShapeNode.reconnect_to_rig">
+<span class="sig-name descname"><span class="pre">reconnect_to_rig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_node.html#BlendShapeNode.reconnect_to_rig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_node.BlendShapeNode.reconnect_to_rig" title="Permalink to this definition"></a></dt>
+<dd><p>Reconnects the blendnode to the FragFaceParameters rig node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parameters</strong> (<em>list</em>) – list of parameters with pose names and information.</p></li>
+<li><p><strong>parameter_node</strong> (<a class="reference internal" href="cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_parameters.FragFaceParameters" title="cpg.maya.rigging.frag.face_parameters.FragFaceParameters"><em>face_parameters.FragFaceParameters</em></a>) – FragFaceParameters rig node.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_node.BlendShapeNode.set_blendshape_weights">
+<span class="sig-name descname"><span class="pre">set_blendshape_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_node.html#BlendShapeNode.set_blendshape_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_node.BlendShapeNode.set_blendshape_weights" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the vertex weight of the blend shape.  Think of painting weights.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_node.BlendShapeNode.set_parameterized_keyframes">
+<span class="sig-name descname"><span class="pre">set_parameterized_keyframes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_time_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/blendshape_node.html#BlendShapeNode.set_parameterized_keyframes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.blendshape_node.BlendShapeNode.set_parameterized_keyframes" title="Permalink to this definition"></a></dt>
+<dd><p>Sets keyframes for each blend shape on the blend node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parameters</strong> (<em>list</em><em>(</em><a class="reference internal" href="cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_parameters.ParameterData" title="cpg.maya.rigging.frag.face_parameters.ParameterData"><em>ParameterData</em></a><em>)</em>) – a list of parameter data for each pose.</p></li>
+<li><p><strong>set_time_range</strong> (<em>bool</em>) – If true, it will set the time range.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the timeline</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list(float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.modeling.blendshape_node.BlendShapeNode.shapes">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shapes</span></span><a class="headerlink" href="#cpg.maya.modeling.blendshape_node.BlendShapeNode.shapes" title="Permalink to this definition"></a></dt>
+<dd><p>Gets a list of all the shapes connected to the blend node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Gets a list of all the shapes connected to the blend node.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.modeling.face_model">
+<span id="cpg-maya-modeling-face-model-module"></span><h2>cpg.maya.modeling.face_model module<a class="headerlink" href="#module-cpg.maya.modeling.face_model" title="Permalink to this heading"></a></h2>
+<p>Face: Utility Functions.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.face_model.</span></span><span class="sig-name descname"><span class="pre">FaceModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/face_model.html#FaceModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.category">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">category</span></span><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.category" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.clean_up_mesh">
+<span class="sig-name descname"><span class="pre">clean_up_mesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">remove_user_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_poly_blind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_deform_shapes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unlock_normals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_layer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_history</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/face_model.html#FaceModel.clean_up_mesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.clean_up_mesh" title="Permalink to this definition"></a></dt>
+<dd><p>Cleans up a blend shape mesh and strips it down to the core so the file is small.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>remove_poly_blind</strong> (<em>bool</em>) – Searches for PolyBlindData nodes and deletes them</p></li>
+<li><p><strong>remove_deform_shapes</strong> (<em>bool</em>) – Deletes extra deformable shapes that are not used.</p></li>
+<li><p><strong>unlock_normals</strong> (<em>bool</em>) – Unlocks the poly normals on the mesh.</p></li>
+<li><p><strong>remove_layer</strong> (<em>bool</em>) – Removes from the display layer.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.connect_joints">
+<span class="sig-name descname"><span class="pre">connect_joints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_rivets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_old_rivet_grp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/face_model.html#FaceModel.connect_joints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.connect_joints" title="Permalink to this definition"></a></dt>
+<dd><p>Connects joints to the blend shape model using rivets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset_id</strong> (<em>str</em>) – ID of the asset we want to retrieve path of.</p></li>
+<li><p><strong>delete_rivets</strong> (<em>bool</em>) – Deletes the rivets when the task is complete.</p></li>
+<li><p><strong>delete_old_rivet_grp</strong> (<em>bool</em>) – Checks for and deletes old rivet group.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a list of the created rivets</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.create">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/face_model.html#FaceModel.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.create" title="Permalink to this definition"></a></dt>
+<dd><p>Creates an instance of the class using either the base mesh or the source mesh.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mesh</strong> (<em>pm.nt.Transform</em>) – Whether to search for the base mesh or the source mesh.  By default it will search for the base mesh.</p>
+</dd>
+<dt class="field-even">Return class instance<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/face_model.html#FaceModel.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.delete" title="Permalink to this definition"></a></dt>
+<dd><p>Deletes it’s self and any blendshapes connected to it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.dup_and_delete">
+<span class="sig-name descname"><span class="pre">dup_and_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_user_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/face_model.html#FaceModel.dup_and_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.dup_and_delete" title="Permalink to this definition"></a></dt>
+<dd><p>Duplicates its a mesh and deletes the old copy. A way to generate a clean mesh/pose.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>remove_attrs</strong> (<em>list</em>) – Removes listed attributes from the mesh.</p></li>
+<li><p><strong>label</strong> (<em>string</em>) – The name of the newly created mesh.</p></li>
+<li><p><strong>remove_user_attrs</strong> (<em>bool</em>) – Removes all attributes that were added by a user.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns an instance of FaceModel.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#cpg.maya.modeling.face_model.FaceModel" title="cpg.maya.modeling.face_model.FaceModel">FaceModel</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.duplicate">
+<span class="sig-name descname"><span class="pre">duplicate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_user_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/face_model.html#FaceModel.duplicate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.duplicate" title="Permalink to this definition"></a></dt>
+<dd><p>Duplicates a mesh.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>remove_attrs</strong> (<em>list</em>) – Removes listed attributes from the mesh.</p></li>
+<li><p><strong>label</strong> (<em>string</em>) – The name of the newly created mesh.</p></li>
+<li><p><strong>remove_user_attrs</strong> (<em>bool</em>) – Removes all attributes that were added by a user.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns an instance of FaceModel.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#cpg.maya.modeling.face_model.FaceModel" title="cpg.maya.modeling.face_model.FaceModel">FaceModel</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.get_blendnode">
+<span class="sig-name descname"><span class="pre">get_blendnode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/face_model.html#FaceModel.get_blendnode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.get_blendnode" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a blend node.  If you pass in a mesh it will grab the 1st blend node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns a blend node.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pm.nt.Blendnode</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.get_face_mesh_component">
+<span class="sig-name descname"><span class="pre">get_face_mesh_component</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/face_model.html#FaceModel.get_face_mesh_component"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.get_face_mesh_component" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the FaceMeshComponent that is attached to the mesh.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the FaceMeshComponent that is attached to the mesh.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_mesh_component.FaceMeshComponent" title="cpg.maya.rigging.frag.face_mesh_component.FaceMeshComponent">FaceMeshComponent</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.get_main_blendnode">
+<span class="sig-name descname"><span class="pre">get_main_blendnode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/face_model.html#FaceModel.get_main_blendnode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.get_main_blendnode" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a blend node.  Gets the blend node with the “main” type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns a blend node.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pm.nt.Blendnode</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.get_parameters">
+<span class="sig-name descname"><span class="pre">get_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/face_model.html#FaceModel.get_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.get_parameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns an instanced of ParameterData.  This is has all the data about the poses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>asset_id</strong> (<em>str</em>) – ID of the asset we want to retrieve path of.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns an instanced of ParameterData.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.face_parameters.ParameterData" title="cpg.maya.rigging.frag.face_parameters.ParameterData">ParameterData</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.get_region_data">
+<span class="sig-name descname"><span class="pre">get_region_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/face_model.html#FaceModel.get_region_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.get_region_data" title="Permalink to this definition"></a></dt>
+<dd><p>Returns an instance of the FaceMeshRegionData.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>asset_id</strong> (<em>str</em>) – ID of the asset we want to retrieve path of.</p>
+</dd>
+</dl>
+<p>:return:Returns an instance of the FaceMeshRegionData.
+:rtype: FaceMeshRegionData</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.get_string_name">
+<span class="sig-name descname"><span class="pre">get_string_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_namespace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/face_model.html#FaceModel.get_string_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.get_string_name" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the string name of the mesh</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>include_namespace</strong> (<em>bool</em>) – include the namespace</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>mesh name</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.import_blendshapes">
+<span class="sig-name descname"><span class="pre">import_blendshapes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.obj'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/face_model.html#FaceModel.import_blendshapes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.import_blendshapes" title="Permalink to this definition"></a></dt>
+<dd><p>Imports all the blend shapes associated with the mesh.
+:param str asset_id: Asset Identifier.
+:param str ext: The file extension.
+:param bool exist_check: If True, will check to see if the mesh is already in the scene.
+:return: Returns a list of all the shapes that were imported.
+:rtype: list(str)</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.mesh">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mesh</span></span><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.mesh" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.mesh_markup">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mesh_markup</span></span><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.mesh_markup" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.mirror_self">
+<span class="sig-name descname"><span class="pre">mirror_self</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/face_model.html#FaceModel.mirror_self"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.mirror_self" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.mirror_type">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mirror_type</span></span><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.mirror_type" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.part_type_name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">part_type_name</span></span><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.part_type_name" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the 1st part of the name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the 1st part of the name</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.race">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">race</span></span><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.race" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.reconnect_shapes_to_rig">
+<span class="sig-name descname"><span class="pre">reconnect_shapes_to_rig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/face_model.html#FaceModel.reconnect_shapes_to_rig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.reconnect_shapes_to_rig" title="Permalink to this definition"></a></dt>
+<dd><p>Reconnects blend shapes back to the rig.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset_id</strong> (<em>str</em>) – ID of the asset we want to retrieve path of.</p></li>
+<li><p><strong>parameter_node</strong> (<em>frag.FragFaceParameters</em>) – The node that connects the blend shapes to the rig.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>If True, The shapes were successfully connected.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.reconnect_to_mesh_component">
+<span class="sig-name descname"><span class="pre">reconnect_to_mesh_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/face_model.html#FaceModel.reconnect_to_mesh_component"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.reconnect_to_mesh_component" title="Permalink to this definition"></a></dt>
+<dd><p>Reconnects a mesh to the mesh_component</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>asset_id</strong> (<em>str</em>) – ID of the asset we want to retrieve path of.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.region">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">region</span></span><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.region" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.set_markup">
+<span class="sig-name descname"><span class="pre">set_markup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">side</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/face_model.html#FaceModel.set_markup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.set_markup" title="Permalink to this definition"></a></dt>
+<dd><p>Creates the “cpgMeshMarkup” attribute on the mesh and adds the markup.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type_name</strong> (<em>str</em>) – a key word on what type of meshes are in this region.  Examples: head_mesh, jaw_mesh, etc…</p></li>
+<li><p><strong>category</strong> (<em>str</em>) – a key word on what type of category the meshes belong to in this region.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Examples: skin_mesh, blendshape_mesh, etc…
+:param str side: side the mesh is on.
+:param str kwargs: Any added data that needs to be tagged.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.side">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">side</span></span><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.side" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.source_mesh">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">source_mesh</span></span><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.source_mesh" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.type_name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">type_name</span></span><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.type_name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.face_model.FaceModel.unlock_skeleton_display_layer">
+<span class="sig-name descname"><span class="pre">unlock_skeleton_display_layer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/face_model.html#FaceModel.unlock_skeleton_display_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.face_model.FaceModel.unlock_skeleton_display_layer" title="Permalink to this definition"></a></dt>
+<dd><p>Unlocks the skins layer so all the head meshes can be edited.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.modeling.follicle">
+<span id="cpg-maya-modeling-follicle-module"></span><h2>cpg.maya.modeling.follicle module<a class="headerlink" href="#module-cpg.maya.modeling.follicle" title="Permalink to this heading"></a></h2>
+<p>Module that contains functions related with Maya follicles</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.follicle.create_empty_follicle">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.follicle.</span></span><span class="sig-name descname"><span class="pre">create_empty_follicle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hide_follicle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/follicle.html#create_empty_follicle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.follicle.create_empty_follicle" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a new empty follicle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – name of the follicle.</p></li>
+<li><p><strong>uv</strong> (<em>list</em><em>(</em><em>int</em><em>, </em><em>int</em><em>)</em>) – uv where follicle will be created.</p></li>
+<li><p><strong>hide_follicle</strong> (<em>bool</em>) – whether follicle should be hided by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>name of the created follicle.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.follicle.create_follicle_constraint">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.follicle.</span></span><span class="sig-name descname"><span class="pre">create_follicle_constraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maintain_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/follicle.html#create_follicle_constraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.follicle.create_follicle_constraint" title="Permalink to this definition"></a></dt>
+<dd><p>Create a follicle and on the mesh and constrain the node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node</strong> – the object that will be constrained.</p></li>
+<li><p><strong>mesh</strong> – the mesh that the object will be constrained too.</p></li>
+<li><p><strong>maintain_offset</strong> – sets maintain offset on the parent constraint.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.follicle.create_follicle_constraint_from_selection">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.follicle.</span></span><span class="sig-name descname"><span class="pre">create_follicle_constraint_from_selection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maintain_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/follicle.html#create_follicle_constraint_from_selection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.follicle.create_follicle_constraint_from_selection" title="Permalink to this definition"></a></dt>
+<dd><p>Create a follicle constraint based on the selection whereas the last selected node is the mesh.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>maintain_offset</strong> – Sets up the constraint’s maintain offset.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.follicle.create_mesh_follicle">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.follicle.</span></span><span class="sig-name descname"><span class="pre">create_mesh_follicle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hide_follicle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/follicle.html#create_mesh_follicle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.follicle.create_mesh_follicle" title="Permalink to this definition"></a></dt>
+<dd><p>Crates follicle on given mesh.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mesh</strong> – str, name of the mesh to attach follicle to.</p></li>
+<li><p><strong>description</strong> (<em>str</em>) – description of the follicle.</p></li>
+<li><p><strong>uv</strong> (<em>list</em><em>(</em><em>int</em><em>, </em><em>int</em><em>)</em>) – corresponds to the UVs of the mesh in which the follicle will be attached.</p></li>
+<li><p><strong>hide_follicle</strong> (<em>bool</em>) – whether follicle should be hide by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple with the created follicle transform and the follicle shape</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple(str, str)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.follicle.create_surface_follicle">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.follicle.</span></span><span class="sig-name descname"><span class="pre">create_surface_follicle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surface</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hide_follicle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/follicle.html#create_surface_follicle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.follicle.create_surface_follicle" title="Permalink to this definition"></a></dt>
+<dd><p>Crates follicle on a surface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>surface</strong> (<em>str</em>) – name of the surface to attach follicle to.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – description of the follicle.</p></li>
+<li><p><strong>uv</strong> (<em>list</em><em>(</em><em>int</em><em>, </em><em>int</em><em>)</em>) – corresponds to the UVs of the mesh in which the follicle will be attached.</p></li>
+<li><p><strong>hide_follicle</strong> (<em>bool</em>) – whether follicle should be hide by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple with the created follicle transform and the follicle shape.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple(str, str)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.modeling.geometry">
+<span id="cpg-maya-modeling-geometry-module"></span><h2>cpg.maya.modeling.geometry module<a class="headerlink" href="#module-cpg.maya.modeling.geometry" title="Permalink to this heading"></a></h2>
+<p>Maya Geometry</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.geometry.create_reference_obj">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.geometry.</span></span><span class="sig-name descname"><span class="pre">create_reference_obj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size_multiplier</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate_axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matched_joint_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/geometry.html#create_reference_obj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.geometry.create_reference_obj" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a reference object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>size</strong> (<em>float/int</em>) – Base size of the object</p></li>
+<li><p><strong>size_multiplier</strong> (<em>float/int</em>) – Value to increase size by</p></li>
+<li><p><strong>obj_shape</strong> (<em>str</em>) – Shape of the object (currently only expecting Sphere or Cylinder)</p></li>
+<li><p><strong>rotate_axis</strong> (<em>str</em>) – Rotate axis to be represented by the object</p></li>
+<li><p><strong>matched_joint_name</strong> (<em>str</em>) – Name of the joint that object is to match</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.geometry.make_pins">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.geometry.</span></span><span class="sig-name descname"><span class="pre">make_pins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size_multiplier</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_joint_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merge_pins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/geometry.html#make_pins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.geometry.make_pins" title="Permalink to this definition"></a></dt>
+<dd><p>Creates reference pins</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>joint_list</strong> (<em>list</em><em>(</em><em>pm.nt.Joint</em><em>)</em>) – List of joints to create pins for</p></li>
+<li><p><strong>size_multiplier</strong> (<em>float</em>) – Size to multiply base pin size from</p></li>
+<li><p><strong>data_dict</strong> (<em>dict</em>) – Dictionary containing information of how to handle pins</p></li>
+<li><p><strong>delete_joint_list</strong> (<em>bool</em>) – If true, delete the joints that pins were created on</p></li>
+<li><p><strong>merge_pins</strong> (<em>bool</em>) – If true, merge the pins after building</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Created pin(s)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pm.nt.Transform or list(pm.nt.Transform)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.modeling.rivets">
+<span id="cpg-maya-modeling-rivets-module"></span><h2>cpg.maya.modeling.rivets module<a class="headerlink" href="#module-cpg.maya.modeling.rivets" title="Permalink to this heading"></a></h2>
+<p>purpose: Creating and Manipulating Matrix Rivets</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="cpg.maya.modeling.rivets.BasicRivet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.rivets.</span></span><span class="sig-name descname"><span class="pre">BasicRivet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transform</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/rivets.html#BasicRivet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.rivets.BasicRivet" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Helpers class that allows to create Rivets using vanilla Maya functionality.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.modeling.rivets.BasicRivet.aim_constraint">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">aim_constraint</span></span><a class="headerlink" href="#cpg.maya.modeling.rivets.BasicRivet.aim_constraint" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.rivets.BasicRivet.attach_to_surface">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">attach_to_surface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surface_to_attach</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/rivets.html#BasicRivet.attach_to_surface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.rivets.BasicRivet.attach_to_surface" title="Permalink to this definition"></a></dt>
+<dd><p>Attach the transform to the surface using a rivet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transform</strong> (<em>pm.PyNode</em>) – transform node to attach to surface.</p></li>
+<li><p><strong>surface_to_attach</strong> (<em>pm.PyNode</em>) – surface to attach transform to.</p></li>
+<li><p><strong>u</strong> (<em>float</em>) – float, U value to attach to.</p></li>
+<li><p><strong>v</strong> (<em>float</em>) – float, V value to attach to.</p></li>
+<li><p><strong>constraint</strong> (<em>bool</em>) – whether to create a new locator constrained to given transform.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Rivet object instance.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pm.PyNode</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.rivets.BasicRivet.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/rivets.html#BasicRivet.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.rivets.BasicRivet.create" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.modeling.rivets.BasicRivet.point_on_surface">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">point_on_surface</span></span><a class="headerlink" href="#cpg.maya.modeling.rivets.BasicRivet.point_on_surface" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.modeling.rivets.BasicRivet.rivet">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rivet</span></span><a class="headerlink" href="#cpg.maya.modeling.rivets.BasicRivet.rivet" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.rivets.BasicRivet.set_create_joint">
+<span class="sig-name descname"><span class="pre">set_create_joint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flag</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/rivets.html#BasicRivet.set_create_joint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.rivets.BasicRivet.set_create_joint" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.rivets.BasicRivet.set_edges">
+<span class="sig-name descname"><span class="pre">set_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edges</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/rivets.html#BasicRivet.set_edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.rivets.BasicRivet.set_edges" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.rivets.BasicRivet.set_local">
+<span class="sig-name descname"><span class="pre">set_local</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flag</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/rivets.html#BasicRivet.set_local"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.rivets.BasicRivet.set_local" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.rivets.BasicRivet.set_percent_on">
+<span class="sig-name descname"><span class="pre">set_percent_on</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flag</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/rivets.html#BasicRivet.set_percent_on"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.rivets.BasicRivet.set_percent_on" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.rivets.BasicRivet.set_surface">
+<span class="sig-name descname"><span class="pre">set_surface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surface_to_attach</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/rivets.html#BasicRivet.set_surface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.rivets.BasicRivet.set_surface" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="cpg.maya.modeling.rivets.MatrixRivet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.rivets.</span></span><span class="sig-name descname"><span class="pre">MatrixRivet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rivet_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rivet'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/rivets.html#MatrixRivet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.rivets.MatrixRivet" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Example on how to use:
+mesh = pm.PyNode(‘head_mesh’)
+obj = pm.PyNode(‘locator30’)
+usable_edges = model.get_two_edges_from_close_object(mesh=mesh, obj=obj)
+rivet = MatrixRivet(edges=usable_edges, rivet_name=’test_rivet’)
+test_rivet = rivet.create(obj=obj)</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.rivets.MatrixRivet.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/rivets.html#MatrixRivet.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.rivets.MatrixRivet.create" title="Permalink to this definition"></a></dt>
+<dd><p>Creates all the nodes and connects them
+:param nt.Transform obj: An object that is used to get its world coordinates.
+:param list(float) uv: 2 float values that represent the uv values
+:return:  The final result that is displayed connected to the mesh.
+:rtype: nt.Transform</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.rivets.MatrixRivet.create_connections">
+<span class="sig-name descname"><span class="pre">create_connections</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/rivets.html#MatrixRivet.create_connections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.rivets.MatrixRivet.create_connections" title="Permalink to this definition"></a></dt>
+<dd><p>Connects all the nodes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.rivets.MatrixRivet.create_nodes">
+<span class="sig-name descname"><span class="pre">create_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/rivets.html#MatrixRivet.create_nodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.rivets.MatrixRivet.create_nodes" title="Permalink to this definition"></a></dt>
+<dd><p>Creates the nodes needed for the rivet system.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.rivets.MatrixRivet.set_attributes">
+<span class="sig-name descname"><span class="pre">set_attributes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/rivets.html#MatrixRivet.set_attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.rivets.MatrixRivet.set_attributes" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the attributes needed for the rivet system.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.modeling.rivets.MatrixRivet.set_uv">
+<span class="sig-name descname"><span class="pre">set_uv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/rivets.html#MatrixRivet.set_uv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.rivets.MatrixRivet.set_uv" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the uv position of the locator on the loft node.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.rivets.connect_uv_pin">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.rivets.</span></span><span class="sig-name descname"><span class="pre">connect_uv_pin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uv_pin_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locator_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/rivets.html#connect_uv_pin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.rivets.connect_uv_pin" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a nt.UvPin and connects a rivet/locator to a mesh.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mesh</strong> (<em>nt.Transform</em>) – The mesh that will have the rivet connected to.</p></li>
+<li><p><strong>uv</strong> (<em>list</em><em>(</em><em>float</em><em>)</em>) – UV Coordinates.</p></li>
+<li><p><strong>uv_pin_name</strong> (<em>str</em>) – Name of the UvPin.</p></li>
+<li><p><strong>locator_scale</strong> (<em>float</em>) – Local scale of the locator that gets connected to the UV pin.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the name of the locator and the UvPin.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.rivets.create_uv_pin">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.rivets.</span></span><span class="sig-name descname"><span class="pre">create_uv_pin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/rivets.html#create_uv_pin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.rivets.create_uv_pin" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a UvPin to pin geometry onto a mesh.
+:param nt.Transform mesh: Mesh with a UV map.
+:param nt.Transform obj: Object that will be pinned to the geometry.
+:param list(float) uv: UV coordinates.
+:param str name: Name of the UvPin.
+:return: Returns a UvPin to pin geometry onto a mesh.
+:rtype: nt.UvPin</p>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.modeling.surface">
+<span id="cpg-maya-modeling-surface-module"></span><h2>cpg.maya.modeling.surface module<a class="headerlink" href="#module-cpg.maya.modeling.surface" title="Permalink to this heading"></a></h2>
+<p>Utilities for Maya</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.surface.get_closest_parameter_on_surface">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.surface.</span></span><span class="sig-name descname"><span class="pre">get_closest_parameter_on_surface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surface</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">space</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'preTransform'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/surface.html#get_closest_parameter_on_surface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.surface.get_closest_parameter_on_surface" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the closest parameter value on the surface given vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>surface</strong> (<em>pm.PyNode</em>) – surface node.</p></li>
+<li><p><strong>vector</strong> (<em>list</em><em>(</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>) or </em><em>pm.dt.Vector</em>) – position from which to check for closes parameter on
+given surface.</p></li>
+<li><p><strong>space</strong> (<em>int</em>) – space.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>parameter coordinates (UV) of the closest point on the surface.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list(int, int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.modeling.vert_utils">
+<span id="cpg-maya-modeling-vert-utils-module"></span><h2>cpg.maya.modeling.vert_utils module<a class="headerlink" href="#module-cpg.maya.modeling.vert_utils" title="Permalink to this heading"></a></h2>
+<p>Mesh vertices</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.vert_utils.convert_to_vertices">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.vert_utils.</span></span><span class="sig-name descname"><span class="pre">convert_to_vertices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/vert_utils.html#convert_to_vertices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.vert_utils.convert_to_vertices" title="Permalink to this definition"></a></dt>
+<dd><p>Converts every poly selection to vertices
+:param obj: variant, can be the mesh transform, the mesh shape or component based selection</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.vert_utils.fix_mesh_components_selection_visualization">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.vert_utils.</span></span><span class="sig-name descname"><span class="pre">fix_mesh_components_selection_visualization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/vert_utils.html#fix_mesh_components_selection_visualization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.vert_utils.fix_mesh_components_selection_visualization" title="Permalink to this definition"></a></dt>
+<dd><p>Cleanup selection details in Maya so given mesh selection components visualization is correct.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mesh</strong> (<em>pm.Transform</em><em> or </em><em>pm.Shapes</em>) – mesh (shape or transform) components we want to visualize.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.vert_utils.get_closest_vertex_to_object">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.vert_utils.</span></span><span class="sig-name descname"><span class="pre">get_closest_vertex_to_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/vert_utils.html#get_closest_vertex_to_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.vert_utils.get_closest_vertex_to_object" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the closest vertex to an object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mesh</strong> (<em>PyNode</em>) – mesh object name</p></li>
+<li><p><strong>obj</strong> (<em>PyNode</em>) – object near a mesh</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>vertex closest to an object</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.vert_utils.get_inverse_vertex_selection">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.vert_utils.</span></span><span class="sig-name descname"><span class="pre">get_inverse_vertex_selection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vertices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/vert_utils.html#get_inverse_vertex_selection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.vert_utils.get_inverse_vertex_selection" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a list of vertices of the inverse selection.
+:param list(str) vertices: list of vertices
+:return: vertex closest to an object
+:rtype: list(str)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.vert_utils.get_opposite_vertices">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.vert_utils.</span></span><span class="sig-name descname"><span class="pre">get_opposite_vertices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vertex_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/vert_utils.html#get_opposite_vertices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.vert_utils.get_opposite_vertices" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.vert_utils.get_uv_coordinates">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.vert_utils.</span></span><span class="sig-name descname"><span class="pre">get_uv_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/vert_utils.html#get_uv_coordinates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.vert_utils.get_uv_coordinates" title="Permalink to this definition"></a></dt>
+<dd><p>Returns uv coordinates from a mesh using an objects position.
+:param nt.Transform obj: The object is used to get the uv coordinates using is position near a mesh.
+:param nt.Transform mesh: Mesh Transform that that has uv setup.
+:return: Returns uv coordinates from a mesh using an objects position.
+:rtype: list(float)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.vert_utils.get_vertices_as_numbers">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.vert_utils.</span></span><span class="sig-name descname"><span class="pre">get_vertices_as_numbers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vertices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_string</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/vert_utils.html#get_vertices_as_numbers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.vert_utils.get_vertices_as_numbers" title="Permalink to this definition"></a></dt>
+<dd><p>Strips off everything except the vertex number.
+:param string list vertices: either a list of vertices or a single vertex.
+:param bool as_string: True returns as a string.  False returns as an int.
+:return: Returns a list of vertex numbers.
+:rtype: list[int] or list[str]</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.vert_utils.mirror_mesh">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.vert_utils.</span></span><span class="sig-name descname"><span class="pre">mirror_mesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left_vertices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_vertices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">middle_vertices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(-1,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">world</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/vert_utils.html#mirror_mesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.vert_utils.mirror_mesh" title="Permalink to this definition"></a></dt>
+<dd><p>Mirrors a a fully mapped mesh.
+The key is the +x and the value is the -x.
+In the future it would be great to not have to specify vertices and just mirror left to right or opposite.
+&gt;&gt;&gt; Example Dictionary {[left Vert Number : Right Vert Number], [Right Vert Number, left Vert Number], etc…}
+:param list(str) left_vertices: List of left vertices.
+:param list(str) right_vertices: List of right vertices.
+:param list(str) middle_vertices: List of middle vertices.
+:param string mesh_name: mesh name
+:param str axis: Which axis to mirror on. x, y, or z.
+:param bool world: If True, the coordinates will be world space.  If False the coordinates will be local space.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.vert_utils.mirror_vertex">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.vert_utils.</span></span><span class="sig-name descname"><span class="pre">mirror_vertex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vertex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opposite_vertex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(-1,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">world</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/vert_utils.html#mirror_vertex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.vert_utils.mirror_vertex" title="Permalink to this definition"></a></dt>
+<dd><p>Mirrors a vertex from one side of an object to the other.  Assumes mirroring on X axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vertex</strong> (<em>str</em>) – source vertex full name.  The vertex that the position will be used to mirror.</p></li>
+<li><p><strong>opposite_vertex</strong> (<em>str</em>) – target vertex full name.  The vertex that will be moved to a mirroring position with
+the source vertex.</p></li>
+<li><p><strong>axis</strong> (<em>str</em>) – Which axis to mirror on. x, y, or z.</p></li>
+<li><p><strong>world</strong> (<em>bool</em>) – If True, the coordinates will be world space.  If False the coordinates will be local space.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.vert_utils.mirror_vertices">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.vert_utils.</span></span><span class="sig-name descname"><span class="pre">mirror_vertices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertex_mapping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(-1,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">world</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/vert_utils.html#mirror_vertices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.vert_utils.mirror_vertices" title="Permalink to this definition"></a></dt>
+<dd><p>Import a json file that has a dictionary of selected vertices on an object and it’s mirror.
+The key is the +x and the value is the -x.
+In the future it would be great to not have to specify vertices and just mirror left to right or opposite.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Example</span> <span class="n">Dictionary</span> <span class="p">{[</span><span class="n">left</span> <span class="n">Vert</span> <span class="n">Number</span> <span class="p">:</span> <span class="n">Right</span> <span class="n">Vert</span> <span class="n">Number</span><span class="p">],</span> <span class="p">[</span><span class="n">Right</span> <span class="n">Vert</span> <span class="n">Number</span><span class="p">,</span> <span class="n">left</span> <span class="n">Vert</span> <span class="n">Number</span><span class="p">],</span> <span class="n">etc</span><span class="o">...</span><span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mesh</strong> (<em>string</em>) – mesh name</p></li>
+<li><p><strong>vertex_mapping</strong> (<em>dict</em>) – dict of vertices</p></li>
+<li><p><strong>vertices</strong> (<em>list</em>) – List of string vertices</p></li>
+<li><p><strong>axis</strong> (<em>str</em>) – Which axis to mirror on. x, y, or z.</p></li>
+<li><p><strong>world</strong> (<em>bool</em>) – If True, the coordinates will be world space.  If False the coordinates will be local space.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modeling.vert_utils.set_vertex_symmetry">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modeling.vert_utils.</span></span><span class="sig-name descname"><span class="pre">set_vertex_symmetry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symmetry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modeling/vert_utils.html#set_vertex_symmetry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modeling.vert_utils.set_vertex_symmetry" title="Permalink to this definition"></a></dt>
+<dd><p>Set Maya’s Vertex Symmetry
+:param string side: the side the pose is on.
+:param bool symmetry: Turn on/off vertex symmetry.</p>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.modeling">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cpg.maya.modeling" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cpg.maya.face.face_utils.html" class="btn btn-neutral float-left" title="cpg.maya.face.face_utils package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cpg.maya.modifiers.html" class="btn btn-neutral float-right" title="cpg.maya.modifiers package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
