@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.rigging.flags package &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="cpg.maya.rigging.frag package" href="cpg.maya.rigging.frag.html" />
+    <link rel="prev" title="cpg.maya.rigging package" href="cpg.maya.rigging.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">cpg-maya</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="cpg.html">cpg package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="cpg.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="cpg.maya.html">cpg.maya package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cpg.html#module-cpg">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">cpg-maya</a></li>
+          <li class="breadcrumb-item"><a href="cpg.html">cpg package</a></li>
+          <li class="breadcrumb-item"><a href="cpg.maya.html">cpg.maya package</a></li>
+          <li class="breadcrumb-item"><a href="cpg.maya.rigging.html">cpg.maya.rigging package</a></li>
+      <li class="breadcrumb-item active">cpg.maya.rigging.flags package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/cpg.maya.rigging.flags.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cpg-maya-rigging-flags-package">
+<h1>cpg.maya.rigging.flags package<a class="headerlink" href="#cpg-maya-rigging-flags-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-cpg.maya.rigging.flags.flag_utils">
+<span id="cpg-maya-rigging-flags-flag-utils-module"></span><h2>cpg.maya.rigging.flags.flag_utils module<a class="headerlink" href="#module-cpg.maya.rigging.flags.flag_utils" title="Permalink to this heading"></a></h2>
+<p>Module that interact with the rig flags</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.flag_utils.cut_all_flag_animations">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.rigging.flags.flag_utils.</span></span><span class="sig-name descname"><span class="pre">cut_all_flag_animations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rig_node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/flag_utils.html#cut_all_flag_animations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.flag_utils.cut_all_flag_animations" title="Permalink to this definition"></a></dt>
+<dd><p>Cut animation from all the flags on a rig.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rig_node</strong> (<em>pm.nt.dagNode</em>) – a node on the rig.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns if True, the keys were cut successfully</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.flag_utils.flags_visibility">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.rigging.flags.flag_utils.</span></span><span class="sig-name descname"><span class="pre">flags_visibility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">toggle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/flag_utils.html#flags_visibility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.flag_utils.flags_visibility" title="Permalink to this definition"></a></dt>
+<dd><p>Toggles the visibility layer for the flags.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node_list</strong> (<em>list</em><em>(</em><em>pm.nt.PyNode</em><em>)</em>) – List of nodes connected to a rig</p></li>
+<li><p><strong>toggle</strong> (<em>bool</em>) – uses the function as a toggle.  If toggle is true, the ‘on’ flag will not be used.</p></li>
+<li><p><strong>on</strong> (<em>bool</em>) – If True, the flags layer will be visible.  If False, the flags layer will not be visible.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.flag_utils.select_all_flags">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.rigging.flags.flag_utils.</span></span><span class="sig-name descname"><span class="pre">select_all_flags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/flag_utils.html#select_all_flags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.flag_utils.select_all_flags" title="Permalink to this definition"></a></dt>
+<dd><p>Selects all the flag for the selected rigs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node_list</strong> (<em>list</em><em>(</em><em>pm.nt.PyNode</em><em>)</em>) – List of nodes connected to a rig</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.flag_utils.select_all_flags_cmd">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.rigging.flags.flag_utils.</span></span><span class="sig-name descname"><span class="pre">select_all_flags_cmd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/flag_utils.html#select_all_flags_cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.flag_utils.select_all_flags_cmd" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.flag_utils.zero_flags">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.rigging.flags.flag_utils.</span></span><span class="sig-name descname"><span class="pre">zero_flags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/flag_utils.html#zero_flags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.flag_utils.zero_flags" title="Permalink to this definition"></a></dt>
+<dd><p>Sets all the flag attributes that are keyable back to their default values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node_list</strong> (<em>list</em><em>(</em><em>pm.nt.PyNode</em><em>)</em>) – List of nodes connected to a rig</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.flag_utils.zero_flags_cmd">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.rigging.flags.flag_utils.</span></span><span class="sig-name descname"><span class="pre">zero_flags_cmd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/flag_utils.html#zero_flags_cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.flag_utils.zero_flags_cmd" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-cpg.maya.rigging.flags.frag_flag">
+<span id="cpg-maya-rigging-flags-frag-flag-module"></span><h2>cpg.maya.rigging.flags.frag_flag module<a class="headerlink" href="#module-cpg.maya.rigging.flags.frag_flag" title="Permalink to this heading"></a></h2>
+<p>Module that contains Maya Animation Flag functions</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.frag_flag.Flag">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cpg.maya.rigging.flags.frag_flag.</span></span><span class="sig-name descname"><span class="pre">Flag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/frag_flag.html#Flag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.frag_flag.Flag" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.frag_flag.Flag.create">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_to_match</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maintain_shape_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_align_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_detail</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_sub</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_contact</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_util</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_connect</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/frag_flag.html#Flag.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.frag_flag.Flag.create" title="Permalink to this definition"></a></dt>
+<dd><p>Creates an animation control.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object_to_match</strong> (<em>nt.Transform</em>) – object we align the flag to.</p></li>
+<li><p><strong>shape</strong> (<em>nt.Transform</em>) – shape to parent to the flag transform if provided, else is a polyCube.</p></li>
+<li><p><strong>maintain_shape_offset</strong> (<em>bool</em>) – maintain shape offset</p></li>
+<li><p><strong>label</strong> (<em>str</em>) – object label, if label is not input, construct the flag label from the name of object_to_match</p></li>
+<li><p><strong>point</strong> (<em>bool</em>) – align the translation to the object to match</p></li>
+<li><p><strong>orient</strong> (<em>bool</em>) – orient the flag to the object to match</p></li>
+<li><p><strong>scale</strong> (<em>float</em>) – scale of the flag.</p></li>
+<li><p><strong>add_align_transform</strong> (<em>bool</em>) – True creates a zero transform node above the flag.</p></li>
+<li><p><strong>meta_connect</strong> (<em>bool</em>) – True if we want to connect the flag to the driven transform.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns an isinstance of the Flag class</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#cpg.maya.rigging.flags.frag_flag.Flag" title="cpg.maya.rigging.flags.frag_flag.Flag">Flag</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.frag_flag.Flag.create_ratio">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_ratio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_to_match</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_align_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_detail</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_sub</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/frag_flag.html#Flag.create_ratio"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.frag_flag.Flag.create_ratio" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.frag_flag.Flag.get_align_transform">
+<span class="sig-name descname"><span class="pre">get_align_transform</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/frag_flag.html#Flag.get_align_transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.frag_flag.Flag.get_align_transform" title="Permalink to this definition"></a></dt>
+<dd><p>Get the zero transform for the flag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>align_transform: the zero transform node.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>nt.Transform</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.frag_flag.Flag.hide_align_transform">
+<span class="sig-name descname"><span class="pre">hide_align_transform</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/frag_flag.html#Flag.hide_align_transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.frag_flag.Flag.hide_align_transform" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.frag_flag.Flag.lock_and_hide_attrs">
+<span class="sig-name descname"><span class="pre">lock_and_hide_attrs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/frag_flag.html#Flag.lock_and_hide_attrs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.frag_flag.Flag.lock_and_hide_attrs" title="Permalink to this definition"></a></dt>
+<dd><p>Locks and hides attributes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attr_list</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – List of attributes to lock.  EX: [‘tx’, ‘ty’, ‘tz’]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.frag_flag.Flag.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#cpg.maya.rigging.flags.frag_flag.Flag.name" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the absolute flag name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the absolute joint name.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.frag_flag.Flag.set_as_contact">
+<span class="sig-name descname"><span class="pre">set_as_contact</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/frag_flag.html#Flag.set_as_contact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.frag_flag.Flag.set_as_contact" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the flag as a contact flag.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.frag_flag.Flag.set_as_detail">
+<span class="sig-name descname"><span class="pre">set_as_detail</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/frag_flag.html#Flag.set_as_detail"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.frag_flag.Flag.set_as_detail" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the flag as a detail flag.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.frag_flag.Flag.set_as_sub">
+<span class="sig-name descname"><span class="pre">set_as_sub</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/frag_flag.html#Flag.set_as_sub"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.frag_flag.Flag.set_as_sub" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the flag as a subset flag.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.frag_flag.Flag.set_as_util">
+<span class="sig-name descname"><span class="pre">set_as_util</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/frag_flag.html#Flag.set_as_util"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.frag_flag.Flag.set_as_util" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the flag as a util flag.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.frag_flag.is_flag_node">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.rigging.flags.frag_flag.</span></span><span class="sig-name descname"><span class="pre">is_flag_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj_node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/frag_flag.html#is_flag_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.frag_flag.is_flag_node" title="Permalink to this definition"></a></dt>
+<dd><p>If a given node is a rig flag node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>obj_node</strong> – </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True or False depending on the node’s markup</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.frag_flag.swap_flags">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.rigging.flags.frag_flag.</span></span><span class="sig-name descname"><span class="pre">swap_flags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/frag_flag.html#swap_flags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.frag_flag.swap_flags" title="Permalink to this definition"></a></dt>
+<dd><p>Swaps the default flags for rig specific flags.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flags</strong> (<em>list</em><em>(</em><em>flag.FLAG</em><em>)</em>) – Animation controls.</p></li>
+<li><p><strong>flag_path</strong> (<em>str</em>) – Path to where the flags live.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.frag_flag.transform_scale">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.rigging.flags.frag_flag.</span></span><span class="sig-name descname"><span class="pre">transform_scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">align_grp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">translate_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/frag_flag.html#transform_scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.frag_flag.transform_scale" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-cpg.maya.rigging.flags.serialize_flag">
+<span id="cpg-maya-rigging-flags-serialize-flag-module"></span><h2>cpg.maya.rigging.flags.serialize_flag module<a class="headerlink" href="#module-cpg.maya.rigging.flags.serialize_flag" title="Permalink to this heading"></a></h2>
+<p>Module that contains Rig Control data part implementation</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.serialize_flag.FlagData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cpg.maya.rigging.flags.serialize_flag.</span></span><span class="sig-name descname"><span class="pre">FlagData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/serialize_flag.html#FlagData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.serialize_flag.FlagData" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>DataPart that represents Flag Curve data.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.serialize_flag.FlagData.DATA_TYPE">
+<span class="sig-name descname"><span class="pre">DATA_TYPE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'rig.flag'</span></em><a class="headerlink" href="#cpg.maya.rigging.flags.serialize_flag.FlagData.DATA_TYPE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.serialize_flag.FlagData.NICE_NAME">
+<span class="sig-name descname"><span class="pre">NICE_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Rig</span> <span class="pre">Flag'</span></em><a class="headerlink" href="#cpg.maya.rigging.flags.serialize_flag.FlagData.NICE_NAME" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.serialize_flag.FlagData.PRIORITY">
+<span class="sig-name descname"><span class="pre">PRIORITY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#cpg.maya.rigging.flags.serialize_flag.FlagData.PRIORITY" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.serialize_flag.FlagData.VERSION">
+<span class="sig-name descname"><span class="pre">VERSION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#cpg.maya.rigging.flags.serialize_flag.FlagData.VERSION" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.serialize_flag.FlagData.can_represent">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">can_represent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/serialize_flag.html#FlagData.can_represent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.serialize_flag.FlagData.can_represent" title="Permalink to this definition"></a></dt>
+<dd><p>Overrides base DataPart can_represent function.
+Returns whether this data part can represent by the given identifier.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>identifier</strong> (<em>str</em>) – data identifier. This could be a URL, a file path, a UUID, etc.</p></li>
+<li><p><strong>only_extension</strong> (<em>bool</em>) – If True, only trait (usually extension) will be checked.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the current data part can be represented by the given identifier; False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.serialize_flag.FlagData.export_data">
+<span class="sig-name descname"><span class="pre">export_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flag_to_export</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">export_color_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/serialize_flag.html#FlagData.export_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.serialize_flag.FlagData.export_data" title="Permalink to this definition"></a></dt>
+<dd><p>Exports flag data to file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flag_to_export</strong> (<a class="reference internal" href="#cpg.maya.rigging.flags.frag_flag.Flag" title="cpg.maya.rigging.flags.frag_flag.Flag"><em>Flag</em></a><em> or </em><em>pm.Transform</em>) – flag whose data we want to save.</p></li>
+<li><p><strong>export_color_data</strong> (<em>bool</em>) – whether to export controls color data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the export data operation was successful; False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.serialize_flag.FlagData.extension">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extension</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/serialize_flag.html#FlagData.extension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.serialize_flag.FlagData.extension" title="Permalink to this definition"></a></dt>
+<dd><p>Overrides base DataPart extension function.
+Returns extension of this data part.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>data part extension.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.serialize_flag.FlagData.functionality">
+<span class="sig-name descname"><span class="pre">functionality</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/serialize_flag.html#FlagData.functionality"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.serialize_flag.FlagData.functionality" title="Permalink to this definition"></a></dt>
+<dd><p>Overrides base DataPart functionality function.
+Exposes per-data functionality in the form of a dictionary where the key is the string accessor, and the value
+is a callable one.
+In a situation where multiple DataParts are bound then a single dictionary with all the entries combined is
+returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>data part functionality dictionary.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.serialize_flag.FlagData.icon">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">icon</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/serialize_flag.html#FlagData.icon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.serialize_flag.FlagData.icon" title="Permalink to this definition"></a></dt>
+<dd><p>Overrides base DataPart icon function.
+Returns the icon of this data part.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>data part icon</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>QIcon</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.serialize_flag.FlagData.identifier">
+<span class="sig-name descname"><span class="pre">identifier</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/serialize_flag.html#FlagData.identifier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.serialize_flag.FlagData.identifier" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the identifier of this data part.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>data part identifier.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.serialize_flag.FlagData.import_data">
+<span class="sig-name descname"><span class="pre">import_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/serialize_flag.html#FlagData.import_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.serialize_flag.FlagData.import_data" title="Permalink to this definition"></a></dt>
+<dd><p>Imports flags data from file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>newly created flag from imported data.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#cpg.maya.rigging.flags.frag_flag.Flag" title="cpg.maya.rigging.flags.frag_flag.Flag">Flag</a> or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.serialize_flag.FlagData.read_data">
+<span class="sig-name descname"><span class="pre">read_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/serialize_flag.html#FlagData.read_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.serialize_flag.FlagData.read_data" title="Permalink to this definition"></a></dt>
+<dd><p>Reads flags data containing in file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dictionary containing all flag data.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.serialize_flag.FlagData.save_data">
+<span class="sig-name descname"><span class="pre">save_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flag_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/serialize_flag.html#FlagData.save_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.serialize_flag.FlagData.save_data" title="Permalink to this definition"></a></dt>
+<dd><p>Saves given curve data into a file in disk.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>flag_data</strong> (<em>dict</em>) – flags data to save.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the save operation was successful; False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.serialize_flag.deserialize_flag">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.rigging.flags.serialize_flag.</span></span><span class="sig-name descname"><span class="pre">deserialize_flag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flag_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">space</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/serialize_flag.html#deserialize_flag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.serialize_flag.deserialize_flag" title="Permalink to this definition"></a></dt>
+<dd><p>Deserializes given flag data and creates a new flag based on it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flag_data</strong> (<em>dict</em>) – flag data serialized using serialize_flag function.</p></li>
+<li><p><strong>space</strong> (<em>str</em>) – space we want to deserialize shape data with (‘world’, ‘transform’, ‘object’)</p></li>
+<li><p><strong>parent</strong> (<em>pm.Transform</em><em> or </em><em>None</em>) – optional parent transform node for the deserialized flag shapes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>newly created flag.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#cpg.maya.rigging.flags.frag_flag.Flag" title="cpg.maya.rigging.flags.frag_flag.Flag">Flag</a> or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.serialize_flag.export_flag">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.rigging.flags.serialize_flag.</span></span><span class="sig-name descname"><span class="pre">export_flag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transform_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">export_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_place</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/serialize_flag.html#export_flag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.serialize_flag.export_flag" title="Permalink to this definition"></a></dt>
+<dd><p>Exports given flag node into given directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transform_node</strong> (<a class="reference internal" href="#cpg.maya.rigging.flags.frag_flag.Flag" title="cpg.maya.rigging.flags.frag_flag.Flag"><em>Flag</em></a><em> or </em><em>pm.Transform</em>) – flag transform node we want to export shapes of.</p></li>
+<li><p><strong>directory</strong> (<em>str</em>) – directory where flag file will be stored.</p></li>
+<li><p><strong>flag_name</strong> (<em>str</em>) – optional name for the exported flag file.</p></li>
+<li><p><strong>export_color</strong> (<em>bool</em>) – whether to flag color should be stored within file.</p></li>
+<li><p><strong>in_place</strong> (<em>bool</em>) – whether the flag should be exported in place or in the 0, 0, 0 of the world.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the export flag operation was successful; False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.serialize_flag.get_transform_world_matrix">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.rigging.flags.serialize_flag.</span></span><span class="sig-name descname"><span class="pre">get_transform_world_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/serialize_flag.html#get_transform_world_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.serialize_flag.get_transform_world_matrix" title="Permalink to this definition"></a></dt>
+<dd><p>Returns world matrix of the given PyMEL node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>pm.PyNode</em>) – PyMEL node we want to retrieve world matrix of.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Maya object world matrix.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pm.datatypes.Matrix</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.serialize_flag.get_transform_world_matrix_attribute">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.rigging.flags.serialize_flag.</span></span><span class="sig-name descname"><span class="pre">get_transform_world_matrix_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/serialize_flag.html#get_transform_world_matrix_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.serialize_flag.get_transform_world_matrix_attribute" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the MPlug pointing worldMatrix of the given Maya object pointing a DAG node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>pm.PyNode</em>) – PyMEL node we want to retrieve world matrix plug of.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>World matrix Maya object attribute.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pm.Attribute</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.serialize_flag.serialize_all_flags_from_rig">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.rigging.flags.serialize_flag.</span></span><span class="sig-name descname"><span class="pre">serialize_all_flags_from_rig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frag_rig</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/serialize_flag.html#serialize_all_flags_from_rig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.serialize_flag.serialize_all_flags_from_rig" title="Permalink to this definition"></a></dt>
+<dd><p>Froma  given rig_root serialize all flags.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frag_rig</strong> (<a class="reference internal" href="cpg.maya.rigging.frag.html#cpg.maya.rigging.frag.frag_rig.FRAGRig" title="cpg.maya.rigging.frag.frag_rig.FRAGRig"><em>FRAGRig</em></a>) – The frag rig to get flags from.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.rigging.flags.serialize_flag.serialize_flag">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.rigging.flags.serialize_flag.</span></span><span class="sig-name descname"><span class="pre">serialize_flag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transform_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">space</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serialize_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serialize_transform_matrix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/rigging/flags/serialize_flag.html#serialize_flag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.rigging.flags.serialize_flag.serialize_flag" title="Permalink to this definition"></a></dt>
+<dd><p>Serializes given transform node and returns a dictionary with all the data necessary to recreate that flag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transform_node</strong> (<em>pm.Transform</em>) – node that represents a transform node with shapes.</p></li>
+<li><p><strong>space</strong> (<em>str</em>) – space we want to serialize shape data with (‘world’, ‘transform’, ‘object’)</p></li>
+<li><p><strong>serialize_color</strong> (<em>bool</em>) – whether to include color data of the curve shapes.</p></li>
+<li><p><strong>normalize</strong> (<em>bool</em>) – whether to CVs should be normalized in 0 to 1 range.</p></li>
+<li><p><strong>serialize_transform_matrix</strong> (<em>bool</em>) – whether to include curve transform matrices.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>returns serialized transform curves.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>serialized transform curves.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.rigging.flags">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cpg.maya.rigging.flags" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cpg.maya.rigging.html" class="btn btn-neutral float-left" title="cpg.maya.rigging package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cpg.maya.rigging.frag.html" class="btn btn-neutral float-right" title="cpg.maya.rigging.frag package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.modifiers package &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="cpg.maya.plugins package" href="cpg.maya.plugins.html" />
+    <link rel="prev" title="cpg.maya.modeling package" href="cpg.maya.modeling.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">cpg-maya</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="cpg.html">cpg package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="cpg.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="cpg.maya.html">cpg.maya package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cpg.html#module-cpg">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">cpg-maya</a></li>
+          <li class="breadcrumb-item"><a href="cpg.html">cpg package</a></li>
+          <li class="breadcrumb-item"><a href="cpg.maya.html">cpg.maya package</a></li>
+      <li class="breadcrumb-item active">cpg.maya.modifiers package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/cpg.maya.modifiers.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cpg-maya-modifiers-package">
+<h1>cpg.maya.modifiers package<a class="headerlink" href="#cpg-maya-modifiers-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-cpg.maya.modifiers.contexts">
+<span id="cpg-maya-modifiers-contexts-module"></span><h2>cpg.maya.modifiers.contexts module<a class="headerlink" href="#module-cpg.maya.modifiers.contexts" title="Permalink to this heading"></a></h2>
+<p>Module that contains custom contexts managers for Autodesk Maya</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modifiers.contexts.disable_cycle_check_warnings_context">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modifiers.contexts.</span></span><span class="sig-name descname"><span class="pre">disable_cycle_check_warnings_context</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modifiers/contexts.html#disable_cycle_check_warnings_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modifiers.contexts.disable_cycle_check_warnings_context" title="Permalink to this definition"></a></dt>
+<dd><p>Disables Cycle Check warnings during the context execution</p>
+<p>..note:: This only disables the main pain and will sometimes still trigger updates in torn of panls.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modifiers.contexts.disable_undo_context">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modifiers.contexts.</span></span><span class="sig-name descname"><span class="pre">disable_undo_context</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modifiers/contexts.html#disable_undo_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modifiers.contexts.disable_undo_context" title="Permalink to this definition"></a></dt>
+<dd><p>Disable undo functionality during the context execution.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modifiers.contexts.maintain_time_context">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modifiers.contexts.</span></span><span class="sig-name descname"><span class="pre">maintain_time_context</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modifiers/contexts.html#maintain_time_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modifiers.contexts.maintain_time_context" title="Permalink to this definition"></a></dt>
+<dd><p>Context manager that preserves the time after the context.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modifiers.contexts.maintained_selection_context">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modifiers.contexts.</span></span><span class="sig-name descname"><span class="pre">maintained_selection_context</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modifiers/contexts.html#maintained_selection_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modifiers.contexts.maintained_selection_context" title="Permalink to this definition"></a></dt>
+<dd><p>Maintain selection during context
+Example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">scene</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">newFile</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">node</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">createNode</span><span class="p">(</span><span class="s1">&#39;transform&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;newGroup&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;persp&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">maintained_selection_context</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="n">pm</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">node</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">selection</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modifiers.contexts.namespace_context">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modifiers.contexts.</span></span><span class="sig-name descname"><span class="pre">namespace_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">namespace</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modifiers/contexts.html#namespace_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modifiers.contexts.namespace_context" title="Permalink to this definition"></a></dt>
+<dd><p>Python context that sets the given namespace as the active namespace and after yielding the function restores
+the previous namespace.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>namespace</strong> (<em>str</em>) – namespace name to set as active one.</p>
+</dd>
+</dl>
+<p>..note:: if the give namespace does not exist, it will be created automatically.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modifiers.contexts.no_panel_refresh_context">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modifiers.contexts.</span></span><span class="sig-name descname"><span class="pre">no_panel_refresh_context</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modifiers/contexts.html#no_panel_refresh_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modifiers.contexts.no_panel_refresh_context" title="Permalink to this definition"></a></dt>
+<dd><p>Disable all controlled panel refresh during the context execution</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modifiers.contexts.suspend_refresh_context">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modifiers.contexts.</span></span><span class="sig-name descname"><span class="pre">suspend_refresh_context</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modifiers/contexts.html#suspend_refresh_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modifiers.contexts.suspend_refresh_context" title="Permalink to this definition"></a></dt>
+<dd><p>Suspends viewport refresh during the context execution
+:return:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modifiers.contexts.undo_chunk_context">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modifiers.contexts.</span></span><span class="sig-name descname"><span class="pre">undo_chunk_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modifiers/contexts.html#undo_chunk_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modifiers.contexts.undo_chunk_context" title="Permalink to this definition"></a></dt>
+<dd><p>Enables undo functionality during the context execution.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modifiers.contexts.unlock_attribute_context">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modifiers.contexts.</span></span><span class="sig-name descname"><span class="pre">unlock_attribute_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modifiers/contexts.html#unlock_attribute_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modifiers.contexts.unlock_attribute_context" title="Permalink to this definition"></a></dt>
+<dd><p>PyMEL Maya context that allows to force unlock of an attribute before executing a function and recover its
+original lock status after the function is executed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attribute</strong> (<em>pm.Attribute</em>) – attribute to unlock.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modifiers.contexts.unlock_node_context">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modifiers.contexts.</span></span><span class="sig-name descname"><span class="pre">unlock_node_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modifiers/contexts.html#unlock_node_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modifiers.contexts.unlock_node_context" title="Permalink to this definition"></a></dt>
+<dd><p>PyMEL Maya context that allows to force unlock of a node before executing a function and recover its original
+lock state after the function is executed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>pm.PyNode</em>) – node to unlock.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.modifiers.ma_decorators">
+<span id="cpg-maya-modifiers-ma-decorators-module"></span><h2>cpg.maya.modifiers.ma_decorators module<a class="headerlink" href="#module-cpg.maya.modifiers.ma_decorators" title="Permalink to this heading"></a></h2>
+<p>Module that contains PyMEL Maya specific decorators</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modifiers.ma_decorators.disable_cycle_check_decorator">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modifiers.ma_decorators.</span></span><span class="sig-name descname"><span class="pre">disable_cycle_check_decorator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modifiers/ma_decorators.html#disable_cycle_check_decorator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modifiers.ma_decorators.disable_cycle_check_decorator" title="Permalink to this definition"></a></dt>
+<dd><p>Function decorator that disables the cycle check then restores it to previous values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>callable</em>) – decorated function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modifiers.ma_decorators.freeze_renderer_decorator">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modifiers.ma_decorators.</span></span><span class="sig-name descname"><span class="pre">freeze_renderer_decorator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modifiers/ma_decorators.html#freeze_renderer_decorator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modifiers.ma_decorators.freeze_renderer_decorator" title="Permalink to this definition"></a></dt>
+<dd><p>Function decorator that disables the panel renderer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>callable</em>) – decorated function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modifiers.ma_decorators.keep_autokey_decorator">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modifiers.ma_decorators.</span></span><span class="sig-name descname"><span class="pre">keep_autokey_decorator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modifiers/ma_decorators.html#keep_autokey_decorator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modifiers.ma_decorators.keep_autokey_decorator" title="Permalink to this definition"></a></dt>
+<dd><p>Function decorator that makes sure that original autokey setting is kept after executing the wrapped function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>callable</em>) – decorated function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modifiers.ma_decorators.keep_current_frame_decorator">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modifiers.ma_decorators.</span></span><span class="sig-name descname"><span class="pre">keep_current_frame_decorator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modifiers/ma_decorators.html#keep_current_frame_decorator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modifiers.ma_decorators.keep_current_frame_decorator" title="Permalink to this definition"></a></dt>
+<dd><p>Function decorator that makes sure that starting keyframe is kept after executing the wrapped function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>callable</em>) – decorated function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modifiers.ma_decorators.keep_namespace_decorator">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modifiers.ma_decorators.</span></span><span class="sig-name descname"><span class="pre">keep_namespace_decorator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modifiers/ma_decorators.html#keep_namespace_decorator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modifiers.ma_decorators.keep_namespace_decorator" title="Permalink to this definition"></a></dt>
+<dd><p>Function decorator that restores the active namespace after execution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>callable</em>) – decorated function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modifiers.ma_decorators.keep_selection_decorator">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modifiers.ma_decorators.</span></span><span class="sig-name descname"><span class="pre">keep_selection_decorator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modifiers/ma_decorators.html#keep_selection_decorator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modifiers.ma_decorators.keep_selection_decorator" title="Permalink to this definition"></a></dt>
+<dd><p>Function decorator that makes sure that original selection is keep after executing the wrapped function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>callable</em>) – decorated function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modifiers.ma_decorators.make_display_layers_visible_decorator">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modifiers.ma_decorators.</span></span><span class="sig-name descname"><span class="pre">make_display_layers_visible_decorator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modifiers/ma_decorators.html#make_display_layers_visible_decorator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modifiers.ma_decorators.make_display_layers_visible_decorator" title="Permalink to this definition"></a></dt>
+<dd><p>Function decorator that toggles on all display layers during execution then restores them.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>callable</em>) – decorated function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modifiers.ma_decorators.not_undoable_decorator">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modifiers.ma_decorators.</span></span><span class="sig-name descname"><span class="pre">not_undoable_decorator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modifiers/ma_decorators.html#not_undoable_decorator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modifiers.ma_decorators.not_undoable_decorator" title="Permalink to this definition"></a></dt>
+<dd><p>Function decorator that prevents undoing a fnc call.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>callable</em>) – decorated function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modifiers.ma_decorators.repeat_static_command_decorator">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modifiers.ma_decorators.</span></span><span class="sig-name descname"><span class="pre">repeat_static_command_decorator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_arguments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modifiers/ma_decorators.html#repeat_static_command_decorator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modifiers.ma_decorators.repeat_static_command_decorator" title="Permalink to this definition"></a></dt>
+<dd><p>Decorator that will make static functions repeatable for Maya.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>class_name</strong> (<em>str</em>) – path to the Python module where function we want to repeat is located.</p></li>
+<li><p><strong>skip_arguments</strong> (<em>bool</em>) – whether force the execution of the repeat function without passing any argument.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modifiers.ma_decorators.undo_decorator">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modifiers.ma_decorators.</span></span><span class="sig-name descname"><span class="pre">undo_decorator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modifiers/ma_decorators.html#undo_decorator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modifiers.ma_decorators.undo_decorator" title="Permalink to this definition"></a></dt>
+<dd><p>Function decorator that enables undo functionality using Maya Python commands.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>callable</em>) – decorated function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modifiers.ma_decorators.unlock_animation_layers">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modifiers.ma_decorators.</span></span><span class="sig-name descname"><span class="pre">unlock_animation_layers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modifiers/ma_decorators.html#unlock_animation_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modifiers.ma_decorators.unlock_animation_layers" title="Permalink to this definition"></a></dt>
+<dd><p>Function decorator that makes sure all animation layers are unlocked during execution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>callable</em>) – decorated function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.modifiers.ma_decorators.viewport_off">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.modifiers.ma_decorators.</span></span><span class="sig-name descname"><span class="pre">viewport_off</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/modifiers/ma_decorators.html#viewport_off"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.modifiers.ma_decorators.viewport_off" title="Permalink to this definition"></a></dt>
+<dd><p>Function decorator that turns off Maya display while the function is being executed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>callable</em>) – decorated function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.modifiers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cpg.maya.modifiers" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cpg.maya.modeling.html" class="btn btn-neutral float-left" title="cpg.maya.modeling package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cpg.maya.plugins.html" class="btn btn-neutral float-right" title="cpg.maya.plugins package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

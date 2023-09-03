@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.tools.skeletonbuilder package &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="cpg.maya.tools.summoner package" href="cpg.maya.tools.summoner.html" />
+    <link rel="prev" title="cpg.maya.tools.saveskinning package" href="cpg.maya.tools.saveskinning.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">cpg-maya</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="cpg.html">cpg package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="cpg.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="cpg.maya.html">cpg.maya package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cpg.html#module-cpg">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">cpg-maya</a></li>
+          <li class="breadcrumb-item"><a href="cpg.html">cpg package</a></li>
+          <li class="breadcrumb-item"><a href="cpg.maya.html">cpg.maya package</a></li>
+          <li class="breadcrumb-item"><a href="cpg.maya.tools.html">cpg.maya.tools package</a></li>
+      <li class="breadcrumb-item active">cpg.maya.tools.skeletonbuilder package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/cpg.maya.tools.skeletonbuilder.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cpg-maya-tools-skeletonbuilder-package">
+<h1>cpg.maya.tools.skeletonbuilder package<a class="headerlink" href="#cpg-maya-tools-skeletonbuilder-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry">
+<span id="cpg-maya-tools-skeletonbuilder-skeletonbuilder-registry-module"></span><h2>cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry module<a class="headerlink" href="#module-cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry" title="Permalink to this heading"></a></h2>
+<p>Module that contains fncs for dealing with SkeletonBuilders’ main registries.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetype">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.</span></span><span class="sig-name descname"><span class="pre">SkeletonArchetype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/skeletonbuilder/skeletonbuilder_registry.html#SkeletonArchetype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetype" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetype.get_data_dict">
+<span class="sig-name descname"><span class="pre">get_data_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/skeletonbuilder/skeletonbuilder_registry.html#SkeletonArchetype.get_data_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetype.get_data_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetype.import_skel">
+<span class="sig-name descname"><span class="pre">import_skel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">skel_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/skeletonbuilder/skeletonbuilder_registry.html#SkeletonArchetype.import_skel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetype.import_skel" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetype.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetype.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetype.register">
+<span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/skeletonbuilder/skeletonbuilder_registry.html#SkeletonArchetype.register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetype.register" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetype.skel_path">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">skel_path</span></span><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetype.skel_path" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetypeRegistry">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.</span></span><span class="sig-name descname"><span class="pre">SkeletonArchetypeRegistry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/skeletonbuilder/skeletonbuilder_registry.html#SkeletonArchetypeRegistry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetypeRegistry" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">SimpleSingleton</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetypeRegistry.DIRTY">
+<span class="sig-name descname"><span class="pre">DIRTY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetypeRegistry.DIRTY" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetypeRegistry.NAME_REGISTRY">
+<span class="sig-name descname"><span class="pre">NAME_REGISTRY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetypeRegistry.NAME_REGISTRY" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetypeRegistry.PATH_REGISTRY">
+<span class="sig-name descname"><span class="pre">PATH_REGISTRY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetypeRegistry.PATH_REGISTRY" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetypeRegistry.REGISTRY_DICT">
+<span class="sig-name descname"><span class="pre">REGISTRY_DICT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetypeRegistry.REGISTRY_DICT" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetypeRegistry.commit">
+<span class="sig-name descname"><span class="pre">commit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/skeletonbuilder/skeletonbuilder_registry.html#SkeletonArchetypeRegistry.commit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetypeRegistry.commit" title="Permalink to this definition"></a></dt>
+<dd><p>Save changes to the registry if there was a change made.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetypeRegistry.get_entry">
+<span class="sig-name descname"><span class="pre">get_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/skeletonbuilder/skeletonbuilder_registry.html#SkeletonArchetypeRegistry.get_entry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetypeRegistry.get_entry" title="Permalink to this definition"></a></dt>
+<dd><p>Return a SKeletonArchetype by name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – The name to look up a skeleton by.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The found SkeletonArchetype or None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetype" title="cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetype">SkeletonArchetype</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetypeRegistry.register_archetype">
+<span class="sig-name descname"><span class="pre">register_archetype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">skeleton_archetype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/skeletonbuilder/skeletonbuilder_registry.html#SkeletonArchetypeRegistry.register_archetype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetypeRegistry.register_archetype" title="Permalink to this definition"></a></dt>
+<dd><p>This will serialize one of our data classes to the main register.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>skeleton_archetype</strong> (<a class="reference internal" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetype" title="cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetype"><em>SkeletonArchetype</em></a>) – The helios archetype to be registered.</p></li>
+<li><p><strong>commit</strong> (<em>bool</em>) – If the registry should be saved after the addition. For perf reasons this can be held until
+multiple registers are completed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>if the task was completed or failed.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetypeRegistry.reload">
+<span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/skeletonbuilder/skeletonbuilder_registry.html#SkeletonArchetypeRegistry.reload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetypeRegistry.reload" title="Permalink to this definition"></a></dt>
+<dd><p>Regenerate the registry’s lookups.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>force</strong> (<em>bool</em>) – If the lookups should be regenerated. Normally once this is initialized they are not reloaded unless requested.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetypeRegistry.remove_entry">
+<span class="sig-name descname"><span class="pre">remove_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/skeletonbuilder/skeletonbuilder_registry.html#SkeletonArchetypeRegistry.remove_entry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_registry.SkeletonArchetypeRegistry.remove_entry" title="Permalink to this definition"></a></dt>
+<dd><p>Remove a skeleton entry by name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name associated with a skeleton entry.</p></li>
+<li><p><strong>commit</strong> (<em>bool</em>) – If the changes should be committed to the registry as part of the remove.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui">
+<span id="cpg-maya-tools-skeletonbuilder-skeletonbuilder-ui-module"></span><h2>cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui module<a class="headerlink" href="#module-cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui" title="Permalink to this heading"></a></h2>
+<p>Module that contains Helios main UI.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.</span></span><span class="sig-name descname"><span class="pre">SkeletonBuilder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/skeletonbuilder/skeletonbuilder_ui.html#SkeletonBuilder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="cpg.maya.pyqt.html#cpg.maya.pyqt.mayawindows.CPGMayaWindow" title="cpg.maya.pyqt.mayawindows.CPGMayaWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">CPGMayaWindow</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.VERSION">
+<span class="sig-name descname"><span class="pre">VERSION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'1.0.0'</span></em><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.VERSION" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.add_skeleton_entry">
+<span class="sig-name descname"><span class="pre">add_skeleton_entry</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/skeletonbuilder/skeletonbuilder_ui.html#SkeletonBuilder.add_skeleton_entry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.add_skeleton_entry" title="Permalink to this definition"></a></dt>
+<dd><p>Add a new entry to ther skeleton archetype registry</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.apply_markup">
+<span class="sig-name descname"><span class="pre">apply_markup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/skeletonbuilder/skeletonbuilder_ui.html#SkeletonBuilder.apply_markup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.apply_markup" title="Permalink to this definition"></a></dt>
+<dd><p>Apply markup to the selected joints represented by the treewidget.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.export_skeleton">
+<span class="sig-name descname"><span class="pre">export_skeleton</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/skeletonbuilder/skeletonbuilder_ui.html#SkeletonBuilder.export_skeleton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.export_skeleton" title="Permalink to this definition"></a></dt>
+<dd><p>From the registered skeleton check the asset_id and export to the associated .skl file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.import_skeleton">
+<span class="sig-name descname"><span class="pre">import_skeleton</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/skeletonbuilder/skeletonbuilder_ui.html#SkeletonBuilder.import_skeleton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.import_skeleton" title="Permalink to this definition"></a></dt>
+<dd><p>From the selected skeleton entry import merge that skeleton.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.remove_skeleton_entry">
+<span class="sig-name descname"><span class="pre">remove_skeleton_entry</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/skeletonbuilder/skeletonbuilder_ui.html#SkeletonBuilder.remove_skeleton_entry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.remove_skeleton_entry" title="Permalink to this definition"></a></dt>
+<dd><p>From the selected skeleton entry remove it from the registry.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.select_item">
+<span class="sig-name descname"><span class="pre">select_item</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/skeletonbuilder/skeletonbuilder_ui.html#SkeletonBuilder.select_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.select_item" title="Permalink to this definition"></a></dt>
+<dd><p>Select the joint represented by an entry in the treewidget.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.setup_listview">
+<span class="sig-name descname"><span class="pre">setup_listview</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/skeletonbuilder/skeletonbuilder_ui.html#SkeletonBuilder.setup_listview"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.setup_listview" title="Permalink to this definition"></a></dt>
+<dd><p>From the skeleton archetype registry display all entries.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.setup_signals">
+<span class="sig-name descname"><span class="pre">setup_signals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/skeletonbuilder/skeletonbuilder_ui.html#SkeletonBuilder.setup_signals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.setup_signals" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.setup_treeview">
+<span class="sig-name descname"><span class="pre">setup_treeview</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/skeletonbuilder/skeletonbuilder_ui.html#SkeletonBuilder.setup_treeview"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.setup_treeview" title="Permalink to this definition"></a></dt>
+<dd><p>Setup our main treeview widget in the UI. This checks through a selected hierarchy and registers each joint to
+an item in the treeview widget.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.validate_skeleton">
+<span class="sig-name descname"><span class="pre">validate_skeleton</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/skeletonbuilder/skeletonbuilder_ui.html#SkeletonBuilder.validate_skeleton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.SkeletonBuilder.validate_skeleton" title="Permalink to this definition"></a></dt>
+<dd><p>From our registered skeleton check for a list of common errors then in place edit the treeview items to show status</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.apply_markup_cmd">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.</span></span><span class="sig-name descname"><span class="pre">apply_markup_cmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skel_region</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skel_side</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_twist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sk_exportable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">animatable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/tools/skeletonbuilder/skeletonbuilder_ui.html#apply_markup_cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.tools.skeletonbuilder.skeletonbuilder_ui.apply_markup_cmd" title="Permalink to this definition"></a></dt>
+<dd><p>From a list of ORDERED joints, apply Frag markup for us to traverse the skeleton.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node_list</strong> (<em>list</em><em>[</em><em>Joint</em><em>]</em>) – A list of joint nodes in hierarchical order.</p></li>
+<li><p><strong>skel_region</strong> (<em>str</em>) – The name of the skeletal region. IE: “leg”, “arm”</p></li>
+<li><p><strong>skel_side</strong> (<em>str</em>) – The name of the skeleton side. IE: “right”, “left”, “center”</p></li>
+<li><p><strong>is_twist</strong> (<em>bool</em>) – If this joint should be marked up as a twist joint.</p></li>
+<li><p><strong>sk_exportable</strong> (<em>bool</em>) – If this joint should be exported as part of the SK.</p></li>
+<li><p><strong>animatable</strong> (<em>bool</em>) – If this joint should be marked up for animation export.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.tools.skeletonbuilder">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cpg.maya.tools.skeletonbuilder" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cpg.maya.tools.saveskinning.html" class="btn btn-neutral float-left" title="cpg.maya.tools.saveskinning package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cpg.maya.tools.summoner.html" class="btn btn-neutral float-right" title="cpg.maya.tools.summoner package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

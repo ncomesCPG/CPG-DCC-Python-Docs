@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cpg.maya.animation package &mdash; CPG DCC Maya Python 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="cpg.maya.cinematics package" href="cpg.maya.cinematics.html" />
+    <link rel="prev" title="cpg.maya package" href="cpg.maya.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CPG DCC Maya Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">cpg-maya</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="cpg.html">cpg package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="cpg.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="cpg.maya.html">cpg.maya package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cpg.html#module-cpg">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CPG DCC Maya Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">cpg-maya</a></li>
+          <li class="breadcrumb-item"><a href="cpg.html">cpg package</a></li>
+          <li class="breadcrumb-item"><a href="cpg.maya.html">cpg.maya package</a></li>
+      <li class="breadcrumb-item active">cpg.maya.animation package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/cpg.maya.animation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cpg-maya-animation-package">
+<h1>cpg.maya.animation package<a class="headerlink" href="#cpg-maya-animation-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-cpg.maya.animation.anim_curves">
+<span id="cpg-maya-animation-anim-curves-module"></span><h2>cpg.maya.animation.anim_curves module<a class="headerlink" href="#module-cpg.maya.animation.anim_curves" title="Permalink to this heading"></a></h2>
+<p>Modules to interact with animation curves.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_curves.change_curve_start_time">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_curves.</span></span><span class="sig-name descname"><span class="pre">change_curve_start_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">animation_curve</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_difference</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_curves.html#change_curve_start_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_curves.change_curve_start_time" title="Permalink to this definition"></a></dt>
+<dd><p>Updates the time range on an animation curve.
+Note: if there are more than one animation curve you are moving and one curve starts at
+frame 5 and another starts at frame 10.  You want them all to move the same amount and you may need to change
+the start time to match.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>animation_curve</strong> (<em>pm.nt.AnimCurve</em>) – The animation curve that the time will be updated.</p></li>
+<li><p><strong>start_difference</strong> (<em>float</em>) – How much the all frames should move.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_curves.crop_time_range">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_curves.</span></span><span class="sig-name descname"><span class="pre">crop_time_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anim_curve</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_curves.html#crop_time_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_curves.crop_time_range" title="Permalink to this definition"></a></dt>
+<dd><p>Removes keys from start and/or end of the animation clip.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anim_curve</strong> (<em>pm.nt.AnimCurve</em>) – The animation curve to evaluate.</p></li>
+<li><p><strong>min_time</strong> (<em>float</em>) – New 1st frame.</p></li>
+<li><p><strong>max_time</strong> (<em>float</em>) – New last frame.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_curves.merge_curves">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_curves.</span></span><span class="sig-name descname"><span class="pre">merge_curves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">curve_a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">curve_b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_curves</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_curves.html#merge_curves"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_curves.merge_curves" title="Permalink to this definition"></a></dt>
+<dd><p>Merges two animation curves.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>curve_a</strong> (<em>pm.nt.AnimCurve</em>) – The animation curve that is being copied.</p></li>
+<li><p><strong>curve_b</strong> (<em>pm.nt.AnimCurve</em>) – The animation curve that is receiving the copied curves.</p></li>
+<li><p><strong>delete_curve</strong> – Deletes the animation curve that is being copied from.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_curves.multiply_curve_values">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_curves.</span></span><span class="sig-name descname"><span class="pre">multiply_curve_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">animation_curve</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_curves.html#multiply_curve_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_curves.multiply_curve_values" title="Permalink to this definition"></a></dt>
+<dd><p>Multiplies all the anim values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>animation_curve</strong> (<em>pm.nt.AnimCurve</em>) – The animation curve that is being changed.</p></li>
+<li><p><strong>multi</strong> (<em>float</em>) – multiplies all the anim values.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_curves.reanimate_from_anim_curves">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_curves.</span></span><span class="sig-name descname"><span class="pre">reanimate_from_anim_curves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anim_curve</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_attribute</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_curves.html#reanimate_from_anim_curves"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_curves.reanimate_from_anim_curves" title="Permalink to this definition"></a></dt>
+<dd><p>Restores animation curves.  Takes existing curves and connects it to an object attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anim_curve</strong> (<em>pm.nt.AnimCurve</em>) – The animation curve node.</p></li>
+<li><p><strong>object_attribute</strong> (<em>pm.nt.Attribute</em>) – The attribute on an object that you are attaching animation.</p></li>
+<li><p><strong>start_time</strong> (<em>float/None</em>) – the start time of the animation</p></li>
+<li><p><strong>end_time</strong> (<em>float/None</em>) – the end time of the animation</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_curves.replace_into_curve">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_curves.</span></span><span class="sig-name descname"><span class="pre">replace_into_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">curve_a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">curve_b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_curve</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_curves.html#replace_into_curve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_curves.replace_into_curve" title="Permalink to this definition"></a></dt>
+<dd><p>Copies on anim curve onto another.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>curve_a</strong> (<em>pm.nt.AnimCurve</em>) – The animation curve that is being copied.</p></li>
+<li><p><strong>curve_b</strong> (<em>pm.nt.AnimCurve</em>) – The animation curve that is receiving the copied curves.</p></li>
+<li><p><strong>delete_curve</strong> – Deletes the animation curve that is being copied from.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_curves.restore_from_anim_curves">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_curves.</span></span><span class="sig-name descname"><span class="pre">restore_from_anim_curves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anim_curve</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_attribute</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_curves</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_old_curves</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_curves.html#restore_from_anim_curves"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_curves.restore_from_anim_curves" title="Permalink to this definition"></a></dt>
+<dd><p>Restores animation curves.  Takes existing curves and connects it to an object attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anim_curve</strong> (<em>pm.nt.AnimCurve</em>) – The animation curve node.</p></li>
+<li><p><strong>object_attribute</strong> (<em>pm.nt.Attribute</em>) – THe attribute on an object that you are attaching animation.</p></li>
+<li><p><strong>keep_curves</strong> (<em>bool</em>) – If True, The animation curve will be duplicated before connecting.</p></li>
+<li><p><strong>delete_old_curves</strong> (<em>bool</em>) – If True, If there is an existing animation curve on the object attribute it will</p></li>
+</ul>
+</dd>
+</dl>
+<p>delete it first.
+:param float/None start_time: the start time of the animation.  It will adjust the animation curve times.
+:return:  The end frame of the animation curve.
+:rtype: float</p>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.animation.anim_layers">
+<span id="cpg-maya-animation-anim-layers-module"></span><h2>cpg.maya.animation.anim_layers module<a class="headerlink" href="#module-cpg.maya.animation.anim_layers" title="Permalink to this heading"></a></h2>
+<p>purpose: Animation Layers</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.adjust_layers_timeline">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">adjust_layers_timeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anim_blend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#adjust_layers_timeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.adjust_layers_timeline" title="Permalink to this definition"></a></dt>
+<dd><p>Adjusts all the animation curves in an animation layer network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anim_blend</strong> (<em>pm.nt.AnimBlendNodeBase</em>) – The animation blend node that ties the curves and layers together.</p></li>
+<li><p><strong>start_time</strong> (<em>int</em>) – The start frame if the animation needs to change in the timeline.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return int<span class="colon">:</span></dt>
+<dd class="field-even"><p>returns the last frame if the start time changes.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.check_layer_original">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">check_layer_original</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anim_layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anim_layer_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#check_layer_original"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.check_layer_original" title="Permalink to this definition"></a></dt>
+<dd><p>Check a list of animation laters to see if it is a duplicated layer and if it matches the original node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anim_layer</strong> (<em>pm.nt.AnimLayer</em>) – Animation Layer.</p></li>
+<li><p><strong>anim_layer_list</strong> (<em>list</em>) – list of duplicated animation layers.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>If True, it will return a duplicated animation layer that matches the anim_layer.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pm.nt.AnimLayer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.check_obj_for_anim_layer">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">check_obj_for_anim_layer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#check_obj_for_anim_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.check_obj_for_anim_layer" title="Permalink to this definition"></a></dt>
+<dd><p>Checks to see if there is an animation layers connected to the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>obj</strong> (<em>pm.nt.transform</em>) – The object that animation curves will be transferred to.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>If True, The object has an animation layer.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.connect_anim_layer_curves">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">connect_anim_layer_curves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anim_blend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_attribute</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#connect_anim_layer_curves"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.connect_anim_layer_curves" title="Permalink to this definition"></a></dt>
+<dd><p># Swap the animation curve from the node to the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anim_blend</strong> (<em>pm.nt.AnimBlendNodeBase</em>) – The animation blend node that ties the curves and layers together.</p></li>
+<li><p><strong>object_attribute</strong> (<em>pm.nt.general.Attribute</em>) – The object attribute that connects to an animation.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.connect_layer_dagSetMembers">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">connect_layer_dagSetMembers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anim_layer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#connect_layer_dagSetMembers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.connect_layer_dagSetMembers" title="Permalink to this definition"></a></dt>
+<dd><p>Connects an animation layer to the dagSetMember of an object attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj_attr</strong> (<em>pm.nt.Attribute</em>) – The attribute on an object that you are attaching animation.</p></li>
+<li><p><strong>anim_layer</strong> (<em>pm.nt.AnimLayer</em>) – Animation Layer</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.connect_layer_to_base_layer">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">connect_layer_to_base_layer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anim_layer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#connect_layer_to_base_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.connect_layer_to_base_layer" title="Permalink to this definition"></a></dt>
+<dd><p>Connects an animation layer to the base animation layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>anim_layer</strong> (<em>pm.nt.AnimLayer</em>) – Animation layer node.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.create_anim_layer_network">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">create_anim_layer_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anim_blend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_animation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_time_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_time_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#create_anim_layer_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.create_anim_layer_network" title="Permalink to this definition"></a></dt>
+<dd><p>Duplicates the animation layer network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>anim_blend</strong> (<em>pm.nt.AnimBlendNodeBase</em>) – Animation blend node.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a list of the animation blend nodes and animation layers.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[pm.nt.AnimBlendNodeBase, pm.nt.AnimLayer]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.create_dict_curve_connections">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">create_dict_curve_connections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">curve</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_animation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#create_dict_curve_connections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.create_dict_curve_connections" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a dictionary of the how the animation curve was connected.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>curve</strong> (<em>object</em>) – an object that is connected.</p></li>
+<li><p><strong>keep_animation</strong> (<em>bool</em>) – if connected the object curve will be duplicated.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a dictionary of the how the animation curve was connected.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dictionary{pm.nt.attribute:pm.nt.attribute}</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.delete_all_old_curves">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">delete_all_old_curves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anim_obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#delete_all_old_curves"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.delete_all_old_curves" title="Permalink to this definition"></a></dt>
+<dd><p>Deletes an animation curve or an animation layer network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>anim_obj</strong> (<em>pm.nt.transform</em>) – An animation object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.delete_anim_blends_and_curves">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">delete_anim_blends_and_curves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anim_blend</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#delete_anim_blends_and_curves"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.delete_anim_blends_and_curves" title="Permalink to this definition"></a></dt>
+<dd><p>Deletes the animation layer network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>anim_blend</strong> (<em>pm.nt.AnimBlendNodeBase</em>) – The animation blend node that ties the curves and layers together.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.duplicate_anim_layer">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">duplicate_anim_layer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anim_layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#duplicate_anim_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.duplicate_anim_layer" title="Permalink to this definition"></a></dt>
+<dd><p>Duplicates the animation layer and adds an attribute to track the original anim layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anim_layer</strong> (<em>pm.nt.AnimLayer</em>) – Animation Layer.</p></li>
+<li><p><strong>new_name</strong> (<em>string</em>) – Name of the duplicated animation Library.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a duplicate animation layer.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pm.nt.AnimLayer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.duplicate_anim_layer_network">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">duplicate_anim_layer_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anim_layers_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anim_layer_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#duplicate_anim_layer_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.duplicate_anim_layer_network" title="Permalink to this definition"></a></dt>
+<dd><p>Duplicates the animation layer network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anim_layers_map</strong> (<em>list</em>) – Map of existing animation blend nodes and the animation layers they are connected to.</p></li>
+<li><p><strong>anim_layer_list</strong> (<em>list</em>) – List of animations layers that already exist.  Use these animation layers to</p></li>
+</ul>
+</dd>
+</dl>
+<p>connect the duplicated blend nodes.
+:return: Returns an updated anim_layers_map with the duplicated nodes.
+:rtype: list[pm.nt.AnimBlendNodeBase, pm.nt.AnimLayer]</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.get_all_anim_blends_in_network">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">get_all_anim_blends_in_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anim_blend</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#get_all_anim_blends_in_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.get_all_anim_blends_in_network" title="Permalink to this definition"></a></dt>
+<dd><p>Returns all the animation blend nodes in an animation layer network.  This is per object attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>anim_blend</strong> (<em>pm.nt.AnimBlendNodeBase</em>) – The animation blend node that ties the curves and layers together.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns all the animation blend nodes in an animation layer network.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[pm.nt.AnimBlendNodeBase]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.get_all_anim_layers_in_network">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">get_all_anim_layers_in_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anim_blend</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#get_all_anim_layers_in_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.get_all_anim_layers_in_network" title="Permalink to this definition"></a></dt>
+<dd><p>Returns all the animation layers in an animation layer network.  This is per object attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>anim_blend</strong> (<em>pm.nt.AnimBlendNodeBase</em>) – The animation blend node that ties the curves and layers together.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns all the animation layers in an animation layer network.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[pm.nt.AnimLayer]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.get_all_curves_in_layer_network">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">get_all_curves_in_layer_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anim_blend</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#get_all_curves_in_layer_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.get_all_curves_in_layer_network" title="Permalink to this definition"></a></dt>
+<dd><p>Returns all of the pm.nt.AnimCurve s in a animation layer network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>anim_blend</strong> (<em>pm.nt.AnimBlendNodeBase</em>) – The animation blend node that ties the curves and layers together.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns all of the AnimCurves in a animation layer network.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[pm.nt.AnimCurve]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.get_base_anim_curves">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">get_base_anim_curves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anim_blend</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#get_base_anim_curves"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.get_base_anim_curves" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the base pm.nt.AnimCurve.  This would be the animation in the base animation layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>anim_blend</strong> (<em>pm.nt.AnimBlendNodeBase</em>) – The animation blend node that ties the curves and layers together.</p>
+</dd>
+<dt class="field-even">Return list[pm.nt.AnimCurve]<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the base pm.nt.AnimCurve.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[pm.nt.AnimCurve]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.get_node_connections">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">get_node_connections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#get_node_connections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.get_node_connections" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a dictionary with input and output connections.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>pm.nt.transform</em>) – An object with connections.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a dictionary with input and output connections.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dictionary{pm.nt.attribute:pm.nt.attribute}</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.get_objects_in_anim_layer">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">get_objects_in_anim_layer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anim_layer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#get_objects_in_anim_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.get_objects_in_anim_layer" title="Permalink to this definition"></a></dt>
+<dd><p>Returns all the animated objects connected to a specific layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>anim_layer</strong> (<em>pm.nt.AnimLayer</em>) – Animation Layer</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns all the animated objects connected to a specific layer.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[pm.nt.DagNode]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.keep_anim_layer_curves">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">keep_anim_layer_curves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anim_blend</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#keep_anim_layer_curves"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.keep_anim_layer_curves" title="Permalink to this definition"></a></dt>
+<dd><p>On restoring animations, duplicates the animation layer network and connects the new animation layers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>anim_blend</strong> (<em>pm.nt.AnimBlendNodeBase</em>) – The animation blend node that ties the curves and layers together.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The animation blend node that ties the curves and layers together.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pm.nt.AnimBlendNodeBase</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.map_anim_layers">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">map_anim_layers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anim_blend_layer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#map_anim_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.map_anim_layers" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a list of animation blend nodes and it’s corresponding animation layer.
+It will work backwards using inputs.
+[[BLEND NODE, ANIMATION LAYER]]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>anim_blend_layer</strong> (<em>pm.nt.AnimBlendNodeBase</em>) – Animation blend node</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a list of animation blend nodes and it’s corresponding animation layer.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[pm.nt.AnimBlendNodeBase, pm.nt.AnimLayer]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.merge_anim_layer_network">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">merge_anim_layer_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anim_blend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_anim_blend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_curve</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#merge_anim_layer_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.merge_anim_layer_network" title="Permalink to this definition"></a></dt>
+<dd><p>Merges 2 base animation curves from two different animation layer networks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anim_blend</strong> (<em>pm.nt.AnimBlendNodeBase</em>) – The animation blend node that ties the curves and layers together.</p></li>
+<li><p><strong>new_anim_blend</strong> (<em>pm.nt.AnimBlendNodeBase</em>) – The animation blend node that ties the curves and layers together.</p></li>
+<li><p><strong>delete_curve</strong> (<em>bool</em>) – If true, deletes the unused animation curve.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.restore_for_anim_layers">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">restore_for_anim_layers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anim_blend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_attribute</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_curves</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_old_curves</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#restore_for_anim_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.restore_for_anim_layers" title="Permalink to this definition"></a></dt>
+<dd><p>The main command to restore animation curves onto an object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anim_blend</strong> (<em>pm.nt.AnimBlendNodeBase</em>) – The animation blend node that ties the curves and layers together.</p></li>
+<li><p><strong>object_attribute</strong> (<em>pm.nt.general.Attribute</em>) – The object attribute that connects to an animation.</p></li>
+<li><p><strong>keep_curves</strong> (<em>bool</em>) – If True, will duplicate the animation curves or anim layer network before re-connecting.</p></li>
+<li><p><strong>delete_old_curves</strong> (<em>bool</em>) – deletes the curves that are already connected to the new object.</p></li>
+<li><p><strong>start_time</strong> (<em>int</em>) – The start frame if the animation needs to change in the timeline.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>returns the last frame if the start time changes.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.store_object_animation">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">store_object_animation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_animation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_time_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_time_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merge_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#store_object_animation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.store_object_animation" title="Permalink to this definition"></a></dt>
+<dd><p>Creates compound attributes associated with the objects and animation curves.
+This will disconnect the animation curve and connect them to the associated compound attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> (<em>pm.nt.transform</em>) – An object that has animation curves.</p></li>
+<li><p><strong>keep_animation</strong> (<em>bool</em>) – If True, the animation curves are duplicated before adding to the node.</p></li>
+<li><p><strong>min_time_range</strong> (<em>int</em>) – Any key before this number will be deleted.</p></li>
+<li><p><strong>max_time_range</strong> (<em>int</em>) – Any key after this number will be deleted.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return obj<span class="colon">:</span></dt>
+<dd class="field-even"><p>The object that animation curves were transferred to.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pm.nt.transform</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.swap_anim_layer_curves">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">swap_anim_layer_curves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anim_blend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_attribute</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#swap_anim_layer_curves"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.swap_anim_layer_curves" title="Permalink to this definition"></a></dt>
+<dd><p>Connects the animation layer to the base layer and the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anim_blend</strong> (<em>pm.nt.AnimBlendNodeBase</em>) – The animation blend node that ties the curves and layers together.</p></li>
+<li><p><strong>object_attribute</strong> (<em>pm.nt.general.Attribute</em>) – The object attribute that connects to an animation.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.update_anim_blend_in_dict">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">update_anim_blend_in_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blend_connections</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_anim_blend</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#update_anim_blend_in_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.update_anim_blend_in_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Swapping out the animation blend node in the “get_node_connection” dictionary for a new animation blend node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>blend_connections</strong> (<em>dict</em>) – input and output connections from an animation blend node.</p></li>
+<li><p><strong>new_anim_blend</strong> (<em>string</em>) – Name of an animation blend node for animation layers.</p></li>
+</ul>
+</dd>
+</dl>
+<p>:return : Returns input and output connections from an animation blend node.
+:rtype: dictionary{pm.nt.attribute:pm.nt.attribute}</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.update_anim_layer_in_dict">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">update_anim_layer_in_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blend_connections</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_anim_layer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#update_anim_layer_in_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.update_anim_layer_in_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Swapping out the animation layer node in the “get_node_connection” dictionary for a new animation layer node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>blend_connections</strong> (<em>dict</em>) – input and output connections from an animation layer node.</p></li>
+<li><p><strong>new_anim_layer</strong> (<em>string</em>) – Name of an animation layer node for animation layers.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns input and output connections from an animation layer node.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dictionary{pm.nt.attribute:pm.nt.attribute}</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.anim_layers.update_connections_dict">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.anim_layers.</span></span><span class="sig-name descname"><span class="pre">update_connections_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blend_connections</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/anim_layers.html#update_connections_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.anim_layers.update_connections_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Updates the node connections with a different node.  Used for switching connections to a duplicated node.
+Use this to after duplicating the node.  This will switch the original node name to the duplicated name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>blend_connections</strong> (<em>dictionary</em>) – A dictionary with input and output connections.</p></li>
+<li><p><strong>new_name</strong> (<em>string</em>) – Name of an animation blend node for animation layers.</p></li>
+<li><p><strong>node_type</strong> (<em>type</em><em>(</em><em>)</em>) – checks for the type of node.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns an updated dictionary.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dictionary{pm.nt.attribute:pm.nt.attribute}</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.animation.baking">
+<span id="cpg-maya-animation-baking-module"></span><h2>cpg.maya.animation.baking module<a class="headerlink" href="#module-cpg.maya.animation.baking" title="Permalink to this heading"></a></h2>
+<p>Module that contains a wrapper for the bakeResults command and other baking related utils.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="cpg.maya.animation.baking.CPGBakeOptionVars">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.baking.</span></span><span class="sig-name descname"><span class="pre">CPGBakeOptionVars</span></span><a class="reference internal" href="_modules/cpg/maya/animation/baking.html#CPGBakeOptionVars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.baking.CPGBakeOptionVars" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="cpg.maya.utils.html#cpg.maya.utils.optionvars.CPGOptionVars" title="cpg.maya.utils.optionvars.CPGOptionVars"><code class="xref py py-class docutils literal notranslate"><span class="pre">CPGOptionVars</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cpg.maya.animation.baking.CPGBakeOptionVars.CPGEndFrame">
+<span class="sig-name descname"><span class="pre">CPGEndFrame</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'default_value':</span> <span class="pre">100,</span> <span class="pre">'docstring':</span> <span class="pre">'The</span> <span class="pre">current</span> <span class="pre">end</span> <span class="pre">frame</span> <span class="pre">for</span> <span class="pre">baking.'}</span></em><a class="headerlink" href="#cpg.maya.animation.baking.CPGBakeOptionVars.CPGEndFrame" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cpg.maya.animation.baking.CPGBakeOptionVars.CPGFrameOverride">
+<span class="sig-name descname"><span class="pre">CPGFrameOverride</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'default_value':</span> <span class="pre">False,</span> <span class="pre">'docstring':</span> <span class="pre">'If</span> <span class="pre">baking</span> <span class="pre">overrides</span> <span class="pre">should</span> <span class="pre">be</span> <span class="pre">used.'}</span></em><a class="headerlink" href="#cpg.maya.animation.baking.CPGBakeOptionVars.CPGFrameOverride" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cpg.maya.animation.baking.CPGBakeOptionVars.CPGStartFrame">
+<span class="sig-name descname"><span class="pre">CPGStartFrame</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'default_value':</span> <span class="pre">0,</span> <span class="pre">'docstring':</span> <span class="pre">'The</span> <span class="pre">current</span> <span class="pre">start</span> <span class="pre">frame</span> <span class="pre">for</span> <span class="pre">baking.'}</span></em><a class="headerlink" href="#cpg.maya.animation.baking.CPGBakeOptionVars.CPGStartFrame" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.baking.bake_objects">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.baking.</span></span><span class="sig-name descname"><span class="pre">bake_objects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">translate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bake_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/baking.html#bake_objects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.baking.bake_objects" title="Permalink to this definition"></a></dt>
+<dd><p>Wrapper around pm.bakeResults cleans up some common errors before baking.
+A key is set at -1337 to handle rotation filtering and removed after.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node_list</strong> (<em>list</em><em>[</em><em>PyNode</em><em>]</em>) – A list of objects to bake.</p></li>
+<li><p><strong>translate</strong> (<em>bool</em>) – Whether translation attrs should be baked.</p></li>
+<li><p><strong>rotate</strong> (<em>bool</em>) – Whether rotation attrs should be baked.</p></li>
+<li><p><strong>scale</strong> (<em>bool</em>) – Whether scale attrs should be baked.</p></li>
+<li><p><strong>custom_attrs</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – A list of attribute string names if they should be baked.</p></li>
+<li><p><strong>bake_range</strong> (<em>list</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – Range of frames to bake across.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict{}</em>) – Dict of additional args used in the bakeResults command.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.baking.merge_all_animation_layers">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.baking.</span></span><span class="sig-name descname"><span class="pre">merge_all_animation_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/baking.html#merge_all_animation_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.baking.merge_all_animation_layers" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-cpg.maya.animation.keyframes">
+<span id="cpg-maya-animation-keyframes-module"></span><h2>cpg.maya.animation.keyframes module<a class="headerlink" href="#module-cpg.maya.animation.keyframes" title="Permalink to this heading"></a></h2>
+<p>Module that contains functions related with keyframes in Maya</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.keyframes.fix_single_keyframe_layers">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.keyframes.</span></span><span class="sig-name descname"><span class="pre">fix_single_keyframe_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/keyframes.html#fix_single_keyframe_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.keyframes.fix_single_keyframe_layers" title="Permalink to this definition"></a></dt>
+<dd><p>Find all animation layers with a single keyframe and place a second keyframe 1 frame after the first for all objects in the layer.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.keyframes.shift_keys">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.keyframes.</span></span><span class="sig-name descname"><span class="pre">shift_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/keyframes.html#shift_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.keyframes.shift_keys" title="Permalink to this definition"></a></dt>
+<dd><p>Shifts all keyframes on a set of objects by a given value. If no shift length is given it will zero the animation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node_list</strong> (<em>PyNode</em>) – A list of objects to shift the keyframes on.</p></li>
+<li><p><strong>shift_length</strong> (<em>int</em>) – How much the animation should be shifted by.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.animation.time_utils">
+<span id="cpg-maya-animation-time-utils-module"></span><h2>cpg.maya.animation.time_utils module<a class="headerlink" href="#module-cpg.maya.animation.time_utils" title="Permalink to this heading"></a></h2>
+<p>Module that contains utilities for getting the time ranges of a scene and its animation.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.time_utils.create_bookmark">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.time_utils.</span></span><span class="sig-name descname"><span class="pre">create_bookmark</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'timeSliderBookmark'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/time_utils.html#create_bookmark"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.time_utils.create_bookmark" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a colored timeSliderBookmark</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of the new bookmark.</p></li>
+<li><p><strong>frame_range</strong> (<em>list</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – Start and end frame range to represent. The max value is not inclusive.</p></li>
+<li><p><strong>color</strong> (<em>list</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – Float 3 of values between 0-1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The newly created timeslider bookmark</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>TimeSliderBookmark</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.time_utils.get_current_time">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.time_utils.</span></span><span class="sig-name descname"><span class="pre">get_current_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/time_utils.html#get_current_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.time_utils.get_current_time" title="Permalink to this definition"></a></dt>
+<dd><p>Get the current keyframe of the timeline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Current keyframe of the timeline.</p>
+</dd>
+<dt class="field-even">Rtype int<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.time_utils.get_keyframe_range_from_nodes">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.time_utils.</span></span><span class="sig-name descname"><span class="pre">get_keyframe_range_from_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/time_utils.html#get_keyframe_range_from_nodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.time_utils.get_keyframe_range_from_nodes" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the keyframe range from a group of nodes. This will return None if there are no valid keyframes on the nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node_list</strong> (<em>list</em>) – List of maya nodes with keyframes.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The start and end frame of the keyframes of the passed list.</p>
+</dd>
+<dt class="field-odd">Rtype int, int<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.time_utils.get_keyframe_range_from_scene">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.time_utils.</span></span><span class="sig-name descname"><span class="pre">get_keyframe_range_from_scene</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/time_utils.html#get_keyframe_range_from_scene"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.time_utils.get_keyframe_range_from_scene" title="Permalink to this definition"></a></dt>
+<dd><p>From all scene animation curves get the first and last keyframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The start and end frame of all animation in the scene.</p>
+</dd>
+<dt class="field-even">Rtype int, int<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.time_utils.get_range_from_attribute_curves">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.time_utils.</span></span><span class="sig-name descname"><span class="pre">get_range_from_attribute_curves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr_curve_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/time_utils.html#get_range_from_attribute_curves"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.time_utils.get_range_from_attribute_curves" title="Permalink to this definition"></a></dt>
+<dd><p>From a list of attribute curves find the first and last keyframes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attr_curve_list</strong> (<em>list</em><em>[</em><em>AttrCurve</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The start and end frame of the passed curves.</p>
+</dd>
+<dt class="field-odd">Rtype int, int<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.time_utils.get_scene_end_time">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.time_utils.</span></span><span class="sig-name descname"><span class="pre">get_scene_end_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/time_utils.html#get_scene_end_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.time_utils.get_scene_end_time" title="Permalink to this definition"></a></dt>
+<dd><p>Get the last frame of the scene timeline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The last frame of the scene timeline.</p>
+</dd>
+<dt class="field-even">Rtype int<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.time_utils.get_scene_first_keyframe">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.time_utils.</span></span><span class="sig-name descname"><span class="pre">get_scene_first_keyframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/time_utils.html#get_scene_first_keyframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.time_utils.get_scene_first_keyframe" title="Permalink to this definition"></a></dt>
+<dd><p>returns time of first keyframe in the entire scene. Does not rely on animation time range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>frame of first keyframe</p>
+</dd>
+<dt class="field-even">Rtype int<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.time_utils.get_scene_last_keyframe">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.time_utils.</span></span><span class="sig-name descname"><span class="pre">get_scene_last_keyframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/time_utils.html#get_scene_last_keyframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.time_utils.get_scene_last_keyframe" title="Permalink to this definition"></a></dt>
+<dd><p>returns time of last keyframe in the entire scene. Does not rely on animation time range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>frame of last keyframe</p>
+</dd>
+<dt class="field-even">Rtype int<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.time_utils.get_scene_range">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.time_utils.</span></span><span class="sig-name descname"><span class="pre">get_scene_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/time_utils.html#get_scene_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.time_utils.get_scene_range" title="Permalink to this definition"></a></dt>
+<dd><p>Get the start and end frame of the scene timeline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The start and end frame of the scene timeline.</p>
+</dd>
+<dt class="field-even">Rtype int, int<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.time_utils.get_scene_start_time">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.time_utils.</span></span><span class="sig-name descname"><span class="pre">get_scene_start_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/time_utils.html#get_scene_start_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.time_utils.get_scene_start_time" title="Permalink to this definition"></a></dt>
+<dd><p>Get the first frame of the scene timeline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The first frame of the scene timeline.</p>
+</dd>
+<dt class="field-even">Rtype int<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.time_utils.get_selected_range_from_timeline">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.time_utils.</span></span><span class="sig-name descname"><span class="pre">get_selected_range_from_timeline</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/time_utils.html#get_selected_range_from_timeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.time_utils.get_selected_range_from_timeline" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a selection on the timeline else None if there is no selection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The start and end frame of the timeline selection.</p>
+</dd>
+<dt class="field-even">Rtype int, int<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.time_utils.get_times">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.time_utils.</span></span><span class="sig-name descname"><span class="pre">get_times</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_selected_frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_selection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/time_utils.html#get_times"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.time_utils.get_times" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the frame range in cascading order of importance.</p>
+<p>#1 Selected Timeline
+#2 (Optional) Curve Editor Selection
+#3 (Optional) Node list
+#4 Animation curves in scene
+#5 Greatest of zoomed timeline or scene timeline</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node_list</strong> (<em>list</em><em>[</em><em>PyNode</em><em>]</em>) – List of objects we should use to derive time range.</p></li>
+<li><p><strong>min_selected_frames</strong> (<em>int</em>) – Minimum number of required selected frames.</p></li>
+<li><p><strong>ignore_selection</strong> (<em>bool</em>) – This ignores the logic for deriving keyframe range from a selection of attribute curves.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The best choice of first and last frame values.</p>
+</dd>
+<dt class="field-odd">Rtype int, int<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.time_utils.get_visible_end_time">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.time_utils.</span></span><span class="sig-name descname"><span class="pre">get_visible_end_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/time_utils.html#get_visible_end_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.time_utils.get_visible_end_time" title="Permalink to this definition"></a></dt>
+<dd><p>Get the last visible frame of the timeline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The last frame of the visible timeline.</p>
+</dd>
+<dt class="field-even">Rtype int<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.time_utils.get_visible_range">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.time_utils.</span></span><span class="sig-name descname"><span class="pre">get_visible_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/time_utils.html#get_visible_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.time_utils.get_visible_range" title="Permalink to this definition"></a></dt>
+<dd><p>Get the start and end frame of the visible timeline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The start and end frame of the visible timeline.</p>
+</dd>
+<dt class="field-even">Rtype int, int<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.time_utils.get_visible_start_time">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.time_utils.</span></span><span class="sig-name descname"><span class="pre">get_visible_start_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/time_utils.html#get_visible_start_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.time_utils.get_visible_start_time" title="Permalink to this definition"></a></dt>
+<dd><p>Get the first visible frame of the timeline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The first frame of the visible timeline.</p>
+</dd>
+<dt class="field-even">Rtype int<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.time_utils.reframe_visible_range">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.time_utils.</span></span><span class="sig-name descname"><span class="pre">reframe_visible_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/time_utils.html#reframe_visible_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.time_utils.reframe_visible_range" title="Permalink to this definition"></a></dt>
+<dd><p>Reframe the scene visible range, from keyframes or the default of 0-100</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.time_utils.set_padded_keys">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.time_utils.</span></span><span class="sig-name descname"><span class="pre">set_padded_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/time_utils.html#set_padded_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.time_utils.set_padded_keys" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the keys on the object’s attribute, but pads it, so it is zero before and after.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj_attr</strong> (<em>pm.nt.attribute</em>) – attribute name</p></li>
+<li><p><strong>frame</strong> (<em>float</em>) – frame number</p></li>
+<li><p><strong>value</strong> (<em>float</em>) – value the flag attribute is set to.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cpg.maya.animation.time_utils.set_timeline_range">
+<span class="sig-prename descclassname"><span class="pre">cpg.maya.animation.time_utils.</span></span><span class="sig-name descname"><span class="pre">set_timeline_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">visible_start_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visible_end_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scene_start_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scene_end_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cpg/maya/animation/time_utils.html#set_timeline_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cpg.maya.animation.time_utils.set_timeline_range" title="Permalink to this definition"></a></dt>
+<dd><p>Set the visible, and scene ranges for the timeline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>visible_start_time</strong> (<em>int</em>) – The first frame on the visible timeline.</p></li>
+<li><p><strong>visible_end_time</strong> (<em>int</em>) – The last frame on the visible timeline.</p></li>
+<li><p><strong>scene_start_time</strong> (<em>int</em>) – The first frame of the scene timeline</p></li>
+<li><p><strong>scene_end_time</strong> (<em>int</em>) – The last frame of the scene timeline</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-cpg.maya.animation">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cpg.maya.animation" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cpg.maya.html" class="btn btn-neutral float-left" title="cpg.maya package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cpg.maya.cinematics.html" class="btn btn-neutral float-right" title="cpg.maya.cinematics package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Rigging Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
