@@ -1,0 +1,53 @@
+cpg.maya.animation package
+==========================
+
+Submodules
+----------
+
+cpg.maya.animation.anim\_curves module
+--------------------------------------
+
+.. automodule:: cpg.maya.animation.anim_curves
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.animation.anim\_layers module
+--------------------------------------
+
+.. automodule:: cpg.maya.animation.anim_layers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.animation.baking module
+--------------------------------
+
+.. automodule:: cpg.maya.animation.baking
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.animation.keyframes module
+-----------------------------------
+
+.. automodule:: cpg.maya.animation.keyframes
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.animation.time\_utils module
+-------------------------------------
+
+.. automodule:: cpg.maya.animation.time_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.animation
+   :members:
+   :undoc-members:
+   :show-inheritance:

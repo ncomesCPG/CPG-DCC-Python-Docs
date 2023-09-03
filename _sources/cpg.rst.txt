@@ -1,0 +1,18 @@
+cpg package
+===========
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   cpg.maya
+
+Module contents
+---------------
+
+.. automodule:: cpg
+   :members:
+   :undoc-members:
+   :show-inheritance:

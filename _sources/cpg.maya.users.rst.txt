@@ -1,0 +1,20 @@
+cpg.maya.users package
+======================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   cpg.maya.users.comes
+   cpg.maya.users.fshorsch
+   cpg.maya.users.irichter
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.users
+   :members:
+   :undoc-members:
+   :show-inheritance:

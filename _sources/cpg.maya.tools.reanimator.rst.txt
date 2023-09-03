@@ -1,0 +1,37 @@
+cpg.maya.tools.reanimator package
+=================================
+
+Submodules
+----------
+
+cpg.maya.tools.reanimator.overdrivers\_small module
+---------------------------------------------------
+
+.. automodule:: cpg.maya.tools.reanimator.overdrivers_small
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.tools.reanimator.reanimator module
+-------------------------------------------
+
+.. automodule:: cpg.maya.tools.reanimator.reanimator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.tools.reanimator.reanimator\_small module
+--------------------------------------------------
+
+.. automodule:: cpg.maya.tools.reanimator.reanimator_small
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.tools.reanimator
+   :members:
+   :undoc-members:
+   :show-inheritance:

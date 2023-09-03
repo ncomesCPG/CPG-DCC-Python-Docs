@@ -1,0 +1,77 @@
+cpg.maya.modeling package
+=========================
+
+Submodules
+----------
+
+cpg.maya.modeling.blendshape\_model module
+------------------------------------------
+
+.. automodule:: cpg.maya.modeling.blendshape_model
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.modeling.blendshape\_node module
+-----------------------------------------
+
+.. automodule:: cpg.maya.modeling.blendshape_node
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.modeling.face\_model module
+------------------------------------
+
+.. automodule:: cpg.maya.modeling.face_model
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.modeling.follicle module
+---------------------------------
+
+.. automodule:: cpg.maya.modeling.follicle
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.modeling.geometry module
+---------------------------------
+
+.. automodule:: cpg.maya.modeling.geometry
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.modeling.rivets module
+-------------------------------
+
+.. automodule:: cpg.maya.modeling.rivets
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.modeling.surface module
+--------------------------------
+
+.. automodule:: cpg.maya.modeling.surface
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.modeling.vert\_utils module
+------------------------------------
+
+.. automodule:: cpg.maya.modeling.vert_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.modeling
+   :members:
+   :undoc-members:
+   :show-inheritance:

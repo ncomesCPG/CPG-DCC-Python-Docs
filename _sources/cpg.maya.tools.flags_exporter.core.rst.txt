@@ -1,0 +1,21 @@
+cpg.maya.tools.flags\_exporter.core package
+===========================================
+
+Submodules
+----------
+
+cpg.maya.tools.flags\_exporter.core.tool module
+-----------------------------------------------
+
+.. automodule:: cpg.maya.tools.flags_exporter.core.tool
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.tools.flags_exporter.core
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,21 @@
+cpg.maya.tools.saveskinning package
+===================================
+
+Submodules
+----------
+
+cpg.maya.tools.saveskinning.save\_skinning module
+-------------------------------------------------
+
+.. automodule:: cpg.maya.tools.saveskinning.save_skinning
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.tools.saveskinning
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,37 @@
+cpg.maya.utils.om package
+=========================
+
+Submodules
+----------
+
+cpg.maya.utils.om.attributetypes module
+---------------------------------------
+
+.. automodule:: cpg.maya.utils.om.attributetypes
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.utils.om.om\_plug module
+---------------------------------
+
+.. automodule:: cpg.maya.utils.om.om_plug
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.utils.om.om\_utils module
+----------------------------------
+
+.. automodule:: cpg.maya.utils.om.om_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.utils.om
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,10 @@
+cpg.maya.users.fshorsch package
+===============================
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.users.fshorsch
+   :members:
+   :undoc-members:
+   :show-inheritance:

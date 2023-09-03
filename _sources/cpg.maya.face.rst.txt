@@ -1,0 +1,54 @@
+cpg.maya.face package
+=====================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   cpg.maya.face.face_poses
+   cpg.maya.face.face_utils
+
+Submodules
+----------
+
+cpg.maya.face.face\_vertex\_data module
+---------------------------------------
+
+.. automodule:: cpg.maya.face.face_vertex_data
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.face.joints\_data module
+---------------------------------
+
+.. automodule:: cpg.maya.face.joints_data
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.face.source\_data module
+---------------------------------
+
+.. automodule:: cpg.maya.face.source_data
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.face.source\_meshes module
+-----------------------------------
+
+.. automodule:: cpg.maya.face.source_meshes
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.face
+   :members:
+   :undoc-members:
+   :show-inheritance:

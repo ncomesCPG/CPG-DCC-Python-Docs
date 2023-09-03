@@ -1,0 +1,10 @@
+cpg.maya.plugins.livelink package
+=================================
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.plugins.livelink
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,21 @@
+cpg.maya.tools.multiconstraintswitch package
+============================================
+
+Submodules
+----------
+
+cpg.maya.tools.multiconstraintswitch.multiconstraint\_switch module
+-------------------------------------------------------------------
+
+.. automodule:: cpg.maya.tools.multiconstraintswitch.multiconstraint_switch
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.tools.multiconstraintswitch
+   :members:
+   :undoc-members:
+   :show-inheritance:

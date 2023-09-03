@@ -1,0 +1,10 @@
+cpg.maya.users.comes package
+============================
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.users.comes
+   :members:
+   :undoc-members:
+   :show-inheritance:

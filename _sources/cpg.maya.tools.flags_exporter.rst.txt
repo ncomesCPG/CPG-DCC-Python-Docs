@@ -1,0 +1,29 @@
+cpg.maya.tools.flags\_exporter package
+======================================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   cpg.maya.tools.flags_exporter.core
+
+Submodules
+----------
+
+cpg.maya.tools.flags\_exporter.flags\_exporter module
+-----------------------------------------------------
+
+.. automodule:: cpg.maya.tools.flags_exporter.flags_exporter
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.tools.flags_exporter
+   :members:
+   :undoc-members:
+   :show-inheritance:

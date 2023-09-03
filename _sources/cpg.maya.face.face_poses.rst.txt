@@ -1,0 +1,29 @@
+cpg.maya.face.face\_poses package
+=================================
+
+Submodules
+----------
+
+cpg.maya.face.face\_poses.face\_pose\_edit module
+-------------------------------------------------
+
+.. automodule:: cpg.maya.face.face_poses.face_pose_edit
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.face.face\_poses.pose\_files module
+--------------------------------------------
+
+.. automodule:: cpg.maya.face.face_poses.pose_files
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.face.face_poses
+   :members:
+   :undoc-members:
+   :show-inheritance:

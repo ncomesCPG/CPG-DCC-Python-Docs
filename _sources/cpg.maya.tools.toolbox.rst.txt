@@ -1,0 +1,21 @@
+cpg.maya.tools.toolbox package
+==============================
+
+Submodules
+----------
+
+cpg.maya.tools.toolbox.ma\_toolbox\_ui module
+---------------------------------------------
+
+.. automodule:: cpg.maya.tools.toolbox.ma_toolbox_ui
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.tools.toolbox
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,29 @@
+cpg.maya.modifiers package
+==========================
+
+Submodules
+----------
+
+cpg.maya.modifiers.contexts module
+----------------------------------
+
+.. automodule:: cpg.maya.modifiers.contexts
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cpg.maya.modifiers.ma\_decorators module
+----------------------------------------
+
+.. automodule:: cpg.maya.modifiers.ma_decorators
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cpg.maya.modifiers
+   :members:
+   :undoc-members:
+   :show-inheritance:
